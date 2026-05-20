@@ -10,5 +10,14 @@
   "account_disabled": "Ce compte est désactivé.",
   "password_reset_invalid": "Lien de réinitialisation invalide ou expiré.",
   "insufficient_stock": "Stock insuffisant.",
-  "invalid_promo_code": "Code promo invalide ou expiré."
+  "invalid_promo_code": "Code promo invalide ou expiré.",
+  "invalid_email": "Adresse email invalide.",
+  "password_too_short": "Le mot de passe doit contenir au moins 8 caractères.",
+  "invalid_phone": "Numéro de téléphone camerounais invalide (format attendu : +2376XXXXXXXX ou +2372XXXXXXXX).",
+  "email_already_used": "Cette adresse email est déjà utilisée.",
+  "cannot_self_deactivate": "Vous ne pouvez pas désactiver votre propre compte.",
+  "cannot_self_delete": "Vous ne pouvez pas supprimer votre propre compte.",
+  "invalid_role": "Rôle utilisateur invalide.",
+  "invalid_setting_key": "Clé de paramètre invalide (UPPER_SNAKE_CASE attendu).",
+  "setting_already_exists": "Ce paramètre existe déjà."
 }

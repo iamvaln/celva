@@ -20,6 +20,9 @@ const envSchema = z.object({
   R2_PUBLIC_URL: z.string().url().optional(),
 
   CORS_ORIGINS: z.string().default(''),
+  COOKIE_SECRET: z.string().min(32).default('dev-cookie-secret-please-replace-32chars-min'),
+  STOREFRONT_URL: z.string().url().default('http://localhost:3000'),
+  ADMIN_URL: z.string().url().default('http://localhost:3002'),
 
   MAILGUN_API_KEY: z.string().optional(),
   MAILGUN_DOMAIN: z.string().optional(),

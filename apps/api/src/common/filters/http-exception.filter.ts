@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { I18nContext } from 'nestjs-i18n';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 import { REQUEST_ID_HEADER } from '@celva/shared';
 
 type ResponseShape = {
@@ -23,6 +23,8 @@ type ResponseShape = {
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
 
+  constructor(private readonly i18nService: I18nService) {}
+
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -33,8 +35,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const i18n = I18nContext.current();
-    const lang = i18n?.lang ?? 'fr';
+    const lang = this.detectLang(host, request);
 
     let message: string;
     let errorName: string;
@@ -73,12 +74,23 @@ export class HttpExceptionFilter implements ExceptionFilter {
     response.status(status).json(body);
   }
 
+  private detectLang(host: ArgumentsHost, request: Request): string {
+    const fromContext = I18nContext.current(host)?.lang;
+    if (fromContext) return fromContext;
+    const acceptLang = request.header('accept-language');
+    if (acceptLang) {
+      const first = acceptLang.split(',')[0]?.split(';')[0]?.trim().toLowerCase().split('-')[0];
+      if (first === 'fr' || first === 'en') return first;
+    }
+    return 'fr';
+  }
+
   private translate(key: string, lang: string): string {
-    const i18n = I18nContext.current();
-    if (!i18n) return key;
+    // Only translate keys that look like our i18n namespace ("errors.X").
+    if (!/^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key)) return key;
     try {
-      const translated = i18n.t(key, { lang });
-      return typeof translated === 'string' ? translated : key;
+      const translated = this.i18nService.t(key, { lang });
+      return typeof translated === 'string' && translated !== key ? translated : key;
     } catch {
       return key;
     }
