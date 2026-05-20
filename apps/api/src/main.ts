@@ -7,6 +7,7 @@ import { Logger as PinoLogger } from 'nestjs-pino';
 import * as Sentry from '@sentry/nestjs';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import type { Env } from './config/env';
@@ -29,7 +30,9 @@ async function bootstrap(): Promise<void> {
   const config = app.get<ConfigService<Env, true>>(ConfigService);
   const port = config.get('PORT', { infer: true });
   const apiVersion = config.get('API_VERSION', { infer: true });
+  const cookieSecret = config.get('COOKIE_SECRET', { infer: true });
 
+  app.use(cookieParser(cookieSecret));
   app.use(
     helmet({
       contentSecurityPolicy: {

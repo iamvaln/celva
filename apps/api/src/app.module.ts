@@ -12,6 +12,10 @@ import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
 import { StockMovementsModule } from './modules/stock-movements/stock-movements.module';
 import { MailModule } from './modules/mail/mail.module';
 import { HealthModule } from './modules/health/health.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { UsersModule } from './modules/users/users.module';
+import { SettingsModule } from './modules/settings/settings.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -78,6 +82,9 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     StockMovementsModule,
     MailModule,
     HealthModule,
+    AuthModule,
+    UsersModule,
+    SettingsModule,
   ],
   providers: [
     {
@@ -95,6 +102,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
     { provide: APP_INTERCEPTOR, useClass: AuditLogInterceptor },
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
 })
