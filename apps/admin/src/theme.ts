@@ -1,39 +1,54 @@
 import { defaultTheme } from 'react-admin';
 import type { RaThemeOptions } from 'react-admin';
+import { celvaColors } from '@celva/tailwind-config/tokens';
 
-const celvaInk = 'hsl(220 30% 12%)';
-const celvaIvory = 'hsl(36 33% 96%)';
-const celvaGold = 'hsl(38 65% 50%)';
-const celvaRose = 'hsl(348 60% 65%)';
+const fontStack = '"Cormorant Garamond", "Garamond", Georgia, serif';
+const displayStack = '"Bodoni Moda", "Didot", "Times New Roman", serif';
 
 export const celvaLightTheme: RaThemeOptions = {
   ...defaultTheme,
   palette: {
     mode: 'light',
-    primary: { main: celvaInk },
-    secondary: { main: celvaGold },
-    error: { main: celvaRose },
-    background: { default: celvaIvory, paper: '#ffffff' },
+    primary: { main: celvaColors.olive.DEFAULT, contrastText: celvaColors.cream },
+    secondary: { main: celvaColors.terracotta.DEFAULT, contrastText: celvaColors.cream },
+    error: { main: celvaColors.terracotta.dark },
+    background: { default: celvaColors.cream, paper: celvaColors.beige.light },
+    text: { primary: celvaColors.olive.DEFAULT, secondary: celvaColors.gray.DEFAULT },
+    divider: celvaColors.beige.dark,
   },
   typography: {
-    fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
-    h6: { fontWeight: 600 },
+    fontFamily: fontStack,
+    h1: { fontFamily: displayStack, fontWeight: 700 },
+    h2: { fontFamily: displayStack, fontWeight: 400 },
+    h3: { fontFamily: displayStack, fontWeight: 400 },
+    h4: { fontFamily: displayStack, fontWeight: 400 },
+    h5: { fontFamily: displayStack, fontWeight: 400 },
+    h6: { fontFamily: displayStack, fontWeight: 500 },
+    button: { fontFamily: fontStack, fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase' },
   },
-  shape: { borderRadius: 8 },
+  shape: { borderRadius: 0 },
 };
 
 export const celvaDarkTheme: RaThemeOptions = {
   ...defaultTheme,
   palette: {
     mode: 'dark',
-    primary: { main: celvaIvory },
-    secondary: { main: celvaGold },
-    error: { main: celvaRose },
-    background: { default: '#0e0e10', paper: '#17171a' },
+    primary: { main: celvaColors.cream, contrastText: celvaColors.ink },
+    secondary: { main: celvaColors.terracotta.DEFAULT, contrastText: celvaColors.cream },
+    error: { main: celvaColors.terracotta.light },
+    background: { default: celvaColors.ink, paper: celvaColors['ink-surface'] },
+    text: { primary: celvaColors.cream, secondary: celvaColors.gray.light },
+    divider: celvaColors['ink-border'],
   },
   typography: {
-    fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
-    h6: { fontWeight: 600 },
+    fontFamily: fontStack,
+    h1: { fontFamily: displayStack, fontWeight: 700 },
+    h2: { fontFamily: displayStack, fontWeight: 400 },
+    h3: { fontFamily: displayStack, fontWeight: 400 },
+    h4: { fontFamily: displayStack, fontWeight: 400 },
+    h5: { fontFamily: displayStack, fontWeight: 400 },
+    h6: { fontFamily: displayStack, fontWeight: 500 },
+    button: { fontFamily: fontStack, fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase' },
   },
-  shape: { borderRadius: 8 },
+  shape: { borderRadius: 0 },
 };

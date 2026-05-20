@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boutique — Celva</title>
+  <link rel="stylesheet" href="css/celva.css" />
+</head>
+<body data-screen-label="02 Boutique">
+
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="i-monogram" viewBox="0 0 100 100">
+        <g fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="butt" stroke-linejoin="miter">
+          <path d="M 66 27.3 A 32 32 0 1 1 34 27.3" />
+          <path d="M 24 8 L 50 78 L 74 6" />
+          <path d="M 84 6 L 91 1" stroke-width="6.5" />
+        </g>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="7" /><path d="M16 16l5 5" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 21s-7-4.5-9.5-9C1 9 2.6 5 6.5 5c2 0 3.6 1 5.5 3 1.9-2 3.5-3 5.5-3 3.9 0 5.5 4 4 7-2.5 4.5-9.5 9-9.5 9z" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6 7h12l-1 13H7L6 7z" stroke-linejoin="round" />
+        <path d="M9 7V5a3 3 0 0 1 6 0v2" />
+      </symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20.5 3.5A11 11 0 0 0 2.5 17.4L1 23l5.7-1.5A11 11 0 0 0 23 12a10.9 10.9 0 0 0-2.5-8.5zM12 21a9 9 0 0 1-4.6-1.3l-.3-.2-3.4.9.9-3.3-.2-.3A9 9 0 1 1 12 21zm5-6.7c-.3-.2-1.6-.8-1.9-.9-.3-.1-.4-.1-.6.1l-.8 1c-.2.3-.4.3-.7.1-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.3 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.2.3 2.1 3.2 5 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="announce">Livraison offerte dès 50 000 FCFA · Retours gratuits sous 14 jours</div>
+
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a class="nav__brand" href="index.html">
+          <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><use href="#i-monogram"/></svg>
+          <span>CELVA</span>
+        </a>
+        <ul class="nav__links">
+          <li><a href="shop.html" class="is-active">Boutique</a></li>
+          <li><a href="collection.html">Collections</a></li>
+          <li><a href="index.html#sur-mesure">Studio sur-mesure</a></li>
+          <li><a href="article.html">Journal</a></li>
+        </ul>
+        <div class="nav__actions">
+          <button class="icon-btn" aria-label="Rechercher"><svg viewBox="0 0 24 24" fill="none"><use href="#i-search"/></svg></button>
+          <a class="icon-btn" href="account.html" aria-label="Compte"><svg viewBox="0 0 24 24" fill="none"><use href="#i-user"/></svg></a>
+          <button class="icon-btn" aria-label="Wishlist"><svg viewBox="0 0 24 24" fill="none"><use href="#i-heart"/></svg></button>
+          <a class="icon-btn" href="cart.html" aria-label="Panier"><svg viewBox="0 0 24 24" fill="none"><use href="#i-bag"/></svg><span class="cart-badge">2</span></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PAGE HEAD -->
+  <section class="shop-head">
+    <div class="container">
+      <p class="eyebrow">Boutique · Printemps 26</p>
+      <h1 class="h1">Toutes les pièces</h1>
+      <p class="lead">Quarante-deux pièces en lin, coton et soie sauvage. Tailles 34 à 46, et sur-mesure sur demande.</p>
+    </div>
+  </section>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="container filters__row">
+      <div class="filters__group">
+        <span class="filters__label">Filtrer</span>
+        <button class="chip is-active">Tout</button>
+        <button class="chip">Vestes</button>
+        <button class="chip">Robes</button>
+        <button class="chip">Chemises</button>
+        <button class="chip">Pantalons</button>
+        <button class="chip">Accessoires</button>
+        <button class="chip chip--more">Taille <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;margin-left:6px"><use href="#i-chevron-down"/></svg></button>
+        <button class="chip chip--more">Couleur <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;margin-left:6px"><use href="#i-chevron-down"/></svg></button>
+        <button class="chip chip--more">Prix <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;margin-left:6px"><use href="#i-chevron-down"/></svg></button>
+      </div>
+      <div class="filters__sort">
+        <span class="filters__label">Trier</span>
+        <button class="chip chip--ghost">Nouveautés <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;margin-left:6px"><use href="#i-chevron-down"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <section class="section section--tight">
+    <div class="container">
+      <p class="shop-count muted">42 pièces · affichage 1 – 12</p>
+      <div class="product-grid">
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <span class="product-card__badge">Nouveau</span>
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">trench ekiti — face</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Trench Ekiti</h3>
+          <p class="product-card__meta">Coton ciré</p>
+          <p class="product-card__price">68 500 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">chemise wouri</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Chemise Wouri</h3>
+          <p class="product-card__meta">Lin filé</p>
+          <p class="product-card__price">34 000 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <span class="product-card__badge">−20%</span>
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">pantalon mbalmayo</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Pantalon Mbalmayo</h3>
+          <p class="product-card__meta">Soie sauvage</p>
+          <p class="product-card__price"><del>52 000</del>41 600 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">robe njala</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Robe Njala</h3>
+          <p class="product-card__meta">Coton brodé main</p>
+          <p class="product-card__price">74 000 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">veste foumban — détail manches</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Veste Foumban</h3>
+          <p class="product-card__meta">Coton matelassé, écru</p>
+          <p class="product-card__price">82 000 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <span class="product-card__badge">Nouveau</span>
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">jupe sanaga — fluide</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Jupe Sanaga</h3>
+          <p class="product-card__meta">Lin tabac, plis plats</p>
+          <p class="product-card__price">38 000 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">blouse limbé — épaules brodées</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Blouse Limbé</h3>
+          <p class="product-card__meta">Lin lavé, broderies pâles</p>
+          <p class="product-card__price">29 500 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">manteau bafia — porté ouvert</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Manteau Bafia</h3>
+          <p class="product-card__meta">Laine boutonnée, terre cuite</p>
+          <p class="product-card__price">128 000 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">robe ngoa — col carré</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Robe Ngoa</h3>
+          <p class="product-card__meta">Coton sec, col carré</p>
+          <p class="product-card__price">46 000 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <span class="product-card__badge">Archive</span>
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">poncho édéa — pièce unique</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Poncho Édéa</h3>
+          <p class="product-card__meta">Laine bouillie, pièce unique</p>
+          <p class="product-card__price">96 000 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">chemise kribi — col rond</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Chemise Kribi</h3>
+          <p class="product-card__meta">Coton brut, col rond</p>
+          <p class="product-card__price">31 000 FCFA</p>
+        </a>
+
+        <a class="product-card" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">pantalon bafoussam — large</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Pantalon Bafoussam</h3>
+          <p class="product-card__meta">Lin large, ceinture nouée</p>
+          <p class="product-card__price">44 500 FCFA</p>
+        </a>
+
+      </div>
+
+      <div class="shop-loadmore">
+        <button class="btn btn--secondary">Charger plus de pièces</button>
+        <p class="muted">Vous avez vu 12 pièces sur 42</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a class="footer__brand-mark" href="index.html">
+            <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><use href="#i-monogram"/></svg>
+            <span>CELVA</span>
+          </a>
+          <p>Maison camerounaise de prêt-à-porter et sur-mesure. Atelier rue Foch, Douala.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Boutique</h4>
+          <ul>
+            <li><a href="shop.html">Nouveautés</a></li>
+            <li><a href="shop.html">Femme</a></li>
+            <li><a href="shop.html">Homme</a></li>
+            <li><a href="shop.html">Archive</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Maison</h4>
+          <ul>
+            <li><a href="#">Notre histoire</a></li>
+            <li><a href="#">Atelier</a></li>
+            <li><a href="#">Le sur-mesure</a></li>
+            <li><a href="#">Journal</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Aide</h4>
+          <ul>
+            <li><a href="aide.html#panel-sizes">Guide des tailles</a></li>
+            <li><a href="aide.html#panel-shipping">Livraison &amp; retours</a></li>
+            <li><a href="aide.html#panel-care">Entretien</a></li>
+            <li><a href="aide.html">Nous contacter</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#">bonjour@celva.cm</a></li>
+            <li><a href="#">+237 6 90 12 34 56</a></li>
+            <li><a href="#">WhatsApp</a></li>
+            <li><a href="#">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Celva. Tous droits réservés.</span>
+        <div class="footer__pay">
+          <span>Orange Money</span><span>MTN MoMo</span><span>Visa</span><span>Mastercard</span>
+        </div>
+        <span>FR · EN</span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="fab-whatsapp" href="#" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-whatsapp"/></svg>
+  </a>
+
+  <style>
+    .shop-head { padding: 64px 0 32px; }
+    .shop-head .eyebrow { margin: 0 0 14px; }
+    .shop-head h1 { margin: 0 0 16px; }
+    .shop-head .lead { max-width: 50ch; }
+
+    .filters {
+      position: sticky;
+      top: 84px;
+      z-index: 20;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding-block: 16px;
+    }
+    .filters__row {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filters__group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .filters__label {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-right: 8px;
+    }
+    .chip {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--fg);
+      cursor: pointer;
+      transition: all 200ms ease;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    .chip:hover { border-color: var(--fg); }
+    .chip.is-active {
+      background: var(--olive);
+      color: var(--cream);
+      border-color: var(--olive);
+    }
+    [data-theme="dark"] .chip.is-active { background: var(--cream); color: var(--dark); border-color: var(--cream); }
+    .chip--ghost { border-color: transparent; padding-inline: 6px; }
+    .chip--ghost:hover { border-color: var(--fg); }
+    .filters__sort { display: flex; gap: 8px; align-items: center; }
+
+    .shop-count { font-size: 13px; margin: 0 0 32px; }
+
+    .shop-loadmore {
+      margin-top: 72px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+  </style>
+
+  <script src="js/celva.js"></script>
+</body>
+</html>

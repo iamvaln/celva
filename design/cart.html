@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panier — Celva</title>
+  <link rel="stylesheet" href="css/celva.css" />
+</head>
+<body data-screen-label="04 Panier">
+
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="i-monogram" viewBox="0 0 100 100">
+        <g fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="butt" stroke-linejoin="miter">
+          <path d="M 66 27.3 A 32 32 0 1 1 34 27.3" />
+          <path d="M 24 8 L 50 78 L 74 6" />
+          <path d="M 84 6 L 91 1" stroke-width="6.5" />
+        </g>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7" /><path d="M16 16l5 5" stroke-linecap="round" /></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke-linecap="round" /></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-4.5-9.5-9C1 9 2.6 5 6.5 5c2 0 3.6 1 5.5 3 1.9-2 3.5-3 5.5-3 3.9 0 5.5 4 4 7-2.5 4.5-9.5 9-9.5 9z" stroke-linejoin="round" /></symbol>
+      <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 7h12l-1 13H7L6 7z" stroke-linejoin="round" /><path d="M9 7V5a3 3 0 0 1 6 0v2" /></symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6l-12 12" stroke-linecap="round"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14" stroke-linecap="round" /></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11 11 0 0 0 2.5 17.4L1 23l5.7-1.5A11 11 0 0 0 23 12a10.9 10.9 0 0 0-2.5-8.5zM12 21a9 9 0 0 1-4.6-1.3l-.3-.2-3.4.9.9-3.3-.2-.3A9 9 0 1 1 12 21zm5-6.7c-.3-.2-1.6-.8-1.9-.9-.3-.1-.4-.1-.6.1l-.8 1c-.2.3-.4.3-.7.1-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.3 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.2.3 2.1 3.2 5 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3z"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="announce">Livraison offerte dès 50 000 FCFA · Retours gratuits sous 14 jours</div>
+
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a class="nav__brand" href="index.html"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg><span>CELVA</span></a>
+        <ul class="nav__links">
+          <li><a href="shop.html">Boutique</a></li>
+          <li><a href="collection.html">Collections</a></li>
+          <li><a href="index.html#sur-mesure">Studio sur-mesure</a></li>
+          <li><a href="article.html">Journal</a></li>
+        </ul>
+        <div class="nav__actions">
+          <button class="icon-btn" aria-label="Rechercher"><svg viewBox="0 0 24 24" fill="none"><use href="#i-search"/></svg></button>
+          <a class="icon-btn" href="account.html" aria-label="Compte"><svg viewBox="0 0 24 24" fill="none"><use href="#i-user"/></svg></a>
+          <button class="icon-btn" aria-label="Wishlist"><svg viewBox="0 0 24 24" fill="none"><use href="#i-heart"/></svg></button>
+          <a class="icon-btn" href="cart.html" aria-label="Panier"><svg viewBox="0 0 24 24" fill="none"><use href="#i-bag"/></svg><span class="cart-badge">2</span></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="cart-head">
+    <div class="container">
+      <p class="eyebrow">Étape 01 sur 03</p>
+      <h1 class="h1">Votre panier</h1>
+      <p class="muted">2 pièces · réservées 30 minutes</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container cart">
+
+      <!-- Lines -->
+      <div class="cart__lines">
+        <header class="cart__header">
+          <span>Pièce</span>
+          <span class="cart__header-qty">Quantité</span>
+          <span class="cart__header-price">Prix</span>
+        </header>
+
+        <article class="cart-line">
+          <a class="cart-line__media" href="product.html">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">trench ekiti</span>
+            </div>
+          </a>
+          <div class="cart-line__body">
+            <h3 class="cart-line__name"><a href="product.html">Trench Ekiti</a></h3>
+            <p class="cart-line__attrs">Coton ciré · Terre cuite · Taille 38</p>
+            <div class="cart-line__actions">
+              <a href="#" class="cart-line__link">Wishlist</a>
+              <a href="#" class="cart-line__link cart-line__link--danger">Retirer</a>
+            </div>
+          </div>
+          <div class="cart-line__qty">
+            <div class="qty">
+              <button aria-label="-"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-minus"/></svg></button>
+              <span>1</span>
+              <button aria-label="+"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-plus"/></svg></button>
+            </div>
+          </div>
+          <div class="cart-line__price">
+            <p>68 500 FCFA</p>
+          </div>
+        </article>
+
+        <article class="cart-line">
+          <a class="cart-line__media" href="product.html">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">chemise wouri</span>
+            </div>
+          </a>
+          <div class="cart-line__body">
+            <h3 class="cart-line__name"><a href="product.html">Chemise Wouri</a></h3>
+            <p class="cart-line__attrs">Lin filé · Sable · Taille M</p>
+            <div class="cart-line__actions">
+              <a href="#" class="cart-line__link">Wishlist</a>
+              <a href="#" class="cart-line__link cart-line__link--danger">Retirer</a>
+            </div>
+          </div>
+          <div class="cart-line__qty">
+            <div class="qty">
+              <button><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-minus"/></svg></button>
+              <span>1</span>
+              <button><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-plus"/></svg></button>
+            </div>
+          </div>
+          <div class="cart-line__price">
+            <p>34 000 FCFA</p>
+          </div>
+        </article>
+
+        <!-- Gift wrap -->
+        <div class="cart-extras">
+          <label class="cart-toggle">
+            <input type="checkbox" />
+            <span class="cart-toggle__box"></span>
+            <span>
+              <strong>Emballage cadeau</strong>
+              <em class="muted">Calicot noué, étiquette manuscrite · +2 500 FCFA</em>
+            </span>
+          </label>
+          <label class="cart-toggle">
+            <input type="checkbox" checked />
+            <span class="cart-toggle__box"></span>
+            <span>
+              <strong>Livraison express Douala–Yaoundé</strong>
+              <em class="muted">Sous 24 h ouvrées · offert sur cette commande</em>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <aside class="cart__summary">
+        <div class="cart-summary">
+          <h3 class="cart-summary__title">Récapitulatif</h3>
+
+          <div class="cart-summary__row">
+            <span>Sous-total</span>
+            <span>102 500 FCFA</span>
+          </div>
+          <div class="cart-summary__row">
+            <span>Livraison</span>
+            <span class="accent">Offerte</span>
+          </div>
+          <div class="cart-summary__row">
+            <span>Emballage</span>
+            <span>—</span>
+          </div>
+
+          <!-- Promo -->
+          <form class="cart-summary__promo" onsubmit="event.preventDefault(); applyPromo();">
+            <label>
+              <span class="eyebrow">Code promo</span>
+              <div class="cart-summary__promo-row">
+                <input type="text" placeholder="ATELIER10" id="promoInput" />
+                <button class="btn btn--ghost" type="submit">Appliquer</button>
+              </div>
+            </label>
+            <p class="cart-summary__promo-ack" id="promoAck" hidden>Code <em>ATELIER10</em> appliqué — <span class="accent">−10 250 FCFA</span></p>
+          </form>
+
+          <div class="cart-summary__divider"></div>
+
+          <div class="cart-summary__row cart-summary__total">
+            <span>Total <em class="muted">TTC</em></span>
+            <span class="cart-summary__big" id="totalAmount">102 500 FCFA</span>
+          </div>
+
+          <a href="checkout.html" class="btn btn--primary btn--block">
+            <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;margin-right:8px"><use href="#i-lock"/></svg>
+            Passer commande
+          </a>
+
+          <p class="cart-summary__pay muted">
+            <span>Orange Money</span><span>·</span><span>MTN MoMo</span><span>·</span><span>Visa</span><span>·</span><span>À la livraison</span>
+          </p>
+
+          <p class="cart-summary__assurance">
+            <em>Pas tout de suite ?</em> Nous gardons votre panier pendant 7 jours.
+          </p>
+        </div>
+      </aside>
+
+    </div>
+  </section>
+
+  <!-- Cross sell -->
+  <section class="section section--alt">
+    <div class="container">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">À ajouter</p>
+          <h2 class="h2">Vous pourriez aussi aimer</h2>
+        </div>
+      </header>
+      <div class="product-grid">
+        <a class="product-card" href="product.html">
+          <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">pantalon mbalmayo</span></div></div>
+          <h3 class="product-card__name">Pantalon Mbalmayo</h3>
+          <p class="product-card__meta">Soie sauvage</p>
+          <p class="product-card__price">52 000 FCFA</p>
+        </a>
+        <a class="product-card" href="product.html">
+          <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">ceinture sanaga</span></div></div>
+          <h3 class="product-card__name">Ceinture Sanaga</h3>
+          <p class="product-card__meta">Cuir tanné main</p>
+          <p class="product-card__price">22 500 FCFA</p>
+        </a>
+        <a class="product-card" href="product.html">
+          <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">foulard douala</span></div></div>
+          <h3 class="product-card__name">Foulard Douala</h3>
+          <p class="product-card__meta">Lin lavé, frangé</p>
+          <p class="product-card__price">14 000 FCFA</p>
+        </a>
+        <a class="product-card" href="product.html">
+          <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">blouse limbé</span></div></div>
+          <h3 class="product-card__name">Blouse Limbé</h3>
+          <p class="product-card__meta">Lin lavé</p>
+          <p class="product-card__price">29 500 FCFA</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a class="footer__brand-mark" href="index.html"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg><span>CELVA</span></a>
+          <p>Maison camerounaise de prêt-à-porter et sur-mesure. Atelier rue Foch, Douala.</p>
+        </div>
+        <div class="footer__col"><h4>Boutique</h4><ul><li><a href="shop.html">Nouveautés</a></li><li><a href="shop.html">Femme</a></li><li><a href="shop.html">Homme</a></li><li><a href="shop.html">Archive</a></li></ul></div>
+        <div class="footer__col"><h4>Maison</h4><ul><li><a href="#">Notre histoire</a></li><li><a href="#">Atelier</a></li><li><a href="#">Le sur-mesure</a></li><li><a href="#">Journal</a></li></ul></div>
+        <div class="footer__col"><h4>Aide</h4><ul><li><a href="aide.html#panel-sizes">Guide des tailles</a></li><li><a href="aide.html#panel-shipping">Livraison &amp; retours</a></li><li><a href="aide.html#panel-care">Entretien</a></li><li><a href="aide.html">Nous contacter</a></li></ul></div>
+        <div class="footer__col"><h4>Contact</h4><ul><li><a href="#">bonjour@celva.cm</a></li><li><a href="#">+237 6 90 12 34 56</a></li><li><a href="#">WhatsApp</a></li><li><a href="#">Instagram</a></li></ul></div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Celva. Tous droits réservés.</span>
+        <div class="footer__pay"><span>Orange Money</span><span>MTN MoMo</span><span>Visa</span><span>Mastercard</span></div>
+        <span>FR · EN</span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="fab-whatsapp" href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-whatsapp"/></svg></a>
+
+  <style>
+    .cart-head { padding: 56px 0 32px; }
+    .cart-head .eyebrow { margin: 0 0 14px; color: var(--accent); }
+    .cart-head h1 { margin: 0 0 8px; }
+
+    .cart {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 80px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) { .cart { grid-template-columns: 1fr; gap: 40px; } }
+
+    .cart__header {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 24px;
+      padding: 0 0 16px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+    .cart__header-qty { min-width: 140px; text-align: center; }
+    .cart__header-price { min-width: 120px; text-align: right; }
+
+    .cart-line {
+      display: grid;
+      grid-template-columns: 120px 1fr auto auto;
+      gap: 24px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    @media (max-width: 720px) {
+      .cart-line { grid-template-columns: 96px 1fr; row-gap: 18px; }
+      .cart-line__qty, .cart-line__price { grid-column: 2; }
+    }
+    .cart-line__media { display: block; }
+    .cart-line__name {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 400;
+      margin: 0 0 6px;
+    }
+    .cart-line__name a:hover { color: var(--accent); }
+    .cart-line__attrs { font-size: 14px; color: var(--fg-muted); margin: 0 0 12px; font-style: italic; }
+    .cart-line__actions { display: flex; gap: 18px; }
+    .cart-line__link {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 1px;
+      color: var(--fg-muted);
+    }
+    .cart-line__link:hover { color: var(--accent); }
+    .cart-line__link--danger:hover { color: var(--terracotta-dark); }
+    .cart-line__qty { min-width: 140px; display: grid; justify-items: center; }
+    .cart-line__price { min-width: 120px; text-align: right; }
+    .cart-line__price p {
+      font-family: var(--font-display);
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .qty {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      height: 40px;
+    }
+    .qty button {
+      width: 36px;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: var(--fg);
+    }
+    .qty button:hover { color: var(--accent); }
+    .qty span {
+      min-width: 32px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 15px;
+    }
+
+    .cart-extras {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .cart-toggle {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 200ms ease;
+    }
+    .cart-toggle:hover { border-color: var(--fg); }
+    .cart-toggle input { display: none; }
+    .cart-toggle__box {
+      width: 18px; height: 18px;
+      border: 1px solid var(--fg);
+      margin-top: 2px;
+      display: grid;
+      place-items: center;
+      transition: all 200ms ease;
+    }
+    .cart-toggle input:checked + .cart-toggle__box {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .cart-toggle input:checked + .cart-toggle__box::after {
+      content: "";
+      width: 8px; height: 4px;
+      border-left: 2px solid var(--cream);
+      border-bottom: 2px solid var(--cream);
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+    .cart-toggle strong {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    .cart-toggle em { font-size: 13px; font-style: italic; }
+
+    /* Summary */
+    .cart__summary { position: sticky; top: 110px; }
+    @media (max-width: 1024px) { .cart__summary { position: static; } }
+    .cart-summary {
+      background: var(--bg-alt);
+      padding: 28px 28px 32px;
+      border: 1px solid var(--border);
+    }
+    [data-theme="dark"] .cart-summary { background: var(--dark-surface); }
+    .cart-summary__title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 0 0 24px;
+      color: var(--fg-muted);
+    }
+    .cart-summary__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 10px 0;
+      font-size: 15px;
+    }
+    .cart-summary__row .accent { font-family: var(--font-display); font-style: italic; }
+    .cart-summary__promo { margin: 14px 0 0; }
+    .cart-summary__promo .eyebrow { display: block; margin: 16px 0 8px; }
+    .cart-summary__promo-row { display: flex; gap: 12px; align-items: flex-end; }
+    .cart-summary__promo-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--fg);
+      padding: 8px 0;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--fg);
+      outline: none;
+    }
+    .cart-summary__promo-row input:focus { border-color: var(--accent); }
+    .cart-summary__promo-row .btn { padding-inline: 0; }
+    .cart-summary__promo-ack { margin: 10px 0 0; font-size: 13px; }
+    .cart-summary__divider { height: 1px; background: var(--border); margin: 18px 0 14px; }
+    .cart-summary__total { padding-bottom: 22px; }
+    .cart-summary__big {
+      font-family: var(--font-display);
+      font-size: 24px;
+      color: var(--accent);
+    }
+    .cart-summary__total em { font-style: italic; font-size: 12px; margin-left: 4px; }
+    .cart-summary__pay {
+      margin: 14px 0 8px;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cart-summary__assurance {
+      margin: 18px 0 0;
+      font-size: 13px;
+      text-align: center;
+      color: var(--fg-muted);
+      line-height: 1.5;
+    }
+  </style>
+
+  <script src="js/celva.js"></script>
+  <script>
+    function applyPromo() {
+      const input = document.getElementById('promoInput');
+      if ((input.value || '').trim().toUpperCase() === 'ATELIER10') {
+        document.getElementById('promoAck').hidden = false;
+        document.getElementById('totalAmount').textContent = '92 250 FCFA';
+      }
+    }
+    document.querySelectorAll('.qty').forEach(q => {
+      const span = q.querySelector('span');
+      const [minus, plus] = q.querySelectorAll('button');
+      let n = parseInt(span.textContent, 10) || 1;
+      const upd = () => span.textContent = n;
+      minus.addEventListener('click', () => { if (n > 1) { n--; upd(); } });
+      plus.addEventListener('click', () => { n++; upd(); });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon compte — Celva</title>
+  <link rel="stylesheet" href="css/celva.css" />
+</head>
+<body data-screen-label="09 Compte">
+
+  <div data-celva="svg-defs"></div>
+  <div data-celva="announce"></div>
+  <div data-celva="header"></div>
+
+  <!-- HEAD -->
+  <section class="acct-head">
+    <div class="container acct-head__row">
+      <div>
+        <p class="eyebrow">Espace client · membre depuis avril 2024</p>
+        <h1 class="h1">Bonjour <em>Awa.</em></h1>
+        <p class="muted">3 commandes, 2 pièces en wishlist. Votre prochain rendez-vous sur-mesure est <strong>jeudi 28 mai à 14 h</strong>.</p>
+      </div>
+      <a href="login.html" class="btn btn--secondary">Se déconnecter</a>
+    </div>
+  </section>
+
+  <!-- LAYOUT -->
+  <section class="section section--tight">
+    <div class="container acct">
+
+      <!-- SIDEBAR -->
+      <aside class="acct__nav">
+        <ul>
+          <li><a href="#" class="is-active">Commandes</a></li>
+          <li><a href="#">Wishlist <span>2</span></a></li>
+          <li><a href="#">Adresses</a></li>
+          <li><a href="#">Paiement</a></li>
+          <li><a href="#">Sur-mesure</a></li>
+          <li><a href="#">Préférences</a></li>
+        </ul>
+        <hr class="acct__sep" />
+        <ul>
+          <li><a href="#">Aide</a></li>
+          <li><a href="aide.html">Nous contacter</a></li>
+        </ul>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="acct__main">
+
+        <!-- Quick stats -->
+        <div class="acct-stats">
+          <div class="acct-stats__card">
+            <span class="eyebrow">Commandé cette année</span>
+            <p class="big">324 500 FCFA</p>
+            <em class="muted">5 pièces · 3 commandes</em>
+          </div>
+          <div class="acct-stats__card">
+            <span class="eyebrow">Crédit atelier</span>
+            <p class="big accent">12 000 FCFA</p>
+            <em class="muted">Expire le 31 décembre 2026</em>
+          </div>
+          <div class="acct-stats__card">
+            <span class="eyebrow">Statut</span>
+            <p class="big">Membre <em>Atelier</em></p>
+            <em class="muted">−10 % à partir de la prochaine commande</em>
+          </div>
+        </div>
+
+        <!-- Orders -->
+        <section class="acct-section">
+          <header class="acct-section__head">
+            <h2 class="h3">Vos commandes</h2>
+            <a href="#" class="btn btn--ghost">Toutes les commandes (3) <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-arrow-right"/></svg></a>
+          </header>
+
+          <article class="acct-order">
+            <header class="acct-order__head">
+              <div>
+                <span class="eyebrow">Commande #CV-2026-0418</span>
+                <p>passée le 20 mai 2026 · 92 250 FCFA</p>
+              </div>
+              <span class="acct-status acct-status--current">En préparation</span>
+            </header>
+            <div class="acct-order__body">
+              <div class="acct-order__items">
+                <div class="acct-order__item">
+                  <div class="ph" data-ratio="3/4">
+                    <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+                  </div>
+                  <p><strong>Trench Ekiti</strong><em class="muted">Terre cuite · 38</em></p>
+                </div>
+                <div class="acct-order__item">
+                  <div class="ph" data-ratio="3/4">
+                    <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+                  </div>
+                  <p><strong>Chemise Wouri</strong><em class="muted">Sable · M</em></p>
+                </div>
+              </div>
+              <div class="acct-order__actions">
+                <a href="confirmation.html" class="btn btn--secondary">Suivi de la commande</a>
+                <a href="#" class="btn btn--ghost">Télécharger la facture <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-arrow-right"/></svg></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="acct-order">
+            <header class="acct-order__head">
+              <div>
+                <span class="eyebrow">Commande #CV-2026-0312</span>
+                <p>passée le 6 mars 2026 · 128 000 FCFA</p>
+              </div>
+              <span class="acct-status acct-status--done">Livrée le 14 mars</span>
+            </header>
+            <div class="acct-order__body">
+              <div class="acct-order__items">
+                <div class="acct-order__item">
+                  <div class="ph" data-ratio="3/4">
+                    <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+                  </div>
+                  <p><strong>Manteau Bafia</strong><em class="muted">Terre cuite · 38</em></p>
+                </div>
+              </div>
+              <div class="acct-order__actions">
+                <a href="#" class="btn btn--secondary">Renvoyer cette pièce</a>
+                <a href="#" class="btn btn--ghost">Laisser un mot <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-arrow-right"/></svg></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="acct-order">
+            <header class="acct-order__head">
+              <div>
+                <span class="eyebrow">Commande #CV-2025-1102</span>
+                <p>passée le 14 octobre 2025 · 104 000 FCFA</p>
+              </div>
+              <span class="acct-status acct-status--done">Livrée le 18 octobre</span>
+            </header>
+            <div class="acct-order__body">
+              <div class="acct-order__items">
+                <div class="acct-order__item">
+                  <div class="ph" data-ratio="3/4">
+                    <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+                  </div>
+                  <p><strong>Robe Njala</strong><em class="muted">Sable · 38</em></p>
+                </div>
+                <div class="acct-order__item">
+                  <div class="ph" data-ratio="3/4">
+                    <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+                  </div>
+                  <p><strong>Foulard Douala</strong><em class="muted">Écru</em></p>
+                </div>
+              </div>
+              <div class="acct-order__actions">
+                <a href="#" class="btn btn--secondary">Renvoyer cette pièce</a>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- Wishlist preview -->
+        <section class="acct-section">
+          <header class="acct-section__head">
+            <h2 class="h3">Wishlist · 2 pièces</h2>
+            <a href="#" class="btn btn--ghost">Tout voir <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-arrow-right"/></svg></a>
+          </header>
+          <div class="product-grid acct-wishlist">
+            <a class="product-card" href="product.html">
+              <div class="product-card__media"><div class="ph" data-ratio="3/4"><span class="product-card__badge">Bientôt</span><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">cape foumban</span></div></div>
+              <h3 class="product-card__name">Cape Foumban</h3>
+              <p class="product-card__meta">Coton tissé Nyem-nyem</p>
+              <p class="product-card__price">98 000 FCFA</p>
+            </a>
+            <a class="product-card" href="product.html">
+              <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">veste foumban</span></div></div>
+              <h3 class="product-card__name">Veste Foumban</h3>
+              <p class="product-card__meta">Coton matelassé, écru</p>
+              <p class="product-card__price">82 000 FCFA</p>
+            </a>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </section>
+
+  <div data-celva="footer"></div>
+
+  <style>
+    .acct-head { padding: 56px 0 24px; }
+    .acct-head__row { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; }
+    .acct-head .eyebrow { color: var(--accent); margin: 0 0 14px; }
+    .acct-head h1 { margin: 0 0 14px; }
+    .acct-head h1 em { color: var(--accent); }
+
+    .acct {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) { .acct { grid-template-columns: 1fr; gap: 32px; } }
+
+    .acct__nav {
+      position: sticky;
+      top: 110px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+    @media (max-width: 1024px) { .acct__nav { position: static; } }
+    .acct__nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .acct__nav a {
+      padding: 12px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-body);
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      color: var(--fg);
+    }
+    .acct__nav a span {
+      font-size: 11px;
+      color: var(--fg-muted);
+    }
+    .acct__nav a:hover { color: var(--accent); padding-left: 6px; transition: padding 200ms ease, color 200ms ease; }
+    .acct__nav a.is-active { color: var(--accent); border-bottom-color: var(--accent); }
+    .acct__sep { border: none; height: 0; margin: 16px 0; }
+
+    .acct__main > * + * { margin-top: 56px; }
+
+    .acct-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 1024px) { .acct-stats { grid-template-columns: 1fr; } }
+    .acct-stats__card {
+      padding: 24px 22px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+    }
+    [data-theme="dark"] .acct-stats__card { background: var(--dark-surface); }
+    .acct-stats__card .eyebrow { display: block; margin-bottom: 14px; }
+    .acct-stats__card .big {
+      font-family: var(--font-display);
+      font-size: 28px;
+      margin: 0 0 8px;
+    }
+    .acct-stats__card .big em { font-style: italic; font-size: 22px; }
+    .acct-stats__card em { font-style: italic; }
+
+    .acct-section__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .acct-section__head h2 { margin: 0; }
+
+    .acct-order {
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+    .acct-order__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .acct-order__head .eyebrow { display: block; margin-bottom: 4px; }
+    .acct-order__head p { margin: 0; font-family: var(--font-display); font-size: 15px; }
+    .acct-status {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      border: 1px solid currentColor;
+      color: var(--fg-muted);
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+    .acct-status--current { color: var(--accent); }
+    .acct-status--done { color: var(--olive); }
+    [data-theme="dark"] .acct-status--done { color: var(--cream); }
+
+    .acct-order__body {
+      padding: 20px 24px 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+    @media (max-width: 720px) { .acct-order__body { grid-template-columns: 1fr; } }
+    .acct-order__items {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .acct-order__item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .acct-order__item .ph { width: 64px; aspect-ratio: 3/4; }
+    .acct-order__item p { margin: 0; }
+    .acct-order__item strong {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+    .acct-order__item em { font-size: 12px; font-style: italic; }
+    .acct-order__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    @media (max-width: 720px) {
+      .acct-order__actions { align-items: stretch; }
+    }
+    .acct-order__actions .btn { white-space: nowrap; }
+
+    .acct-wishlist { grid-template-columns: repeat(4, 1fr); }
+    @media (max-width: 720px) { .acct-wishlist { grid-template-columns: 1fr 1fr; } }
+  </style>
+
+  <script src="js/celva-shell.js"></script>
+  <script src="js/celva.js"></script>
+</body>
+</html>

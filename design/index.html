@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Celva — Vestiaire camerounais contemporain</title>
+  <link rel="stylesheet" href="css/celva.css" />
+</head>
+<body data-screen-label="01 Accueil">
+
+  <!-- Reusable SVG defs -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="i-monogram" viewBox="0 0 100 100">
+        <g fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="butt" stroke-linejoin="miter">
+          <path d="M 66 27.3 A 32 32 0 1 1 34 27.3" />
+          <path d="M 24 8 L 50 78 L 74 6" />
+          <path d="M 84 6 L 91 1" stroke-width="6.5" />
+        </g>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="7" /><path d="M16 16l5 5" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 21s-7-4.5-9.5-9C1 9 2.6 5 6.5 5c2 0 3.6 1 5.5 3 1.9-2 3.5-3 5.5-3 3.9 0 5.5 4 4 7-2.5 4.5-9.5 9-9.5 9z" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6 7h12l-1 13H7L6 7z" stroke-linejoin="round" />
+        <path d="M9 7V5a3 3 0 0 1 6 0v2" />
+      </symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M19 12H5M11 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20.5 3.5A11 11 0 0 0 2.5 17.4L1 23l5.7-1.5A11 11 0 0 0 23 12a10.9 10.9 0 0 0-2.5-8.5zM12 21a9 9 0 0 1-4.6-1.3l-.3-.2-3.4.9.9-3.3-.2-.3A9 9 0 1 1 12 21zm5-6.7c-.3-.2-1.6-.8-1.9-.9-.3-.1-.4-.1-.6.1l-.8 1c-.2.3-.4.3-.7.1-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.3 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.2.3 2.1 3.2 5 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Announce bar -->
+  <div class="announce">Livraison offerte dès 50 000 FCFA · Retours gratuits sous 14 jours</div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav" aria-label="Principal">
+        <a class="nav__brand" href="index.html" aria-label="Celva, accueil">
+          <svg aria-hidden="true" viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg>
+          <span>CELVA</span>
+        </a>
+        <ul class="nav__links">
+          <li><a href="shop.html">Boutique</a></li>
+          <li><a href="collection.html">Collections</a></li>
+          <li><a href="#sur-mesure">Studio sur-mesure</a></li>
+          <li><a href="article.html">Journal</a></li>
+        </ul>
+        <div class="nav__actions">
+          <button class="icon-btn" aria-label="Rechercher"><svg viewBox="0 0 24 24" fill="none"><use href="#i-search"/></svg></button>
+          <a class="icon-btn" href="account.html" aria-label="Compte"><svg viewBox="0 0 24 24" fill="none"><use href="#i-user"/></svg></a>
+          <button class="icon-btn" aria-label="Wishlist"><svg viewBox="0 0 24 24" fill="none"><use href="#i-heart"/></svg></button>
+          <a class="icon-btn" href="cart.html" aria-label="Panier"><svg viewBox="0 0 24 24" fill="none"><use href="#i-bag"/></svg><span class="cart-badge">2</span></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__inner">
+      <div class="hero__media">
+        <div class="ph" data-ratio="" style="position:absolute;inset:0;aspect-ratio:auto;">
+          <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+          <span class="ph__label">hero / portrait pleine page — modèle en trench écru, lumière naturelle, fond mur ocre</span>
+        </div>
+        <div class="hero__overlay"></div>
+      </div>
+      <div class="container hero__content">
+        <p class="eyebrow hero__eyebrow">Collection Printemps · Vol. 04</p>
+        <h1 class="h-display hero__title">
+          Le vestiaire d'un<br/>
+          <em>présent calme.</em>
+        </h1>
+        <p class="hero__lede">
+          Pièces tissées, taillées et finies à Douala — coton brut, lin filé, soies sauvages d'Afrique de l'Ouest.
+        </p>
+        <div class="hero__actions">
+          <a href="shop.html" class="btn btn--primary">Découvrir la collection</a>
+          <a href="#sur-mesure" class="btn btn--ghost">Le sur-mesure <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none"><use href="#i-arrow-right"/></svg></a>
+        </div>
+      </div>
+      <div class="hero__meta container">
+        <div><span class="eyebrow">Saison</span><p>PE 26</p></div>
+        <div><span class="eyebrow">Atelier</span><p>Douala, Cameroun</p></div>
+        <div><span class="eyebrow">Matières</span><p>Coton · Lin · Soie sauvage</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED -->
+  <section class="section">
+    <div class="container">
+      <header class="section-head fade-up">
+        <div>
+          <p class="eyebrow">Sélection</p>
+          <h2 class="h1">Nos pièces phares</h2>
+        </div>
+        <a href="shop.html" class="btn btn--ghost">Voir toute la boutique <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none"><use href="#i-arrow-right"/></svg></a>
+      </header>
+
+      <div class="product-grid">
+        <a class="product-card fade-up" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <span class="product-card__badge">Nouveau</span>
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">trench ekiti — porté, ¾ face</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Trench Ekiti</h3>
+          <p class="product-card__meta">Coton ciré, ceinture nouée</p>
+          <p class="product-card__price">68 500 FCFA</p>
+        </a>
+
+        <a class="product-card fade-up" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">chemise wouri — détail col</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Chemise Wouri</h3>
+          <p class="product-card__meta">Lin filé, coupe oversize</p>
+          <p class="product-card__price">34 000 FCFA</p>
+        </a>
+
+        <a class="product-card fade-up" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <span class="product-card__badge">−20%</span>
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">pantalon mbalmayo — fluide</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Pantalon Mbalmayo</h3>
+          <p class="product-card__meta">Soie sauvage, taille haute</p>
+          <p class="product-card__price"><del>52 000 FCFA</del>41 600 FCFA</p>
+        </a>
+
+        <a class="product-card fade-up" href="product.html">
+          <div class="product-card__media">
+            <div class="ph" data-ratio="3/4">
+              <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+              <span class="ph__label">robe njala — longue, dos nu</span>
+            </div>
+          </div>
+          <h3 class="product-card__name">Robe Njala</h3>
+          <p class="product-card__meta">Coton brodé main</p>
+          <p class="product-card__price">74 000 FCFA</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUR-MESURE BANNER -->
+  <section id="sur-mesure" class="section section--alt has-pattern">
+    <div class="container sur-mesure">
+      <div class="sur-mesure__copy fade-up">
+        <p class="eyebrow">Studio · Sur-mesure</p>
+        <h2 class="h1">Faire venir<br/><em>la pièce qui manque.</em></h2>
+        <p class="lead">Nos couturières prennent vos mesures à distance — par WhatsApp ou à l'atelier rue Foch — et exécutent en quatre à six semaines. Coton, lin et soie au mètre, choix des finitions, ourlets sur cintre.</p>
+        <ul class="sur-mesure__list">
+          <li><span>01</span> Brief par appel ou en boutique</li>
+          <li><span>02</span> Mesures &amp; choix matière</li>
+          <li><span>03</span> Patron, prototype, ajustements</li>
+          <li><span>04</span> Livraison sous 4–6 semaines</li>
+        </ul>
+        <a href="#" class="btn btn--secondary">Prendre rendez-vous</a>
+      </div>
+      <div class="sur-mesure__media fade-up">
+        <div class="ph" data-ratio="4/5">
+          <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+          <span class="ph__label">atelier — mains sur tissu, lin écru, lumière latérale</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTIONS -->
+  <section class="section">
+    <div class="container">
+      <header class="section-head fade-up">
+        <div>
+          <p class="eyebrow">Collections</p>
+          <h2 class="h1">Trois récits<br/><em>de la saison.</em></h2>
+        </div>
+      </header>
+      <div class="collections">
+        <a href="collection.html" class="collection-card fade-up">
+          <div class="ph" data-ratio="3/4">
+            <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+            <span class="ph__label">éditorial · pleine — vue large, intérieur</span>
+          </div>
+          <div class="collection-card__copy">
+            <p class="eyebrow">01 · Saison</p>
+            <h3 class="h2">Pluvieuse, douce</h3>
+            <p>Capes, vestes courtes, soies traitées contre l'humidité. À porter sous une pluie d'avril, à Douala ou ailleurs.</p>
+            <span class="btn btn--ghost">Voir la collection <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none"><use href="#i-arrow-right"/></svg></span>
+          </div>
+        </a>
+        <a href="collection.html" class="collection-card fade-up">
+          <div class="ph" data-ratio="3/4">
+            <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+            <span class="ph__label">éditorial — duo, marché, lumière dorée</span>
+          </div>
+          <div class="collection-card__copy">
+            <p class="eyebrow">02 · Capsule</p>
+            <h3 class="h2">Pièces de marché</h3>
+            <p>Sept pièces utilitaires en lin lavé — pantalons à pinces, blouses larges, vestes à poches profondes.</p>
+            <span class="btn btn--ghost">Voir la collection <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none"><use href="#i-arrow-right"/></svg></span>
+          </div>
+        </a>
+        <a href="collection.html" class="collection-card fade-up">
+          <div class="ph" data-ratio="3/4">
+            <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+            <span class="ph__label">archive — flat lay sur lin, détail broderie</span>
+          </div>
+          <div class="collection-card__copy">
+            <p class="eyebrow">03 · Archive</p>
+            <h3 class="h2">Pièces uniques</h3>
+            <p>Rééditions limitées des prototypes des saisons passées. Une pièce par taille — souvent uniques.</p>
+            <span class="btn btn--ghost">Voir la collection <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none"><use href="#i-arrow-right"/></svg></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section testimonials">
+    <div class="container">
+      <p class="eyebrow testimonials__eyebrow">Lettres reçues</p>
+      <figure class="testimonial fade-up">
+        <blockquote class="testimonial__quote">
+          <em>«&nbsp;Le trench arrive plié dans un calicot, étiquette manuscrite. On comprend tout de suite que ce n'est pas une marque, c'est un atelier.&nbsp;»</em>
+        </blockquote>
+        <figcaption class="testimonial__source">
+          <span class="testimonial__name">Awa N.</span>
+          <span class="testimonial__city">Yaoundé · Cliente depuis 2024</span>
+        </figcaption>
+      </figure>
+      <div class="testimonials__nav">
+        <button class="icon-btn" aria-label="Précédent"><svg viewBox="0 0 24 24" fill="none"><use href="#i-arrow-left"/></svg></button>
+        <span class="testimonials__count">01 / 04</span>
+        <button class="icon-btn" aria-label="Suivant"><svg viewBox="0 0 24 24" fill="none"><use href="#i-arrow-right"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOURNAL -->
+  <section id="journal" class="section section--alt">
+    <div class="container">
+      <header class="section-head fade-up">
+        <div>
+          <p class="eyebrow">Journal</p>
+          <h2 class="h1">Notes d'atelier</h2>
+        </div>
+        <a href="#" class="btn btn--ghost">Tous les articles <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none"><use href="#i-arrow-right"/></svg></a>
+      </header>
+      <div class="journal-grid">
+        <a href="article.html" class="journal-card fade-up" style="color:inherit;">
+          <div class="ph" data-ratio="4/5">
+            <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+            <span class="ph__label">portrait artisan — tisseur au métier</span>
+          </div>
+          <p class="eyebrow">Rencontre · 12 mars 2026</p>
+          <h3 class="h3">Avec Mamadou, tisseur de Foumban</h3>
+          <p class="muted">Quatre générations de tisserands, un seul motif que nous avons supplié de rééditer.</p>
+        </a>
+        <a href="article.html" class="journal-card fade-up" style="color:inherit;">
+          <div class="ph" data-ratio="4/5">
+            <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+            <span class="ph__label">tissu — détail lin filé main, macro</span>
+          </div>
+          <p class="eyebrow">Matière · 28 février 2026</p>
+          <h3 class="h3">Pourquoi le lin met du temps</h3>
+          <p class="muted">Trois mois de l'arrivée en balles à la pièce finie. Un calendrier, expliqué.</p>
+        </a>
+        <a href="article.html" class="journal-card fade-up" style="color:inherit;">
+          <div class="ph" data-ratio="4/5">
+            <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+            <span class="ph__label">éditorial — plan rapproché ourlet, fil rouge</span>
+          </div>
+          <p class="eyebrow">Carnet · 04 février 2026</p>
+          <h3 class="h3">Le fil rouge, signature des finitions</h3>
+          <p class="muted">D'où vient le repère cousu dans l'ourlet de chaque pièce Celva.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter">
+    <div class="container newsletter__inner">
+      <div class="fade-up">
+        <p class="eyebrow">Lettre du studio</p>
+        <h2 class="h1">Rejoignez<br/><em>l'univers Celva.</em></h2>
+        <p class="lead">Une lettre par mois, jamais plus. Coulisses d'atelier, nouvelles collections en avant-première et −10 % sur votre première commande.</p>
+      </div>
+      <form class="newsletter__form fade-up" onsubmit="event.preventDefault(); this.reset(); this.querySelector('.newsletter__ack').hidden=false;">
+        <label>
+          <span class="eyebrow">Votre email</span>
+          <input type="email" required placeholder="prenom@exemple.com" />
+        </label>
+        <button class="btn btn--primary" type="submit">S'inscrire</button>
+        <p class="newsletter__ack" hidden>Merci. Nous écrivons rarement, mais bien.</p>
+        <p class="newsletter__fine muted">En vous inscrivant, vous acceptez de recevoir nos lettres. Désabonnement en un clic.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a class="footer__brand-mark" href="index.html" aria-label="Celva">
+            <svg aria-hidden="true" viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg>
+            <span>CELVA</span>
+          </a>
+          <p>Maison camerounaise de prêt-à-porter et sur-mesure. Atelier rue Foch, Douala.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Boutique</h4>
+          <ul>
+            <li><a href="shop.html">Nouveautés</a></li>
+            <li><a href="shop.html">Femme</a></li>
+            <li><a href="shop.html">Homme</a></li>
+            <li><a href="shop.html">Archive</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Maison</h4>
+          <ul>
+            <li><a href="#">Notre histoire</a></li>
+            <li><a href="#">Atelier</a></li>
+            <li><a href="#">Le sur-mesure</a></li>
+            <li><a href="#">Journal</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Aide</h4>
+          <ul>
+            <li><a href="aide.html#panel-sizes">Guide des tailles</a></li>
+            <li><a href="aide.html#panel-shipping">Livraison &amp; retours</a></li>
+            <li><a href="aide.html#panel-care">Entretien</a></li>
+            <li><a href="aide.html">Nous contacter</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#">bonjour@celva.cm</a></li>
+            <li><a href="#">+237 6 90 12 34 56</a></li>
+            <li><a href="#">WhatsApp</a></li>
+            <li><a href="#">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Celva. Tous droits réservés.</span>
+        <div class="footer__pay">
+          <span>Orange Money</span><span>MTN MoMo</span><span>Visa</span><span>Mastercard</span>
+        </div>
+        <span>FR · EN</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp FAB -->
+  <a class="fab-whatsapp" href="#" aria-label="Discuter sur WhatsApp">
+    <svg viewBox="0 0 24 24" fill="none"><use href="#i-whatsapp"/></svg>
+  </a>
+
+  <style>
+    /* ---------- Homepage-specific ---------- */
+    .hero {
+      position: relative;
+      background: var(--bg);
+    }
+    .hero__inner {
+      position: relative;
+      min-height: 92vh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .hero__media {
+      position: absolute; inset: 0;
+      z-index: 0;
+    }
+    .hero__overlay {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(26,26,24,0.05) 0%, rgba(26,26,24,0) 30%, rgba(26,26,24,0.45) 100%);
+      z-index: 1;
+    }
+    .hero__content {
+      position: relative;
+      z-index: 2;
+      align-self: end;
+      padding-block: 88px 64px;
+      color: var(--cream);
+      max-width: var(--max-content);
+    }
+    .hero__eyebrow { color: rgba(250,247,242,0.85); margin: 0 0 18px; }
+    .hero__title {
+      color: var(--cream);
+      margin: 0 0 22px;
+      max-width: 14ch;
+    }
+    .hero__title em { font-style: italic; color: var(--cream); font-weight: 400; }
+    .hero__lede {
+      max-width: 46ch;
+      color: rgba(250,247,242,0.92);
+      font-size: 19px;
+      margin: 0 0 32px;
+    }
+    .hero__actions {
+      display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
+    }
+    .hero__actions .btn--ghost { color: var(--cream); border-color: var(--cream); }
+    .hero__actions .btn--ghost:hover { color: var(--terracotta-light); border-color: var(--terracotta-light); }
+    .hero__meta {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      padding-block: 24px 40px;
+      border-top: 1px solid rgba(250,247,242,0.2);
+      color: var(--cream);
+    }
+    .hero__meta .eyebrow { color: rgba(250,247,242,0.66); display: block; margin-bottom: 6px; }
+    .hero__meta p { margin: 0; font-family: var(--font-display); font-size: 18px; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 32px;
+      margin-bottom: 56px;
+    }
+    .section-head .eyebrow { margin: 0 0 14px; }
+    .section-head em { color: var(--accent); }
+
+    .sur-mesure {
+      display: grid;
+      grid-template-columns: 1fr 0.85fr;
+      gap: 96px;
+      align-items: center;
+    }
+    @media (max-width: 1024px) { .sur-mesure { grid-template-columns: 1fr; gap: 48px; } }
+    .sur-mesure__copy em { color: var(--accent); }
+    .sur-mesure__list {
+      list-style: none;
+      padding: 0;
+      margin: 32px 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 32px;
+    }
+    .sur-mesure__list li {
+      display: flex;
+      gap: 14px;
+      align-items: baseline;
+      font-size: 16px;
+    }
+    .sur-mesure__list span {
+      font-family: var(--font-display);
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.16em;
+      flex-shrink: 0;
+    }
+
+    .collections {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    @media (max-width: 1024px) { .collections { grid-template-columns: 1fr; } }
+    .collection-card { color: inherit; display: block; }
+    .collection-card .ph { transition: transform 600ms ease; }
+    .collection-card:hover .ph { transform: scale(1.015); }
+    .collection-card__copy { padding-top: 24px; max-width: 36ch; }
+    .collection-card__copy h3 { margin: 8px 0 12px; }
+    .collection-card__copy .btn--ghost { margin-top: 16px; padding-inline: 0; }
+    .collection-card__copy p { color: var(--fg-muted); margin: 0 0 12px; }
+
+    .testimonials {
+      background: var(--olive);
+      color: var(--cream);
+      padding-block: 128px;
+    }
+    [data-theme="dark"] .testimonials { background: var(--olive-dark); }
+    .testimonials__eyebrow { color: rgba(250,247,242,0.62); margin: 0 0 32px; }
+    .testimonial { margin: 0; max-width: 1000px; }
+    .testimonial__quote {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 3.4vw, 48px);
+      line-height: 1.2;
+      margin: 0 0 36px;
+      color: var(--cream);
+      text-wrap: balance;
+    }
+    .testimonial__quote em { color: var(--cream); font-weight: 400; }
+    .testimonial__source { display: flex; gap: 18px; align-items: center; color: rgba(250,247,242,0.78); }
+    .testimonial__name { font-family: var(--font-display); font-size: 18px; color: var(--cream); }
+    .testimonial__city { font-size: 14px; font-style: italic; }
+    .testimonials__nav {
+      display: flex; gap: 18px; align-items: center;
+      margin-top: 48px;
+      color: var(--cream);
+    }
+    .testimonials__nav .icon-btn { color: var(--cream); border: 1px solid rgba(250,247,242,0.3); width: 44px; height: 44px; }
+    .testimonials__nav .icon-btn:hover { color: var(--terracotta-light); border-color: var(--terracotta-light); }
+    .testimonials__count { font-family: var(--font-display); letter-spacing: 0.12em; }
+
+    .journal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px;
+    }
+    @media (max-width: 1024px) { .journal-grid { grid-template-columns: 1fr; } }
+    .journal-card .ph { margin-bottom: 20px; transition: transform 600ms ease; }
+    .journal-card:hover .ph { transform: scale(1.015); }
+    .journal-card .eyebrow { margin: 0 0 8px; }
+    .journal-card h3 { margin: 0 0 8px; }
+    .journal-card p { margin: 0; }
+
+    .newsletter {
+      background: var(--beige);
+      padding-block: 112px;
+    }
+    [data-theme="dark"] .newsletter { background: var(--dark-surface); }
+    .newsletter__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    @media (max-width: 1024px) { .newsletter__inner { grid-template-columns: 1fr; gap: 40px; } }
+    .newsletter h2 em { color: var(--accent); }
+    .newsletter__form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .newsletter__form label { display: flex; flex-direction: column; gap: 10px; }
+    .newsletter__form input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--fg);
+      padding: 10px 0;
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--fg);
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .newsletter__form input:focus { border-color: var(--accent); }
+    .newsletter__form input::placeholder { color: var(--gray); font-style: italic; }
+    .newsletter__form .btn { align-self: flex-start; }
+    .newsletter__ack { color: var(--accent); font-style: italic; margin: 0; }
+    .newsletter__fine { font-size: 12px; margin: 0; }
+  </style>
+
+  <script src="js/celva.js"></script>
+</body>
+</html>
