@@ -1,0 +1,26 @@
+# Next.js
+.next/
+out/
+
+# Build outputs
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Local env
+.env
+.env.*.local
+
+# Editor
+.vscode/
+
+# Tests
+coverage/
+playwright-report/
+test-results/
+
+# Misc
+*.tsbuildinfo
+next-env.d.ts
