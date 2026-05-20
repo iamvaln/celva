@@ -1,4 +1,4 @@
-import type { LocalizedText } from './i18n.js';
+import type { LocalizedText } from './i18n';
 
 export type Paginated<T> = {
   data: T[];

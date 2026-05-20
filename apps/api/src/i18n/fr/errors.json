@@ -1,0 +1,14 @@
+{
+  "unknown": "Une erreur interne est survenue. Veuillez réessayer plus tard.",
+  "validation_failed": "La validation des données a échoué.",
+  "unauthorized": "Authentification requise.",
+  "forbidden": "Accès refusé.",
+  "not_found": "Ressource introuvable.",
+  "conflict": "Conflit : la ressource existe déjà.",
+  "rate_limit": "Trop de requêtes. Veuillez ralentir.",
+  "invalid_credentials": "Identifiants invalides.",
+  "account_disabled": "Ce compte est désactivé.",
+  "password_reset_invalid": "Lien de réinitialisation invalide ou expiré.",
+  "insufficient_stock": "Stock insuffisant.",
+  "invalid_promo_code": "Code promo invalide ou expiré."
+}
