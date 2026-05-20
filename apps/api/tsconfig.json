@@ -1,0 +1,10 @@
+{
+  "extends": "@celva/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "rootDir": "./",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*", "test/**/*", "prisma/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

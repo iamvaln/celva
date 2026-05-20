@@ -8,7 +8,7 @@ import {
   RATE_LIMITS,
   SETTING_KEYS,
   TAX_RATE_CAMEROON,
-} from './constants.js';
+} from './constants';
 
 describe('API constants', () => {
   it('exposes versioned API path', () => {

@@ -1,0 +1,14 @@
+{
+  "unknown": "An internal error occurred. Please try again later.",
+  "validation_failed": "Data validation failed.",
+  "unauthorized": "Authentication required.",
+  "forbidden": "Access denied.",
+  "not_found": "Resource not found.",
+  "conflict": "Conflict: resource already exists.",
+  "rate_limit": "Too many requests. Please slow down.",
+  "invalid_credentials": "Invalid credentials.",
+  "account_disabled": "This account is disabled.",
+  "password_reset_invalid": "Invalid or expired reset link.",
+  "insufficient_stock": "Insufficient stock.",
+  "invalid_promo_code": "Invalid or expired promo code."
+}

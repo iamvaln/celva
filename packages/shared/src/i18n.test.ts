@@ -5,7 +5,7 @@ import {
   isLocale,
   pickLocalized,
   resolveLocale,
-} from './i18n.js';
+} from './i18n';
 
 describe('i18n constants', () => {
   it('defaults to French', () => {
