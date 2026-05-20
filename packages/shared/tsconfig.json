@@ -1,0 +1,5 @@
+{
+  "extends": "@celva/typescript-config/base.json",
+  "include": ["src/**/*.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}
