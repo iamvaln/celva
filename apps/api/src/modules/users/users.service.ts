@@ -51,11 +51,14 @@ export class UsersService {
         : {}),
     };
 
+    const sortBy = query.sortBy ?? 'createdAt';
+    const sortDir = query.sortDir ?? 'desc';
+
     const [data, total] = await this.prisma.$transaction([
       this.prisma.user.findMany({
         where,
         select: PUBLIC_SELECT,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { [sortBy]: sortDir },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),

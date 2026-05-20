@@ -1,7 +1,10 @@
-import { IsBooleanString, IsEnum, IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import { IsBooleanString, IsEnum, IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { USER_ROLE } from '@celva/shared';
+
+const USERS_SORTABLE_FIELDS = ['createdAt', 'updatedAt', 'email', 'name', 'role'] as const;
+export type UsersSortField = (typeof USERS_SORTABLE_FIELDS)[number];
 
 export class ListUsersQuery {
   @ApiPropertyOptional({ default: 1, minimum: 1 })
@@ -34,4 +37,14 @@ export class ListUsersQuery {
   @IsString()
   @MaxLength(120)
   search?: string;
+
+  @ApiPropertyOptional({ enum: USERS_SORTABLE_FIELDS, default: 'createdAt' })
+  @IsOptional()
+  @IsIn(USERS_SORTABLE_FIELDS as unknown as string[])
+  sortBy?: UsersSortField = 'createdAt';
+
+  @ApiPropertyOptional({ enum: ['asc', 'desc'], default: 'desc' })
+  @IsOptional()
+  @IsIn(['asc', 'desc'])
+  sortDir?: 'asc' | 'desc' = 'desc';
 }
