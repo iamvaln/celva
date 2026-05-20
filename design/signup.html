@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Créer un compte — Celva</title>
+  <link rel="stylesheet" href="css/celva.css" />
+</head>
+<body data-screen-label="13 Inscription" class="auth-body">
+
+  <div data-celva="svg-defs"></div>
+
+  <main class="auth">
+
+    <!-- Visual side -->
+    <aside class="auth__visual">
+      <div class="ph auth__bg" data-ratio="">
+        <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+        <span class="ph__label">éditorial — mains qui plient le calicot, gros plan, fil rouge visible</span>
+      </div>
+      <div class="auth__visual-overlay"></div>
+      <div class="auth__visual-content">
+        <a href="index.html" class="auth__brand">
+          <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><use href="#i-monogram"/></svg>
+          <span>CELVA</span>
+        </a>
+
+        <div class="auth__benefits">
+          <p class="eyebrow">Comme membre Celva, vous recevez :</p>
+          <ul>
+            <li><span>—</span> <span><strong>−10 %</strong> sur votre première commande</span></li>
+            <li><span>—</span> <span>Accès aux <strong>pré-ventes</strong> de chaque collection</span></li>
+            <li><span>—</span> <span>Vos <strong>mesures sauvegardées</strong> pour le sur-mesure</span></li>
+            <li><span>—</span> <span>Une <strong>lettre mensuelle</strong> de l'atelier — jamais plus</span></li>
+            <li><span>—</span> <span>Garantie de <strong>réparation à vie</strong> sur vos pièces</span></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Form side -->
+    <section class="auth__form">
+      <div class="auth__form-inner">
+        <a href="index.html" class="auth__back">
+          ← <span>Retour à la boutique</span>
+        </a>
+
+        <div class="auth__head">
+          <p class="eyebrow">Espace client · Inscription</p>
+          <h1 class="h1">Rejoindre <em>Celva.</em></h1>
+          <p class="muted">Deux minutes. Vos données restent à l'atelier — jamais revendues, jamais transmises.</p>
+        </div>
+
+        <form class="auth-form" onsubmit="event.preventDefault(); location.href='account.html'">
+          <div class="auth-form__row">
+            <div class="field">
+              <label>Prénom</label>
+              <input type="text" required placeholder="Awa" autocomplete="given-name" />
+            </div>
+            <div class="field">
+              <label>Nom</label>
+              <input type="text" required placeholder="Mbarga" autocomplete="family-name" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+            <input type="email" required placeholder="prenom@exemple.com" autocomplete="email" />
+          </div>
+
+          <div class="field">
+            <label>Téléphone <span class="muted">· pour WhatsApp et livraisons</span></label>
+            <input type="tel" required placeholder="+237 6 90 12 34 56" autocomplete="tel" />
+          </div>
+
+          <div class="field">
+            <label>Mot de passe</label>
+            <div class="pwd">
+              <input type="password" required minlength="8" placeholder="8 caractères minimum" autocomplete="new-password" id="pwdInput" />
+              <button type="button" class="pwd__toggle" data-pwd-toggle>Afficher</button>
+            </div>
+            <ul class="pwd-rules">
+              <li data-rule="length"><span></span> Au moins 8 caractères</li>
+              <li data-rule="letter"><span></span> Une lettre majuscule</li>
+              <li data-rule="number"><span></span> Un chiffre ou un caractère spécial</li>
+            </ul>
+          </div>
+
+          <fieldset class="auth-radio">
+            <legend>Vous achetez plutôt pour :</legend>
+            <label><input type="radio" name="for" checked /> <span>Vous-même</span></label>
+            <label><input type="radio" name="for" /> <span>Une autre personne</span></label>
+            <label><input type="radio" name="for" /> <span>Les deux</span></label>
+          </fieldset>
+
+          <label class="auth-check">
+            <input type="checkbox" checked />
+            <span class="auth-check__box"></span>
+            <span>Je souhaite recevoir la lettre mensuelle de l'atelier</span>
+          </label>
+          <label class="auth-check">
+            <input type="checkbox" required />
+            <span class="auth-check__box"></span>
+            <span>J'accepte les <a href="#" class="auth-form__link">CGV</a> et la <a href="#" class="auth-form__link">politique de confidentialité</a></span>
+          </label>
+
+          <button class="btn btn--primary btn--block" type="submit">Créer mon compte</button>
+        </form>
+
+        <div class="auth__sep"><span>ou avec</span></div>
+
+        <div class="auth__providers">
+          <button class="auth-provider" aria-label="Google">
+            <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.79 2.72v2.27h2.9c1.7-1.56 2.69-3.87 2.69-6.63z" fill="#4285F4"/>
+              <path d="M9 18c2.43 0 4.47-.8 5.95-2.18l-2.9-2.27c-.8.54-1.83.86-3.05.86-2.34 0-4.32-1.58-5.03-3.71H1v2.33A8.99 8.99 0 009 18z" fill="#34A853"/>
+              <path d="M3.97 10.7A5.4 5.4 0 013.68 9c0-.59.1-1.16.29-1.7V4.97H1A8.99 8.99 0 000 9c0 1.45.35 2.83.97 4.04l3-2.34z" fill="#FBBC05"/>
+              <path d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A9 9 0 001 4.97l3 2.33C4.68 5.17 6.66 3.58 9 3.58z" fill="#EA4335"/>
+            </svg>
+            <span>Google</span>
+          </button>
+          <button class="auth-provider" aria-label="Apple">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.04c-.03-3 2.45-4.45 2.56-4.52-1.4-2.04-3.57-2.32-4.33-2.34-1.83-.18-3.6 1.08-4.53 1.08-.95 0-2.38-1.06-3.92-1.03-2 .03-3.86 1.17-4.9 2.97-2.1 3.65-.53 9.04 1.5 12 1.01 1.45 2.2 3.07 3.76 3.01 1.52-.06 2.09-.97 3.92-.97 1.82 0 2.34.97 3.94.94 1.62-.03 2.65-1.47 3.64-2.93 1.16-1.68 1.62-3.32 1.64-3.4-.04-.02-3.14-1.2-3.18-4.77zM14.13 3.97c.82-1 1.38-2.4 1.22-3.79-1.18.05-2.62.79-3.46 1.78-.76.88-1.43 2.28-1.25 3.65 1.32.1 2.66-.66 3.49-1.64z"/></svg>
+            <span>Apple</span>
+          </button>
+          <button class="auth-provider auth-provider--wide" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+            <span>Continuer par WhatsApp</span>
+          </button>
+        </div>
+
+        <p class="auth__switch">
+          Déjà cliente&nbsp;?
+          <a href="login.html">Se connecter</a>
+        </p>
+
+        <footer class="auth__footer">
+          <span>© 2026 Celva</span>
+          <span><a href="aide.html">Aide</a> · <a href="#">Confidentialité</a> · <a href="#">CGV</a></span>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    /* Reuse auth styles from login.html */
+    .auth-body { background: var(--bg); min-height: 100vh; }
+    .auth { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+    @media (max-width: 880px) { .auth { grid-template-columns: 1fr; } }
+
+    .auth__visual {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      color: var(--cream);
+      min-height: 100vh;
+    }
+    @media (max-width: 880px) { .auth__visual { min-height: 320px; } }
+    .auth__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: 0; }
+    .auth__visual-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(26,26,24,0.25) 0%, rgba(26,26,24,0.05) 35%, rgba(26,26,24,0.55) 100%);
+      z-index: 1;
+    }
+    .auth__visual-content {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+    }
+    @media (max-width: 880px) { .auth__visual-content { min-height: 320px; padding: 28px; } }
+
+    .auth__brand {
+      color: var(--cream);
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      align-self: flex-start;
+      font-family: var(--font-display);
+      font-size: 22px;
+      letter-spacing: 0.22em;
+    }
+    .auth__brand svg { width: 56px; height: 56px; }
+    .auth__brand:hover { color: var(--terracotta-light); }
+
+    .auth__benefits {
+      max-width: 38ch;
+      color: var(--cream);
+    }
+    .auth__benefits .eyebrow { color: rgba(250,247,242,0.78); margin: 0 0 22px; }
+    .auth__benefits ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+    .auth__benefits li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 17px;
+      line-height: 1.4;
+      color: var(--cream);
+    }
+    .auth__benefits li span:first-child { color: var(--terracotta-light); }
+    .auth__benefits strong { color: var(--cream); font-weight: 400; font-style: italic; }
+
+    /* Form */
+    .auth__form {
+      display: grid;
+      place-items: center;
+      padding: 48px;
+      min-height: 100vh;
+    }
+    @media (max-width: 720px) { .auth__form { padding: 32px 24px; } }
+    .auth__form-inner {
+      width: 100%;
+      max-width: 460px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .auth__back {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      align-self: flex-start;
+    }
+    .auth__back:hover { color: var(--accent); }
+
+    .auth__head .eyebrow { color: var(--accent); margin: 0 0 14px; }
+    .auth__head h1 { margin: 0 0 14px; }
+    .auth__head h1 em { color: var(--accent); }
+    .auth__head p { margin: 0; }
+
+    .auth-form { display: flex; flex-direction: column; gap: 20px; }
+    .auth-form__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 480px) { .auth-form__row { grid-template-columns: 1fr; } }
+
+    .auth-form .field { display: flex; flex-direction: column; gap: 8px; }
+    .auth-form .field label {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+    .auth-form .field label .muted {
+      text-transform: none;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      font-style: italic;
+      margin-left: 4px;
+    }
+    .auth-form__link { color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
+    .auth-form .field input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--fg);
+      padding: 12px 0;
+      font-family: var(--font-body);
+      font-size: 17px;
+      color: var(--fg);
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .auth-form .field input:focus { border-bottom-color: var(--accent); }
+    .auth-form .field input::placeholder { color: var(--gray); font-style: italic; }
+
+    .pwd { position: relative; }
+    .pwd__toggle {
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      padding: 6px 8px;
+    }
+    .pwd__toggle:hover { color: var(--accent); }
+
+    .pwd-rules {
+      list-style: none;
+      padding: 12px 0 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--fg-muted);
+    }
+    .pwd-rules li {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pwd-rules li span {
+      width: 14px; height: 14px;
+      border: 1px solid var(--gray);
+      border-radius: 999px;
+      display: inline-block;
+      position: relative;
+      transition: all 200ms ease;
+    }
+    .pwd-rules li.is-met { color: var(--accent); }
+    .pwd-rules li.is-met span {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .pwd-rules li.is-met span::after {
+      content: "";
+      position: absolute;
+      width: 6px; height: 3px;
+      border-left: 2px solid var(--cream);
+      border-bottom: 2px solid var(--cream);
+      transform: rotate(-45deg);
+      top: 4px; left: 3px;
+    }
+
+    /* Radio */
+    .auth-radio {
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .auth-radio legend {
+      padding: 0 6px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+    .auth-radio label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .auth-radio input { accent-color: var(--accent); }
+
+    .auth-check {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+      color: var(--fg);
+      cursor: pointer;
+      line-height: 1.5;
+    }
+    .auth-check input { display: none; }
+    .auth-check__box {
+      width: 16px; height: 16px;
+      border: 1px solid var(--fg);
+      display: grid;
+      place-items: center;
+      transition: all 200ms ease;
+    }
+    .auth-check input:checked + .auth-check__box {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .auth-check input:checked + .auth-check__box::after {
+      content: "";
+      width: 7px; height: 4px;
+      border-left: 2px solid var(--cream);
+      border-bottom: 2px solid var(--cream);
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+    .auth__sep {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--fg-muted);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .auth__sep::before, .auth__sep::after {
+      content: ""; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .auth__providers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .auth-provider {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .auth-provider:hover { border-color: var(--fg); }
+    .auth-provider svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .auth-provider--wide { grid-column: 1 / -1; }
+
+    .auth__switch {
+      text-align: center;
+      margin: 0;
+      font-size: 14px;
+      color: var(--fg-muted);
+    }
+    .auth__switch a {
+      color: var(--accent);
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 1px;
+      margin-left: 4px;
+    }
+
+    .auth__footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-top: 12px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .auth__footer a:hover { color: var(--accent); }
+  </style>
+
+  <script src="js/celva-shell.js"></script>
+  <script src="js/celva.js"></script>
+  <script>
+    document.querySelectorAll('[data-pwd-toggle]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = btn.parentElement.querySelector('input');
+        const isPwd = input.type === 'password';
+        input.type = isPwd ? 'text' : 'password';
+        btn.textContent = isPwd ? 'Masquer' : 'Afficher';
+      });
+    });
+
+    // Live password rule indicators
+    const pwd = document.getElementById('pwdInput');
+    const rules = {
+      length: v => v.length >= 8,
+      letter: v => /[A-ZÀ-Ÿ]/.test(v),
+      number: v => /[\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(v),
+    };
+    pwd?.addEventListener('input', () => {
+      const v = pwd.value;
+      document.querySelectorAll('.pwd-rules li').forEach(li => {
+        const r = li.dataset.rule;
+        li.classList.toggle('is-met', rules[r](v));
+      });
+    });
+  </script>
+</body>
+</html>
