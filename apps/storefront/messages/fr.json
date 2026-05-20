@@ -1,0 +1,262 @@
+{
+  "meta": {
+    "title": "Celva — Mode camerounaise haute couture",
+    "title_template": "%s · Celva",
+    "description": "Pièces couture pensées au Cameroun, livrées partout. Robes, hauts, accessoires.",
+    "og_image_alt": "Celva — Mode couture, Cameroun"
+  },
+  "common": {
+    "skip_to_content": "Aller au contenu",
+    "loading": "Chargement…",
+    "error_generic": "Une erreur est survenue. Réessayez.",
+    "currency_xaf": "FCFA"
+  },
+  "announce": {
+    "free_delivery": "Livraison offerte dès 50 000 FCFA · Paiement Mobile Money"
+  },
+  "nav": {
+    "brand": "Celva",
+    "shop": "Boutique",
+    "collections": "Collections",
+    "journal": "Journal",
+    "studio": "Studio",
+    "search": "Rechercher",
+    "account": "Mon compte",
+    "wishlist": "Favoris",
+    "cart": "Panier",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "logout": "Se déconnecter",
+    "menu_open": "Ouvrir le menu",
+    "menu_close": "Fermer le menu",
+    "language": "Langue",
+    "theme_toggle": "Basculer thème"
+  },
+  "footer": {
+    "tagline": "Une marque camerounaise, pour celles et ceux qui prennent le temps.",
+    "boutique": "Boutique",
+    "about": "À propos",
+    "help": "Aide",
+    "contact": "Contact",
+    "links": {
+      "shop_all": "Toutes les pièces",
+      "collections": "Collections",
+      "new": "Nouveautés",
+      "our_story": "Notre histoire",
+      "process": "Notre processus",
+      "journal": "Journal",
+      "faq": "Questions fréquentes",
+      "shipping": "Livraison & retours",
+      "size_guide": "Guide des tailles",
+      "terms": "CGV",
+      "privacy": "Politique de confidentialité",
+      "contact_us": "Nous écrire",
+      "whatsapp": "WhatsApp"
+    },
+    "payment": "Paiements acceptés : Orange Money · MTN Mobile Money · Espèces à la livraison",
+    "copyright": "© {year} Celva. Tous droits réservés."
+  },
+  "cookies": {
+    "title": "Cookies",
+    "body": "Nous utilisons des cookies pour mesurer l'audience anonymement. Aucun cookie tiers n'est posé avant votre accord.",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "learn_more": "En savoir plus"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Collection courante",
+      "title": "L'artisanat,\nporté avec calme.",
+      "subtitle": "Pièces couture pensées à Douala, taillées une à une, livrées au Cameroun et au-delà.",
+      "cta_primary": "Découvrir la collection",
+      "cta_secondary": "Notre processus"
+    },
+    "featured": {
+      "eyebrow": "Sélection",
+      "title": "Pièces phares",
+      "subtitle": "Quelques pièces de la saison à découvrir.",
+      "cta": "Voir toute la boutique",
+      "placeholder": "Sélection à venir"
+    },
+    "studio": {
+      "eyebrow": "Sur-mesure",
+      "title": "Créez votre pièce",
+      "body": "Le studio Celva ouvre bientôt : choisissez le tissu, la coupe, les détails. Une pièce unique, pour vous.",
+      "cta": "Je m'inscris à la liste d'attente"
+    },
+    "collections": {
+      "eyebrow": "Univers",
+      "title": "Collections",
+      "soiree": "Soirées chic",
+      "fete": "Fêtes",
+      "bureau": "Bureau"
+    },
+    "newsletter": {
+      "title": "Restez avec nous",
+      "body": "Rejoignez la liste pour les drops, l'atelier, et un code -10% sur votre première commande.",
+      "email_label": "Adresse email",
+      "email_placeholder": "vous@exemple.com",
+      "submit": "Je m'inscris",
+      "success": "Merci, on garde ça précieux.",
+      "error": "Inscription impossible. Réessayez."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Bon retour",
+      "subtitle": "Connectez-vous pour suivre vos commandes et retrouver votre wishlist.",
+      "email": "Adresse email",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "forgot": "Mot de passe oublié ?",
+      "no_account": "Pas encore de compte ?",
+      "signup_link": "Créer un compte",
+      "error_credentials": "Identifiants invalides.",
+      "error_generic": "La connexion a échoué. Réessayez."
+    },
+    "signup": {
+      "title": "Bienvenue chez Celva",
+      "subtitle": "Créez votre compte en 30 secondes.",
+      "name": "Nom complet",
+      "email": "Adresse email",
+      "phone": "Téléphone (+237…)",
+      "password": "Mot de passe",
+      "password_hint": "Minimum 8 caractères.",
+      "submit": "Créer mon compte",
+      "have_account": "Déjà un compte ?",
+      "login_link": "Se connecter",
+      "error_email_used": "Cette adresse email est déjà utilisée.",
+      "error_generic": "L'inscription a échoué. Réessayez."
+    },
+    "account": {
+      "title": "Mon compte",
+      "welcome": "Bonjour {name}",
+      "email_label": "Email",
+      "role_label": "Rôle",
+      "logout": "Se déconnecter",
+      "go_to_shop": "Aller à la boutique"
+    }
+  },
+  "static": {
+    "about": {
+      "title": "Notre histoire",
+      "subtitle": "Celva est née d'un constat simple : la mode haute couture peut être camerounaise, accessible, et patiente.",
+      "p1": "Au studio Celva, on prend le temps. Une pièce, c'est une intention : tissu choisi, coupe étudiée, détails travaillés. Rien ne sort sans avoir été vu, repris, validé.",
+      "p2": "Nos pièces sont produites à Douala. La traçabilité est entière, du tissu au paquet. Quand vous portez Celva, vous savez d'où ça vient — et qui l'a fait."
+    },
+    "process": {
+      "title": "Notre processus",
+      "subtitle": "De l'idée à la pièce finie, en cinq étapes.",
+      "steps": {
+        "design": {
+          "title": "Conception",
+          "body": "L'équipe créative dessine la pièce. Croquis, références, intentions."
+        },
+        "fabric": {
+          "title": "Tissu",
+          "body": "Nous sélectionnons des tissus naturels, certifiés quand possible, locaux quand pertinent."
+        },
+        "cut": {
+          "title": "Coupe",
+          "body": "Chaque pièce est coupée à la main, dans notre atelier de Douala."
+        },
+        "sew": {
+          "title": "Couture",
+          "body": "Assemblage par nos artisans. Finitions à la main, contrôle qualité à chaque étape."
+        },
+        "deliver": {
+          "title": "Livraison",
+          "body": "Emballage soigné, livraison Mobile Money. Au Cameroun en 1 à 7 jours."
+        }
+      }
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "subtitle": "Tout ce qu'il faut savoir avant d'acheter.",
+      "items": [
+        {
+          "q": "Quels sont les délais de livraison ?",
+          "a": "Douala : 1-2 jours ouvrés. Yaoundé : 2-3 jours. National : 3-7 jours. Hors Cameroun : nous contacter."
+        },
+        {
+          "q": "Comment payer ?",
+          "a": "Orange Money, MTN Mobile Money, ou espèces à la livraison (selon zone et montant)."
+        },
+        {
+          "q": "Puis-je échanger ou retourner une pièce ?",
+          "a": "Oui, dans les 14 jours, à condition que la pièce soit non portée et avec son étiquette."
+        },
+        {
+          "q": "Comment connaître ma taille ?",
+          "a": "Chaque fiche produit lie un guide des tailles spécifique. En cas de doute, écrivez-nous sur WhatsApp."
+        },
+        {
+          "q": "Faites-vous du sur-mesure ?",
+          "a": "Le studio sur-mesure ouvre bientôt. Rejoignez la liste d'attente depuis la page d'accueil."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Nous écrire",
+      "subtitle": "Une question, une commande spéciale, un partenariat — nous répondons sous 48h.",
+      "email_label": "Email",
+      "phone_label": "Téléphone",
+      "whatsapp_label": "WhatsApp",
+      "address_label": "Adresse",
+      "address_value": "Bonapriso, Douala, Cameroun",
+      "hours_label": "Horaires",
+      "hours_value": "Lun-Sam, 9h-18h (heure du Cameroun)"
+    },
+    "terms": {
+      "title": "Conditions générales de vente",
+      "updated": "Dernière mise à jour : {date}",
+      "intro": "Les présentes conditions générales de vente régissent les ventes sur le site celva.store, exploité par Celva Design SARL.",
+      "sections": {
+        "ordering": {
+          "title": "Commandes",
+          "body": "Les commandes passées sur le site sont fermes dès validation du paiement. Un email de confirmation est adressé au client."
+        },
+        "payment": {
+          "title": "Paiement",
+          "body": "Modes acceptés : Orange Money, MTN Mobile Money, paiement à la livraison (selon zone et plafond). Tous les prix sont TTC en FCFA."
+        },
+        "delivery": {
+          "title": "Livraison",
+          "body": "Les délais et frais dépendent de la zone (Douala, Yaoundé, National). Le suivi est communiqué par email et SMS."
+        },
+        "returns": {
+          "title": "Retours",
+          "body": "Vous disposez de 14 jours pour retourner un article non porté, avec son étiquette. Remboursement sous 7 jours après réception."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "updated": "Dernière mise à jour : {date}",
+      "intro": "Celva respecte la confidentialité de vos données et applique le RGPD européen ainsi que les lois camerounaises sur la protection des données.",
+      "sections": {
+        "collect": {
+          "title": "Ce que nous collectons",
+          "body": "Lors de votre inscription : nom, email, téléphone. Lors d'une commande : adresse de livraison, méthode de paiement (numéros masqués), historique d'achats."
+        },
+        "use": {
+          "title": "Ce que nous en faisons",
+          "body": "Traitement des commandes, livraison, support client. Avec votre consentement explicite : newsletter et mesure d'audience anonyme."
+        },
+        "rights": {
+          "title": "Vos droits",
+          "body": "Vous pouvez à tout moment exporter vos données, demander leur suppression, ou refuser le traitement. Écrivez à privacy@celva.store."
+        },
+        "cookies": {
+          "title": "Cookies",
+          "body": "Seuls les cookies strictement nécessaires sont posés sans consentement. La mesure d'audience est anonyme (Plausible/Umami) et opt-in."
+        }
+      }
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "message": "Cette page n'existe pas — ou plus.",
+    "cta": "Retour à l'accueil"
+  }
+}

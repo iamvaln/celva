@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Celva semantic tokens — RGB triplets so Tailwind <alpha-value> works.
+   Mirrors packages/tailwind-config/preset.js celvaCssVariables. */
+:root {
+  --celva-background: 250 247 242;        /* cream */
+  --celva-background-alt: 232 217 198;    /* beige */
+  --celva-surface: 232 217 198;           /* beige */
+  --celva-foreground: 89 93 64;           /* olive */
+  --celva-foreground-muted: 140 134 128;  /* gray */
+  --celva-foreground-inverse: 250 247 242;/* cream */
+  --celva-border: 212 196 174;            /* beige-dark */
+  --celva-accent: 178 98 72;              /* terracotta */
+  --celva-accent-hover: 142 78 58;        /* terracotta-dark */
+  --celva-pattern-opacity: 0.04;
+}
+.dark {
+  --celva-background: 26 26 24;           /* ink */
+  --celva-background-alt: 38 38 34;       /* ink-surface */
+  --celva-surface: 38 38 34;
+  --celva-foreground: 250 247 242;        /* cream */
+  --celva-foreground-muted: 181 176 169;  /* gray-light */
+  --celva-foreground-inverse: 250 247 242;
+  --celva-border: 58 58 53;
+  --celva-accent: 178 98 72;
+  --celva-accent-hover: 196 131 107;      /* terracotta-light */
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Don't flash a different background on color-scheme transitions. */
+    color-scheme: light;
+  }
+  html.dark { color-scheme: dark; }
+
+  body {
+    @apply min-h-screen bg-background font-body text-foreground antialiased;
+    @apply transition-colors duration-color;
+    line-height: 1.55;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display text-foreground;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+  a:hover {
+    @apply text-accent;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+
+  ::selection {
+    background-color: rgb(var(--celva-accent) / 0.25);
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-none border border-transparent;
+    @apply px-8 py-4 font-body text-[13px] font-medium uppercase tracking-button;
+    @apply whitespace-nowrap transition-all duration-color;
+  }
+  .btn-primary {
+    @apply bg-accent text-foreground-inverse hover:bg-accent-hover;
+  }
+  .btn-secondary {
+    @apply border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background;
+  }
+  .btn-ghost {
+    @apply border-0 border-b border-foreground px-0 py-2 text-foreground hover:border-accent hover:text-accent;
+  }
+  .btn-block {
+    @apply w-full;
+  }
+
+  .eyebrow {
+    @apply font-body text-caption font-medium uppercase tracking-eyebrow text-foreground-muted;
+  }
+
+  .input-underline {
+    @apply w-full rounded-none border-0 border-b border-gray bg-transparent px-0 py-3;
+    @apply font-body text-base text-foreground placeholder:text-foreground-muted;
+    @apply outline-none transition-colors duration-200;
+    @apply focus:border-accent;
+  }
+
+  .container-celva {
+    @apply mx-auto w-full max-w-content px-gutter-mobile sm:px-gutter-tablet lg:px-gutter-desktop;
+  }
+
+  /* Subtle monogram pattern overlay — apply to a positioned ancestor. */
+  .has-pattern {
+    position: relative;
+    isolation: isolate;
+  }
+  .has-pattern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/monogram-pattern.svg');
+    background-size: 160px 160px;
+    opacity: var(--celva-pattern-opacity);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
