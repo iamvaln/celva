@@ -47,6 +47,7 @@
   "image_decode_failed": "Impossible de décoder l'image. Le fichier est peut-être corrompu.",
   "image_reorder_mismatch": "La liste de réorganisation doit contenir toutes les images du produit, exactement une fois.",
   "related_product_too_many": "Un produit peut avoir au maximum 6 produits liés.",
+  "payment_method_not_saveable": "Seuls Orange Money et MTN MoMo peuvent être enregistrés. Paiement à la livraison n'a pas d'état mémorisable.",
   "related_product_self_reference": "Un produit ne peut pas se proposer en cross-sell de lui-même.",
   "related_product_not_found": "Un ou plusieurs produits liés n'existent pas.",
   "stock_delta_required": "La quantité d'ajustement de stock doit être non nulle."
