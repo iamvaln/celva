@@ -70,6 +70,17 @@ export type ApiRelatedProduct = {
   sortOrder: number;
 };
 
+export type ApiVariant = {
+  id: string;
+  sku: string;
+  stock: number;
+  consignedStock: number;
+  priceOverride: string | null;
+  isActive: boolean;
+  productId: string;
+  attributeValues: Array<{ attributeId: string; attributeValueId: string }>;
+};
+
 type Paginated<T> = { data: T[]; total: number; page: number; pageSize: number };
 
 const ISR = { next: { revalidate: 60 } } as const;
@@ -209,3 +220,12 @@ export const listCollectionProducts = (
 
 export const getProductById = (productId: string, locale: Locale): Promise<ApiProduct> =>
   apiFetch<ApiProduct>(`/products/${productId}`, { locale, ...ISR });
+
+export const listProductVariants = (
+  productId: string,
+  locale: Locale,
+): Promise<Paginated<ApiVariant>> =>
+  apiFetch<Paginated<ApiVariant>>(
+    `/variants?productId=${productId}&isActive=true&pageSize=200&sortBy=sku&sortDir=asc`,
+    { locale, ...ISR },
+  );

@@ -10,6 +10,7 @@ export const routing = defineRouting({
     '/shop/[slug]': { fr: '/boutique/[slug]', en: '/shop/[slug]' },
     '/collections/[slug]': { fr: '/collections/[slug]', en: '/collections/[slug]' },
     '/cart': { fr: '/panier', en: '/cart' },
+    '/wishlist': { fr: '/favoris', en: '/wishlist' },
     '/checkout': { fr: '/commande', en: '/checkout' },
     '/checkout/confirmation': { fr: '/commande/confirmation', en: '/checkout/confirmation' },
     '/account': { fr: '/compte', en: '/account' },
