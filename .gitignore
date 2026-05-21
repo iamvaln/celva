@@ -2,6 +2,13 @@
 node_modules/
 .pnpm-store/
 
+# Local-FS storage fallback (dev/CI only — production uses R2)
+apps/api/uploads/
+
+# Source images used by the catalogue seed (not committed — see
+# apps/api/prisma/seed-catalogue.ts for the expected filenames).
+/images/
+
 # Build outputs
 dist/
 build/
