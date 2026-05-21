@@ -19,5 +19,8 @@
   "cannot_self_delete": "Vous ne pouvez pas supprimer votre propre compte.",
   "invalid_role": "Rôle utilisateur invalide.",
   "invalid_setting_key": "Clé de paramètre invalide (UPPER_SNAKE_CASE attendu).",
-  "setting_already_exists": "Ce paramètre existe déjà."
+  "setting_already_exists": "Ce paramètre existe déjà.",
+  "invalid_slug": "Slug invalide (lettres minuscules, chiffres et tirets uniquement).",
+  "slug_already_used": "Ce slug est déjà utilisé par une autre ressource.",
+  "category_has_products": "Impossible de supprimer une catégorie contenant encore des produits. Réaffectez ou supprimez d'abord les produits."
 }

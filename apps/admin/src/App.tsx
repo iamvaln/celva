@@ -1,6 +1,7 @@
 import { Admin, Resource } from 'react-admin';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CategoryIcon from '@mui/icons-material/Category';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -14,6 +15,9 @@ import { UserShow } from './resources/users/UserShow';
 import { SettingList } from './resources/settings/SettingList';
 import { SettingEdit } from './resources/settings/SettingEdit';
 import { SettingCreate } from './resources/settings/SettingCreate';
+import { CategoryList } from './resources/categories/CategoryList';
+import { CategoryEdit } from './resources/categories/CategoryEdit';
+import { CategoryCreate } from './resources/categories/CategoryCreate';
 
 export const App = () => (
   <Admin
@@ -37,6 +41,13 @@ export const App = () => (
           edit={permissions === 'ADMIN' ? UserEdit : undefined}
           create={permissions === 'ADMIN' ? UserCreate : undefined}
           show={UserShow}
+        />
+        <Resource
+          name="categories"
+          icon={CategoryIcon}
+          list={CategoryList}
+          edit={CategoryEdit}
+          create={CategoryCreate}
         />
         <Resource
           name="settings"

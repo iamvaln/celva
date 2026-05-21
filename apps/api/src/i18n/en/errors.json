@@ -19,5 +19,8 @@
   "cannot_self_delete": "You cannot delete your own account.",
   "invalid_role": "Invalid user role.",
   "invalid_setting_key": "Invalid setting key (UPPER_SNAKE_CASE expected).",
-  "setting_already_exists": "This setting already exists."
+  "setting_already_exists": "This setting already exists.",
+  "invalid_slug": "Invalid slug (lowercase letters, digits and dashes only).",
+  "slug_already_used": "This slug is already used by another resource.",
+  "category_has_products": "Cannot delete a category that still contains products. Reassign or delete the products first."
 }

@@ -55,6 +55,35 @@ describe('dataProvider', () => {
     expect(headers.get('Accept-Language')).toBe('fr');
   });
 
+  it('getList(categories) sends pagination + search and unwraps { data }', async () => {
+    mockFetch.mockReturnValue(
+      okJson({
+        data: {
+          data: [{ id: 'c1', slug: 'robes', name: { fr: 'Robes', en: 'Dresses' }, sortOrder: 0 }],
+          total: 7,
+          page: 1,
+          pageSize: 50,
+        },
+        requestId: 'r-cat',
+      }),
+    );
+
+    const result = await dataProvider.getList('categories', {
+      pagination: { page: 1, perPage: 50 },
+      sort: { field: 'sortOrder', order: 'ASC' },
+      filter: { search: 'rob' },
+      meta: undefined,
+    });
+
+    expect(result.total).toBe(7);
+    expect(result.data[0].slug).toBe('robes');
+    const [url] = mockFetch.mock.calls[0] as [string];
+    const params = new URLSearchParams(url.split('?')[1]);
+    expect(params.get('search')).toBe('rob');
+    expect(params.get('sortBy')).toBe('sortOrder');
+    expect(params.get('sortDir')).toBe('asc');
+  });
+
   it('getList(settings) handles non-paginated array response', async () => {
     mockFetch.mockReturnValue(
       okJson({
