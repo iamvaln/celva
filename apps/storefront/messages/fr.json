@@ -101,6 +101,33 @@
       "error": "Inscription impossible. Réessayez."
     }
   },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "continue_shopping": "Continuer mes achats",
+    "login_required": "Connectez-vous pour accéder à votre panier.",
+    "summary": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "vat_included": "TVA incluse",
+    "delivery_at_checkout": "Livraison calculée au paiement",
+    "total": "Total",
+    "checkout": "Passer commande",
+    "checkout_coming_soon": "Le paiement arrive en Phase 3.",
+    "unavailable": "Indisponible actuellement",
+    "low_stock": "Plus que {n} en stock",
+    "quantity": "Quantité",
+    "update": "Mettre à jour",
+    "remove": "Retirer",
+    "clear": "Vider le panier",
+    "go_to_cart": "Voir le panier ({count})"
+  },
+  "wishlist": {
+    "title": "Favoris",
+    "empty": "Votre wishlist est vide.",
+    "login_required": "Connectez-vous pour sauvegarder des pièces.",
+    "remove": "Retirer",
+    "add_to_cart": "Ajouter au panier"
+  },
   "shop": {
     "title": "Boutique",
     "subtitle": "Pièces couture, prêtes à être expédiées.",

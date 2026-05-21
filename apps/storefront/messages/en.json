@@ -101,6 +101,33 @@
       "error": "Couldn't subscribe. Try again."
     }
   },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "continue_shopping": "Continue shopping",
+    "login_required": "Log in to access your cart.",
+    "summary": "Order summary",
+    "subtotal": "Subtotal",
+    "vat_included": "VAT included",
+    "delivery_at_checkout": "Delivery calculated at checkout",
+    "total": "Total",
+    "checkout": "Checkout",
+    "checkout_coming_soon": "Checkout opens in Phase 3.",
+    "unavailable": "Currently unavailable",
+    "low_stock": "Only {n} left",
+    "quantity": "Quantity",
+    "update": "Update",
+    "remove": "Remove",
+    "clear": "Empty cart",
+    "go_to_cart": "View cart ({count})"
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "empty": "Your wishlist is empty.",
+    "login_required": "Log in to save items.",
+    "remove": "Remove",
+    "add_to_cart": "Add to cart"
+  },
   "shop": {
     "title": "Shop",
     "subtitle": "Couture pieces, ready to ship.",

@@ -65,8 +65,8 @@ export const Header = () => {
                 <path d="M4 21a8 8 0 0 1 16 0" strokeLinecap="round" />
               </svg>
             </Link>
-            <button
-              type="button"
+            <Link
+              href="/cart"
               aria-label={t('cart')}
               className="relative inline-flex h-10 w-10 items-center justify-center text-foreground hover:text-accent"
             >
@@ -74,7 +74,7 @@ export const Header = () => {
                 <path d="M5 7h14l-1.5 12.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5L5 7z" strokeLinejoin="round" />
                 <path d="M9 7V5a3 3 0 0 1 6 0v2" strokeLinecap="round" />
               </svg>
-            </button>
+            </Link>
           </div>
         </div>
       </header>

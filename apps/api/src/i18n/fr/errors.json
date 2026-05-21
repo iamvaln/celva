@@ -50,5 +50,8 @@
   "payment_method_not_saveable": "Seuls Orange Money et MTN MoMo peuvent être enregistrés. Paiement à la livraison n'a pas d'état mémorisable.",
   "related_product_self_reference": "Un produit ne peut pas se proposer en cross-sell de lui-même.",
   "related_product_not_found": "Un ou plusieurs produits liés n'existent pas.",
-  "stock_delta_required": "La quantité d'ajustement de stock doit être non nulle."
+  "stock_delta_required": "La quantité d'ajustement de stock doit être non nulle.",
+  "variant_not_found": "Variante introuvable.",
+  "cart_variant_unavailable": "Cette variante n'est pas disponible actuellement.",
+  "wishlist_already_added": "Cette variante est déjà dans votre wishlist."
 }
