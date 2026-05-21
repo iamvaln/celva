@@ -121,6 +121,11 @@
     "clear": "Vider le panier",
     "go_to_cart": "Voir le panier ({count})",
     "discount": "Remise",
+    "flash": {
+      "added": "Ajouté à votre panier.",
+      "add_failed": "Impossible d'ajouter cette pièce. Réessayez.",
+      "insufficient_stock": "Stock insuffisant pour cette variante."
+    },
     "promo": {
       "label": "Code promo",
       "placeholder": "Entrez votre code",
@@ -137,6 +142,82 @@
         "unknown": "Impossible d'appliquer ce code. Réessayez."
       }
     }
+  },
+  "checkout": {
+    "title": "Commande",
+    "login_required": "Connectez-vous pour passer votre commande.",
+    "back_to_cart": "Retour au panier",
+    "place_order": "Valider la commande",
+    "delivery": {
+      "heading": "Mode de livraison",
+      "home": "Livraison à domicile",
+      "home_hint": "Apportée à votre adresse. Frais selon la zone.",
+      "store": "Retrait à l'atelier",
+      "store_hint": "Gratuit. Récupération à notre atelier de Douala.",
+      "relay": "Retrait en point relais",
+      "relay_hint": "Gratuit. Récupération chez un partenaire."
+    },
+    "delivery_details": {
+      "heading": "Détails de livraison",
+      "zone": "Zone de livraison",
+      "days": "jours",
+      "saved_address": "Adresse enregistrée",
+      "new_address": "Utiliser une nouvelle adresse",
+      "inline_address": "Ou saisir une nouvelle adresse",
+      "address_line": "Adresse",
+      "city": "Ville",
+      "phone": "Téléphone",
+      "pickup_point": "Point de retrait"
+    },
+    "payment": {
+      "heading": "Paiement",
+      "orange": "Orange Money",
+      "mtn": "MTN Mobile Money",
+      "cash": "Paiement à la livraison",
+      "cash_hint": "Payez le livreur à la livraison. Plafond appliqué.",
+      "saved_method": "Méthode enregistrée",
+      "new_method": "Utiliser un nouveau numéro",
+      "phone_label": "Numéro Mobile Money"
+    },
+    "notes": {
+      "label": "Note pour l'équipe",
+      "placeholder": "Code d'accès, emballage cadeau, etc."
+    },
+    "errors": {
+      "unknown": "Impossible de valider la commande. Réessayez.",
+      "cart_empty": "Votre panier est vide.",
+      "delivery_zone_required": "Sélectionnez une zone de livraison pour la livraison à domicile.",
+      "delivery_zone_unavailable": "Cette zone n'est plus disponible.",
+      "pickup_point_required": "Sélectionnez un point de retrait.",
+      "pickup_point_unavailable": "Ce point de retrait n'est plus disponible.",
+      "shipping_address_not_found": "Adresse enregistrée introuvable.",
+      "saved_payment_method_not_found": "Méthode de paiement enregistrée introuvable.",
+      "saved_payment_method_mismatch": "La méthode enregistrée ne correspond pas au type sélectionné.",
+      "payment_phone_required": "Fournissez un numéro Mobile Money.",
+      "cash_over_cap": "Le total dépasse la limite paiement à la livraison. Choisissez Mobile Money.",
+      "insufficient_stock": "Un article n'est plus en stock. Vérifiez votre panier.",
+      "invalid_phone": "Téléphone invalide (Cameroun : +2376XXXXXXXX ou +2372XXXXXXXX)."
+    }
+  },
+  "confirmation": {
+    "eyebrow": "Commande confirmée",
+    "title": "Merci pour votre commande",
+    "intro": "Votre numéro de commande est {orderNumber}. On revient vers vous très vite.",
+    "status": {
+      "confirmed": "Commande confirmée — on la prépare.",
+      "pending": "Paiement en attente — validez le push Mobile Money sur votre téléphone."
+    },
+    "items_heading": "Pièces",
+    "subtotal": "Sous-total",
+    "discount": "Remise",
+    "delivery_fee": "Livraison",
+    "total": "Total",
+    "vat_included": "TVA incluse",
+    "delivery_heading": "Livraison",
+    "payment_heading": "Paiement",
+    "notes_heading": "Note",
+    "continue_shopping": "Continuer mes achats",
+    "view_orders": "Mes commandes"
   },
   "wishlist": {
     "title": "Favoris",

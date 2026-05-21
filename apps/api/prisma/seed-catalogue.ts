@@ -21,6 +21,11 @@ import { Prisma, PrismaClient } from '@prisma/client';
  *   - nani-black.png
  *   - nani-purple.png
  *   - nani-red.png
+ *   - dafani-blue.png
+ *   - dafani-blue-alt.png
+ *   - dafani-purple.png
+ *   - dafani-green-orange.png
+ *   - elegante-green.png
  *
  * Files are copied to apps/api/uploads/products/<id>/<uuid>.png (local-FS
  * storage backend) and matching ProductImage rows are created. When R2 is
@@ -139,6 +144,65 @@ const PRODUCTS: ProductSpec[] = [
       { file: 'nani-red.png', altFr: 'Robe Nani — rouge terracotta', altEn: 'Nani dress — terracotta red' },
     ],
   },
+  {
+    slug: 'dafani',
+    categorySlug: 'robes',
+    name: { fr: 'Robe Dafani', en: 'Dafani Dress' },
+    description: {
+      fr: "La Dafani revisite le tissage traditionnel à rayures dans une coupe tunique fluide, finie par des franges. Coton tissé main, généreux et confortable, à porter avec ou sans accessoire.",
+      en: 'The Dafani reinterprets traditional striped weaving in a flowing tunic cut, finished with fringe. Hand-woven cotton, generous and comfortable, to wear with or without accessories.',
+    },
+    displayPrice: 45000,
+    floorPrice: 35000,
+    costPrice: 18000,
+    productionType: 'INTERNAL',
+    attributes: [
+      {
+        name: { fr: 'Coloris', en: 'Colour' },
+        values: [
+          { fr: 'Bleu roi', en: 'Royal blue' },
+          { fr: 'Magenta', en: 'Magenta' },
+          { fr: 'Vert & orange', en: 'Green & orange' },
+        ],
+      },
+    ],
+    variants: [
+      { sku: 'CLV-DAFANI-BLUE', pickByAttributeIndex: [0], initialStock: 4 },
+      { sku: 'CLV-DAFANI-PURPLE', pickByAttributeIndex: [1], initialStock: 3 },
+      { sku: 'CLV-DAFANI-GREEN-ORANGE', pickByAttributeIndex: [2], initialStock: 3 },
+    ],
+    images: [
+      { file: 'dafani-blue.png', altFr: 'Robe Dafani — bleu roi', altEn: 'Dafani dress — royal blue' },
+      { file: 'dafani-blue-alt.png', altFr: 'Robe Dafani — bleu roi, autre vue', altEn: 'Dafani dress — royal blue, alternate view' },
+      { file: 'dafani-purple.png', altFr: 'Robe Dafani — magenta', altEn: 'Dafani dress — magenta' },
+      { file: 'dafani-green-orange.png', altFr: 'Robe Dafani — vert et orange', altEn: 'Dafani dress — green and orange' },
+    ],
+  },
+  {
+    slug: 'elegante',
+    categorySlug: 'robes',
+    name: { fr: 'Robe Élégante', en: 'Élégante Dress' },
+    description: {
+      fr: "Coupe droite manches longues, rayures vertes profondes rehaussées de franges dorées aux poignets et à l’ourlet. Une pièce de réception, à porter pour les grandes occasions.",
+      en: 'Straight cut with long sleeves, deep green stripes accented by golden fringe at the cuffs and hem. A statement piece for formal occasions.',
+    },
+    displayPrice: 55000,
+    floorPrice: 42000,
+    costPrice: 22000,
+    productionType: 'INTERNAL',
+    attributes: [
+      {
+        name: { fr: 'Coloris', en: 'Colour' },
+        values: [{ fr: 'Vert émeraude', en: 'Emerald green' }],
+      },
+    ],
+    variants: [
+      { sku: 'CLV-ELEGANTE-GREEN', pickByAttributeIndex: [0], initialStock: 2 },
+    ],
+    images: [
+      { file: 'elegante-green.png', altFr: 'Robe Élégante — vert émeraude', altEn: 'Élégante dress — emerald green' },
+    ],
+  },
 ];
 
 const CATEGORIES: Array<{ slug: string; name: { fr: string; en: string }; sortOrder: number }> = [
@@ -160,7 +224,7 @@ const COLLECTIONS: Array<{
       fr: 'Sélection pour les nuits qui méritent une pièce qu’on retient.',
       en: 'Picks for nights that deserve a memorable piece.',
     },
-    productSlugs: ['mino', 'nani'],
+    productSlugs: ['mino', 'nani', 'elegante'],
   },
   {
     slug: 'signature',
@@ -169,11 +233,11 @@ const COLLECTIONS: Array<{
       fr: 'Les essentiels qui définissent l’atelier Celva.',
       en: 'The essentials that define the Celva atelier.',
     },
-    productSlugs: ['mino', 'nani'],
+    productSlugs: ['mino', 'nani', 'dafani', 'elegante'],
   },
 ];
 
-const SEED_SLUG_PATTERN = ['mino', 'nani'];
+const SEED_SLUG_PATTERN = ['mino', 'nani', 'dafani', 'elegante'];
 const SEED_CATEGORY_SLUGS = ['robes', 'tops', 'accessoires'];
 const SEED_COLLECTION_SLUGS = ['soirees-chic', 'signature'];
 
