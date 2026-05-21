@@ -25,6 +25,8 @@ import { StorageModule } from './modules/storage/storage.module';
 import { ProductImagesModule } from './modules/product-images/product-images.module';
 import { CollectionsModule } from './modules/collections/collections.module';
 import { RelatedProductsModule } from './modules/related-products/related-products.module';
+import { CartModule } from './modules/cart/cart.module';
+import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -103,6 +105,8 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     ProductImagesModule,
     CollectionsModule,
     RelatedProductsModule,
+    CartModule,
+    WishlistModule,
   ],
   providers: [
     {
