@@ -5,6 +5,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import InventoryIcon from '@mui/icons-material/Inventory2';
 import TuneIcon from '@mui/icons-material/Tune';
 import StyleIcon from '@mui/icons-material/Style';
+import LayersIcon from '@mui/icons-material/Layers';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -30,6 +31,9 @@ import { AttributeCreate } from './resources/product-attributes/AttributeCreate'
 import { AttributeValueList } from './resources/attribute-values/AttributeValueList';
 import { AttributeValueEdit } from './resources/attribute-values/AttributeValueEdit';
 import { AttributeValueCreate } from './resources/attribute-values/AttributeValueCreate';
+import { VariantList } from './resources/variants/VariantList';
+import { VariantEdit } from './resources/variants/VariantEdit';
+import { VariantCreate } from './resources/variants/VariantCreate';
 
 export const App = () => (
   <Admin
@@ -83,6 +87,13 @@ export const App = () => (
           edit={AttributeValueEdit}
           create={AttributeValueCreate}
           options={{ label: 'Valeurs attribut' }}
+        />
+        <Resource
+          name="variants"
+          icon={LayersIcon}
+          list={VariantList}
+          edit={VariantEdit}
+          create={VariantCreate}
         />
         <Resource
           name="settings"
