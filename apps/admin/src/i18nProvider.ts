@@ -159,6 +159,41 @@ const celvaFr = {
         confirm_delete: 'Supprimer cette image ?',
         empty: 'Aucune image. Ajoutez-en une pour démarrer.',
       },
+      related: {
+        title: 'Produits liés (cross-sell)',
+        helper: 'Maximum 6. Affichés en bas de la fiche produit dans « Complétez le look ».',
+        add_label: 'Ajouter un produit',
+        add: 'Ajouter',
+        empty: 'Aucun produit lié.',
+        cap_reached: 'Limite atteinte (6). Retirez-en un pour en ajouter un autre.',
+      },
+    },
+    collections: {
+      name: 'Collection |||| Collections',
+      fields: {
+        name: 'Nom (FR / EN)',
+        name_fr: 'Nom (FR)',
+        name_en: 'Name (EN)',
+        slug: 'Slug',
+        description_fr: 'Description (FR)',
+        description_en: 'Description (EN)',
+        imageUrl: 'Image (URL)',
+        sortOrder: 'Ordre',
+        isActive: 'Active',
+        createdAt: 'Créée le',
+      },
+      helpers: {
+        slug_optional: 'Optionnel — généré automatiquement depuis le nom français si vide.',
+      },
+      errors: {
+        invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
+      },
+      products: {
+        title: 'Produits de la collection',
+        add_label: 'Ajouter un produit',
+        add: 'Ajouter',
+        empty: 'Aucun produit. Ajoutez-en un pour démarrer.',
+      },
     },
   },
 };
