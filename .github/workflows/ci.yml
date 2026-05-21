@@ -162,4 +162,3 @@ jobs:
           API_INTERNAL_URL: http://localhost:3001
           NEXT_PUBLIC_SITE_URL: https://celva.store
           NEXT_PUBLIC_CONTACT_WHATSAPP: '237000000000'
-        continue-on-error: ${{ matrix.app == 'storefront' }}

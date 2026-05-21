@@ -13,7 +13,7 @@ export const LocaleSwitcher = ({ className = '' }: { className?: string }) => {
   const params = useParams<{ locale: Locale }>();
   const [, startTransition] = useTransition();
 
-  const next: Locale = params.locale === 'fr' ? 'en' : 'fr';
+  const next: Locale = params?.locale === 'fr' ? 'en' : 'fr';
 
   return (
     <button

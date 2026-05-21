@@ -1,6 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 
+// Localized 404. Renders inside the [locale] layout (header, footer,
+// theme, locale switcher all still present). Triggered when a URL
+// resolves to a valid locale but no page (e.g. /fr/bogus-page).
 export default async function NotFound() {
   const t = await getTranslations('notFound');
   return (
