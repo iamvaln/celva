@@ -18,6 +18,8 @@ import { UsersModule } from './modules/users/users.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { ProductsModule } from './modules/products/products.module';
+import { ProductAttributesModule } from './modules/product-attributes/product-attributes.module';
+import { ProductAttributeValuesModule } from './modules/product-attribute-values/product-attribute-values.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -89,6 +91,8 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     SettingsModule,
     CategoriesModule,
     ProductsModule,
+    ProductAttributesModule,
+    ProductAttributeValuesModule,
   ],
   providers: [
     {

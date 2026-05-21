@@ -26,5 +26,11 @@
   "invalid_decimal": "Valeur décimale invalide (2 décimales maximum).",
   "display_below_floor": "Le prix affiché doit être supérieur ou égal au prix plancher.",
   "category_not_found": "Catégorie introuvable.",
-  "product_in_use": "Ce produit ne peut pas être supprimé : il est encore référencé par des variantes, commandes ou autres enregistrements."
+  "product_in_use": "Ce produit ne peut pas être supprimé : il est encore référencé par des variantes, commandes ou autres enregistrements.",
+  "product_not_found": "Produit introuvable.",
+  "attribute_not_found": "Attribut introuvable.",
+  "attribute_sort_order_taken": "Un autre attribut utilise déjà cet ordre pour ce produit.",
+  "attribute_value_sort_order_taken": "Une autre valeur utilise déjà cet ordre pour cet attribut.",
+  "attribute_in_use": "Cet attribut ne peut pas être supprimé tant que des variantes le référencent. Supprimez d'abord les variantes.",
+  "attribute_value_in_use": "Cette valeur ne peut pas être supprimée tant que des variantes la référencent. Supprimez d'abord les variantes."
 }
