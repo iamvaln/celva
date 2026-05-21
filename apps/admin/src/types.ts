@@ -17,6 +17,16 @@ export type Setting = {
   label?: { fr?: string; en?: string } | null;
 };
 
+export type Category = {
+  id: string;
+  slug: string;
+  name: { fr: string; en: string };
+  description?: { fr?: string; en?: string } | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type AuthLoginResponse = {
   accessToken: string;
   user: AdminUser;
