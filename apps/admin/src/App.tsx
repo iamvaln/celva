@@ -2,6 +2,7 @@ import { Admin, Resource } from 'react-admin';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CategoryIcon from '@mui/icons-material/Category';
+import InventoryIcon from '@mui/icons-material/Inventory2';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -18,6 +19,9 @@ import { SettingCreate } from './resources/settings/SettingCreate';
 import { CategoryList } from './resources/categories/CategoryList';
 import { CategoryEdit } from './resources/categories/CategoryEdit';
 import { CategoryCreate } from './resources/categories/CategoryCreate';
+import { ProductList } from './resources/products/ProductList';
+import { ProductEdit } from './resources/products/ProductEdit';
+import { ProductCreate } from './resources/products/ProductCreate';
 
 export const App = () => (
   <Admin
@@ -48,6 +52,13 @@ export const App = () => (
           list={CategoryList}
           edit={CategoryEdit}
           create={CategoryCreate}
+        />
+        <Resource
+          name="products"
+          icon={InventoryIcon}
+          list={ProductList}
+          edit={ProductEdit}
+          create={ProductCreate}
         />
         <Resource
           name="settings"

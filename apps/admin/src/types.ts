@@ -27,6 +27,23 @@ export type Category = {
   updatedAt: string;
 };
 
+export type Product = {
+  id: string;
+  slug: string;
+  name: { fr: string; en: string };
+  description?: { fr?: string; en?: string } | null;
+  displayPrice: string | number;
+  floorPrice: string | number;
+  costPrice: string | number;
+  productionType: 'INTERNAL' | 'SUBCONTRACTED' | 'PURCHASED';
+  defaultCommissionType: 'PERCENTAGE' | 'FIXED';
+  defaultCommissionValue: string | number;
+  isActive: boolean;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type AuthLoginResponse = {
   accessToken: string;
   user: AdminUser;
