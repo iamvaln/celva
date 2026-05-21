@@ -41,6 +41,19 @@ export type ProductAttributeValue = {
   attributeId: string;
 };
 
+export type ProductVariant = {
+  id: string;
+  sku: string;
+  stock: number;
+  consignedStock: number;
+  priceOverride?: string | number | null;
+  isActive: boolean;
+  productId: string;
+  attributeValues: Array<{ attributeId: string; attributeValueId: string }>;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Product = {
   id: string;
   slug: string;

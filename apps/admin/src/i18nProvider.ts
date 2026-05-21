@@ -82,6 +82,42 @@ const celvaFr = {
         sort_order_optional: 'Optionnel — attribué automatiquement si vide.',
       },
     },
+    variants: {
+      name: 'Variante |||| Variantes',
+      fields: {
+        sku: 'SKU',
+        stock: 'Stock disponible',
+        consigned: 'Stock consigné',
+        priceOverride: 'Prix variante (TTC)',
+        isActive: 'Actif',
+        productId: 'Produit',
+        createdAt: 'Créé le',
+      },
+      helpers: {
+        sku: 'Majuscules / chiffres / . / _ / - ; 2 à 50 caractères. Doit être unique.',
+        initial_stock: 'Stock d’ouverture (mouvement MANUAL_ADJUSTMENT enregistré).',
+        price_override: 'Optionnel — remplace product.displayPrice pour cette variante.',
+        pick_product_first: 'Choisissez d’abord un produit pour afficher ses attributs.',
+        product_has_no_attributes:
+          'Ce produit n’a pas d’attribut. La variante sera créée sans combinaison.',
+        stock_via_adjust:
+          'Le stock ne peut pas être modifié directement ici. Utilisez « Ajuster le stock » pour passer par le service de mouvements de stock.',
+      },
+      actions: {
+        adjust_stock: 'Ajuster le stock',
+      },
+      dialogs: {
+        delta: 'Quantité (signée, ex. -5)',
+        reason: 'Motif (audit)',
+      },
+      notifications: {
+        stock_adjusted: 'Mouvement de stock enregistré.',
+      },
+      errors: {
+        invalid_sku:
+          'SKU invalide (majuscules / chiffres / . / _ / -, 2 à 50 caractères).',
+      },
+    },
     products: {
       name: 'Produit |||| Produits',
       fields: {
@@ -195,6 +231,41 @@ const celvaEn = {
       },
       helpers: {
         sort_order_optional: 'Optional — auto-assigned if blank.',
+      },
+    },
+    variants: {
+      name: 'Variant |||| Variants',
+      fields: {
+        sku: 'SKU',
+        stock: 'Available stock',
+        consigned: 'Consigned stock',
+        priceOverride: 'Variant price (incl. VAT)',
+        isActive: 'Active',
+        productId: 'Product',
+        createdAt: 'Created at',
+      },
+      helpers: {
+        sku: 'A-Z / 0-9 / . / _ / -, 2 to 50 chars. Must be unique.',
+        initial_stock: 'Opening stock (MANUAL_ADJUSTMENT movement recorded).',
+        price_override: 'Optional — overrides product.displayPrice for this variant.',
+        pick_product_first: 'Pick a product first to load its attributes.',
+        product_has_no_attributes:
+          'This product has no attributes. Variant will be created with no combination.',
+        stock_via_adjust:
+          'Stock cannot be set directly here. Use “Adjust stock” to go through the stock-movements service.',
+      },
+      actions: {
+        adjust_stock: 'Adjust stock',
+      },
+      dialogs: {
+        delta: 'Signed quantity (e.g. -5)',
+        reason: 'Audit reason',
+      },
+      notifications: {
+        stock_adjusted: 'Stock movement recorded.',
+      },
+      errors: {
+        invalid_sku: 'Invalid SKU (uppercase / digits / . / _ / -, 2 to 50 chars).',
       },
     },
     products: {

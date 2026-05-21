@@ -162,6 +162,40 @@ describe('dataProvider', () => {
     expect(params.get('attributeId')).toBe('a1');
   });
 
+  it('getList(variants) passes productId + isActive filters', async () => {
+    mockFetch.mockReturnValue(
+      okJson({
+        data: {
+          data: [
+            {
+              id: 'v1',
+              sku: 'CLV-ABC-S-RED',
+              stock: 5,
+              consignedStock: 0,
+              isActive: true,
+              productId: 'p1',
+              attributeValues: [],
+            },
+          ],
+          total: 1,
+          page: 1,
+          pageSize: 50,
+        },
+        requestId: 'r-v',
+      }),
+    );
+    await dataProvider.getList('variants', {
+      pagination: { page: 1, perPage: 50 },
+      sort: { field: 'createdAt', order: 'DESC' },
+      filter: { productId: 'p1', isActive: true },
+      meta: undefined,
+    });
+    const [url] = mockFetch.mock.calls[0] as [string];
+    const params = new URLSearchParams(url.split('?')[1]);
+    expect(params.get('productId')).toBe('p1');
+    expect(params.get('isActive')).toBe('true');
+  });
+
   it('getList(settings) handles non-paginated array response', async () => {
     mockFetch.mockReturnValue(
       okJson({
