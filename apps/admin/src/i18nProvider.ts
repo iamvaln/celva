@@ -217,6 +217,41 @@ const celvaFr = {
         invalid_format: 'Format invalide (majuscules / chiffres / _ / -).',
       },
     },
+    'delivery-zones': {
+      name: 'Zone de livraison |||| Zones de livraison',
+      fields: {
+        name: 'Nom (FR / EN)',
+        name_fr: 'Nom (FR)',
+        name_en: 'Name (EN)',
+        fee: 'Frais (XAF)',
+        actualCost: 'Coût réel (XAF, interne)',
+        freeDeliveryThreshold: 'Seuil livraison gratuite',
+        estimatedDays: 'Délai estimé',
+        isActive: 'Active',
+      },
+      helpers: {
+        fee: 'Affiché au client. TTC, XAF.',
+        actual_cost: 'Coût payé au coursier. JAMAIS exposé au storefront — utilisé pour le calcul de marge.',
+        free_threshold: 'Sous-total à partir duquel la livraison est offerte (si FREE_DELIVERY_ENABLED actif).',
+      },
+    },
+    'pickup-points': {
+      name: 'Point de retrait |||| Points de retrait',
+      fields: {
+        name: 'Nom (FR / EN)',
+        name_fr: 'Nom (FR)',
+        name_en: 'Name (EN)',
+        address: 'Adresse',
+        city: 'Ville',
+        phone: 'Téléphone',
+        hours_fr: 'Horaires (FR)',
+        hours_en: 'Hours (EN)',
+        isActive: 'Actif',
+      },
+      helpers: {
+        phone: 'Numéro Cameroun (+237…). Optionnel.',
+      },
+    },
   },
 };
 
@@ -396,6 +431,41 @@ const celvaEn = {
       },
       errors: {
         invalid_format: 'Invalid format (uppercase / digits / _ / -).',
+      },
+    },
+    'delivery-zones': {
+      name: 'Delivery zone |||| Delivery zones',
+      fields: {
+        name: 'Name (FR / EN)',
+        name_fr: 'Name (FR)',
+        name_en: 'Name (EN)',
+        fee: 'Fee (XAF)',
+        actualCost: 'Actual cost (XAF, internal)',
+        freeDeliveryThreshold: 'Free delivery threshold',
+        estimatedDays: 'Estimated days',
+        isActive: 'Active',
+      },
+      helpers: {
+        fee: 'Shown to the customer. VAT included, XAF.',
+        actual_cost: 'What the courier charges. NEVER exposed to the storefront — used for margin reporting.',
+        free_threshold: 'Subtotal at which delivery is free (when FREE_DELIVERY_ENABLED is on).',
+      },
+    },
+    'pickup-points': {
+      name: 'Pickup point |||| Pickup points',
+      fields: {
+        name: 'Name (FR / EN)',
+        name_fr: 'Name (FR)',
+        name_en: 'Name (EN)',
+        address: 'Address',
+        city: 'City',
+        phone: 'Phone',
+        hours_fr: 'Hours (FR)',
+        hours_en: 'Hours (EN)',
+        isActive: 'Active',
+      },
+      helpers: {
+        phone: 'Cameroon phone (+237…). Optional.',
       },
     },
   },

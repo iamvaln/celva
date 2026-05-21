@@ -61,5 +61,8 @@
   "promo_code_date_window": "La date de début doit précéder la date d'expiration.",
   "promo_code_exhausted": "Ce code promo a atteint son nombre maximum d'utilisations.",
   "promo_code_user_limit": "Vous avez déjà utilisé ce code promo le nombre maximum de fois autorisé.",
-  "promo_code_min_order": "Le sous-total du panier n'atteint pas le minimum requis par ce code."
+  "promo_code_min_order": "Le sous-total du panier n'atteint pas le minimum requis par ce code.",
+  "delivery_zone_name_taken": "Une zone de livraison portant ce nom existe déjà.",
+  "delivery_zone_in_use": "Cette zone est référencée par des livraisons passées et ne peut pas être supprimée. Désactivez-la à la place.",
+  "pickup_point_in_use": "Ce point de retrait est référencé par des livraisons passées et ne peut pas être supprimé. Désactivez-le à la place."
 }

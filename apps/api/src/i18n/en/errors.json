@@ -61,5 +61,8 @@
   "promo_code_date_window": "Start date must be before expiry date.",
   "promo_code_exhausted": "This promo code has reached its usage limit.",
   "promo_code_user_limit": "You have already used this promo code the maximum number of times.",
-  "promo_code_min_order": "Cart subtotal does not meet this code's minimum order amount."
+  "promo_code_min_order": "Cart subtotal does not meet this code's minimum order amount.",
+  "delivery_zone_name_taken": "A delivery zone with this name already exists.",
+  "delivery_zone_in_use": "This zone is referenced by past deliveries and cannot be deleted. Deactivate it instead.",
+  "pickup_point_in_use": "This pickup point is referenced by past deliveries and cannot be deleted. Deactivate it instead."
 }
