@@ -21,6 +21,7 @@ import { COMMISSION_TYPE, PRODUCTION_TYPE } from '@celva/shared';
 import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
 import { ProductImagesPanel } from './ProductImagesPanel';
+import { RelatedProductsPanel } from './RelatedProductsPanel';
 
 const DuplicateButton = () => {
   const record = useRecordContext<{ id: string }>();
@@ -121,6 +122,7 @@ export const ProductEdit = () => {
         <NumberInput source="defaultCommissionValue" validate={[minValue(0)]} />
         <BooleanInput source="isActive" />
         <ProductImagesPanelWithRecord />
+        <RelatedProductsPanelWithRecord />
       </SimpleForm>
     </Edit>
   );
@@ -130,4 +132,10 @@ const ProductImagesPanelWithRecord = () => {
   const record = useRecordContext<{ id: string }>();
   if (!record?.id) return null;
   return <ProductImagesPanel productId={record.id} />;
+};
+
+const RelatedProductsPanelWithRecord = () => {
+  const record = useRecordContext<{ id: string }>();
+  if (!record?.id) return null;
+  return <RelatedProductsPanel productId={record.id} />;
 };
