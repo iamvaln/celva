@@ -2,13 +2,18 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
+import { apiFetch, ApiError } from '@/lib/api';
+import { getAccessToken } from '@/lib/auth-cookies';
 import { fetchCart } from '@/lib/cart';
 import { formatPriceXAF, pickLocalized } from '@/lib/catalogue';
 import {
   clearCartAction,
+  getActivePromoCode,
   removeCartItemAction,
+  removePromoAction,
   updateCartItemAction,
 } from './actions';
+import { PromoCodeInput } from './PromoCodeInput';
 
 export async function generateMetadata({
   params,
@@ -30,6 +35,26 @@ export default async function CartPage({
   const t = await getTranslations('cart');
 
   const cart = await fetchCart(locale);
+
+  // Re-validate the persisted promo code against the current subtotal.
+  // If it no longer applies (subtotal changed, code deactivated, etc.) we
+  // surface no discount line and the cookie is silently retained — the next
+  // user submit will clear it.
+  let promo: { code: string; discount: string; subtotalAfter: string } | null = null;
+  const activeCode = await getActivePromoCode();
+  if (cart && activeCode) {
+    const accessToken = await getAccessToken();
+    if (accessToken) {
+      try {
+        promo = await apiFetch<{ code: string; discount: string; subtotalAfter: string }>(
+          '/me/cart/apply-promo',
+          { method: 'POST', body: { code: activeCode }, accessToken },
+        );
+      } catch (err) {
+        if (!(err instanceof ApiError)) throw err;
+      }
+    }
+  }
 
   // Logged-out
   if (!cart) {
@@ -150,19 +175,42 @@ export default async function CartPage({
                   {formatPriceXAF(cart.total, locale)}
                 </dd>
               </div>
+              {promo && (
+                <div className="flex items-center justify-between">
+                  <dt className="text-foreground-muted">
+                    {t('discount')} ({promo.code}){' '}
+                    <form action={removePromoAction} className="inline">
+                      <button
+                        type="submit"
+                        className="ml-2 text-caption uppercase tracking-eyebrow text-foreground-muted hover:text-accent"
+                      >
+                        ×
+                      </button>
+                    </form>
+                  </dt>
+                  <dd className="font-display text-base text-accent">
+                    −{formatPriceXAF(promo.discount, locale)}
+                  </dd>
+                </div>
+              )}
               <div className="flex justify-between text-small text-foreground-muted">
                 <dt>{t('delivery_at_checkout')}</dt>
               </div>
               <div className="flex justify-between border-t border-border pt-3">
                 <dt className="font-display text-base text-foreground">{t('total')}</dt>
                 <dd className="font-display text-base text-accent">
-                  {formatPriceXAF(cart.total, locale)}
+                  {formatPriceXAF(promo ? promo.subtotalAfter : cart.total, locale)}
                 </dd>
               </div>
               <p className="text-caption uppercase tracking-eyebrow text-foreground-muted">
                 {t('vat_included')}
               </p>
             </dl>
+
+            <div className="mt-6 border-t border-border pt-4">
+              <PromoCodeInput appliedCode={promo?.code ?? null} />
+            </div>
+
             <button type="button" disabled className="btn btn-primary btn-block mt-6 opacity-60">
               {t('checkout')}
             </button>

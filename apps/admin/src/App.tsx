@@ -7,6 +7,7 @@ import TuneIcon from '@mui/icons-material/Tune';
 import StyleIcon from '@mui/icons-material/Style';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import LayersIcon from '@mui/icons-material/Layers';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -38,6 +39,9 @@ import { CollectionCreate } from './resources/collections/CollectionCreate';
 import { VariantList } from './resources/variants/VariantList';
 import { VariantEdit } from './resources/variants/VariantEdit';
 import { VariantCreate } from './resources/variants/VariantCreate';
+import { PromoCodeList } from './resources/promo-codes/PromoCodeList';
+import { PromoCodeEdit } from './resources/promo-codes/PromoCodeEdit';
+import { PromoCodeCreate } from './resources/promo-codes/PromoCodeCreate';
 
 export const App = () => (
   <Admin
@@ -105,6 +109,14 @@ export const App = () => (
           list={CollectionList}
           edit={CollectionEdit}
           create={CollectionCreate}
+        />
+        <Resource
+          name="promo-codes"
+          icon={LocalOfferIcon}
+          list={PromoCodeList}
+          edit={permissions === 'ADMIN' ? PromoCodeEdit : undefined}
+          create={permissions === 'ADMIN' ? PromoCodeCreate : undefined}
+          options={{ label: 'Codes promo' }}
         />
         <Resource
           name="settings"
