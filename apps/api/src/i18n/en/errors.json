@@ -64,5 +64,16 @@
   "promo_code_min_order": "Cart subtotal does not meet this code's minimum order amount.",
   "delivery_zone_name_taken": "A delivery zone with this name already exists.",
   "delivery_zone_in_use": "This zone is referenced by past deliveries and cannot be deleted. Deactivate it instead.",
-  "pickup_point_in_use": "This pickup point is referenced by past deliveries and cannot be deleted. Deactivate it instead."
+  "pickup_point_in_use": "This pickup point is referenced by past deliveries and cannot be deleted. Deactivate it instead.",
+  "cart_empty": "Your cart is empty.",
+  "invalid_delivery_mode": "Invalid delivery mode.",
+  "delivery_zone_required": "Pick a delivery zone for home delivery.",
+  "delivery_zone_unavailable": "This delivery zone is not available.",
+  "pickup_point_required": "Pick a pickup point.",
+  "pickup_point_unavailable": "This pickup point is not available.",
+  "shipping_address_not_found": "Saved shipping address not found.",
+  "saved_payment_method_not_found": "Saved payment method not found.",
+  "saved_payment_method_mismatch": "The saved method's type doesn't match the selected payment method.",
+  "payment_phone_required": "Provide a phone number for the selected payment method.",
+  "cash_on_delivery_over_cap": "Total exceeds the cash-on-delivery limit. Please pick Mobile Money."
 }
