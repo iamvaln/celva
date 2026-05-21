@@ -195,6 +195,28 @@ const celvaFr = {
         empty: 'Aucun produit. Ajoutez-en un pour démarrer.',
       },
     },
+    'promo-codes': {
+      name: 'Code promo |||| Codes promo',
+      fields: {
+        code: 'Code',
+        type: 'Type',
+        value: 'Valeur',
+        minOrderAmount: 'Montant min. de commande',
+        maxUses: 'Usages max. (global)',
+        maxUsesPerUser: 'Usages max. par client',
+        usedCount: 'Utilisations',
+        isActive: 'Actif',
+        startsAt: 'Démarre le',
+        expiresAt: 'Expire le',
+      },
+      helpers: {
+        code_format: 'Majuscules / chiffres / _ / -, 2 à 32 caractères. Verrouillé après création.',
+        value: 'POURCENTAGE : 1-100. FIXE : montant en XAF.',
+      },
+      errors: {
+        invalid_format: 'Format invalide (majuscules / chiffres / _ / -).',
+      },
+    },
   },
 };
 
@@ -352,6 +374,28 @@ const celvaEn = {
         make_primary: 'Set as primary image',
         confirm_delete: 'Delete this image?',
         empty: 'No images yet. Add one to get started.',
+      },
+    },
+    'promo-codes': {
+      name: 'Promo code |||| Promo codes',
+      fields: {
+        code: 'Code',
+        type: 'Type',
+        value: 'Value',
+        minOrderAmount: 'Min. order amount',
+        maxUses: 'Max. uses (global)',
+        maxUsesPerUser: 'Max. uses per customer',
+        usedCount: 'Used',
+        isActive: 'Active',
+        startsAt: 'Starts at',
+        expiresAt: 'Expires at',
+      },
+      helpers: {
+        code_format: 'Uppercase / digits / _ / -, 2 to 32 chars. Locked after creation.',
+        value: 'PERCENTAGE: 1-100. FIXED: XAF amount.',
+      },
+      errors: {
+        invalid_format: 'Invalid format (uppercase / digits / _ / -).',
       },
     },
   },

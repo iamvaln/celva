@@ -29,6 +29,7 @@ import { AddressesModule } from './modules/addresses/addresses.module';
 import { SavedPaymentMethodsModule } from './modules/saved-payment-methods/saved-payment-methods.module';
 import { CartModule } from './modules/cart/cart.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
+import { PromoCodesModule } from './modules/promo-codes/promo-codes.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -111,6 +112,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     SavedPaymentMethodsModule,
     CartModule,
     WishlistModule,
+    PromoCodesModule,
   ],
   providers: [
     {

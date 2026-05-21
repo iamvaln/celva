@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, type Cart, type CartItem } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { PromoCodesService, type PromoEvaluation } from '../promo-codes/promo-codes.service';
 import type { AddCartItemDto } from './dto/add-cart-item.dto';
 import type { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
@@ -47,7 +48,21 @@ export type CartView = {
 
 @Injectable()
 export class CartService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly promoCodes: PromoCodesService,
+  ) {}
+
+  /**
+   * Stateless promo preview: evaluate the code against the user's current
+   * cart subtotal. No persistence — the promo is re-validated at order
+   * creation in Batch R, and usedCount is incremented there.
+   */
+  async previewPromo(userId: string, rawCode: string): Promise<PromoEvaluation> {
+    const cart = await this.getOrCreate(userId);
+    const view = await this.serialize(cart.id);
+    return this.promoCodes.evaluate(rawCode, new Prisma.Decimal(view.total), userId);
+  }
 
   async getForUser(userId: string): Promise<CartView> {
     const cart = await this.getOrCreate(userId);
