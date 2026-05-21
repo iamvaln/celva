@@ -1,10 +1,8 @@
 # Celva
 
-[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![CI](https://github.com/iamvaln/celva/actions/workflows/ci.yml/badge.svg)](https://github.com/iamvaln/celva/actions/workflows/ci.yml)
 
 Monorepo for **Celva Store** — bilingual (FR/EN) e-commerce platform for Cameroon.
-
-> The CI badge points at `OWNER/REPO` — replace with the real path once the remote is set.
 
 ## Stack
 
