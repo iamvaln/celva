@@ -7,16 +7,21 @@ import type { Locale } from '@/i18n/routing';
 import {
   type ApiProduct,
   type ApiProductImage,
+  type ApiVariant,
   formatPriceXAF,
   getProductBySlug,
   getProductById,
   listAttributeValues,
   listProductAttributes,
   listProductImages,
+  listProductVariants,
   listRelatedProducts,
   pickLocalized,
 } from '@/lib/catalogue';
+import { fetchWishlistVariantIds } from '@/lib/cart';
 import { ProductCard } from '@/components/ProductCard';
+import { addToCartAction } from '../../cart/actions';
+import { addToWishlistAction, removeFromWishlistAction } from '../../wishlist/actions';
 
 type Params = { locale: Locale; slug: string };
 
@@ -68,13 +73,17 @@ export default async function ProductPage({
   if (!product || !product.isActive) notFound();
 
   const t = await getTranslations('product');
+  const tCart = await getTranslations('cart');
+  const tWishlist = await getTranslations('wishlist');
 
-  const [images, attributesPage, relatedCards] = await Promise.all([
+  const [images, attributesPage, variantsPage, relatedCards, wishlistIds] = await Promise.all([
     listProductImages(product.id, locale).catch(() => [] as ApiProductImage[]),
     listProductAttributes(product.id, locale).catch(() => ({
       data: [] as Array<{ id: string; name: { fr: string; en: string }; sortOrder: number }>,
     })),
+    listProductVariants(product.id, locale).catch(() => ({ data: [] as ApiVariant[] })),
     loadRelatedCards(product.id, locale),
+    fetchWishlistVariantIds(locale),
   ]);
 
   const attributesWithValues = await Promise.all(
@@ -84,13 +93,33 @@ export default async function ProductPage({
     }),
   );
 
+  // Map attributeValueId → { attribute name, value name } for rendering each variant's combo.
+  const valueLabelById = new Map<string, { attribute: string; value: string }>();
+  for (const { attribute, values } of attributesWithValues) {
+    for (const v of values) {
+      valueLabelById.set(v.id, {
+        attribute: pickLocalized(attribute.name, locale),
+        value: pickLocalized(v.value, locale),
+      });
+    }
+  }
+
   const orderedImages = [...images].sort((a, b) => a.position - b.position);
   const heroImage = orderedImages.find((i) => i.isPrimary) ?? orderedImages[0] ?? null;
   const galleryImages = orderedImages.filter((i) => i.id !== heroImage?.id);
 
   const name = pickLocalized(product.name, locale);
   const description = pickLocalized(product.description, locale);
-  const price = formatPriceXAF(product.displayPrice, locale);
+  const wishlistSet = new Set(wishlistIds);
+
+  const formatVariantCombo = (variant: ApiVariant): string =>
+    variant.attributeValues
+      .map((av) => valueLabelById.get(av.attributeValueId)?.value)
+      .filter((v): v is string => !!v)
+      .join(' · ') || variant.sku;
+
+  const variantPrice = (variant: ApiVariant): string =>
+    variant.priceOverride ?? product.displayPrice;
 
   return (
     <article className="bg-background py-section-tight">
@@ -120,10 +149,7 @@ export default async function ProductPage({
             {galleryImages.length > 0 && (
               <div className="grid grid-cols-3 gap-3">
                 {galleryImages.map((img) => (
-                  <div
-                    key={img.id}
-                    className="relative aspect-square overflow-hidden bg-beige"
-                  >
+                  <div key={img.id} className="relative aspect-square overflow-hidden bg-beige">
                     <Image
                       src={img.urls.medium}
                       alt={pickLocalized(img.altText, locale) || name}
@@ -139,7 +165,9 @@ export default async function ProductPage({
 
           <div>
             <h1 className="mb-4 font-display text-h2">{name}</h1>
-            <p className="mb-8 font-display text-h3 text-accent">{price}</p>
+            <p className="mb-8 font-display text-h3 text-accent">
+              {formatPriceXAF(product.displayPrice, locale)}
+            </p>
 
             {description && (
               <section className="mb-10">
@@ -150,26 +178,75 @@ export default async function ProductPage({
               </section>
             )}
 
-            {attributesWithValues.length > 0 && (
+            {/* Variants — each row is its own add-to-cart + wishlist form. */}
+            {variantsPage.data.length > 0 && (
               <section className="mb-10">
                 <h2 className="eyebrow mb-3">{t('attributes_heading')}</h2>
-                <dl className="space-y-3">
-                  {attributesWithValues.map(({ attribute, values }) => (
-                    <div key={attribute.id} className="flex flex-wrap items-baseline gap-3">
-                      <dt className="font-body text-small font-medium text-foreground-muted">
-                        {pickLocalized(attribute.name, locale)} :
-                      </dt>
-                      <dd className="flex flex-wrap gap-2 font-body text-base text-foreground">
-                        {values.length === 0
-                          ? '—'
-                          : values
-                              .sort((a, b) => a.sortOrder - b.sortOrder)
-                              .map((v) => pickLocalized(v.value, locale))
-                              .join(', ')}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                <ul className="divide-y divide-border border-y border-border">
+                  {variantsPage.data.map((variant) => {
+                    const inStock = variant.stock > 0;
+                    const wished = wishlistSet.has(variant.id);
+                    return (
+                      <li
+                        key={variant.id}
+                        className="grid gap-3 py-4 sm:grid-cols-[1fr_auto] sm:items-center"
+                      >
+                        <div>
+                          <p className="font-display text-base text-foreground">
+                            {formatVariantCombo(variant)}
+                          </p>
+                          <p className="font-body text-small text-foreground-muted">
+                            {variant.sku} · {formatPriceXAF(variantPrice(variant), locale)}
+                          </p>
+                          {!inStock && (
+                            <p className="font-body text-caption uppercase tracking-eyebrow text-accent">
+                              {tCart('unavailable')}
+                            </p>
+                          )}
+                          {inStock && variant.stock <= 3 && (
+                            <p className="font-body text-caption uppercase tracking-eyebrow text-foreground-muted">
+                              {tCart('low_stock', { n: variant.stock })}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <form action={addToCartAction}>
+                            <input type="hidden" name="variantId" value={variant.id} />
+                            <input type="hidden" name="quantity" value="1" />
+                            <button
+                              type="submit"
+                              className="btn btn-primary"
+                              disabled={!inStock}
+                              aria-disabled={!inStock}
+                            >
+                              {tWishlist('add_to_cart')}
+                            </button>
+                          </form>
+                          <form
+                            action={
+                              wished ? removeFromWishlistAction : addToWishlistAction
+                            }
+                          >
+                            <input type="hidden" name="variantId" value={variant.id} />
+                            <button
+                              type="submit"
+                              aria-label={wished ? tWishlist('remove') : tWishlist('add_to_cart')}
+                              className={`inline-flex h-11 w-11 items-center justify-center border ${
+                                wished
+                                  ? 'border-accent bg-accent text-cream'
+                                  : 'border-border text-foreground hover:border-accent hover:text-accent'
+                              }`}
+                            >
+                              <svg viewBox="0 0 24 24" className="h-5 w-5" fill={wished ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={1.5}>
+                                <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" strokeLinejoin="round" />
+                              </svg>
+                            </button>
+                          </form>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
               </section>
             )}
           </div>

@@ -50,5 +50,8 @@
   "related_product_self_reference": "A product cannot cross-sell itself.",
   "related_product_not_found": "One or more cross-sell products does not exist.",
   "payment_method_not_saveable": "Only Orange Money and MTN MoMo can be saved. Cash-on-delivery has no saved state.",
-  "stock_delta_required": "Stock adjustment quantity must be non-zero."
+  "stock_delta_required": "Stock adjustment quantity must be non-zero.",
+  "variant_not_found": "Variant not found.",
+  "cart_variant_unavailable": "This variant is currently unavailable.",
+  "wishlist_already_added": "This variant is already in your wishlist."
 }
