@@ -27,7 +27,13 @@ import type { PaginatedResponse } from './types';
  * and return `{ data, total, page, pageSize }`. Add to this list as new
  * paginated resources land.
  */
-const PAGINATED_RESOURCES = new Set<string>(['users', 'categories', 'products']);
+const PAGINATED_RESOURCES = new Set<string>([
+  'users',
+  'categories',
+  'products',
+  'attributes',
+  'attribute-values',
+]);
 
 /**
  * Resources whose primary key is a string other than `id` (e.g. Setting uses `key`).

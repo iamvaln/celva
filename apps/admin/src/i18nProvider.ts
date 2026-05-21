@@ -56,6 +56,32 @@ const celvaFr = {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
       },
     },
+    attributes: {
+      name: 'Attribut |||| Attributs',
+      fields: {
+        name: 'Nom (FR / EN)',
+        name_fr: 'Nom (FR)',
+        name_en: 'Name (EN)',
+        productId: 'Produit',
+        sortOrder: 'Ordre',
+      },
+      helpers: {
+        sort_order_optional: 'Optionnel — attribué automatiquement (0, 1, 2 …) si vide.',
+      },
+    },
+    'attribute-values': {
+      name: 'Valeur d’attribut |||| Valeurs d’attribut',
+      fields: {
+        value: 'Valeur (FR / EN)',
+        value_fr: 'Valeur (FR)',
+        value_en: 'Value (EN)',
+        attributeId: 'Attribut',
+        sortOrder: 'Ordre',
+      },
+      helpers: {
+        sort_order_optional: 'Optionnel — attribué automatiquement si vide.',
+      },
+    },
     products: {
       name: 'Produit |||| Produits',
       fields: {
@@ -143,6 +169,32 @@ const celvaEn = {
       },
       errors: {
         invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',
+      },
+    },
+    attributes: {
+      name: 'Attribute |||| Attributes',
+      fields: {
+        name: 'Name (FR / EN)',
+        name_fr: 'Name (FR)',
+        name_en: 'Name (EN)',
+        productId: 'Product',
+        sortOrder: 'Order',
+      },
+      helpers: {
+        sort_order_optional: 'Optional — auto-assigned (0, 1, 2 …) if blank.',
+      },
+    },
+    'attribute-values': {
+      name: 'Attribute value |||| Attribute values',
+      fields: {
+        value: 'Value (FR / EN)',
+        value_fr: 'Value (FR)',
+        value_en: 'Value (EN)',
+        attributeId: 'Attribute',
+        sortOrder: 'Order',
+      },
+      helpers: {
+        sort_order_optional: 'Optional — auto-assigned if blank.',
       },
     },
     products: {
