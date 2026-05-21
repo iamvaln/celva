@@ -196,6 +196,39 @@ describe('dataProvider', () => {
     expect(params.get('isActive')).toBe('true');
   });
 
+  it('getList(collections) handles search + isActive filter', async () => {
+    mockFetch.mockReturnValue(
+      okJson({
+        data: {
+          data: [
+            {
+              id: 'c1',
+              slug: 'noel',
+              name: { fr: 'Noël', en: 'Christmas' },
+              sortOrder: 0,
+              isActive: true,
+            },
+          ],
+          total: 1,
+          page: 1,
+          pageSize: 50,
+        },
+        requestId: 'r-c',
+      }),
+    );
+    await dataProvider.getList('collections', {
+      pagination: { page: 1, perPage: 50 },
+      sort: { field: 'sortOrder', order: 'ASC' },
+      filter: { search: 'noe', isActive: 'true' },
+      meta: undefined,
+    });
+    const [url] = mockFetch.mock.calls[0] as [string];
+    const params = new URLSearchParams(url.split('?')[1]);
+    expect(params.get('search')).toBe('noe');
+    expect(params.get('isActive')).toBe('true');
+    expect(params.get('sortBy')).toBe('sortOrder');
+  });
+
   it('getList(settings) handles non-paginated array response', async () => {
     mockFetch.mockReturnValue(
       okJson({

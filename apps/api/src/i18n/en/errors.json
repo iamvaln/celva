@@ -46,5 +46,8 @@
   "image_too_large": "Image is too large. Maximum size is 5 MB.",
   "image_decode_failed": "Could not decode the image. The file may be corrupt.",
   "image_reorder_mismatch": "The reorder list must contain every image of the product, exactly once.",
+  "related_product_too_many": "A product can have at most 6 cross-sell items.",
+  "related_product_self_reference": "A product cannot cross-sell itself.",
+  "related_product_not_found": "One or more cross-sell products does not exist.",
   "stock_delta_required": "Stock adjustment quantity must be non-zero."
 }

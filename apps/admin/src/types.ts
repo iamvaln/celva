@@ -27,6 +27,18 @@ export type Category = {
   updatedAt: string;
 };
 
+export type Collection = {
+  id: string;
+  slug: string;
+  name: { fr: string; en: string };
+  description?: { fr?: string; en?: string } | null;
+  imageUrl?: string | null;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ProductAttribute = {
   id: string;
   name: { fr: string; en: string };

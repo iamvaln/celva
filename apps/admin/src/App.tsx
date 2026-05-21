@@ -5,6 +5,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import InventoryIcon from '@mui/icons-material/Inventory2';
 import TuneIcon from '@mui/icons-material/Tune';
 import StyleIcon from '@mui/icons-material/Style';
+import CollectionsIcon from '@mui/icons-material/Collections';
 import LayersIcon from '@mui/icons-material/Layers';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
@@ -31,6 +32,9 @@ import { AttributeCreate } from './resources/product-attributes/AttributeCreate'
 import { AttributeValueList } from './resources/attribute-values/AttributeValueList';
 import { AttributeValueEdit } from './resources/attribute-values/AttributeValueEdit';
 import { AttributeValueCreate } from './resources/attribute-values/AttributeValueCreate';
+import { CollectionList } from './resources/collections/CollectionList';
+import { CollectionEdit } from './resources/collections/CollectionEdit';
+import { CollectionCreate } from './resources/collections/CollectionCreate';
 import { VariantList } from './resources/variants/VariantList';
 import { VariantEdit } from './resources/variants/VariantEdit';
 import { VariantCreate } from './resources/variants/VariantCreate';
@@ -94,6 +98,13 @@ export const App = () => (
           list={VariantList}
           edit={VariantEdit}
           create={VariantCreate}
+        />
+        <Resource
+          name="collections"
+          icon={CollectionsIcon}
+          list={CollectionList}
+          edit={CollectionEdit}
+          create={CollectionCreate}
         />
         <Resource
           name="settings"
