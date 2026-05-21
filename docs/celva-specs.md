@@ -122,7 +122,7 @@ Chaque produit définit ses propres axes de variation. Une robe peut avoir "Tail
 SKU unique, sélection d'une valeur par attribut, stock, priceOverride TTC optionnel. Génération auto de toutes les combinaisons possible. Vue stock : disponible / consigné / total. Stock modifié uniquement via le StockMovementService.
 
 ### 4.5 Images produit
-Upload multiple (drag & drop), réordonnable, une isPrimary. Formats : JPEG, PNG, WebP, max 5 Mo. Stockage R2 + Sharp : 4 variantes (original, large 1200px, medium 600px, thumb 300px) en WebP. Clé R2 stockée dans ProductImage.key.
+Upload multiple (drag & drop, jusqu'à 5 fichiers simultanés), réordonnable, une isPrimary. Formats : JPEG, PNG, WebP, max 5 Mo. **Stockage R2 (original uniquement)** : la clé suit la convention `products/{productId}/{uuid}.{ext}` et est stockée dans `ProductImage.key`. Les variantes d'affichage (thumb 300 / medium 600 / large 1200) sont produites à la volée par **Cloudflare Images Transformations** au edge via `https://celva.store/cdn-cgi/image/width=…,quality=…,format=auto/{R2_PUBLIC_URL}/{key}` (format `auto` ⇒ WebP/AVIF négociés par le navigateur). L'API renvoie les URLs précalculées (`urls.original | large | medium | thumb`) dans chaque réponse ProductImage — voir [`celva-algo-images.md`](./celva-algo-images.md) pour le détail.
 
 ### 4.6 Collections
 CRUD (nom bilingue, slug, description bilingue, image couverture, sortOrder, statut). Many-to-many avec Product. Collections thématiques (Noël, Saint-Valentin, Soirées Chic…).

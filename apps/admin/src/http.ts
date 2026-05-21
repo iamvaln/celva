@@ -13,7 +13,11 @@ class HttpError extends Error {
 
 const buildHeaders = (init?: RequestInit): Headers => {
   const headers = new Headers(init?.headers);
-  if (!headers.has('Content-Type') && init?.body) {
+  // Browser sets a multipart boundary itself; only stamp JSON for non-FormData
+  // bodies that haven't been explicitly typed.
+  const isMultipart =
+    typeof FormData !== 'undefined' && init?.body instanceof FormData;
+  if (!headers.has('Content-Type') && init?.body && !isMultipart) {
     headers.set('Content-Type', 'application/json');
   }
   headers.set('Accept', 'application/json');

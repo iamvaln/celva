@@ -42,5 +42,9 @@
   "variant_in_use": "Cette variante ne peut pas être supprimée tant que des commandes, paniers, wishlists ou consignations la référencent.",
   "variant_has_stock": "Cette variante détient encore du stock. Ramenez-le à zéro avant suppression.",
   "variant_has_movements": "Cette variante possède des mouvements de stock et ne peut pas être supprimée (piste d'audit). Désactivez-la à la place.",
+  "image_mime_unsupported": "Format d'image non pris en charge. Acceptés : JPEG, PNG, WebP.",
+  "image_too_large": "Image trop volumineuse. Taille maximale : 5 Mo.",
+  "image_decode_failed": "Impossible de décoder l'image. Le fichier est peut-être corrompu.",
+  "image_reorder_mismatch": "La liste de réorganisation doit contenir toutes les images du produit, exactement une fois.",
   "stock_delta_required": "La quantité d'ajustement de stock doit être non nulle."
 }
