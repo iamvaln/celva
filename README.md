@@ -49,6 +49,28 @@ Default admin credentials after seed: **admin@celva.store** / **ChangeMe123!** �
 
 Per-app: every app exposes `dev`, `build`, `lint`, `typecheck`, `test`. The API also has `test:e2e` (requires Postgres) and `prisma:*`.
 
+## Git flow
+
+Two long-lived branches:
+
+| Branch | Purpose | Deploys to |
+|---|---|---|
+| `main` | **Production.** Tracks what's currently live. No direct commits — only the release PR from `develop`. | `celva.store`, `admin.celva.store`, `api.celva.store` |
+| `develop` | **Preproduction.** Integration of every batch in flight. | `preprod.celva.store`, `preprod.admin.celva.store`, `preprod.api.celva.store` |
+
+Feature branches branch **off `develop`** and open PRs **into `develop`**:
+
+```bash
+git checkout develop && git pull
+git checkout -b feature/batch-G-categories
+# work, commit, push
+gh pr create --base develop
+```
+
+Releases are intentional events — when a slice of `develop` is ready to go live, open a release PR from `develop` → `main` and merge that.
+
+Hotfix exception: if production has a P0 bug and `develop` is too far ahead to ship, a `hotfix/<slug>` branch can target `main` directly — then back-merge `main` → `develop` immediately to avoid drift.
+
 ## CI/CD
 
 `.github/workflows/`:
@@ -57,19 +79,19 @@ Per-app: every app exposes `dev`, `build`, `lint`, `typecheck`, `test`. The API 
   - **static** — install + `@celva/shared` build + `turbo run lint typecheck test`
   - **api-e2e** — boots Postgres 16 as a service, runs migrations + seed, then `apps/api && npm run test:e2e`
   - **build** — matrix of api / admin / storefront; storefront tolerated to fail while the static-prerender issue is open
-- **`deploy-storefront.yml`** — Vercel deploy on push-to-main, gated by `vars.STOREFRONT_DEPLOY_ENABLED='true'`
-- **`deploy-admin.yml`** — Cloudflare Pages deploy via wrangler-action, gated by `vars.ADMIN_DEPLOY_ENABLED='true'`
-- **`deploy-api.yml`** — Railway CLI deploy, gated by `vars.API_DEPLOY_ENABLED='true'`
+- **`deploy-storefront.yml`** — Vercel; `main` → production (`celva.store`), `develop` → preview env
+- **`deploy-admin.yml`** — Cloudflare Pages; `main` → production project, `develop` → preview branch
+- **`deploy-api.yml`** — Railway; `main` → `celva-api` service, `develop` → `celva-api-preprod`
 
 The deploy workflows ship disabled. To turn them on, set the corresponding repo variable to `true` and add the matching secrets:
 
-| Deploy | Required secrets |
-|---|---|
-| storefront | `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_STOREFRONT` |
-| admin | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `VITE_API_URL_ADMIN` |
-| api | `RAILWAY_TOKEN` |
+| Deploy | Production secrets | Preprod secrets |
+|---|---|---|
+| storefront | `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_STOREFRONT` | same token + project (Vercel env split via flag) |
+| admin | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `VITE_API_URL_ADMIN` | + `VITE_API_URL_ADMIN_PREPROD` |
+| api | `RAILWAY_TOKEN` | + `RAILWAY_TOKEN_PREPROD` |
 
-Dependabot (`.github/dependabot.yml`) opens grouped PRs weekly (next, react, nestjs, mui, react-admin, prisma, types) plus monthly action updates.
+Dependabot (`.github/dependabot.yml`) opens grouped PRs weekly **into `develop`** (next, react, nestjs, mui, react-admin, prisma, types) plus monthly action updates.
 
 ## Documentation
 
