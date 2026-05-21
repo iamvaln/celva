@@ -22,5 +22,9 @@
   "setting_already_exists": "Ce paramètre existe déjà.",
   "invalid_slug": "Slug invalide (lettres minuscules, chiffres et tirets uniquement).",
   "slug_already_used": "Ce slug est déjà utilisé par une autre ressource.",
-  "category_has_products": "Impossible de supprimer une catégorie contenant encore des produits. Réaffectez ou supprimez d'abord les produits."
+  "category_has_products": "Impossible de supprimer une catégorie contenant encore des produits. Réaffectez ou supprimez d'abord les produits.",
+  "invalid_decimal": "Valeur décimale invalide (2 décimales maximum).",
+  "display_below_floor": "Le prix affiché doit être supérieur ou égal au prix plancher.",
+  "category_not_found": "Catégorie introuvable.",
+  "product_in_use": "Ce produit ne peut pas être supprimé : il est encore référencé par des variantes, commandes ou autres enregistrements."
 }

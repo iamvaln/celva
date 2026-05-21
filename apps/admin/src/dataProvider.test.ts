@@ -84,6 +84,35 @@ describe('dataProvider', () => {
     expect(params.get('sortDir')).toBe('asc');
   });
 
+  it('getList(products) passes search + categoryId filter via query params', async () => {
+    mockFetch.mockReturnValue(
+      okJson({
+        data: {
+          data: [
+            { id: 'p1', slug: 'robe-soiree', displayPrice: '25000.00', isActive: true },
+          ],
+          total: 1,
+          page: 1,
+          pageSize: 20,
+        },
+        requestId: 'r-p',
+      }),
+    );
+
+    await dataProvider.getList('products', {
+      pagination: { page: 1, perPage: 20 },
+      sort: { field: 'createdAt', order: 'DESC' },
+      filter: { search: 'rob', categoryId: 'cat-1' },
+      meta: undefined,
+    });
+
+    const [url] = mockFetch.mock.calls[0] as [string];
+    const params = new URLSearchParams(url.split('?')[1]);
+    expect(params.get('search')).toBe('rob');
+    expect(params.get('categoryId')).toBe('cat-1');
+    expect(params.get('sortBy')).toBe('createdAt');
+  });
+
   it('getList(settings) handles non-paginated array response', async () => {
     mockFetch.mockReturnValue(
       okJson({
