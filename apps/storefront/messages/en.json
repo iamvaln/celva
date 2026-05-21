@@ -121,6 +121,11 @@
     "clear": "Empty cart",
     "go_to_cart": "View cart ({count})",
     "discount": "Discount",
+    "flash": {
+      "added": "Added to your cart.",
+      "add_failed": "Couldn't add this piece. Please try again.",
+      "insufficient_stock": "Not enough stock for this variant."
+    },
     "promo": {
       "label": "Promo code",
       "placeholder": "Enter your code",
