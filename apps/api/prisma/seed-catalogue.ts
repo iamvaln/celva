@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
