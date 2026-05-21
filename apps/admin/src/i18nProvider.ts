@@ -37,6 +37,25 @@ const celvaFr = {
         label: 'Libellé bilingue',
       },
     },
+    categories: {
+      name: 'Catégorie |||| Catégories',
+      fields: {
+        name: 'Nom (FR / EN)',
+        name_fr: 'Nom (FR)',
+        name_en: 'Name (EN)',
+        slug: 'Slug',
+        description_fr: 'Description (FR)',
+        description_en: 'Description (EN)',
+        sortOrder: 'Ordre',
+        createdAt: 'Créé le',
+      },
+      helpers: {
+        slug_optional: 'Optionnel — généré automatiquement depuis le nom français si vide.',
+      },
+      errors: {
+        invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
+      },
+    },
   },
 };
 
@@ -72,6 +91,25 @@ const celvaEn = {
         key: 'Key',
         value: 'Value',
         label: 'Bilingual label',
+      },
+    },
+    categories: {
+      name: 'Category |||| Categories',
+      fields: {
+        name: 'Name (FR / EN)',
+        name_fr: 'Name (FR)',
+        name_en: 'Name (EN)',
+        slug: 'Slug',
+        description_fr: 'Description (FR)',
+        description_en: 'Description (EN)',
+        sortOrder: 'Order',
+        createdAt: 'Created at',
+      },
+      helpers: {
+        slug_optional: 'Optional — auto-generated from the French name if blank.',
+      },
+      errors: {
+        invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',
       },
     },
   },
