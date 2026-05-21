@@ -56,6 +56,39 @@ const celvaFr = {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
       },
     },
+    products: {
+      name: 'Produit |||| Produits',
+      fields: {
+        name: 'Nom (FR / EN)',
+        name_fr: 'Nom (FR)',
+        name_en: 'Name (EN)',
+        slug: 'Slug',
+        description_fr: 'Description (FR)',
+        description_en: 'Description (EN)',
+        displayPrice: 'Prix affiché (TTC)',
+        floorPrice: 'Prix plancher (TTC)',
+        costPrice: 'Prix de revient (HT)',
+        productionType: 'Type de production',
+        defaultCommissionType: 'Type de commission',
+        defaultCommissionValue: 'Valeur commission',
+        isActive: 'Actif',
+        categoryId: 'Catégorie',
+        createdAt: 'Créé le',
+      },
+      helpers: {
+        slug_optional: 'Optionnel — généré automatiquement depuis le nom français si vide.',
+        cost_price: 'Saisi manuellement pour PURCHASED. Auto-calculé pour INTERNAL / SUBCONTRACTED dès qu’un ordre de production est complété.',
+      },
+      actions: {
+        duplicate: 'Dupliquer',
+      },
+      notifications: {
+        duplicated: 'Produit dupliqué. Pensez à le réactiver une fois revu.',
+      },
+      errors: {
+        invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
+      },
+    },
   },
 };
 
@@ -107,6 +140,39 @@ const celvaEn = {
       },
       helpers: {
         slug_optional: 'Optional — auto-generated from the French name if blank.',
+      },
+      errors: {
+        invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',
+      },
+    },
+    products: {
+      name: 'Product |||| Products',
+      fields: {
+        name: 'Name (FR / EN)',
+        name_fr: 'Name (FR)',
+        name_en: 'Name (EN)',
+        slug: 'Slug',
+        description_fr: 'Description (FR)',
+        description_en: 'Description (EN)',
+        displayPrice: 'Display price (incl. VAT)',
+        floorPrice: 'Floor price (incl. VAT)',
+        costPrice: 'Cost price (excl. VAT)',
+        productionType: 'Production type',
+        defaultCommissionType: 'Commission type',
+        defaultCommissionValue: 'Commission value',
+        isActive: 'Active',
+        categoryId: 'Category',
+        createdAt: 'Created at',
+      },
+      helpers: {
+        slug_optional: 'Optional — auto-generated from the French name if blank.',
+        cost_price: 'Entered manually for PURCHASED. Auto-computed for INTERNAL / SUBCONTRACTED once a production order completes.',
+      },
+      actions: {
+        duplicate: 'Duplicate',
+      },
+      notifications: {
+        duplicated: 'Product duplicated. Remember to reactivate once reviewed.',
       },
       errors: {
         invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',

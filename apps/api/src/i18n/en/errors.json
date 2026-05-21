@@ -22,5 +22,9 @@
   "setting_already_exists": "This setting already exists.",
   "invalid_slug": "Invalid slug (lowercase letters, digits and dashes only).",
   "slug_already_used": "This slug is already used by another resource.",
-  "category_has_products": "Cannot delete a category that still contains products. Reassign or delete the products first."
+  "category_has_products": "Cannot delete a category that still contains products. Reassign or delete the products first.",
+  "invalid_decimal": "Invalid decimal value (up to 2 decimals).",
+  "display_below_floor": "Display price must be greater than or equal to the floor price.",
+  "category_not_found": "Category not found.",
+  "product_in_use": "This product cannot be deleted: it is still referenced by variants, orders or other records."
 }
