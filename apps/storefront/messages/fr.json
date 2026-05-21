@@ -119,7 +119,24 @@
     "update": "Mettre à jour",
     "remove": "Retirer",
     "clear": "Vider le panier",
-    "go_to_cart": "Voir le panier ({count})"
+    "go_to_cart": "Voir le panier ({count})",
+    "discount": "Remise",
+    "promo": {
+      "label": "Code promo",
+      "placeholder": "Entrez votre code",
+      "apply": "Appliquer",
+      "checking": "Vérification…",
+      "applied": "Code {code} appliqué",
+      "remove": "Retirer le code",
+      "errors": {
+        "invalid": "Code inconnu, inactif ou expiré.",
+        "exhausted": "Ce code a atteint sa limite d'utilisations.",
+        "min_order": "Le sous-total n'atteint pas le minimum requis.",
+        "user_limit": "Vous avez déjà utilisé ce code le maximum de fois autorisé.",
+        "format": "Format invalide. Lettres, chiffres, '_' ou '-'.",
+        "unknown": "Impossible d'appliquer ce code. Réessayez."
+      }
+    }
   },
   "wishlist": {
     "title": "Favoris",

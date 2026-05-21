@@ -17,6 +17,7 @@ import { AuditLog } from '../../common/interceptors/audit-log.interceptor';
 import { CartService } from './cart.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+import { ApplyPromoCodeDto } from '../promo-codes/dto/apply-promo-code.dto';
 
 @ApiTags('cart')
 @ApiBearerAuth('access-token')
@@ -69,5 +70,17 @@ export class CartController {
   @AuditLog({ action: 'UPDATE', entity: 'Cart' })
   clear(@CurrentUser() user: AuthenticatedUser) {
     return this.cart.clear(user.id);
+  }
+
+  @Post('apply-promo')
+  @ApiOperation({
+    summary:
+      'Stateless promo-code preview against the current cart subtotal. Validates only — usedCount increments at order creation (Batch R).',
+  })
+  applyPromo(
+    @Body() dto: ApplyPromoCodeDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.cart.previewPromo(user.id, dto.code);
   }
 }

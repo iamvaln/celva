@@ -53,5 +53,13 @@
   "stock_delta_required": "Stock adjustment quantity must be non-zero.",
   "variant_not_found": "Variant not found.",
   "cart_variant_unavailable": "This variant is currently unavailable.",
-  "wishlist_already_added": "This variant is already in your wishlist."
+  "wishlist_already_added": "This variant is already in your wishlist.",
+  "invalid_promo_code_format": "Invalid promo code format. Use letters, digits, '_' or '-' (2 to 32 chars).",
+  "promo_code_already_exists": "A promo code with this name already exists.",
+  "promo_code_in_use": "This promo code has been used by past orders and cannot be deleted. Deactivate it instead.",
+  "promo_code_value_out_of_range": "Promo code value out of range. PERCENTAGE: 1-100. FIXED: must be > 0.",
+  "promo_code_date_window": "Start date must be before expiry date.",
+  "promo_code_exhausted": "This promo code has reached its usage limit.",
+  "promo_code_user_limit": "You have already used this promo code the maximum number of times.",
+  "promo_code_min_order": "Cart subtotal does not meet this code's minimum order amount."
 }
