@@ -1,0 +1,63 @@
+name: Deploy · Storefront (Vercel)
+
+# Trigger only when main moves AND the storefront tree (or its shared
+# deps) changed. Manual trigger is also available.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/storefront/**'
+      - 'packages/shared/**'
+      - 'packages/tailwind-config/**'
+      - 'packages/typescript-config/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'turbo.json'
+      - '.github/workflows/deploy-storefront.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-storefront-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_STOREFRONT }}
+
+jobs:
+  deploy:
+    name: Vercel · production
+    runs-on: ubuntu-latest
+    # Guard: skip until secrets are configured. Remove this `if` once
+    # VERCEL_TOKEN + VERCEL_ORG_ID + VERCEL_PROJECT_ID_STOREFRONT exist.
+    if: ${{ vars.STOREFRONT_DEPLOY_ENABLED == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+        env:
+          NPM_CONFIG_ENGINE_STRICT: 'false'
+
+      - name: Build @celva/shared
+        run: npm run build --workspace=@celva/shared
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel env
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/storefront
+
+      - name: Build (Vercel)
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/storefront
+
+      - name: Deploy (Vercel)
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/storefront
