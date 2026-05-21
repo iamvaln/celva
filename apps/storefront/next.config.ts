@@ -15,6 +15,10 @@ const config: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'media.celva.store' },
       { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
+      // Cloudflare Images Transformations origin (celva.store/cdn-cgi/image/...)
+      { protocol: 'https', hostname: 'celva.store', pathname: '/cdn-cgi/image/**' },
+      // Local API fallback: the dev API serves /uploads/* directly
+      { protocol: 'http', hostname: 'localhost', port: '3001', pathname: '/uploads/**' },
     ],
     formats: ['image/avif', 'image/webp'],
   },
