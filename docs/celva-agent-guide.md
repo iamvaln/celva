@@ -217,14 +217,25 @@ Service central injectable. SEUL point d'entrée pour modifier le stock d'une va
 ### InvoiceService
 Service qui : génère le numéro séquentiel (CLV-INV-YYYYMM-XXXX, atomique), calcule HT/TVA/TTC depuis les OrderItems, génère le PDF depuis un template HTML via Puppeteer (https://pptr.dev/) ou @react-pdf/renderer (https://react-pdf.org/), upload sur R2, envoie l'email avec le PDF. Se déclenche auto quand Payment passe en COMPLETED.
 
-### Upload images R2 + Sharp
+### Upload images R2 + Cloudflare Images Transformations
 > Docs R2 S3 API : https://developers.cloudflare.com/r2/api/s3/
-> Docs Sharp : https://sharp.pixelplumbing.com/
+> Docs Images Transformations : https://developers.cloudflare.com/images/transform-images/
+> Algo détaillé : [celva-algo-images.md](./celva-algo-images.md) — lecture obligatoire pour ce module.
 
 ```bash
-pnpm add @aws-sdk/client-s3 sharp
+npm install @aws-sdk/client-s3 @aws-sdk/s3-request-presigner multer
+npm install -D @types/multer
 ```
-Upload → Sharp génère 4 variantes (original, large 1200px, medium 600px, thumb 300px) en WebP → stockage R2 avec convention `{entity}/{id}/{imageId}-{size}.webp`. Utilisé pour ProductImage et RawMaterial.imageKey.
+
+**Pas de Sharp.** L'API NestJS stocke seulement l'original sur R2 (`{entity}/{id}/{uuid}.{ext}`) ; les variantes (thumb 300 / medium 600 / large 1200) sont générées par Cloudflare à la volée via `https://celva.store/cdn-cgi/image/width=…,quality=…,format=auto/<R2_PUBLIC_URL>/<key>`. L'API sérialise les URLs précalculées dans la réponse (`urls.original`, `urls.large`, `urls.medium`, `urls.thumb`) — le storefront/admin ne reconstruit jamais d'URL côté client.
+
+Variables d'env requises (voir `apps/api/.env.example`) :
+- `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`
+- `R2_ENDPOINT=https://{ACCOUNT_ID}.r2.cloudflarestorage.com`
+- `R2_PUBLIC_URL=https://media.celva.store`
+- `CF_IMAGES_BASE_URL=https://celva.store/cdn-cgi/image`
+
+Même pipeline pour `ProductImage` et `RawMaterial.imageKey`.
 
 ### i18n API
 > Docs : https://nestjs-i18n.com/
