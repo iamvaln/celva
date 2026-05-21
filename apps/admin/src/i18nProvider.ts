@@ -150,6 +150,15 @@ const celvaFr = {
       errors: {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
       },
+      images: {
+        title: 'Images',
+        upload: 'Ajouter une image',
+        uploading: 'Téléversement…',
+        uploaded: 'Image téléversée. Variantes WebP générées.',
+        make_primary: 'Définir comme image principale',
+        confirm_delete: 'Supprimer cette image ?',
+        empty: 'Aucune image. Ajoutez-en une pour démarrer.',
+      },
     },
   },
 };
@@ -299,6 +308,15 @@ const celvaEn = {
       },
       errors: {
         invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',
+      },
+      images: {
+        title: 'Images',
+        upload: 'Add image',
+        uploading: 'Uploading…',
+        uploaded: 'Image uploaded. WebP variants generated.',
+        make_primary: 'Set as primary image',
+        confirm_delete: 'Delete this image?',
+        empty: 'No images yet. Add one to get started.',
       },
     },
   },
