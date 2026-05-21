@@ -121,6 +121,11 @@
     "clear": "Vider le panier",
     "go_to_cart": "Voir le panier ({count})",
     "discount": "Remise",
+    "flash": {
+      "added": "Ajouté à votre panier.",
+      "add_failed": "Impossible d'ajouter cette pièce. Réessayez.",
+      "insufficient_stock": "Stock insuffisant pour cette variante."
+    },
     "promo": {
       "label": "Code promo",
       "placeholder": "Entrez votre code",
