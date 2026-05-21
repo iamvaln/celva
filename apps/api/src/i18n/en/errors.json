@@ -42,5 +42,9 @@
   "variant_in_use": "This variant cannot be deleted while orders, carts, wishlists or consignments reference it.",
   "variant_has_stock": "This variant still holds stock. Adjust it to zero before deleting.",
   "variant_has_movements": "This variant has stock movements recorded and cannot be deleted (audit trail). Deactivate it instead.",
+  "image_mime_unsupported": "Unsupported image format. Accepted: JPEG, PNG, WebP.",
+  "image_too_large": "Image is too large. Maximum size is 5 MB.",
+  "image_decode_failed": "Could not decode the image. The file may be corrupt.",
+  "image_reorder_mismatch": "The reorder list must contain every image of the product, exactly once.",
   "stock_delta_required": "Stock adjustment quantity must be non-zero."
 }

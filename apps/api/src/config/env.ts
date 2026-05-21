@@ -18,6 +18,8 @@ const envSchema = z.object({
   R2_SECRET_ACCESS_KEY: z.string().optional(),
   R2_BUCKET_NAME: z.string().default('celva-media'),
   R2_PUBLIC_URL: z.string().url().optional(),
+  R2_ENDPOINT: z.string().url().optional(),
+  CF_IMAGES_BASE_URL: z.string().url().default('https://celva.store/cdn-cgi/image'),
 
   CORS_ORIGINS: z.string().default(''),
   COOKIE_SECRET: z.string().min(32).default('dev-cookie-secret-please-replace-32chars-min'),

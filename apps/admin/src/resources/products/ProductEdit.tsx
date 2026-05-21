@@ -20,6 +20,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { COMMISSION_TYPE, PRODUCTION_TYPE } from '@celva/shared';
 import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
+import { ProductImagesPanel } from './ProductImagesPanel';
 
 const DuplicateButton = () => {
   const record = useRecordContext<{ id: string }>();
@@ -119,7 +120,14 @@ export const ProductEdit = () => {
         />
         <NumberInput source="defaultCommissionValue" validate={[minValue(0)]} />
         <BooleanInput source="isActive" />
+        <ProductImagesPanelWithRecord />
       </SimpleForm>
     </Edit>
   );
+};
+
+const ProductImagesPanelWithRecord = () => {
+  const record = useRecordContext<{ id: string }>();
+  if (!record?.id) return null;
+  return <ProductImagesPanel productId={record.id} />;
 };
