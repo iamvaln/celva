@@ -101,6 +101,50 @@
       "error": "Inscription impossible. Réessayez."
     }
   },
+  "shop": {
+    "title": "Boutique",
+    "subtitle": "Pièces couture, prêtes à être expédiées.",
+    "filter": {
+      "search_label": "Rechercher",
+      "search_placeholder": "Rechercher par nom…",
+      "category_label": "Catégorie",
+      "category_all": "Toutes les catégories",
+      "sort_label": "Trier par",
+      "sort": {
+        "newest": "Nouveautés",
+        "price_asc": "Prix · croissant",
+        "price_desc": "Prix · décroissant"
+      },
+      "apply": "Appliquer",
+      "reset": "Réinitialiser"
+    },
+    "empty": "Aucun produit ne correspond à vos filtres.",
+    "pagination": {
+      "prev": "Précédent",
+      "next": "Suivant",
+      "page_of_total": "Page {page} sur {total}"
+    },
+    "product_card": {
+      "view": "Voir",
+      "from": "à partir de"
+    }
+  },
+  "product": {
+    "back": "Retour à la boutique",
+    "category_label": "Catégorie",
+    "description_heading": "À propos",
+    "attributes_heading": "Options",
+    "related_heading": "Complétez le look",
+    "no_image": "Image bientôt disponible",
+    "not_found": "Produit introuvable.",
+    "back_to_shop": "Retour à la boutique"
+  },
+  "collection": {
+    "back": "Toutes les collections",
+    "products_heading": "Pièces de cette collection",
+    "empty": "Aucun produit pour le moment.",
+    "not_found": "Collection introuvable."
+  },
   "auth": {
     "login": {
       "title": "Bon retour",

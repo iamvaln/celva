@@ -101,6 +101,50 @@
       "error": "Couldn't subscribe. Try again."
     }
   },
+  "shop": {
+    "title": "Shop",
+    "subtitle": "Couture pieces, ready to ship.",
+    "filter": {
+      "search_label": "Search",
+      "search_placeholder": "Search by name…",
+      "category_label": "Category",
+      "category_all": "All categories",
+      "sort_label": "Sort by",
+      "sort": {
+        "newest": "Newest",
+        "price_asc": "Price · low to high",
+        "price_desc": "Price · high to low"
+      },
+      "apply": "Apply",
+      "reset": "Reset"
+    },
+    "empty": "No products match your filters.",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page_of_total": "Page {page} of {total}"
+    },
+    "product_card": {
+      "view": "View",
+      "from": "from"
+    }
+  },
+  "product": {
+    "back": "Back to shop",
+    "category_label": "Category",
+    "description_heading": "About this piece",
+    "attributes_heading": "Options",
+    "related_heading": "Complete the look",
+    "no_image": "Image coming soon",
+    "not_found": "Product not found.",
+    "back_to_shop": "Back to the shop"
+  },
+  "collection": {
+    "back": "All collections",
+    "products_heading": "Pieces in this collection",
+    "empty": "No products yet.",
+    "not_found": "Collection not found."
+  },
   "auth": {
     "login": {
       "title": "Welcome back",
