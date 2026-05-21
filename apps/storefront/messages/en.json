@@ -119,7 +119,24 @@
     "update": "Update",
     "remove": "Remove",
     "clear": "Empty cart",
-    "go_to_cart": "View cart ({count})"
+    "go_to_cart": "View cart ({count})",
+    "discount": "Discount",
+    "promo": {
+      "label": "Promo code",
+      "placeholder": "Enter your code",
+      "apply": "Apply",
+      "checking": "Checking…",
+      "applied": "Code {code} applied",
+      "remove": "Remove code",
+      "errors": {
+        "invalid": "Code unknown, inactive or expired.",
+        "exhausted": "This code has reached its usage limit.",
+        "min_order": "Subtotal does not meet this code's minimum.",
+        "user_limit": "You have already used this code the maximum number of times.",
+        "format": "Invalid format. Letters, digits, '_' or '-'.",
+        "unknown": "Could not apply this code. Try again."
+      }
+    }
   },
   "wishlist": {
     "title": "Wishlist",
