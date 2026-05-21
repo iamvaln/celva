@@ -32,5 +32,15 @@
   "attribute_sort_order_taken": "Un autre attribut utilise déjà cet ordre pour ce produit.",
   "attribute_value_sort_order_taken": "Une autre valeur utilise déjà cet ordre pour cet attribut.",
   "attribute_in_use": "Cet attribut ne peut pas être supprimé tant que des variantes le référencent. Supprimez d'abord les variantes.",
-  "attribute_value_in_use": "Cette valeur ne peut pas être supprimée tant que des variantes la référencent. Supprimez d'abord les variantes."
+  "attribute_value_in_use": "Cette valeur ne peut pas être supprimée tant que des variantes la référencent. Supprimez d'abord les variantes.",
+  "invalid_sku": "SKU invalide (lettres majuscules, chiffres, '.', '_', '-' ; 2 à 50 caractères).",
+  "sku_already_used": "Ce SKU est déjà utilisé.",
+  "variant_attribute_mismatch": "La variante doit choisir exactement une valeur par attribut du produit.",
+  "variant_attribute_value_invalid": "Une des valeurs choisies n'appartient pas aux attributs de ce produit.",
+  "variant_attribute_duplicate_axis": "Deux choix portent sur le même attribut. Chaque axe doit être défini une fois.",
+  "variant_combination_exists": "Une autre variante de ce produit utilise déjà cette combinaison d'attributs.",
+  "variant_in_use": "Cette variante ne peut pas être supprimée tant que des commandes, paniers, wishlists ou consignations la référencent.",
+  "variant_has_stock": "Cette variante détient encore du stock. Ramenez-le à zéro avant suppression.",
+  "variant_has_movements": "Cette variante possède des mouvements de stock et ne peut pas être supprimée (piste d'audit). Désactivez-la à la place.",
+  "stock_delta_required": "La quantité d'ajustement de stock doit être non nulle."
 }
