@@ -26,5 +26,11 @@
   "invalid_decimal": "Invalid decimal value (up to 2 decimals).",
   "display_below_floor": "Display price must be greater than or equal to the floor price.",
   "category_not_found": "Category not found.",
-  "product_in_use": "This product cannot be deleted: it is still referenced by variants, orders or other records."
+  "product_in_use": "This product cannot be deleted: it is still referenced by variants, orders or other records.",
+  "product_not_found": "Product not found.",
+  "attribute_not_found": "Attribute not found.",
+  "attribute_sort_order_taken": "Another attribute already uses this sort order for the product.",
+  "attribute_value_sort_order_taken": "Another value already uses this sort order for the attribute.",
+  "attribute_in_use": "This attribute cannot be deleted while variants reference it. Remove the variants first.",
+  "attribute_value_in_use": "This value cannot be deleted while variants reference it. Remove the variants first."
 }
