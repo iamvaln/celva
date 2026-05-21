@@ -33,6 +33,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'products',
   'attributes',
   'attribute-values',
+  'variants',
 ]);
 
 /**
