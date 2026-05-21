@@ -8,6 +8,8 @@ import StyleIcon from '@mui/icons-material/Style';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import LayersIcon from '@mui/icons-material/Layers';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -42,6 +44,12 @@ import { VariantCreate } from './resources/variants/VariantCreate';
 import { PromoCodeList } from './resources/promo-codes/PromoCodeList';
 import { PromoCodeEdit } from './resources/promo-codes/PromoCodeEdit';
 import { PromoCodeCreate } from './resources/promo-codes/PromoCodeCreate';
+import { DeliveryZoneList } from './resources/delivery-zones/DeliveryZoneList';
+import { DeliveryZoneEdit } from './resources/delivery-zones/DeliveryZoneEdit';
+import { DeliveryZoneCreate } from './resources/delivery-zones/DeliveryZoneCreate';
+import { PickupPointList } from './resources/pickup-points/PickupPointList';
+import { PickupPointEdit } from './resources/pickup-points/PickupPointEdit';
+import { PickupPointCreate } from './resources/pickup-points/PickupPointCreate';
 
 export const App = () => (
   <Admin
@@ -117,6 +125,22 @@ export const App = () => (
           edit={permissions === 'ADMIN' ? PromoCodeEdit : undefined}
           create={permissions === 'ADMIN' ? PromoCodeCreate : undefined}
           options={{ label: 'Codes promo' }}
+        />
+        <Resource
+          name="delivery-zones"
+          icon={LocalShippingIcon}
+          list={DeliveryZoneList}
+          edit={permissions === 'ADMIN' ? DeliveryZoneEdit : undefined}
+          create={permissions === 'ADMIN' ? DeliveryZoneCreate : undefined}
+          options={{ label: 'Zones de livraison' }}
+        />
+        <Resource
+          name="pickup-points"
+          icon={StorefrontIcon}
+          list={PickupPointList}
+          edit={PickupPointEdit}
+          create={PickupPointCreate}
+          options={{ label: 'Points de retrait' }}
         />
         <Resource
           name="settings"

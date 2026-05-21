@@ -10,6 +10,26 @@ export type AdminUser = {
   createdAt: string;
 };
 
+export type DeliveryZone = {
+  id: string;
+  name: { fr: string; en: string };
+  fee: string | number;
+  actualCost: string | number;
+  freeDeliveryThreshold?: string | number | null;
+  estimatedDays?: { min: number; max: number } | null;
+  isActive: boolean;
+};
+
+export type PickupPoint = {
+  id: string;
+  name: { fr: string; en: string };
+  address: string;
+  city: string;
+  phone?: string | null;
+  hours?: { fr?: string; en?: string } | null;
+  isActive: boolean;
+};
+
 export type Setting = {
   id: string;
   key: string;
