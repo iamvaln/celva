@@ -156,6 +156,8 @@ export default async function WishlistPage({
                 <form action={addToCartAction}>
                   <input type="hidden" name="variantId" value={item.variantId} />
                   <input type="hidden" name="quantity" value="1" />
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="fromPath" value={`/${locale}/wishlist`} />
                   <button
                     type="submit"
                     className="btn btn-primary"
@@ -167,6 +169,8 @@ export default async function WishlistPage({
                 </form>
                 <form action={removeFromWishlistAction}>
                   <input type="hidden" name="variantId" value={item.variantId} />
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="fromPath" value={`/${locale}/wishlist`} />
                   <button
                     type="submit"
                     className="font-body text-small text-foreground-muted hover:text-accent"

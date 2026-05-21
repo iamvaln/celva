@@ -121,6 +121,11 @@
     "clear": "Empty cart",
     "go_to_cart": "View cart ({count})",
     "discount": "Discount",
+    "flash": {
+      "added": "Added to your cart.",
+      "add_failed": "Couldn't add this piece. Please try again.",
+      "insufficient_stock": "Not enough stock for this variant."
+    },
     "promo": {
       "label": "Promo code",
       "placeholder": "Enter your code",
@@ -137,6 +142,82 @@
         "unknown": "Could not apply this code. Try again."
       }
     }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "login_required": "Log in to place your order.",
+    "back_to_cart": "Back to cart",
+    "place_order": "Place order",
+    "delivery": {
+      "heading": "Delivery mode",
+      "home": "Home delivery",
+      "home_hint": "Couriered to your address. Fees apply by zone.",
+      "store": "Pickup at our store",
+      "store_hint": "Free. Pick up from our Douala atelier.",
+      "relay": "Pickup at a relay point",
+      "relay_hint": "Free. Pick up from a partner location."
+    },
+    "delivery_details": {
+      "heading": "Delivery details",
+      "zone": "Delivery zone",
+      "days": "days",
+      "saved_address": "Saved address",
+      "new_address": "Use a new address",
+      "inline_address": "Or enter a new address",
+      "address_line": "Address",
+      "city": "City",
+      "phone": "Phone",
+      "pickup_point": "Pickup point"
+    },
+    "payment": {
+      "heading": "Payment",
+      "orange": "Orange Money",
+      "mtn": "MTN Mobile Money",
+      "cash": "Cash on delivery",
+      "cash_hint": "Pay the courier on delivery. Subject to amount cap.",
+      "saved_method": "Saved method",
+      "new_method": "Use a new number",
+      "phone_label": "Mobile Money number"
+    },
+    "notes": {
+      "label": "Note for the team",
+      "placeholder": "Apartment access code, gift wrap, etc."
+    },
+    "errors": {
+      "unknown": "Couldn't place the order. Please try again.",
+      "cart_empty": "Your cart is empty.",
+      "delivery_zone_required": "Pick a delivery zone for home delivery.",
+      "delivery_zone_unavailable": "This delivery zone is no longer available.",
+      "pickup_point_required": "Pick a pickup point.",
+      "pickup_point_unavailable": "This pickup point is no longer available.",
+      "shipping_address_not_found": "Saved address not found.",
+      "saved_payment_method_not_found": "Saved payment method not found.",
+      "saved_payment_method_mismatch": "Saved method doesn't match the selected type.",
+      "payment_phone_required": "Provide a Mobile Money phone number.",
+      "cash_over_cap": "Total exceeds the cash-on-delivery limit. Pick Mobile Money.",
+      "insufficient_stock": "One of the items is out of stock. Please review your cart.",
+      "invalid_phone": "Invalid phone (Cameroon: +2376XXXXXXXX or +2372XXXXXXXX)."
+    }
+  },
+  "confirmation": {
+    "eyebrow": "Order confirmed",
+    "title": "Thank you for your order",
+    "intro": "Your order number is {orderNumber}. We'll be in touch shortly.",
+    "status": {
+      "confirmed": "Order confirmed — we're preparing it.",
+      "pending": "Payment pending — complete the Mobile Money push on your phone."
+    },
+    "items_heading": "Pieces",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "delivery_fee": "Delivery",
+    "total": "Total",
+    "vat_included": "VAT included",
+    "delivery_heading": "Delivery",
+    "payment_heading": "Payment",
+    "notes_heading": "Note",
+    "continue_shopping": "Keep shopping",
+    "view_orders": "My orders"
   },
   "wishlist": {
     "title": "Wishlist",

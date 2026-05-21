@@ -63,7 +63,7 @@ export const MobileMenu = ({
           {[
             { href: '/shop' as const, label: t('shop') },
             { href: '/journal' as const, label: t('journal') },
-            { href: '/about' as const, label: t('account') },
+            { href: '/about' as const, label: t('studio') },
           ].map((item) => (
             <li key={item.href}>
               <Link

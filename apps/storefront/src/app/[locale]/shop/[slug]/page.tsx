@@ -20,7 +20,7 @@ import {
 } from '@/lib/catalogue';
 import { fetchWishlistVariantIds } from '@/lib/cart';
 import { ProductCard } from '@/components/ProductCard';
-import { addToCartAction } from '../../cart/actions';
+import { addToCartAction, readAndClearCartFlash } from '../../cart/actions';
 import { addToWishlistAction, removeFromWishlistAction } from '../../wishlist/actions';
 
 type Params = { locale: Locale; slug: string };
@@ -76,15 +76,24 @@ export default async function ProductPage({
   const tCart = await getTranslations('cart');
   const tWishlist = await getTranslations('wishlist');
 
-  const [images, attributesPage, variantsPage, relatedCards, wishlistIds] = await Promise.all([
-    listProductImages(product.id, locale).catch(() => [] as ApiProductImage[]),
-    listProductAttributes(product.id, locale).catch(() => ({
-      data: [] as Array<{ id: string; name: { fr: string; en: string }; sortOrder: number }>,
-    })),
-    listProductVariants(product.id, locale).catch(() => ({ data: [] as ApiVariant[] })),
-    loadRelatedCards(product.id, locale),
-    fetchWishlistVariantIds(locale),
-  ]);
+  const [images, attributesPage, variantsPage, relatedCards, wishlistIds, flash] =
+    await Promise.all([
+      listProductImages(product.id, locale).catch(() => [] as ApiProductImage[]),
+      listProductAttributes(product.id, locale).catch(() => ({
+        data: [] as Array<{ id: string; name: { fr: string; en: string }; sortOrder: number }>,
+      })),
+      listProductVariants(product.id, locale).catch(() => ({ data: [] as ApiVariant[] })),
+      loadRelatedCards(product.id, locale),
+      fetchWishlistVariantIds(locale),
+      readAndClearCartFlash(),
+    ]);
+
+  // Flash from the previous add-to-cart attempt that bounced back here on
+  // error. Success redirects to /cart so we only ever see "error:..." here.
+  const flashError =
+    flash && flash.startsWith('error:') ? flash.replace('error:', '') : null;
+
+  const fromPath = `/${locale}/shop/${slug}`;
 
   const attributesWithValues = await Promise.all(
     (attributesPage.data ?? []).map(async (attr) => {
@@ -127,6 +136,15 @@ export default async function ProductPage({
         <Link href="/shop" className="btn btn-ghost mb-6 inline-flex">
           ← {t('back')}
         </Link>
+
+        {flashError && (
+          <div
+            role="alert"
+            className="mb-6 border border-accent bg-accent/10 px-4 py-3 font-body text-base text-accent"
+          >
+            {tCart(flashError === 'insufficient_stock' ? 'flash.insufficient_stock' : 'flash.add_failed')}
+          </div>
+        )}
 
         <div className="grid gap-10 lg:grid-cols-2">
           <div className="space-y-4">
@@ -213,6 +231,8 @@ export default async function ProductPage({
                           <form action={addToCartAction}>
                             <input type="hidden" name="variantId" value={variant.id} />
                             <input type="hidden" name="quantity" value="1" />
+                            <input type="hidden" name="locale" value={locale} />
+                            <input type="hidden" name="fromPath" value={fromPath} />
                             <button
                               type="submit"
                               className="btn btn-primary"
@@ -228,6 +248,8 @@ export default async function ProductPage({
                             }
                           >
                             <input type="hidden" name="variantId" value={variant.id} />
+                            <input type="hidden" name="locale" value={locale} />
+                            <input type="hidden" name="fromPath" value={fromPath} />
                             <button
                               type="submit"
                               aria-label={wished ? tWishlist('remove') : tWishlist('add_to_cart')}
