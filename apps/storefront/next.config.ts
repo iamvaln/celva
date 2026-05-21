@@ -7,10 +7,6 @@ const API_TARGET = process.env.API_INTERNAL_URL ?? 'http://localhost:3001';
 
 const config: NextConfig = {
   reactStrictMode: true,
-  // Skip static export — the prerender pipeline chokes on our [locale]
-  // layout chain (next-intl + theme provider). The app is server-rendered;
-  // we'll dial in selective static generation in a polish pass.
-  output: 'standalone',
   // Browser never calls api.celva.store directly — Next.js proxies /api/v1/* server-side.
   async rewrites() {
     return [{ source: '/api/:path*', destination: `${API_TARGET}/api/:path*` }];
