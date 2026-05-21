@@ -27,6 +27,20 @@ export type Category = {
   updatedAt: string;
 };
 
+export type ProductAttribute = {
+  id: string;
+  name: { fr: string; en: string };
+  sortOrder: number;
+  productId: string;
+};
+
+export type ProductAttributeValue = {
+  id: string;
+  value: { fr: string; en: string };
+  sortOrder: number;
+  attributeId: string;
+};
+
 export type Product = {
   id: string;
   slug: string;

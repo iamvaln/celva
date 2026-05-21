@@ -3,6 +3,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CategoryIcon from '@mui/icons-material/Category';
 import InventoryIcon from '@mui/icons-material/Inventory2';
+import TuneIcon from '@mui/icons-material/Tune';
+import StyleIcon from '@mui/icons-material/Style';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -22,6 +24,12 @@ import { CategoryCreate } from './resources/categories/CategoryCreate';
 import { ProductList } from './resources/products/ProductList';
 import { ProductEdit } from './resources/products/ProductEdit';
 import { ProductCreate } from './resources/products/ProductCreate';
+import { AttributeList } from './resources/product-attributes/AttributeList';
+import { AttributeEdit } from './resources/product-attributes/AttributeEdit';
+import { AttributeCreate } from './resources/product-attributes/AttributeCreate';
+import { AttributeValueList } from './resources/attribute-values/AttributeValueList';
+import { AttributeValueEdit } from './resources/attribute-values/AttributeValueEdit';
+import { AttributeValueCreate } from './resources/attribute-values/AttributeValueCreate';
 
 export const App = () => (
   <Admin
@@ -59,6 +67,22 @@ export const App = () => (
           list={ProductList}
           edit={ProductEdit}
           create={ProductCreate}
+        />
+        <Resource
+          name="attributes"
+          icon={TuneIcon}
+          list={AttributeList}
+          edit={AttributeEdit}
+          create={AttributeCreate}
+          options={{ label: 'Attributs' }}
+        />
+        <Resource
+          name="attribute-values"
+          icon={StyleIcon}
+          list={AttributeValueList}
+          edit={AttributeValueEdit}
+          create={AttributeValueCreate}
+          options={{ label: 'Valeurs attribut' }}
         />
         <Resource
           name="settings"

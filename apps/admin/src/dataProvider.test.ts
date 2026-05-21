@@ -113,6 +113,55 @@ describe('dataProvider', () => {
     expect(params.get('sortBy')).toBe('createdAt');
   });
 
+  it('getList(attributes) passes productId filter via query params', async () => {
+    mockFetch.mockReturnValue(
+      okJson({
+        data: {
+          data: [{ id: 'a1', name: { fr: 'Taille', en: 'Size' }, sortOrder: 0, productId: 'p1' }],
+          total: 1,
+          page: 1,
+          pageSize: 50,
+        },
+        requestId: 'r-a',
+      }),
+    );
+    await dataProvider.getList('attributes', {
+      pagination: { page: 1, perPage: 50 },
+      sort: { field: 'sortOrder', order: 'ASC' },
+      filter: { productId: 'p1' },
+      meta: undefined,
+    });
+    const [url] = mockFetch.mock.calls[0] as [string];
+    const params = new URLSearchParams(url.split('?')[1]);
+    expect(params.get('productId')).toBe('p1');
+    expect(params.get('sortBy')).toBe('sortOrder');
+  });
+
+  it('getList(attribute-values) passes attributeId filter', async () => {
+    mockFetch.mockReturnValue(
+      okJson({
+        data: {
+          data: [
+            { id: 'v1', value: { fr: 'Bleu', en: 'Blue' }, sortOrder: 0, attributeId: 'a1' },
+          ],
+          total: 1,
+          page: 1,
+          pageSize: 100,
+        },
+        requestId: 'r-av',
+      }),
+    );
+    await dataProvider.getList('attribute-values', {
+      pagination: { page: 1, perPage: 100 },
+      sort: { field: 'sortOrder', order: 'ASC' },
+      filter: { attributeId: 'a1' },
+      meta: undefined,
+    });
+    const [url] = mockFetch.mock.calls[0] as [string];
+    const params = new URLSearchParams(url.split('?')[1]);
+    expect(params.get('attributeId')).toBe('a1');
+  });
+
   it('getList(settings) handles non-paginated array response', async () => {
     mockFetch.mockReturnValue(
       okJson({
