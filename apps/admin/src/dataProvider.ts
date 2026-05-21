@@ -34,6 +34,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'attributes',
   'attribute-values',
   'variants',
+  'collections',
 ]);
 
 /**
