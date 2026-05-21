@@ -46,8 +46,24 @@ const ALT_PRIMARY_KEY: Record<string, string> = {
   settings: 'key',
 };
 
-const resolvePath = (resource: string, id: string | number): string =>
-  `${API_BASE}/${resource}/${encodeURIComponent(String(id))}`;
+/**
+ * Resources whose admin-side view lives at `/{resource}/admin*` instead of
+ * `/{resource}*` — used to expose internal fields (e.g. DeliveryZone.actualCost)
+ * or include inactive rows that the public endpoint hides.
+ */
+const ADMIN_PATH_RESOURCES = new Set<string>(['delivery-zones', 'pickup-points']);
+
+const resourceListPath = (resource: string): string =>
+  ADMIN_PATH_RESOURCES.has(resource)
+    ? `${API_BASE}/${resource}/admin`
+    : `${API_BASE}/${resource}`;
+
+const resolvePath = (resource: string, id: string | number): string => {
+  const base = ADMIN_PATH_RESOURCES.has(resource)
+    ? `${API_BASE}/${resource}/admin`
+    : `${API_BASE}/${resource}`;
+  return `${base}/${encodeURIComponent(String(id))}`;
+};
 
 const tagRecord = <R extends RaRecord>(resource: string, record: Record<string, unknown>): R => {
   const altKey = ALT_PRIMARY_KEY[resource];
@@ -84,7 +100,7 @@ export const dataProvider: DataProvider = {
       };
     }
 
-    const { body } = await fetchJson<Record<string, unknown>[]>(`${API_BASE}/${resource}`);
+    const { body } = await fetchJson<Record<string, unknown>[]>(resourceListPath(resource));
     return {
       data: body.map((r) => tagRecord<RecordType>(resource, r)),
       total: body.length,

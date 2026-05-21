@@ -30,6 +30,8 @@ import { SavedPaymentMethodsModule } from './modules/saved-payment-methods/saved
 import { CartModule } from './modules/cart/cart.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { PromoCodesModule } from './modules/promo-codes/promo-codes.module';
+import { DeliveryZonesModule } from './modules/delivery-zones/delivery-zones.module';
+import { PickupPointsModule } from './modules/pickup-points/pickup-points.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -113,6 +115,8 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     CartModule,
     WishlistModule,
     PromoCodesModule,
+    DeliveryZonesModule,
+    PickupPointsModule,
   ],
   providers: [
     {
