@@ -1,0 +1,52 @@
+name: Deploy · Admin (Cloudflare Pages)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/admin/**'
+      - 'packages/shared/**'
+      - 'packages/tailwind-config/**'
+      - 'packages/typescript-config/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'turbo.json'
+      - '.github/workflows/deploy-admin.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-admin-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Cloudflare Pages · production
+    runs-on: ubuntu-latest
+    if: ${{ vars.ADMIN_DEPLOY_ENABLED == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+        env:
+          NPM_CONFIG_ENGINE_STRICT: 'false'
+
+      - name: Build @celva/shared
+        run: npm run build --workspace=@celva/shared
+
+      - name: Build admin
+        run: npm run build --workspace=@celva/admin
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL_ADMIN }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/admin/dist --project-name=celva-admin --branch=main
