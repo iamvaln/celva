@@ -298,6 +298,16 @@
       "error_email": "Invalid email.",
       "error_generic": "Something went wrong. Try again."
     },
+    "confirm_email_change": {
+      "success_title": "Email updated",
+      "success_body": "Your new email is now {email}. Log in with this address — your other sessions have been signed out.",
+      "login_cta": "Log in",
+      "error_title": "Invalid link",
+      "error_missing": "This confirmation link is incomplete.",
+      "error_invalid": "This link is invalid or has expired. Request a new one from your account.",
+      "error_email_taken": "Someone else has taken this address in the meantime. Choose another one.",
+      "back_to_profile": "Back to profile"
+    },
     "reset": {
       "title": "Set a new password",
       "subtitle": "Pick a new password for your account.",
@@ -449,6 +459,13 @@
       "phone": "Phone",
       "phone_hint": "Format: +2376XXXXXXXX. Leave empty to remove.",
       "save_profile": "Save",
+      "email_change_heading": "Change my email",
+      "email_change_explainer": "For security, a confirmation link is sent to the new address. The change only takes effect after confirmation.",
+      "email_change_current": "Current email",
+      "email_change_new": "New email",
+      "email_change_submit": "Send confirmation link",
+      "email_change_hint": "Link valid for 1 hour. Your other sessions will be signed out on confirmation.",
+      "email_change_requested": "Confirmation link sent. Check the inbox of the new address.",
       "password_heading": "Change my password",
       "password_explainer": "After changing, all your other sessions will be signed out.",
       "current_password": "Current password",
@@ -460,6 +477,9 @@
       "error_current_password": "Current password is incorrect.",
       "error_password_too_short": "New password must be at least 8 characters.",
       "error_invalid_phone": "Invalid phone number.",
+      "error_invalid_email": "Invalid email address.",
+      "error_email_taken": "This address is already used by another account.",
+      "error_email_unchanged": "The new email matches your current one.",
       "error_generic": "Something went wrong. Try again."
     }
   },

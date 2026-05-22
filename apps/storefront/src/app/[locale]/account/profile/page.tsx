@@ -6,6 +6,7 @@ import { apiFetch, ApiError } from '@/lib/api';
 import { getAccessToken } from '@/lib/auth-cookies';
 import { ProfileForm } from './ProfileForm';
 import { PasswordForm } from './PasswordForm';
+import { EmailChangeForm } from './EmailChangeForm';
 import { readAndClearProfileFlash } from './actions';
 
 type Profile = {
@@ -38,7 +39,10 @@ export default async function ProfilePage({
   }
 
   const flash = await readAndClearProfileFlash();
-  const flashOk = flash === 'profile_saved' || flash === 'password_changed';
+  const flashOk =
+    flash === 'profile_saved' ||
+    flash === 'password_changed' ||
+    flash === 'email_change_requested';
   const flashError =
     flash && flash.startsWith('error:') ? flash.replace('error:', '') : null;
 
@@ -57,7 +61,7 @@ export default async function ProfilePage({
 
         {flashOk && (
           <div className="mb-8 border border-foreground bg-cream px-4 py-3 font-body text-base text-foreground">
-            {t(flash as 'profile_saved' | 'password_changed')}
+            {t(flash as 'profile_saved' | 'password_changed' | 'email_change_requested')}
           </div>
         )}
         {flashError && (
@@ -68,21 +72,32 @@ export default async function ProfilePage({
                 ? t('error_password_too_short')
                 : flashError === 'invalid_phone'
                   ? t('error_invalid_phone')
-                  : t('error_generic')}
+                  : flashError === 'invalid_email'
+                    ? t('error_invalid_email')
+                    : flashError === 'email_already_used'
+                      ? t('error_email_taken')
+                      : flashError === 'email_unchanged'
+                        ? t('error_email_unchanged')
+                        : t('error_generic')}
           </div>
         )}
 
         <div className="grid gap-10">
           <section className="border border-border p-6">
             <h2 className="eyebrow mb-4">{t('profile_heading')}</h2>
-            <p className="mb-4 font-body text-small text-foreground-muted">
-              {t('email_locked')}: <strong>{profile.email}</strong>
-            </p>
             <ProfileForm
               locale={locale}
               defaultName={profile.name}
               defaultPhone={profile.phone ?? ''}
             />
+          </section>
+
+          <section className="border border-border p-6">
+            <h2 className="eyebrow mb-4">{t('email_change_heading')}</h2>
+            <p className="mb-4 font-body text-small text-foreground-muted">
+              {t('email_change_explainer')}
+            </p>
+            <EmailChangeForm locale={locale} currentEmail={profile.email} />
           </section>
 
           <section className="border border-border p-6">
