@@ -30,7 +30,9 @@
     "menu_open": "Ouvrir le menu",
     "menu_close": "Fermer le menu",
     "language": "Langue",
-    "theme_toggle": "Basculer thème"
+    "theme_toggle": "Basculer thème",
+    "whatsapp_open": "Nous écrire sur WhatsApp",
+    "whatsapp_prelude": "Bonjour Celva, j'aimerais avoir des informations."
   },
   "footer": {
     "tagline": "Une marque camerounaise, pour celles et ceux qui prennent le temps.",
