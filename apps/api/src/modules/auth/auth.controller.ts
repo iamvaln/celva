@@ -29,6 +29,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { RequestEmailChangeDto } from './dto/request-email-change.dto';
 import { ConfirmEmailChangeDto } from './dto/confirm-email-change.dto';
+import { ConfirmPasswordDto } from './dto/confirm-password.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 
 @ApiTags('auth')
@@ -182,6 +183,48 @@ export class AuthController {
   })
   async confirmEmailChange(@Body() dto: ConfirmEmailChangeDto): Promise<{ email: string }> {
     return this.auth.confirmEmailChange(dto.token);
+  }
+
+  @Post('me/sign-out-all')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary:
+      'Revoke every refresh token on my account, including the current one. The user has to log in fresh everywhere — used as a "kick someone out" defense after a stolen device etc. Requires current password.',
+  })
+  @AuditLog({
+    action: 'SIGN_OUT_ALL_DEVICES',
+    entity: 'User',
+    entityIdFrom: 'user.id',
+  })
+  async signOutAll(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ConfirmPasswordDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    await this.auth.signOutAllDevices(user.id, dto.currentPassword);
+    res.clearCookie(JWT.REFRESH_COOKIE_NAME, this.cookieOpts(0));
+  }
+
+  @Post('me/delete')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary:
+      'Delete (anonymize) my account. Scrubs PII (email, name, phone, password hash), sets isActive=false, revokes all sessions. Order history is preserved per accounting requirements. Blocked if any order is still in flight (PENDING → SHIPPED). Requires current password.',
+  })
+  @AuditLog({
+    action: 'ACCOUNT_DELETE_REQUEST',
+    entity: 'User',
+    entityIdFrom: 'user.id',
+  })
+  async deleteAccount(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ConfirmPasswordDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    await this.auth.deleteMyAccount(user.id, dto.currentPassword);
+    res.clearCookie(JWT.REFRESH_COOKIE_NAME, this.cookieOpts(0));
   }
 
   // ─── helpers ───
