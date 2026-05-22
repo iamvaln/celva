@@ -179,7 +179,11 @@ export class AuthController {
   // ─── helpers ───
 
   private meta(req: Request): SessionMeta {
-    return { userAgent: req.header('user-agent') ?? undefined, ip: req.ip };
+    return {
+      userAgent: req.header('user-agent') ?? undefined,
+      ip: req.ip,
+      locale: req.header('accept-language') ?? undefined,
+    };
   }
 
   private cookieOpts(maxAgeMs: number): CookieOptions {

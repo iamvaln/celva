@@ -69,14 +69,17 @@ describe('Auth recovery + profile (e2e)', () => {
     await app?.close();
   });
 
-  const signupFresh = async (): Promise<string> => {
+  const signupFresh = async (
+    opts: { acceptLanguage?: string } = {},
+  ): Promise<string> => {
     await prisma.user.deleteMany({
       where: { email: { in: [CLIENT_EMAIL, NEW_EMAIL] } },
     });
-    const res = await request(server)
+    const req = request(server)
       .post('/api/v1/auth/signup')
-      .send({ email: CLIENT_EMAIL, name: 'Recovery Test', password: PASSWORD })
-      .expect(201);
+      .send({ email: CLIENT_EMAIL, name: 'Recovery Test', password: PASSWORD });
+    if (opts.acceptLanguage) req.set('Accept-Language', opts.acceptLanguage);
+    const res = await req.expect(201);
     return res.body.data.accessToken as string;
   };
 
@@ -435,6 +438,105 @@ describe('Auth recovery + profile (e2e)', () => {
         .post('/api/v1/auth/email-change-confirm')
         .send({ token: t })
         .expect(400);
+    });
+  });
+
+  describe('User locale (persisted preference)', () => {
+    it('signup captures Accept-Language → user.locale=en for english header', async () => {
+      const token = await signupFresh({ acceptLanguage: 'en-US,en;q=0.9' });
+      const me = await request(server)
+        .get('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(me.body.data.locale).toBe('en');
+    });
+
+    it('signup defaults to fr when no Accept-Language header is sent', async () => {
+      const token = await signupFresh();
+      const me = await request(server)
+        .get('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(me.body.data.locale).toBe('fr');
+    });
+
+    it('unsupported Accept-Language falls back to fr', async () => {
+      const token = await signupFresh({ acceptLanguage: 'de-DE,de;q=0.9' });
+      const me = await request(server)
+        .get('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(me.body.data.locale).toBe('fr');
+    });
+
+    it('PATCH /auth/me updates locale', async () => {
+      const token = await signupFresh();
+      const res = await request(server)
+        .patch('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ locale: 'en' })
+        .expect(200);
+      expect(res.body.data.locale).toBe('en');
+    });
+
+    it('PATCH /auth/me rejects unsupported locales (400)', async () => {
+      const token = await signupFresh();
+      await request(server)
+        .patch('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ locale: 'de' })
+        .expect(400);
+    });
+
+    it('forgot-password URL respects user.locale (en → EN path)', async () => {
+      const token = await signupFresh({ acceptLanguage: 'en' });
+      // confirm locale captured
+      const me = await request(server)
+        .get('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(me.body.data.locale).toBe('en');
+
+      mailSpy.clear();
+      await request(server)
+        .post('/api/v1/auth/forgot-password')
+        .send({ email: CLIENT_EMAIL })
+        .expect(204);
+      await new Promise((r) => setTimeout(r, 100));
+      const reset = mailSpy.sends.find((m) => m.tag === 'password_reset');
+      expect(reset?.text).toContain('/en/reset-password?token=');
+      expect(reset?.text).not.toContain('/fr/reinitialiser-mot-de-passe');
+    });
+
+    it('forgot-password URL respects user.locale (fr → FR path)', async () => {
+      const token = await signupFresh({ acceptLanguage: 'fr' });
+      const me = await request(server)
+        .get('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(me.body.data.locale).toBe('fr');
+
+      mailSpy.clear();
+      await request(server)
+        .post('/api/v1/auth/forgot-password')
+        .send({ email: CLIENT_EMAIL })
+        .expect(204);
+      await new Promise((r) => setTimeout(r, 100));
+      const reset = mailSpy.sends.find((m) => m.tag === 'password_reset');
+      expect(reset?.text).toContain('/fr/reinitialiser-mot-de-passe?token=');
+    });
+
+    it('email-change confirm URL respects user.locale (en)', async () => {
+      const token = await signupFresh({ acceptLanguage: 'en' });
+      mailSpy.clear();
+      await request(server)
+        .post('/api/v1/auth/me/email-change-request')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ currentPassword: PASSWORD, newEmail: NEW_EMAIL })
+        .expect(204);
+      await new Promise((r) => setTimeout(r, 100));
+      const mail = mailSpy.sends.find((m) => m.tag === 'email_change_confirm');
+      expect(mail?.text).toContain('/en/confirm-email-change?token=');
     });
   });
 });

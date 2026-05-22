@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { type Locale } from '@/i18n/routing';
+import { syncLocaleAction } from '@/lib/locale-sync';
 import { useTransition } from 'react';
 
 export const LocaleSwitcher = ({ className = '' }: { className?: string }) => {
@@ -21,6 +22,9 @@ export const LocaleSwitcher = ({ className = '' }: { className?: string }) => {
       aria-label={t('language')}
       className={`font-body text-caption font-medium uppercase tracking-eyebrow text-foreground transition-colors hover:text-accent ${className}`}
       onClick={() => {
+        // Persist on the user row when signed in — silent failure if
+        // anon. Don't await: the navigation is the user-visible action.
+        void syncLocaleAction(next);
         startTransition(() => {
           router.replace(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
