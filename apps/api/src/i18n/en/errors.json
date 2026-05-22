@@ -75,5 +75,8 @@
   "saved_payment_method_not_found": "Saved payment method not found.",
   "saved_payment_method_mismatch": "The saved method's type doesn't match the selected payment method.",
   "payment_phone_required": "Provide a phone number for the selected payment method.",
-  "cash_on_delivery_over_cap": "Total exceeds the cash-on-delivery limit. Please pick Mobile Money."
+  "cash_on_delivery_over_cap": "Total exceeds the cash-on-delivery limit. Please pick Mobile Money.",
+  "payment_already_completed": "This payment is already completed.",
+  "payment_not_found": "Payment not found.",
+  "payment_cash_no_retry": "Cash-on-delivery payments settle offline and cannot be retried online."
 }

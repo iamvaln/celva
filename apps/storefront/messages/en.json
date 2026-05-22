@@ -217,7 +217,9 @@
     "payment_heading": "Payment",
     "notes_heading": "Note",
     "continue_shopping": "Keep shopping",
-    "view_orders": "My orders"
+    "view_orders": "My orders",
+    "complete_payment": "Complete Mobile Money payment",
+    "complete_payment_hint": "DEV stub — auto-completes immediately. Real OM/MoMo push lands when API credentials are wired."
   },
   "wishlist": {
     "title": "Wishlist",
