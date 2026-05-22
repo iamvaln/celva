@@ -16,7 +16,11 @@ import {
   TRANSACTION_TYPE,
   type PaymentStatus,
 } from '@celva/shared';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
+import { fireOrderEmail } from '../orders/order-emails';
+import type { Env } from '../../config/env';
 
 const INVOICE_NUMBER_PREFIX = 'CLV-INV';
 
@@ -24,7 +28,11 @@ const INVOICE_NUMBER_PREFIX = 'CLV-INV';
 export class PaymentsService {
   private readonly logger = new Logger(PaymentsService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mail: MailService,
+    private readonly config: ConfigService<Env, true>,
+  ) {}
 
   async findById(id: string): Promise<Payment & { order: { id: string; status: string; userId: string } }> {
     const payment = await this.prisma.payment.findUnique({
@@ -81,7 +89,7 @@ export class PaymentsService {
       // Order CONFIRMED for OM/MoMo (Cash was already CONFIRMED at checkout
       // per spec §10). updateMany prevents accidentally rewinding a manually
       // CANCELLED order back to CONFIRMED.
-      await tx.order.updateMany({
+      const promotion = await tx.order.updateMany({
         where: { id: payment.orderId, status: ORDER_STATUS.PENDING },
         data: { status: ORDER_STATUS.CONFIRMED },
       });
@@ -117,13 +125,30 @@ export class PaymentsService {
         },
       });
 
-      return { payment, invoice };
+      return { payment, invoice, promotedToConfirmed: promotion.count > 0 };
     });
 
     this.logger.log(
       `Payment ${paymentId} → COMPLETED, Invoice ${invoiceNumber} (TTC ${result.invoice.totalTTC.toFixed(2)})`,
     );
-    return result;
+
+    // OM/MoMo path: PENDING → CONFIRMED happened just now, send the
+    // confirmation email. Cash path: order was already CONFIRMED at checkout
+    // and emailed there, so no duplicate.
+    if (result.promotedToConfirmed) {
+      fireOrderEmail(
+        {
+          prisma: this.prisma,
+          mail: this.mail,
+          storefrontUrl: this.config.get('STOREFRONT_URL', { infer: true }),
+          logger: this.logger,
+        },
+        result.payment.orderId,
+        'confirmation',
+      );
+    }
+
+    return { payment: result.payment, invoice: result.invoice };
   }
 
   /**
