@@ -99,6 +99,10 @@ export default async function OrderDetailPage({
   const flashOk = flash === 'cancelled';
   const flashError = flash && flash.startsWith('error:') ? flash.replace('error:', '') : null;
   const canCancel = order.status === 'PENDING';
+  // Invoice is created when the payment is marked COMPLETED. Cash orders
+  // CONFIRMED at checkout still wait for the admin to confirm the cash
+  // received before the Invoice row materializes.
+  const hasInvoice = order.payment?.status === 'COMPLETED';
 
   return (
     <section className="bg-background py-section-tight">
@@ -184,6 +188,18 @@ export default async function OrderDetailPage({
           <section className="mb-8">
             <h2 className="eyebrow mb-2">{t('notes_heading')}</h2>
             <p className="font-body text-base text-foreground">{order.notes}</p>
+          </section>
+        )}
+
+        {hasInvoice && (
+          <section className="mb-8">
+            <a
+              href={`/${locale}/account/invoice/${order.id}`}
+              className="btn btn-secondary"
+              download
+            >
+              {t('download_invoice')}
+            </a>
           </section>
         )}
 

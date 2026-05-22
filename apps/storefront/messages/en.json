@@ -355,7 +355,8 @@
       "cancel_submit": "Cancel my order",
       "cancel_success": "Your order has been cancelled.",
       "cancel_too_late": "This order is already being prepared. Contact support to cancel it.",
-      "cancel_error": "Couldn't cancel the order. Please try again or contact support."
+      "cancel_error": "Couldn't cancel the order. Please try again or contact support.",
+      "download_invoice": "Download invoice"
     },
     "addresses_page": {
       "title": "Delivery addresses",

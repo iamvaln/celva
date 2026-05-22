@@ -271,6 +271,7 @@ const celvaFr = {
       actions: {
         transition: 'Faire avancer',
         cancel: 'Annuler la commande',
+        download_invoice: 'Télécharger la facture',
       },
       dialogs: {
         current_status: 'Statut actuel',
@@ -282,6 +283,7 @@ const celvaFr = {
       notifications: {
         transitioned: 'Statut mis à jour.',
         cancelled: 'Commande annulée. Stock restauré.',
+        invoice_failed: 'Impossible de télécharger la facture. La commande a-t-elle été payée ?',
       },
     },
   },
@@ -519,6 +521,7 @@ const celvaEn = {
       actions: {
         transition: 'Advance status',
         cancel: 'Cancel order',
+        download_invoice: 'Download invoice',
       },
       dialogs: {
         current_status: 'Current status',
@@ -530,6 +533,7 @@ const celvaEn = {
       notifications: {
         transitioned: 'Status updated.',
         cancelled: 'Order cancelled. Stock restored.',
+        invoice_failed: "Couldn't download the invoice. Has the order been paid yet?",
       },
     },
   },

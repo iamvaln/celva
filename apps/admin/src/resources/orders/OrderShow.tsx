@@ -15,6 +15,7 @@ import {
 } from 'react-admin';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import CancelIcon from '@mui/icons-material/Cancel';
+import DownloadIcon from '@mui/icons-material/Download';
 import {
   Box,
   Chip,
@@ -32,7 +33,7 @@ import {
 import type { OrderStatus } from '@celva/shared';
 import type { AdminOrderDetail } from '../../types';
 import { fetchJson } from '../../http';
-import { API_BASE } from '../../config';
+import { API_BASE, STORAGE_KEYS } from '../../config';
 import { ORDER_STATUS_COLOR, PAYMENT_STATUS_COLOR } from './statusColors';
 
 /** Spec §7.5 — these are the only forward-only steps an admin can pick. */
@@ -214,11 +215,63 @@ const CancelOrderButton = () => {
   );
 };
 
+const DownloadInvoiceButton = () => {
+  const record = useRecordContext<AdminOrderDetail>();
+  const notify = useNotify();
+  const translate = useTranslate();
+  const [busy, setBusy] = useState(false);
+
+  if (!record) return null;
+  const ready = record.payment?.status === 'COMPLETED';
+  if (!ready) return null;
+
+  const handleClick = async () => {
+    try {
+      setBusy(true);
+      const token = window.localStorage.getItem(STORAGE_KEYS.accessToken);
+      const res = await fetch(`${API_BASE}/orders/${record.id}/invoice`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        credentials: 'include',
+      });
+      if (!res.ok) {
+        notify('resources.orders.notifications.invoice_failed', { type: 'error' });
+        return;
+      }
+      const disposition = res.headers.get('content-disposition') ?? '';
+      const match = disposition.match(/filename="?([^"]+)"?/);
+      const filename = match?.[1] ?? `${record.orderNumber}.pdf`;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      notify(translate('ra.notification.http_error'), { type: 'error' });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Button
+      label="resources.orders.actions.download_invoice"
+      onClick={handleClick}
+      startIcon={<DownloadIcon />}
+      disabled={busy}
+    />
+  );
+};
+
 const OrderShowActions = () => {
   const record = useRecordContext<AdminOrderDetail>();
   if (!record) return <TopToolbar />;
   return (
     <TopToolbar>
+      <DownloadInvoiceButton />
       {!TERMINAL.includes(record.status) && <TransitionButton />}
       {!NON_CANCELLABLE.includes(record.status) && <CancelOrderButton />}
     </TopToolbar>
