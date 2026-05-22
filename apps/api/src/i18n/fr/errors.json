@@ -75,5 +75,8 @@
   "saved_payment_method_not_found": "Méthode de paiement enregistrée introuvable.",
   "saved_payment_method_mismatch": "Le type de la méthode enregistrée ne correspond pas à la méthode sélectionnée.",
   "payment_phone_required": "Fournissez un numéro de téléphone pour la méthode de paiement sélectionnée.",
-  "cash_on_delivery_over_cap": "Le total dépasse la limite paiement à la livraison. Choisissez Mobile Money."
+  "cash_on_delivery_over_cap": "Le total dépasse la limite paiement à la livraison. Choisissez Mobile Money.",
+  "payment_already_completed": "Ce paiement est déjà complété.",
+  "payment_not_found": "Paiement introuvable.",
+  "payment_cash_no_retry": "Les paiements à la livraison se règlent hors ligne et ne peuvent pas être réessayés en ligne."
 }

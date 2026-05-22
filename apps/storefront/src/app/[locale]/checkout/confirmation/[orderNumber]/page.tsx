@@ -6,6 +6,7 @@ import type { Locale } from '@/i18n/routing';
 import { apiFetch, ApiError } from '@/lib/api';
 import { getAccessToken } from '@/lib/auth-cookies';
 import { formatPriceXAF, pickLocalized } from '@/lib/catalogue';
+import { completePaymentAction } from './actions';
 
 type Order = {
   id: string;
@@ -76,6 +77,14 @@ export default async function ConfirmationPage({
   const statusKey =
     order.status === 'CONFIRMED' ? 'status.confirmed' : 'status.pending';
 
+  // Show the dev "Complete payment" button when the order is still PENDING
+  // and the payment method isn't cash (cash settles offline — a manager
+  // confirms reception in the admin once the courier returns).
+  const canCompletePayment =
+    order.status === 'PENDING' &&
+    order.payment?.status === 'PENDING' &&
+    order.payment?.method !== 'CASH_ON_DELIVERY';
+
   return (
     <section className="bg-background py-section-tight">
       <div className="container-celva max-w-3xl">
@@ -86,6 +95,19 @@ export default async function ConfirmationPage({
             {t('intro', { orderNumber: order.orderNumber })}
           </p>
           <p className="mt-3 font-display text-base text-accent">{t(statusKey)}</p>
+          {canCompletePayment && (
+            <form action={completePaymentAction} className="mt-6 space-y-2">
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="orderId" value={order.id} />
+              <input type="hidden" name="orderNumber" value={order.orderNumber} />
+              <button type="submit" className="btn btn-primary">
+                {t('complete_payment')}
+              </button>
+              <p className="font-body text-caption uppercase tracking-eyebrow text-foreground-muted">
+                {t('complete_payment_hint')}
+              </p>
+            </form>
+          )}
         </header>
 
         <section className="mb-8 border border-border p-6">
