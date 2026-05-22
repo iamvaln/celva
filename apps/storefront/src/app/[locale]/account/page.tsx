@@ -19,9 +19,10 @@ type SectionLink = {
   href:
     | '/account/orders'
     | '/account/addresses'
-    | '/account/payment-methods';
-  titleKey: 'orders' | 'addresses' | 'payment_methods';
-  bodyKey: 'orders_body' | 'addresses_body' | 'payment_methods_body';
+    | '/account/payment-methods'
+    | '/account/profile';
+  titleKey: 'orders' | 'addresses' | 'payment_methods' | 'profile';
+  bodyKey: 'orders_body' | 'addresses_body' | 'payment_methods_body' | 'profile_body';
 };
 
 const SECTIONS: SectionLink[] = [
@@ -32,6 +33,7 @@ const SECTIONS: SectionLink[] = [
     titleKey: 'payment_methods',
     bodyKey: 'payment_methods_body',
   },
+  { href: '/account/profile', titleKey: 'profile', bodyKey: 'profile_body' },
 ];
 
 export default async function AccountDashboardPage({
