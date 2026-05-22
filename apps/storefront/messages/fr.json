@@ -363,6 +363,17 @@
     "profile": "Profil & mot de passe",
     "profile_body": "Modifiez votre nom, votre téléphone et changez votre mot de passe.",
     "go": "Ouvrir",
+    "delivery_timeline": {
+      "heading": "Suivi de livraison",
+      "stage": {
+        "ASSIGNED": "Coursier assigné",
+        "PICKED_UP": "Pris en charge",
+        "IN_TRANSIT": "En route",
+        "DELIVERED": "Livrée"
+      },
+      "failed": "La livraison a échoué. Notre équipe vous recontacte.",
+      "note_label": "Note"
+    },
     "orders_page": {
       "title": "Mes commandes",
       "subtitle": "Les plus récentes en premier.",

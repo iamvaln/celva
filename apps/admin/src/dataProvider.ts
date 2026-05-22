@@ -38,6 +38,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'promo-codes',
   'orders',
   'articles',
+  'deliveries',
 ]);
 
 /**
