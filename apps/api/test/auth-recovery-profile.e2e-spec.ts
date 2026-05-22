@@ -72,6 +72,14 @@ describe('Auth recovery + profile (e2e)', () => {
   const signupFresh = async (
     opts: { acceptLanguage?: string } = {},
   ): Promise<string> => {
+    // Order matters — User.auditLogs / refreshTokens / etc. lack
+    // onDelete: Cascade, so we need to clear them by hand before nuking
+    // the user row.
+    const where = { user: { email: { in: [CLIENT_EMAIL, NEW_EMAIL] } } };
+    await prisma.auditLog.deleteMany({ where });
+    await prisma.refreshToken.deleteMany({ where });
+    await prisma.passwordResetToken.deleteMany({ where });
+    await prisma.emailChangeToken.deleteMany({ where });
     await prisma.user.deleteMany({
       where: { email: { in: [CLIENT_EMAIL, NEW_EMAIL] } },
     });
@@ -537,6 +545,85 @@ describe('Auth recovery + profile (e2e)', () => {
       await new Promise((r) => setTimeout(r, 100));
       const mail = mailSpy.sends.find((m) => m.tag === 'email_change_confirm');
       expect(mail?.text).toContain('/en/confirm-email-change?token=');
+    });
+  });
+
+  describe('Audit log coverage on self-actions', () => {
+    const findLog = async (
+      action: string,
+      userEmail = CLIENT_EMAIL,
+    ): Promise<{ entityId: string; metadata: unknown } | null> => {
+      const log = await prisma.auditLog.findFirst({
+        where: { action, user: { email: userEmail } },
+        orderBy: { createdAt: 'desc' },
+      });
+      return log
+        ? { entityId: log.entityId, metadata: log.metadata }
+        : null;
+    };
+
+    it('PATCH /auth/me writes PROFILE_UPDATE with entityId=user.id', async () => {
+      const token = await signupFresh();
+      const me = await request(server)
+        .get('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      const userId = me.body.data.id as string;
+      await request(server)
+        .patch('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: 'Audited Name' })
+        .expect(200);
+      const log = await findLog('PROFILE_UPDATE');
+      expect(log).toBeTruthy();
+      expect(log?.entityId).toBe(userId);
+    });
+
+    it('POST /auth/me/password writes PASSWORD_CHANGE', async () => {
+      const token = await signupFresh();
+      await request(server)
+        .post('/api/v1/auth/me/password')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ currentPassword: PASSWORD, newPassword: NEW_PASSWORD })
+        .expect(204);
+      const log = await findLog('PASSWORD_CHANGE');
+      expect(log).toBeTruthy();
+    });
+
+    it('POST /auth/me/email-change-request writes EMAIL_CHANGE_REQUEST', async () => {
+      const token = await signupFresh();
+      await request(server)
+        .post('/api/v1/auth/me/email-change-request')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ currentPassword: PASSWORD, newEmail: NEW_EMAIL })
+        .expect(204);
+      const log = await findLog('EMAIL_CHANGE_REQUEST');
+      expect(log).toBeTruthy();
+    });
+
+    it('POST /auth/email-change-confirm writes EMAIL_CHANGE_CONFIRM with from/to metadata', async () => {
+      const token = await signupFresh();
+      mailSpy.clear();
+      await request(server)
+        .post('/api/v1/auth/me/email-change-request')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ currentPassword: PASSWORD, newEmail: NEW_EMAIL })
+        .expect(204);
+      await new Promise((r) => setTimeout(r, 100));
+      const mail = mailSpy.sends.find((m) => m.tag === 'email_change_confirm');
+      const m = mail!.text!.match(/token=([^\s&]+)/)!;
+      const tok = m[1]!;
+      await request(server)
+        .post('/api/v1/auth/email-change-confirm')
+        .send({ token: tok })
+        .expect(200);
+
+      // Look up by NEW_EMAIL (user.email has been swapped).
+      const log = await findLog('EMAIL_CHANGE_CONFIRM', NEW_EMAIL);
+      expect(log).toBeTruthy();
+      const meta = log!.metadata as { from?: string; to?: string };
+      expect(meta.from).toBe(CLIENT_EMAIL);
+      expect(meta.to).toBe(NEW_EMAIL);
     });
   });
 });

@@ -16,7 +16,14 @@ export const AUDIT_LOG_KEY = 'audit_log';
 export type AuditLogOptions = {
   action: string;
   entity: string;
-  entityIdFrom?: 'params.id' | 'body.id' | 'response.id';
+  /**
+   * Where to read the affected entity's id from at log time.
+   * - params.id   → :id route param
+   * - body.id     → request body's `id` field
+   * - response.id → controller return value's `id` field
+   * - user.id     → the authenticated user's id (for self-actions)
+   */
+  entityIdFrom?: 'params.id' | 'body.id' | 'response.id' | 'user.id';
 };
 
 export const AuditLog = (options: AuditLogOptions) => {
@@ -64,7 +71,9 @@ export class AuditLogInterceptor implements NestInterceptor {
               ? (request.body?.id as string | undefined)
               : options.entityIdFrom === 'response.id'
                 ? ((response as { id?: string } | undefined)?.id ?? '')
-                : '';
+                : options.entityIdFrom === 'user.id'
+                  ? userId
+                  : '';
 
         const rawSource = request.headers[APP_SOURCE_HEADER.toLowerCase()];
         const sourceCandidate = Array.isArray(rawSource) ? rawSource[0] : rawSource;
