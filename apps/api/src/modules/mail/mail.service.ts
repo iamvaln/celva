@@ -5,6 +5,12 @@ import Mailgun from 'mailgun.js';
 import type { IMailgunClient } from 'mailgun.js/Interfaces';
 import type { Env } from '../../config/env';
 
+export type MailAttachment = {
+  filename: string;
+  content: Buffer;
+  contentType?: string;
+};
+
 export type MailMessage = {
   to: string | string[];
   subject: string;
@@ -12,6 +18,8 @@ export type MailMessage = {
   text?: string;
   /** Provide a header X-Celva-Tag for analytics. */
   tag?: string;
+  /** Optional file attachments (e.g. invoice PDFs). */
+  attachments?: MailAttachment[];
 };
 
 @Injectable()
@@ -45,8 +53,11 @@ export class MailService {
     const recipients = Array.isArray(message.to) ? message.to : [message.to];
 
     if (this.isDev) {
+      const attachmentTag = message.attachments?.length
+        ? ` attachments=${message.attachments.map((a) => a.filename).join(',')}`
+        : '';
       this.logger.log(
-        `[DEV MAIL] to=${recipients.join(',')} subject=${JSON.stringify(message.subject)} tag=${message.tag ?? '-'}`,
+        `[DEV MAIL] to=${recipients.join(',')} subject=${JSON.stringify(message.subject)} tag=${message.tag ?? '-'}${attachmentTag}`,
       );
       if (message.text) this.logger.debug(`[DEV MAIL text]\n${message.text}`);
     }
@@ -63,6 +74,11 @@ export class MailService {
       html: message.html,
       text: message.text,
       'h:X-Celva-Tag': message.tag,
+      attachment: message.attachments?.map((a) => ({
+        filename: a.filename,
+        data: a.content,
+        contentType: a.contentType ?? 'application/octet-stream',
+      })),
     } as never);
   }
 }

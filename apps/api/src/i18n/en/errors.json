@@ -83,5 +83,6 @@
   "order_terminal": "This order has reached a terminal state and cannot change anymore.",
   "order_already_cancelled": "This order is already cancelled.",
   "order_too_late_to_cancel": "This order has already shipped and can no longer be cancelled.",
-  "order_customer_cancel_too_late": "This order is being prepared. Contact support to cancel it."
+  "order_customer_cancel_too_late": "This order is being prepared. Contact support to cancel it.",
+  "invoice_not_ready": "The invoice will be available once the payment is completed."
 }

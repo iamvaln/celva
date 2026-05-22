@@ -5,9 +5,10 @@ import { OrdersService } from './orders.service';
 import { DeliveryZonesModule } from '../delivery-zones/delivery-zones.module';
 import { PromoCodesModule } from '../promo-codes/promo-codes.module';
 import { PaymentsModule } from '../payments/payments.module';
+import { InvoicesModule } from '../invoices/invoices.module';
 
 @Module({
-  imports: [DeliveryZonesModule, PromoCodesModule, PaymentsModule],
+  imports: [DeliveryZonesModule, PromoCodesModule, PaymentsModule, InvoicesModule],
   controllers: [OrdersController, AdminOrdersController],
   providers: [OrdersService],
   exports: [OrdersService],

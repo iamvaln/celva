@@ -355,7 +355,8 @@
       "cancel_submit": "Annuler la commande",
       "cancel_success": "Votre commande a bien été annulée.",
       "cancel_too_late": "Cette commande est déjà en préparation. Contactez le support pour l'annuler.",
-      "cancel_error": "Impossible d'annuler la commande. Réessayez ou contactez le support."
+      "cancel_error": "Impossible d'annuler la commande. Réessayez ou contactez le support.",
+      "download_invoice": "Télécharger la facture"
     },
     "addresses_page": {
       "title": "Adresses de livraison",

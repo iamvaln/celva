@@ -260,6 +260,9 @@ describe('Order transactional emails (e2e)', () => {
         where: { id: order.id },
         include: { payment: true },
       });
+      // Drain the checkout-time confirmation BEFORE we clear, so we only
+      // measure what the admin-confirm step emits.
+      await flush();
       mailSpy.clear();
       await request(server)
         .post(`/api/v1/payments/${orderRow.payment!.id}/confirm`)

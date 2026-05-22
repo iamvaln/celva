@@ -30,6 +30,7 @@ import { StockMovementsService } from '../stock-movements/stock-movements.servic
 import { DeliveryZonesService } from '../delivery-zones/delivery-zones.service';
 import { PromoCodesService } from '../promo-codes/promo-codes.service';
 import { MailService } from '../mail/mail.service';
+import { InvoicesService } from '../invoices/invoices.service';
 import type { Env } from '../../config/env';
 import type { CreateOrderDto } from './dto/create-order.dto';
 import type { ListOrdersQuery } from './dto/list-orders.query';
@@ -68,6 +69,7 @@ export class OrdersService {
     private readonly promoCodes: PromoCodesService,
     private readonly mail: MailService,
     private readonly config: ConfigService<Env, true>,
+    private readonly invoices: InvoicesService,
   ) {}
 
   async listForUser(userId: string): Promise<Order[]> {
@@ -579,6 +581,7 @@ export class OrdersService {
         mail: this.mail,
         storefrontUrl: this.config.get('STOREFRONT_URL', { infer: true }),
         logger: this.logger,
+        invoices: this.invoices,
       },
       orderId,
       kind,
