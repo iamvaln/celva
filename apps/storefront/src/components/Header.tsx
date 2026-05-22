@@ -7,10 +7,12 @@ import { Monogram } from './Monogram';
 import { MobileMenu } from './MobileMenu';
 import { ThemeToggle } from './ThemeToggle';
 import { LocaleSwitcher } from './LocaleSwitcher';
+import { SearchOverlay } from './SearchOverlay';
 
 export const Header = () => {
   const t = useTranslations('nav');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <>
@@ -55,6 +57,17 @@ export const Header = () => {
           <div className="flex items-center justify-end gap-2">
             <LocaleSwitcher className="hidden sm:inline-flex" />
             <ThemeToggle />
+            <button
+              type="button"
+              aria-label={t('search')}
+              className="inline-flex h-10 w-10 items-center justify-center text-foreground hover:text-accent"
+              onClick={() => setSearchOpen(true)}
+            >
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+              </svg>
+            </button>
             <Link
               href="/account"
               aria-label={t('account')}
@@ -79,6 +92,7 @@ export const Header = () => {
         </div>
       </header>
       <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 };
