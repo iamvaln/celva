@@ -87,5 +87,6 @@
   "invoice_not_ready": "The invoice will be available once the payment is completed.",
   "current_password_invalid": "Current password is incorrect.",
   "email_unchanged": "The new email matches your current email.",
-  "email_change_invalid": "This email-change link is invalid or has expired."
+  "email_change_invalid": "This email-change link is invalid or has expired.",
+  "account_has_open_orders": "You have an order in progress. Wait for it to be delivered or cancel it before deleting your account."
 }

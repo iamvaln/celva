@@ -260,6 +260,84 @@ export class AuthService {
   }
 
   /**
+   * Revoke every refresh token for this user. Subsequent access tokens
+   * will still work until they expire (15 min), but the user can't
+   * silently roll forward — they have to log in fresh on every device,
+   * including this one.
+   */
+  async signOutAllDevices(userId: string, currentPassword: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('errors.unauthorized');
+    const ok = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!ok) throw new BadRequestException('errors.current_password_invalid');
+    await this.tokens.revokeAllRefreshTokens(userId);
+  }
+
+  /**
+   * Customer self-delete. Anonymize rather than hard-delete: order
+   * history, audit log, invoices, etc. all keep referring to this user
+   * row (accounting + audit obligations). We scrub PII, set isActive
+   * false so login is blocked, and revoke every active session.
+   *
+   * Blocked if the customer has in-flight orders (PENDING → SHIPPED).
+   * They must let those land or cancel them first — otherwise the
+   * delivery / refund flow can't reach them.
+   */
+  async deleteMyAccount(
+    userId: string,
+    currentPassword: string,
+  ): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('errors.unauthorized');
+    const ok = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!ok) throw new BadRequestException('errors.current_password_invalid');
+
+    const openOrders = await this.prisma.order.count({
+      where: {
+        userId,
+        status: {
+          in: ['PENDING', 'CONFIRMED', 'PROCESSING', 'READY', 'SHIPPED'],
+        },
+      },
+    });
+    if (openOrders > 0) {
+      throw new BadRequestException('errors.account_has_open_orders');
+    }
+
+    // Bcrypt sentinel that no real password can match — `compare` against
+    // a non-hash returns false. Belt-and-suspenders alongside isActive=false.
+    const wipedHash = 'deleted';
+    const scrubbedEmail = `deleted-${user.id}@celva.deleted`;
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        email: scrubbedEmail,
+        name: 'Compte supprimé',
+        phone: null,
+        passwordHash: wipedHash,
+        isActive: false,
+      },
+    });
+    await this.tokens.revokeAllRefreshTokens(userId);
+
+    // Cart contents are personal too — scrub. (Wishlist, addresses,
+    // saved payment methods would also benefit but they cascade off
+    // the user row at the relational level; the user is now flagged
+    // inactive so nothing reads them.)
+    await this.prisma.cartItem.deleteMany({ where: { cart: { userId } } });
+
+    await this.auditLogs.record({
+      userId,
+      action: 'ACCOUNT_DELETE',
+      entity: 'User',
+      entityId: userId,
+      appSource: APP_SOURCE.API,
+      metadata: { previousEmail: user.email },
+    });
+  }
+
+  /**
    * Step 1 of email change: customer confirms current password + chooses
    * a new email. We DON'T touch user.email here — just send a verification
    * link to the new address. The user keeps logging in with the old email
