@@ -10,10 +10,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
-import { BCRYPT_ROUNDS } from '@celva/shared';
+import { APP_SOURCE, BCRYPT_ROUNDS } from '@celva/shared';
 import type { Env } from '../../config/env';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
+import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { TokensService } from './tokens.service';
 import type { SignupDto } from './dto/signup.dto';
 import type { LoginDto } from './dto/login.dto';
@@ -80,6 +81,7 @@ export class AuthService {
     private readonly config: ConfigService<Env, true>,
     private readonly tokens: TokensService,
     private readonly mail: MailService,
+    private readonly auditLogs: AuditLogsService,
   ) {}
 
   async signup(dto: SignupDto, meta: SessionMeta = {}): Promise<AuthResult> {
@@ -335,11 +337,28 @@ export class AuthService {
       throw new BadRequestException('errors.email_already_used');
     }
 
+    const previous = await this.prisma.user.findUniqueOrThrow({
+      where: { id: record.userId },
+      select: { email: true },
+    });
     await this.prisma.user.update({
       where: { id: record.userId },
       data: { email: record.newEmail },
     });
     await this.tokens.revokeAllRefreshTokens(record.userId);
+
+    // The interceptor can't help here — this endpoint is @Public(), so
+    // request.user is empty. Write the audit row explicitly. The userId
+    // comes from the consumed token row.
+    await this.auditLogs.record({
+      userId: record.userId,
+      action: 'EMAIL_CHANGE_CONFIRM',
+      entity: 'User',
+      entityId: record.userId,
+      appSource: APP_SOURCE.API,
+      metadata: { from: previous.email, to: record.newEmail },
+    });
+
     return { email: record.newEmail };
   }
 
