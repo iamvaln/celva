@@ -8,6 +8,8 @@ import request from 'supertest';
 import cookieParser from 'cookie-parser';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/modules/prisma/prisma.service';
+import { LocalStorageService } from '../src/modules/storage/local-storage.service';
+import { STORAGE_SERVICE } from '../src/modules/storage/storage.types';
 
 const ADMIN_EMAIL = 'admin@celva.store';
 const ADMIN_PASSWORD = 'ChangeMe123!';
@@ -34,13 +36,19 @@ describe('ProductImages (e2e)', () => {
     process.env.COOKIE_SECRET ??= 'c'.repeat(32);
     process.env.DATABASE_URL ??=
       'postgresql://valentine@localhost:5432/celva?schema=public';
-    // Force the local-FS storage backend for the test run.
-    delete process.env.R2_ACCOUNT_ID;
-    delete process.env.R2_ACCESS_KEY_ID;
-    delete process.env.R2_SECRET_ACCESS_KEY;
-    delete process.env.R2_ENDPOINT;
-
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    // Force the local-FS storage backend for the test run by overriding
+    // the STORAGE_SERVICE provider. Env-var manipulation isn't reliable
+    // since ConfigModule re-loads .env at init and our .env carries real
+    // R2 credentials in dev.
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
+      .overrideProvider(STORAGE_SERVICE)
+      .useValue(
+        new LocalStorageService({
+          root: UPLOAD_ROOT,
+          publicUrl: 'http://localhost:3001/uploads',
+        }),
+      )
+      .compile();
     app = moduleRef.createNestApplication<NestExpressApplication>();
     app.use(cookieParser(process.env.COOKIE_SECRET));
     app.useGlobalPipes(

@@ -33,6 +33,7 @@ import { PromoCodesModule } from './modules/promo-codes/promo-codes.module';
 import { DeliveryZonesModule } from './modules/delivery-zones/delivery-zones.module';
 import { PickupPointsModule } from './modules/pickup-points/pickup-points.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -119,6 +120,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     DeliveryZonesModule,
     PickupPointsModule,
     OrdersModule,
+    PaymentsModule,
   ],
   providers: [
     {
