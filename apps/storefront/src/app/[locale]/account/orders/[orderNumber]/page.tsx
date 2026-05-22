@@ -6,6 +6,7 @@ import type { Locale } from '@/i18n/routing';
 import { apiFetch, ApiError } from '@/lib/api';
 import { getAccessToken } from '@/lib/auth-cookies';
 import { formatPriceXAF, pickLocalized } from '@/lib/catalogue';
+import { cancelOrderAction, readAndClearOrderFlash } from './actions';
 
 type Order = {
   id: string;
@@ -94,6 +95,11 @@ export default async function OrderDetailPage({
     minute: '2-digit',
   }).format(new Date(order.createdAt));
 
+  const flash = await readAndClearOrderFlash();
+  const flashOk = flash === 'cancelled';
+  const flashError = flash && flash.startsWith('error:') ? flash.replace('error:', '') : null;
+  const canCancel = order.status === 'PENDING';
+
   return (
     <section className="bg-background py-section-tight">
       <div className="container-celva max-w-3xl">
@@ -178,6 +184,46 @@ export default async function OrderDetailPage({
           <section className="mb-8">
             <h2 className="eyebrow mb-2">{t('notes_heading')}</h2>
             <p className="font-body text-base text-foreground">{order.notes}</p>
+          </section>
+        )}
+
+        {flashOk && (
+          <div className="mb-8 border border-foreground bg-cream px-4 py-3 font-body text-base text-foreground">
+            {t('cancel_success')}
+          </div>
+        )}
+        {flashError && (
+          <div className="mb-8 border border-accent bg-accent/10 px-4 py-3 font-body text-base text-accent">
+            {flashError === 'order_customer_cancel_too_late'
+              ? t('cancel_too_late')
+              : t('cancel_error')}
+          </div>
+        )}
+
+        {canCancel && (
+          <section className="mt-8 border border-border p-6">
+            <h2 className="eyebrow mb-2">{t('cancel_heading')}</h2>
+            <p className="mb-4 font-body text-base text-foreground-muted">
+              {t('cancel_explainer')}
+            </p>
+            <form action={cancelOrderAction} className="space-y-3">
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="orderId" value={order.id} />
+              <input type="hidden" name="orderNumber" value={order.orderNumber} />
+              <label className="block">
+                <span className="eyebrow mb-1 block">{t('cancel_reason_label')}</span>
+                <textarea
+                  name="reason"
+                  rows={3}
+                  maxLength={280}
+                  placeholder={t('cancel_reason_placeholder')}
+                  className="input-underline w-full"
+                />
+              </label>
+              <button type="submit" className="btn btn-primary">
+                {t('cancel_submit')}
+              </button>
+            </form>
           </section>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   CurrentUser,
@@ -8,6 +8,7 @@ import { AuditLog } from '../../common/interceptors/audit-log.interceptor';
 import { OrdersService } from './orders.service';
 import { PaymentsService } from '../payments/payments.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { CancelOrderDto } from './dto/transition-order.dto';
 
 @ApiTags('orders')
 @ApiBearerAuth('access-token')
@@ -62,5 +63,20 @@ export class OrdersController {
     @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.payments.retryPayment(id, user.id);
+  }
+
+  @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary:
+      'Cancel one of my orders. Customer-side rule (stricter than admin): only PENDING orders can be cancelled — once CONFIRMED, the team is processing and the customer must contact support. Atomic: status → CANCELLED, stock restored via CANCELLATION_RETURN, promo usedCount decremented.',
+  })
+  @AuditLog({ action: 'STATUS_CHANGE', entity: 'Order', entityIdFrom: 'params.id' })
+  cancelMine(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CancelOrderDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.orders.cancelMyOrder(id, user.id, dto.reason);
   }
 }

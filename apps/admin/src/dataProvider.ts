@@ -36,6 +36,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'variants',
   'collections',
   'promo-codes',
+  'orders',
 ]);
 
 /**
