@@ -14,6 +14,7 @@ import {
 } from '@/lib/catalogue';
 import { addToCartAction } from '../cart/actions';
 import { removeFromWishlistAction } from './actions';
+import { StockBadge } from '@/components/StockBadge';
 
 type WishlistRow = { id: string; variantId: string; createdAt: string };
 
@@ -26,6 +27,8 @@ type WishlistItemView = {
   price: string;
   image: ApiProductImage | null;
   inStock: boolean;
+  stock: number;
+  isActive: boolean;
 };
 
 export async function generateMetadata({
@@ -104,6 +107,8 @@ export default async function WishlistPage({
           price,
           image: imgs.find((i) => i.isPrimary) ?? imgs[0] ?? null,
           inStock: variant.isActive && variant.stock > 0,
+          stock: variant.stock,
+          isActive: variant.isActive,
         } satisfies WishlistItemView;
       }),
     )
@@ -152,6 +157,7 @@ export default async function WishlistPage({
                   {formatPriceXAF(item.price, locale)}
                 </p>
               </Link>
+              <StockBadge stock={item.stock} isAvailable={item.isActive && item.stock > 0} />
               <div className="flex items-center gap-3">
                 <form action={addToCartAction}>
                   <input type="hidden" name="variantId" value={item.variantId} />
