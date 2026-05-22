@@ -109,6 +109,42 @@ export type Product = {
   updatedAt: string;
 };
 
+export type Delivery = {
+  id: string;
+  mode: 'HOME_DELIVERY' | 'STAFF_DELIVERY' | 'STORE_PICKUP' | 'RELAY_PICKUP';
+  status:
+    | 'PENDING'
+    | 'ASSIGNED'
+    | 'PICKED_UP'
+    | 'IN_TRANSIT'
+    | 'DELIVERED'
+    | 'FAILED';
+  actualCost: string | number;
+  trackingNote: string | null;
+  assignedAt: string | null;
+  pickedUpAt: string | null;
+  deliveredAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  order: {
+    id: string;
+    orderNumber: string;
+    status: string;
+    total: string | number;
+    shippingAddress: string | null;
+    shippingCity: string | null;
+    shippingPhone: string | null;
+    notes: string | null;
+    user: { id: string; email: string; name: string; phone: string | null };
+  };
+  pickupPoint?: {
+    id: string;
+    name: { fr: string; en: string };
+    address: string;
+    city: string;
+  } | null;
+};
+
 export type Article = {
   id: string;
   title: { fr: string; en: string };

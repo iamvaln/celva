@@ -7,6 +7,7 @@ import { apiFetch, ApiError } from '@/lib/api';
 import { getAccessToken } from '@/lib/auth-cookies';
 import { formatPriceXAF, pickLocalized } from '@/lib/catalogue';
 import { cancelOrderAction, readAndClearOrderFlash } from './actions';
+import { DeliveryTimeline } from './DeliveryTimeline';
 
 type Order = {
   id: string;
@@ -146,6 +147,12 @@ export default async function OrderDetailPage({
             </p>
           </dl>
         </section>
+
+        <DeliveryTimeline
+          orderNumber={order.orderNumber}
+          locale={locale}
+          accessToken={accessToken}
+        />
 
         <section className="mb-8 grid gap-6 sm:grid-cols-2">
           <div className="border border-border p-6">
