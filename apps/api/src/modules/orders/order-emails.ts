@@ -7,6 +7,7 @@ import type {
 } from '@celva/shared';
 import type { PrismaService } from '../prisma/prisma.service';
 import type { MailMessage, MailService } from '../mail/mail.service';
+import type { InvoicesService } from '../invoices/invoices.service';
 
 /**
  * Shape we need to build any order email. Pass exactly this — keeps the
@@ -95,7 +96,10 @@ const buildBilingualBody = (sections: { fr: string; en: string }): string =>
 // OrderConfirmation
 // ──────────────────────────────────────────────────────────────────────────
 
-export const buildOrderConfirmationEmail = (ctx: OrderEmailContext): MailMessage => {
+export const buildOrderConfirmationEmail = (
+  ctx: OrderEmailContext,
+  invoicePdf?: { buffer: Buffer; invoiceNumber: string },
+): MailMessage => {
   const totalLabel = formatXAF(ctx.total);
   const itemsFr = itemsLines(ctx.items, 'fr');
   const itemsEn = itemsLines(ctx.items, 'en');
@@ -147,6 +151,15 @@ export const buildOrderConfirmationEmail = (ctx: OrderEmailContext): MailMessage
     subject: `Celva · Commande ${ctx.orderNumber} confirmée / Order ${ctx.orderNumber} confirmed`,
     text: buildBilingualBody({ fr, en }),
     tag: 'order_confirmation',
+    attachments: invoicePdf
+      ? [
+          {
+            filename: `${invoicePdf.invoiceNumber}.pdf`,
+            content: invoicePdf.buffer,
+            contentType: 'application/pdf',
+          },
+        ]
+      : undefined,
   };
 };
 
@@ -318,6 +331,12 @@ export type OrderEmailDispatchDeps = {
   mail: MailService;
   storefrontUrl: string;
   logger: Logger;
+  /**
+   * Optional. When provided, OrderConfirmation emails ship the invoice
+   * PDF as an attachment (only fires when a matching Invoice row exists).
+   * Status / cancellation emails ignore this.
+   */
+  invoices?: InvoicesService;
 };
 
 /**
@@ -393,9 +412,23 @@ export const dispatchOrderEmail = async (
     storefrontUrl: deps.storefrontUrl,
   };
 
+  let invoiceAttachment: { buffer: Buffer; invoiceNumber: string } | undefined;
+  if (kind === 'confirmation' && deps.invoices) {
+    try {
+      invoiceAttachment = await deps.invoices.renderForAdmin(orderId);
+    } catch (err) {
+      // No Invoice row yet (PENDING payment) — ship the confirmation
+      // without the PDF, the customer will be able to download it from
+      // /me/orders/:id/invoice as soon as the payment completes.
+      deps.logger.debug(
+        `Invoice attachment skipped for ${orderId}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+
   const message =
     kind === 'confirmation'
-      ? buildOrderConfirmationEmail(ctx)
+      ? buildOrderConfirmationEmail(ctx, invoiceAttachment)
       : kind === 'cancelled'
         ? buildOrderCancelledEmail(ctx, reason)
         : buildOrderStatusEmail(ctx);

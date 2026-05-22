@@ -5,7 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": [
-      { "include": "i18n/**/*", "outDir": "dist/src" }
+      { "include": "i18n/**/*", "outDir": "dist/src" },
+      { "include": "assets/fonts/*.ttf", "outDir": "dist/src", "watchAssets": false }
     ],
     "watchAssets": true
   }

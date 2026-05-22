@@ -83,5 +83,6 @@
   "order_terminal": "Cette commande est dans un état terminal et ne peut plus changer.",
   "order_already_cancelled": "Cette commande est déjà annulée.",
   "order_too_late_to_cancel": "Cette commande a déjà été expédiée et ne peut plus être annulée.",
-  "order_customer_cancel_too_late": "Cette commande est en cours de préparation. Contactez le support pour l'annuler."
+  "order_customer_cancel_too_late": "Cette commande est en cours de préparation. Contactez le support pour l'annuler.",
+  "invoice_not_ready": "La facture sera disponible une fois le paiement complété."
 }

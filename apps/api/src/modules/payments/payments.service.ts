@@ -19,6 +19,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
+import { InvoicesService } from '../invoices/invoices.service';
 import { fireOrderEmail } from '../orders/order-emails';
 import type { Env } from '../../config/env';
 
@@ -32,6 +33,7 @@ export class PaymentsService {
     private readonly prisma: PrismaService,
     private readonly mail: MailService,
     private readonly config: ConfigService<Env, true>,
+    private readonly invoices: InvoicesService,
   ) {}
 
   async findById(id: string): Promise<Payment & { order: { id: string; status: string; userId: string } }> {
@@ -142,6 +144,7 @@ export class PaymentsService {
           mail: this.mail,
           storefrontUrl: this.config.get('STOREFRONT_URL', { infer: true }),
           logger: this.logger,
+          invoices: this.invoices,
         },
         result.payment.orderId,
         'confirmation',
