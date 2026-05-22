@@ -363,6 +363,17 @@
     "profile": "Profile & password",
     "profile_body": "Update your name, phone and change your password.",
     "go": "Open",
+    "delivery_timeline": {
+      "heading": "Delivery tracking",
+      "stage": {
+        "ASSIGNED": "Courier assigned",
+        "PICKED_UP": "Picked up",
+        "IN_TRANSIT": "On the way",
+        "DELIVERED": "Delivered"
+      },
+      "failed": "Delivery failed. Our team will reach out.",
+      "note_label": "Note"
+    },
     "orders_page": {
       "title": "My orders",
       "subtitle": "Most recent first.",

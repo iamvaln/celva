@@ -12,6 +12,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import ArticleIcon from '@mui/icons-material/Article';
+import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -57,6 +58,8 @@ import { OrderShow } from './resources/orders/OrderShow';
 import { ArticleList } from './resources/articles/ArticleList';
 import { ArticleCreate } from './resources/articles/ArticleCreate';
 import { ArticleEdit } from './resources/articles/ArticleEdit';
+import { DeliveryList } from './resources/deliveries/DeliveryList';
+import { DeliveryShow } from './resources/deliveries/DeliveryShow';
 
 export const App = () => (
   <Admin
@@ -163,6 +166,13 @@ export const App = () => (
           create={ArticleCreate}
           edit={ArticleEdit}
           options={{ label: 'Journal' }}
+        />
+        <Resource
+          name="deliveries"
+          icon={TwoWheelerIcon}
+          list={DeliveryList}
+          show={DeliveryShow}
+          options={{ label: 'Livraisons' }}
         />
         <Resource
           name="settings"

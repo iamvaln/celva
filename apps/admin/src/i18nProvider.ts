@@ -321,6 +321,39 @@ const celvaFr = {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets).',
       },
     },
+    deliveries: {
+      name: 'Livraison |||| Livraisons',
+      fields: {
+        orderNumber: 'N° commande',
+        client: 'Client',
+        status: 'Statut',
+        mode: 'Mode',
+        destination: 'Destination',
+        total: 'Total commande',
+        actualCost: 'Coût réel (coursier)',
+        trackingNote: 'Note logistique',
+        timestamps: 'Horodatages',
+        createdAt: 'Créée le',
+        updatedAt: 'Mise à jour le',
+      },
+      helpers: {
+        actual_cost: 'Montant payé au coursier (interne). Sert à calculer la marge — jamais exposé au client.',
+      },
+      actions: {
+        transition: 'Avancer le statut',
+        edit_metadata: 'Modifier coût / note',
+      },
+      dialogs: {
+        current_status: 'Statut actuel',
+        pick_next: 'Choisir le prochain statut…',
+        note: 'Note (coursier, motif d\'échec…)',
+        note_hint: 'Visible côté client. Pour des infos internes, n\'incluez pas de données sensibles.',
+      },
+      notifications: {
+        transitioned: 'Statut mis à jour. La commande a été synchronisée si applicable.',
+        updated: 'Livraison mise à jour.',
+      },
+    },
   },
 };
 
@@ -604,6 +637,39 @@ const celvaEn = {
       },
       errors: {
         invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',
+      },
+    },
+    deliveries: {
+      name: 'Delivery |||| Deliveries',
+      fields: {
+        orderNumber: 'Order #',
+        client: 'Customer',
+        status: 'Status',
+        mode: 'Mode',
+        destination: 'Destination',
+        total: 'Order total',
+        actualCost: 'Actual cost (courier)',
+        trackingNote: 'Logistics note',
+        timestamps: 'Timestamps',
+        createdAt: 'Created at',
+        updatedAt: 'Updated at',
+      },
+      helpers: {
+        actual_cost: "What the courier was paid (internal). Used for margin calc — never exposed to the customer.",
+      },
+      actions: {
+        transition: 'Advance status',
+        edit_metadata: 'Edit cost / note',
+      },
+      dialogs: {
+        current_status: 'Current status',
+        pick_next: 'Pick next status…',
+        note: 'Note (courier, failure reason…)',
+        note_hint: "Visible to the customer. Don't include sensitive internal data.",
+      },
+      notifications: {
+        transitioned: 'Status updated. Order synced when applicable.',
+        updated: 'Delivery updated.',
       },
     },
   },
