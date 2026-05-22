@@ -1,11 +1,17 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
+import { buildWhatsAppHref, getPublicSettings } from '@/lib/public-settings';
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('static.contact');
-  const whatsapp = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP ?? '237000000000';
+  const tNav = await getTranslations({ locale, namespace: 'nav' });
+  const settings = await getPublicSettings(locale);
+
+  const email = settings.contactEmail ?? 'contact@celva.store';
+  const phone = settings.contactPhone;
+  const whatsapp = settings.contactWhatsapp;
 
   return (
     <article className="container-celva max-w-prose py-section-gap">
@@ -14,8 +20,15 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         <p className="font-body text-lead text-foreground-muted">{t('subtitle')}</p>
       </header>
       <dl className="space-y-6 font-body text-base">
-        <Row label={t('email_label')} value="contact@celva.store" href="mailto:contact@celva.store" />
-        <Row label={t('whatsapp_label')} value="+237 6XX XXX XXX" href={`https://wa.me/${whatsapp}`} />
+        <Row label={t('email_label')} value={email} href={`mailto:${email}`} />
+        {phone && <Row label={t('phone_label')} value={phone} href={`tel:${phone.replace(/\s/g, '')}`} />}
+        {whatsapp && (
+          <Row
+            label={t('whatsapp_label')}
+            value={whatsapp}
+            href={buildWhatsAppHref(whatsapp, tNav('whatsapp_prelude'))}
+          />
+        )}
         <Row label={t('address_label')} value={t('address_value')} />
         <Row label={t('hours_label')} value={t('hours_value')} />
       </dl>
