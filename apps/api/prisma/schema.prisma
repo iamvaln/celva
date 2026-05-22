@@ -235,6 +235,7 @@ model User {
 
   refreshTokens       RefreshToken[]
   passwordResetTokens PasswordResetToken[]
+  emailChangeTokens   EmailChangeToken[]
 
   @@map("users")
 }
@@ -273,6 +274,25 @@ model PasswordResetToken {
   @@index([userId])
   @@index([expiresAt])
   @@map("password_reset_tokens")
+}
+
+// Pending email change. The user's email is NOT updated until the
+// customer clicks the link sent to the NEW address, which proves they
+// own it. newEmail is stored here, not on User.
+model EmailChangeToken {
+  id        String    @id @default(uuid())
+  tokenHash String    @unique
+  newEmail  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("email_change_tokens")
 }
 
 model Address {

@@ -224,6 +224,93 @@ export class AuthService {
     await this.tokens.revokeAllRefreshTokens(userId);
   }
 
+  /**
+   * Step 1 of email change: customer confirms current password + chooses
+   * a new email. We DON'T touch user.email here — just send a verification
+   * link to the new address. The user keeps logging in with the old email
+   * until they click that link.
+   *
+   * Failure modes (intentionally non-leaky):
+   *   - wrong current password → errors.current_password_invalid
+   *   - new email already on another account → errors.email_already_used
+   *   - new email matches current email → errors.email_unchanged (cheap UX guard)
+   */
+  async requestEmailChange(
+    userId: string,
+    currentPassword: string,
+    newEmail: string,
+  ): Promise<void> {
+    const normalized = newEmail.trim().toLowerCase();
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('errors.unauthorized');
+
+    const ok = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!ok) throw new BadRequestException('errors.current_password_invalid');
+
+    if (normalized === user.email.toLowerCase()) {
+      throw new BadRequestException('errors.email_unchanged');
+    }
+
+    const conflict = await this.prisma.user.findUnique({
+      where: { email: normalized },
+      select: { id: true },
+    });
+    if (conflict) throw new BadRequestException('errors.email_already_used');
+
+    const rawToken = await this.tokens.createEmailChangeToken(user.id, normalized, '1h');
+    const storefrontUrl = this.config.get('STOREFRONT_URL', { infer: true });
+    // Default FR locale (Cameroon primary) — see notes on resetPassword URL.
+    const confirmUrl = `${storefrontUrl}/fr/confirmer-changement-email?token=${rawToken}`;
+
+    void this.mail
+      .send({
+        to: normalized,
+        subject:
+          'Confirmer le changement d\'email / Confirm email change — Celva',
+        tag: 'email_change_confirm',
+        text:
+          `Bonjour ${user.name},\n\n` +
+          `Une demande de changement d'email a été faite pour votre compte Celva — ` +
+          `de ${user.email} vers ${normalized}.\n\n` +
+          `Si c'est bien vous, confirmez en cliquant sur ce lien (valable 1 heure) :\n` +
+          `${confirmUrl}\n\n` +
+          `Si vous n'avez pas fait cette demande, ignorez ce message — rien n'a changé.\n\n` +
+          `---\n\n` +
+          `Hi ${user.name},\n\n` +
+          `An email change was requested for your Celva account — ` +
+          `from ${user.email} to ${normalized}.\n\n` +
+          `If that was you, confirm here (link valid 1 hour):\n${confirmUrl}\n\n` +
+          `If it wasn't you, ignore this message — nothing has changed.`,
+      })
+      .catch(() => undefined);
+  }
+
+  /**
+   * Step 2: customer follows the email link. We re-check the email isn't
+   * taken (someone could have signed up with it in the meantime), then
+   * swap user.email and revoke ALL refresh tokens — the old browser
+   * session(s) get kicked out, just like a password change.
+   */
+  async confirmEmailChange(rawToken: string): Promise<{ email: string }> {
+    const record = await this.tokens.consumeEmailChangeToken(rawToken);
+    if (!record) throw new BadRequestException('errors.email_change_invalid');
+
+    const conflict = await this.prisma.user.findUnique({
+      where: { email: record.newEmail },
+      select: { id: true },
+    });
+    if (conflict && conflict.id !== record.userId) {
+      throw new BadRequestException('errors.email_already_used');
+    }
+
+    await this.prisma.user.update({
+      where: { id: record.userId },
+      data: { email: record.newEmail },
+    });
+    await this.tokens.revokeAllRefreshTokens(record.userId);
+    return { email: record.newEmail };
+  }
+
   private async issueTokens(
     userId: string,
     email: string,

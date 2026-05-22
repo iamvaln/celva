@@ -85,5 +85,7 @@
   "order_too_late_to_cancel": "This order has already shipped and can no longer be cancelled.",
   "order_customer_cancel_too_late": "This order is being prepared. Contact support to cancel it.",
   "invoice_not_ready": "The invoice will be available once the payment is completed.",
-  "current_password_invalid": "Current password is incorrect."
+  "current_password_invalid": "Current password is incorrect.",
+  "email_unchanged": "The new email matches your current email.",
+  "email_change_invalid": "This email-change link is invalid or has expired."
 }
