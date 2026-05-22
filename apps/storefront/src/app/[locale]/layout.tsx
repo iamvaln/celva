@@ -71,7 +71,7 @@ export default async function LocaleLayout({
         </main>
         <Footer />
         <CookieBanner />
-        <FabWhatsapp />
+        <FabWhatsapp locale={locale} />
       </ThemeProvider>
     </NextIntlClientProvider>
   );

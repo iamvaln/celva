@@ -30,7 +30,9 @@
     "menu_open": "Open menu",
     "menu_close": "Close menu",
     "language": "Language",
-    "theme_toggle": "Toggle theme"
+    "theme_toggle": "Toggle theme",
+    "whatsapp_open": "Message us on WhatsApp",
+    "whatsapp_prelude": "Hi Celva, I'd like more information."
   },
   "footer": {
     "tagline": "A Cameroonian brand, for people who take their time.",
