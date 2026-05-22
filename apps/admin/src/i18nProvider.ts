@@ -252,6 +252,38 @@ const celvaFr = {
         phone: 'Numéro Cameroun (+237…). Optionnel.',
       },
     },
+    orders: {
+      name: 'Commande |||| Commandes',
+      fields: {
+        orderNumber: 'N° commande',
+        client: 'Client',
+        status: 'Statut',
+        channel: 'Canal',
+        total: 'Total',
+        payment: 'Paiement',
+        items: 'Articles',
+        delivery: 'Livraison',
+        totals: 'Totaux',
+        notes: 'Notes',
+        createdAt: 'Créée le',
+        updatedAt: 'Mise à jour le',
+      },
+      actions: {
+        transition: 'Faire avancer',
+        cancel: 'Annuler la commande',
+      },
+      dialogs: {
+        current_status: 'Statut actuel',
+        pick_next: 'Choisir le prochain statut…',
+        reason: 'Motif (optionnel, journalisé)',
+        cancel_warning:
+          'L\'annulation restocke les articles et décrémente le code promo. Action irréversible.',
+      },
+      notifications: {
+        transitioned: 'Statut mis à jour.',
+        cancelled: 'Commande annulée. Stock restauré.',
+      },
+    },
   },
 };
 
@@ -466,6 +498,38 @@ const celvaEn = {
       },
       helpers: {
         phone: 'Cameroon phone (+237…). Optional.',
+      },
+    },
+    orders: {
+      name: 'Order |||| Orders',
+      fields: {
+        orderNumber: 'Order #',
+        client: 'Customer',
+        status: 'Status',
+        channel: 'Channel',
+        total: 'Total',
+        payment: 'Payment',
+        items: 'Items',
+        delivery: 'Delivery',
+        totals: 'Totals',
+        notes: 'Notes',
+        createdAt: 'Created at',
+        updatedAt: 'Updated at',
+      },
+      actions: {
+        transition: 'Advance status',
+        cancel: 'Cancel order',
+      },
+      dialogs: {
+        current_status: 'Current status',
+        pick_next: 'Pick next status…',
+        reason: 'Reason (optional, audited)',
+        cancel_warning:
+          'Cancelling restocks the items and decrements the promo code. This cannot be undone.',
+      },
+      notifications: {
+        transitioned: 'Status updated.',
+        cancelled: 'Order cancelled. Stock restored.',
       },
     },
   },

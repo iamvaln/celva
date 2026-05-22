@@ -10,6 +10,7 @@ import LayersIcon from '@mui/icons-material/Layers';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -50,6 +51,8 @@ import { DeliveryZoneCreate } from './resources/delivery-zones/DeliveryZoneCreat
 import { PickupPointList } from './resources/pickup-points/PickupPointList';
 import { PickupPointEdit } from './resources/pickup-points/PickupPointEdit';
 import { PickupPointCreate } from './resources/pickup-points/PickupPointCreate';
+import { OrderList } from './resources/orders/OrderList';
+import { OrderShow } from './resources/orders/OrderShow';
 
 export const App = () => (
   <Admin
@@ -141,6 +144,13 @@ export const App = () => (
           edit={PickupPointEdit}
           create={PickupPointCreate}
           options={{ label: 'Points de retrait' }}
+        />
+        <Resource
+          name="orders"
+          icon={ReceiptLongIcon}
+          list={OrderList}
+          show={OrderShow}
+          options={{ label: 'Commandes' }}
         />
         <Resource
           name="settings"

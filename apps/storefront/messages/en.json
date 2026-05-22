@@ -347,7 +347,15 @@
       "vat_included": "VAT included",
       "delivery_heading": "Delivery",
       "payment_heading": "Payment",
-      "notes_heading": "Note"
+      "notes_heading": "Note",
+      "cancel_heading": "Cancel order",
+      "cancel_explainer": "As long as our team hasn't confirmed the order yet, you can cancel it. Stock is restored automatically.",
+      "cancel_reason_label": "Reason (optional)",
+      "cancel_reason_placeholder": "e.g. Wrong size.",
+      "cancel_submit": "Cancel my order",
+      "cancel_success": "Your order has been cancelled.",
+      "cancel_too_late": "This order is already being prepared. Contact support to cancel it.",
+      "cancel_error": "Couldn't cancel the order. Please try again or contact support."
     },
     "addresses_page": {
       "title": "Delivery addresses",

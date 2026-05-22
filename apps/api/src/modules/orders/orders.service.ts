@@ -29,6 +29,27 @@ import { StockMovementsService } from '../stock-movements/stock-movements.servic
 import { DeliveryZonesService } from '../delivery-zones/delivery-zones.service';
 import { PromoCodesService } from '../promo-codes/promo-codes.service';
 import type { CreateOrderDto } from './dto/create-order.dto';
+import type { ListOrdersQuery } from './dto/list-orders.query';
+
+const TERMINAL_STATUSES: OrderStatus[] = [ORDER_STATUS.COMPLETED, ORDER_STATUS.CANCELLED];
+
+/**
+ * Lifecycle per spec §7.5. PENDING is the seed state. Cancellation is a
+ * separate flow (own endpoint) so the lifecycle here only covers forward
+ * progress. SHIPPED can go either to DELIVERED (HOME courier) or skip
+ * straight to DELIVERED from READY for pickups (spec §7.5
+ * "READY → DELIVERED direct pour STORE_PICKUP/RELAY_PICKUP").
+ */
+const ALLOWED_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
+  [ORDER_STATUS.PENDING]: [ORDER_STATUS.CONFIRMED],
+  [ORDER_STATUS.CONFIRMED]: [ORDER_STATUS.PROCESSING],
+  [ORDER_STATUS.PROCESSING]: [ORDER_STATUS.READY],
+  [ORDER_STATUS.READY]: [ORDER_STATUS.SHIPPED, ORDER_STATUS.DELIVERED],
+  [ORDER_STATUS.SHIPPED]: [ORDER_STATUS.DELIVERED],
+  [ORDER_STATUS.DELIVERED]: [ORDER_STATUS.COMPLETED],
+  [ORDER_STATUS.COMPLETED]: [],
+  [ORDER_STATUS.CANCELLED]: [],
+};
 
 const ORDER_NUMBER_PREFIX = 'CLV';
 
@@ -330,6 +351,196 @@ export class OrdersService {
 
     this.logger.log(`Order ${orderNumber} created (status=${created.status}, total=${total.toFixed(2)})`);
     return this.findByIdForUser(created.id, userId);
+  }
+
+  // ──────────────────────────────────────────────────────────────────────
+  // Admin
+  // ──────────────────────────────────────────────────────────────────────
+
+  async listForAdmin(query: ListOrdersQuery): Promise<{
+    data: Order[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? 25;
+
+    const where: Prisma.OrderWhereInput = {
+      ...(query.status ? { status: query.status as OrderStatus } : {}),
+      ...(query.channel ? { channel: query.channel } : {}),
+      ...(query.from || query.to
+        ? {
+            createdAt: {
+              ...(query.from ? { gte: new Date(query.from) } : {}),
+              ...(query.to ? { lt: new Date(query.to) } : {}),
+            },
+          }
+        : {}),
+      ...(query.search
+        ? {
+            OR: [
+              { orderNumber: { contains: query.search, mode: 'insensitive' } },
+              { user: { email: { contains: query.search, mode: 'insensitive' } } },
+              { user: { name: { contains: query.search, mode: 'insensitive' } } },
+            ],
+          }
+        : {}),
+    };
+
+    const sortBy = query.sortBy ?? 'createdAt';
+    const sortDir = query.sortDir ?? 'desc';
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.order.findMany({
+        where,
+        include: {
+          user: { select: { id: true, email: true, name: true } },
+          items: { select: { id: true } },
+          payment: { select: { method: true, status: true } },
+        },
+        orderBy: [{ [sortBy]: sortDir }, { id: 'asc' }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    return { data, total, page, pageSize };
+  }
+
+  async findByIdForAdmin(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        user: { select: { id: true, email: true, name: true, phone: true } },
+        items: { include: { variant: { include: { product: true } } } },
+        payment: true,
+        delivery: { include: { pickupPoint: true } },
+        promoCode: true,
+      },
+    });
+    if (!order) throw new NotFoundException('errors.not_found');
+    return order;
+  }
+
+  /**
+   * Admin/manager forward-only lifecycle transition. Validates against
+   * ALLOWED_TRANSITIONS and refuses to touch terminal orders. Cancellation
+   * lives at cancel() — separate flow because it triggers stock + promo
+   * side-effects.
+   */
+  async transitionStatus(
+    orderId: string,
+    nextStatus: OrderStatus,
+    _actorUserId: string,
+  ): Promise<Order> {
+    const order = await this.prisma.order.findUnique({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('errors.not_found');
+
+    if (TERMINAL_STATUSES.includes(order.status as OrderStatus)) {
+      throw new BadRequestException('errors.order_terminal');
+    }
+    const allowed = ALLOWED_TRANSITIONS[order.status as OrderStatus] ?? [];
+    if (!allowed.includes(nextStatus)) {
+      throw new BadRequestException('errors.invalid_order_transition');
+    }
+
+    const updated = await this.prisma.order.update({
+      where: { id: orderId },
+      data: { status: nextStatus },
+    });
+    this.logger.log(`Order ${order.orderNumber} ${order.status} → ${nextStatus}`);
+    return updated;
+  }
+
+  /**
+   * Cancel an order per spec §7.5. Allowed only before SHIPPED. Atomic:
+   *   - Order → CANCELLED
+   *   - Stock restored via StockMovement CANCELLATION_RETURN for every item
+   *     (signed positive — opposite of the SALE_OUT booked at checkout)
+   *   - PromoCode.usedCount decremented if a code was applied
+   *   - Payment stays as-is (refund flow is out of scope for this batch —
+   *     a separate "refund" lifecycle would mark the Payment REFUNDED and
+   *     book a Transaction EXPENSE; deferred to the finance batches).
+   * Commissions are NOT cleared here yet (they don't exist until the
+   * sales-commissions batch in Phase 6); when they do, this method should
+   * delete them per spec §7.5.
+   */
+  async cancel(
+    orderId: string,
+    actorUserId: string,
+    reason: string | undefined,
+  ): Promise<Order> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true },
+    });
+    if (!order) throw new NotFoundException('errors.not_found');
+
+    if (order.status === ORDER_STATUS.CANCELLED) {
+      throw new BadRequestException('errors.order_already_cancelled');
+    }
+    if (
+      order.status === ORDER_STATUS.SHIPPED ||
+      order.status === ORDER_STATUS.DELIVERED ||
+      order.status === ORDER_STATUS.COMPLETED
+    ) {
+      throw new BadRequestException('errors.order_too_late_to_cancel');
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.order.update({
+        where: { id: orderId },
+        data: { status: ORDER_STATUS.CANCELLED },
+      });
+
+      // Restore stock — every SALE_OUT movement booked at checkout has a
+      // matching CANCELLATION_RETURN here.
+      for (const it of order.items) {
+        await this.stockMovements.apply({
+          variantId: it.variantId,
+          quantity: it.quantity, // positive
+          type: STOCK_MOVEMENT_TYPE.CANCELLATION_RETURN,
+          userId: actorUserId,
+          orderId: order.id,
+          reason: reason ?? undefined,
+          tx,
+        });
+      }
+
+      // Decrement promo usedCount if applicable.
+      if (order.promoCodeId) {
+        await tx.promoCode.update({
+          where: { id: order.promoCodeId },
+          data: { usedCount: { decrement: 1 } },
+        });
+      }
+
+      this.logger.log(
+        `Order ${order.orderNumber} CANCELLED${reason ? ` (${reason})` : ''} — stock restored on ${order.items.length} line(s)`,
+      );
+      return updated;
+    });
+  }
+
+  /**
+   * Customer-initiated cancellation. Stricter than admin's cancel — only
+   * PENDING orders. Once an order is CONFIRMED the team is working on it;
+   * the customer needs to call/WhatsApp instead.
+   */
+  async cancelMyOrder(
+    orderId: string,
+    userId: string,
+    reason: string | undefined,
+  ): Promise<Order> {
+    const order = await this.prisma.order.findUnique({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('errors.not_found');
+    if (order.userId !== userId) throw new ForbiddenException('errors.forbidden');
+    if (order.status !== ORDER_STATUS.PENDING) {
+      throw new BadRequestException('errors.order_customer_cancel_too_late');
+    }
+    return this.cancel(orderId, userId, reason);
   }
 
   // ──────────────────────────────────────────────────────────────────────
