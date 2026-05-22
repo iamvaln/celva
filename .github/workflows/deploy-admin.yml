@@ -48,7 +48,7 @@ jobs:
           VITE_API_URL: ${{ github.ref_name == 'main' && secrets.VITE_API_URL_ADMIN || secrets.VITE_API_URL_ADMIN_PREPROD }}
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
