@@ -18,6 +18,7 @@ import { JWT, RATE_LIMITS } from '@celva/shared';
 import type { Env } from '../../config/env';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser, type AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { AuditLog } from '../../common/interceptors/audit-log.interceptor';
 import { AuthService, type SessionMeta } from './auth.service';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LoginDto } from './dto/login.dto';
@@ -129,6 +130,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Update my profile (name + phone). Email change is not supported here.',
   })
+  @AuditLog({ action: 'PROFILE_UPDATE', entity: 'User', entityIdFrom: 'user.id' })
   async updateMe(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: UpdateProfileDto,
@@ -143,6 +145,7 @@ export class AuthController {
     summary:
       'Change my password. Requires current password. All other sessions are revoked on success.',
   })
+  @AuditLog({ action: 'PASSWORD_CHANGE', entity: 'User', entityIdFrom: 'user.id' })
   async changePassword(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: ChangePasswordDto,
@@ -157,6 +160,11 @@ export class AuthController {
   @ApiOperation({
     summary:
       'Step 1 of email change: send a verification email to the new address. The change only takes effect once the link is followed (step 2). User keeps logging in with the old email until then.',
+  })
+  @AuditLog({
+    action: 'EMAIL_CHANGE_REQUEST',
+    entity: 'User',
+    entityIdFrom: 'user.id',
   })
   async requestEmailChange(
     @CurrentUser() user: AuthenticatedUser,
