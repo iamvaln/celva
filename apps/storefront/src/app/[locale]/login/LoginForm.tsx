@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 
 const schema = z.object({
   email: z.string().email(),
@@ -68,9 +68,17 @@ export const LoginForm = () => {
         ) : null}
       </div>
       <div>
-        <label className="mb-2 block font-body text-small text-foreground-muted" htmlFor="password">
-          {t('password')}
-        </label>
+        <div className="mb-2 flex items-baseline justify-between">
+          <label className="font-body text-small text-foreground-muted" htmlFor="password">
+            {t('password')}
+          </label>
+          <Link
+            href="/forgot-password"
+            className="font-body text-small text-foreground-muted hover:text-accent"
+          >
+            {t('forgot_password_link')}
+          </Link>
+        </div>
         <input
           id="password"
           type="password"
