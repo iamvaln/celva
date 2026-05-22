@@ -84,5 +84,6 @@
   "order_already_cancelled": "Cette commande est déjà annulée.",
   "order_too_late_to_cancel": "Cette commande a déjà été expédiée et ne peut plus être annulée.",
   "order_customer_cancel_too_late": "Cette commande est en cours de préparation. Contactez le support pour l'annuler.",
-  "invoice_not_ready": "La facture sera disponible une fois le paiement complété."
+  "invoice_not_ready": "La facture sera disponible une fois le paiement complété.",
+  "current_password_invalid": "Le mot de passe actuel est incorrect."
 }
