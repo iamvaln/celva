@@ -109,6 +109,22 @@ export type Product = {
   updatedAt: string;
 };
 
+export type Article = {
+  id: string;
+  title: { fr: string; en: string };
+  slug: string;
+  content: { fr: string; en: string };
+  excerpt: { fr?: string; en?: string } | null;
+  coverImage: string | null;
+  category: 'STYLE' | 'BEHIND_THE_SCENES' | 'EVENTS' | 'GUIDES';
+  isPublished: boolean;
+  publishedAt: string | null;
+  authorId: string;
+  author?: { id: string; name: string };
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type AuthLoginResponse = {
   accessToken: string;
   user: AdminUser;
