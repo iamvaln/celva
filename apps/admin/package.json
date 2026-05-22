@@ -1,0 +1,53 @@
+{
+  "name": "@celva/admin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Celva back-office — admin.celva.store, built with React-Admin",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 3002",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@celva/shared": "*",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/icons-material": "^6.1.10",
+    "@mui/material": "^6.1.10",
+    "ra-data-simple-rest": "^5.4.4",
+    "ra-i18n-polyglot": "^5.4.4",
+    "ra-language-english": "^5.4.4",
+    "ra-language-french": "^5.4.4",
+    "react": "^18.3.1",
+    "react-admin": "^5.4.4",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.0.2"
+  },
+  "devDependencies": {
+    "@celva/eslint-config": "*",
+    "@celva/typescript-config": "*",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^5.2.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.6.3",
+    "vite": "^7.3.3",
+    "vitest": "^3.2.4"
+  }
+}

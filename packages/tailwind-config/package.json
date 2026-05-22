@@ -1,0 +1,17 @@
+{
+  "name": "@celva/tailwind-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./preset": {
+      "types": "./preset.d.ts",
+      "default": "./preset.js"
+    },
+    "./tokens": {
+      "types": "./tokens.d.ts",
+      "default": "./tokens.js"
+    }
+  },
+  "files": ["preset.js", "preset.d.ts", "tokens.js", "tokens.d.ts"]
+}

@@ -1,0 +1,55 @@
+export const API_VERSION = 'v1';
+
+export const APP_SOURCE_HEADER = 'X-App-Source';
+export const REQUEST_ID_HEADER = 'X-Request-Id';
+export const ACCEPT_LANGUAGE_HEADER = 'Accept-Language';
+
+export const TAX_RATE_CAMEROON = 0.1925 as const;
+
+export const SETTING_KEYS = {
+  TAX_RATE: 'TAX_RATE',
+  MAX_CASH_ON_DELIVERY: 'MAX_CASH_ON_DELIVERY',
+  ORDER_AUTO_COMPLETE_DAYS: 'ORDER_AUTO_COMPLETE_DAYS',
+  CONSIGNMENT_ALERT_DAYS: 'CONSIGNMENT_ALERT_DAYS',
+  NEWSLETTER_PROMO_CODE: 'NEWSLETTER_PROMO_CODE',
+  INVOICE_COMPANY_NAME: 'INVOICE_COMPANY_NAME',
+  INVOICE_TAX_ID: 'INVOICE_TAX_ID',
+  INVOICE_ADDRESS: 'INVOICE_ADDRESS',
+  CONTACT_EMAIL: 'CONTACT_EMAIL',
+  CONTACT_PHONE: 'CONTACT_PHONE',
+  CONTACT_WHATSAPP: 'CONTACT_WHATSAPP',
+  FREE_DELIVERY_ENABLED: 'FREE_DELIVERY_ENABLED',
+  R2_BUCKET_URL: 'R2_BUCKET_URL',
+} as const;
+export type SettingKey = (typeof SETTING_KEYS)[keyof typeof SETTING_KEYS];
+
+export const RATE_LIMITS = {
+  GLOBAL_PER_MIN: 100,
+  LOGIN_PER_15_MIN: 5,
+  SIGNUP_PER_HOUR: 3,
+  PAYMENT_PER_MIN: 10,
+} as const;
+
+export const PASSWORD_MIN_LENGTH = 8;
+export const BCRYPT_ROUNDS = 12;
+
+export const JWT = {
+  ACCESS_EXPIRATION: '15m',
+  REFRESH_EXPIRATION: '7d',
+  REFRESH_COOKIE_NAME: 'celva_refresh',
+} as const;
+
+export const IMAGE = {
+  MAX_BYTES: 5 * 1024 * 1024,
+  ACCEPTED_MIME: ['image/jpeg', 'image/png', 'image/webp'] as const,
+  VARIANTS: {
+    LARGE: 1200,
+    MEDIUM: 600,
+    THUMB: 300,
+  },
+} as const;
+
+export const ORDER_NUMBER_PREFIX = 'CLV';
+export const INVOICE_NUMBER_PREFIX = 'CLV-INV';
+
+export const PHONE_CAMEROON_PATTERN = /^\+237[26]\d{8}$/;

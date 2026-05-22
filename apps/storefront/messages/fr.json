@@ -1,0 +1,433 @@
+{
+  "meta": {
+    "title": "Celva — Mode camerounaise haute couture",
+    "title_template": "%s · Celva",
+    "description": "Pièces couture pensées au Cameroun, livrées partout. Robes, hauts, accessoires.",
+    "og_image_alt": "Celva — Mode couture, Cameroun"
+  },
+  "common": {
+    "skip_to_content": "Aller au contenu",
+    "loading": "Chargement…",
+    "error_generic": "Une erreur est survenue. Réessayez.",
+    "currency_xaf": "FCFA"
+  },
+  "announce": {
+    "free_delivery": "Livraison offerte dès 50 000 FCFA · Paiement Mobile Money"
+  },
+  "nav": {
+    "brand": "Celva",
+    "shop": "Boutique",
+    "collections": "Collections",
+    "journal": "Journal",
+    "studio": "Studio",
+    "search": "Rechercher",
+    "account": "Mon compte",
+    "wishlist": "Favoris",
+    "cart": "Panier",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "logout": "Se déconnecter",
+    "menu_open": "Ouvrir le menu",
+    "menu_close": "Fermer le menu",
+    "language": "Langue",
+    "theme_toggle": "Basculer thème"
+  },
+  "footer": {
+    "tagline": "Une marque camerounaise, pour celles et ceux qui prennent le temps.",
+    "boutique": "Boutique",
+    "about": "À propos",
+    "help": "Aide",
+    "contact": "Contact",
+    "links": {
+      "shop_all": "Toutes les pièces",
+      "collections": "Collections",
+      "new": "Nouveautés",
+      "our_story": "Notre histoire",
+      "process": "Notre processus",
+      "journal": "Journal",
+      "faq": "Questions fréquentes",
+      "shipping": "Livraison & retours",
+      "size_guide": "Guide des tailles",
+      "terms": "CGV",
+      "privacy": "Politique de confidentialité",
+      "contact_us": "Nous écrire",
+      "whatsapp": "WhatsApp"
+    },
+    "payment": "Paiements acceptés : Orange Money · MTN Mobile Money · Espèces à la livraison",
+    "copyright": "© {year} Celva. Tous droits réservés."
+  },
+  "cookies": {
+    "title": "Cookies",
+    "body": "Nous utilisons des cookies pour mesurer l'audience anonymement. Aucun cookie tiers n'est posé avant votre accord.",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "learn_more": "En savoir plus"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Collection courante",
+      "title": "L'artisanat,\nporté avec calme.",
+      "subtitle": "Pièces couture pensées à Douala, taillées une à une, livrées au Cameroun et au-delà.",
+      "cta_primary": "Découvrir la collection",
+      "cta_secondary": "Notre processus"
+    },
+    "featured": {
+      "eyebrow": "Sélection",
+      "title": "Pièces phares",
+      "subtitle": "Quelques pièces de la saison à découvrir.",
+      "cta": "Voir toute la boutique",
+      "placeholder": "Sélection à venir"
+    },
+    "studio": {
+      "eyebrow": "Sur-mesure",
+      "title": "Créez votre pièce",
+      "body": "Le studio Celva ouvre bientôt : choisissez le tissu, la coupe, les détails. Une pièce unique, pour vous.",
+      "cta": "Je m'inscris à la liste d'attente"
+    },
+    "collections": {
+      "eyebrow": "Univers",
+      "title": "Collections",
+      "soiree": "Soirées chic",
+      "fete": "Fêtes",
+      "bureau": "Bureau"
+    },
+    "newsletter": {
+      "title": "Restez avec nous",
+      "body": "Rejoignez la liste pour les drops, l'atelier, et un code -10% sur votre première commande.",
+      "email_label": "Adresse email",
+      "email_placeholder": "vous@exemple.com",
+      "submit": "Je m'inscris",
+      "success": "Merci, on garde ça précieux.",
+      "error": "Inscription impossible. Réessayez."
+    }
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "continue_shopping": "Continuer mes achats",
+    "login_required": "Connectez-vous pour accéder à votre panier.",
+    "summary": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "vat_included": "TVA incluse",
+    "delivery_at_checkout": "Livraison calculée au paiement",
+    "total": "Total",
+    "checkout": "Passer commande",
+    "checkout_coming_soon": "Le paiement arrive en Phase 3.",
+    "unavailable": "Indisponible actuellement",
+    "low_stock": "Plus que {n} en stock",
+    "quantity": "Quantité",
+    "update": "Mettre à jour",
+    "remove": "Retirer",
+    "clear": "Vider le panier",
+    "go_to_cart": "Voir le panier ({count})",
+    "discount": "Remise",
+    "flash": {
+      "added": "Ajouté à votre panier.",
+      "add_failed": "Impossible d'ajouter cette pièce. Réessayez.",
+      "insufficient_stock": "Stock insuffisant pour cette variante."
+    },
+    "promo": {
+      "label": "Code promo",
+      "placeholder": "Entrez votre code",
+      "apply": "Appliquer",
+      "checking": "Vérification…",
+      "applied": "Code {code} appliqué",
+      "remove": "Retirer le code",
+      "errors": {
+        "invalid": "Code inconnu, inactif ou expiré.",
+        "exhausted": "Ce code a atteint sa limite d'utilisations.",
+        "min_order": "Le sous-total n'atteint pas le minimum requis.",
+        "user_limit": "Vous avez déjà utilisé ce code le maximum de fois autorisé.",
+        "format": "Format invalide. Lettres, chiffres, '_' ou '-'.",
+        "unknown": "Impossible d'appliquer ce code. Réessayez."
+      }
+    }
+  },
+  "checkout": {
+    "title": "Commande",
+    "login_required": "Connectez-vous pour passer votre commande.",
+    "back_to_cart": "Retour au panier",
+    "place_order": "Valider la commande",
+    "delivery": {
+      "heading": "Mode de livraison",
+      "home": "Livraison à domicile",
+      "home_hint": "Apportée à votre adresse. Frais selon la zone.",
+      "store": "Retrait à l'atelier",
+      "store_hint": "Gratuit. Récupération à notre atelier de Douala.",
+      "relay": "Retrait en point relais",
+      "relay_hint": "Gratuit. Récupération chez un partenaire."
+    },
+    "delivery_details": {
+      "heading": "Détails de livraison",
+      "zone": "Zone de livraison",
+      "days": "jours",
+      "saved_address": "Adresse enregistrée",
+      "new_address": "Utiliser une nouvelle adresse",
+      "inline_address": "Ou saisir une nouvelle adresse",
+      "address_line": "Adresse",
+      "city": "Ville",
+      "phone": "Téléphone",
+      "pickup_point": "Point de retrait"
+    },
+    "payment": {
+      "heading": "Paiement",
+      "orange": "Orange Money",
+      "mtn": "MTN Mobile Money",
+      "cash": "Paiement à la livraison",
+      "cash_hint": "Payez le livreur à la livraison. Plafond appliqué.",
+      "saved_method": "Méthode enregistrée",
+      "new_method": "Utiliser un nouveau numéro",
+      "phone_label": "Numéro Mobile Money"
+    },
+    "notes": {
+      "label": "Note pour l'équipe",
+      "placeholder": "Code d'accès, emballage cadeau, etc."
+    },
+    "errors": {
+      "unknown": "Impossible de valider la commande. Réessayez.",
+      "cart_empty": "Votre panier est vide.",
+      "delivery_zone_required": "Sélectionnez une zone de livraison pour la livraison à domicile.",
+      "delivery_zone_unavailable": "Cette zone n'est plus disponible.",
+      "pickup_point_required": "Sélectionnez un point de retrait.",
+      "pickup_point_unavailable": "Ce point de retrait n'est plus disponible.",
+      "shipping_address_not_found": "Adresse enregistrée introuvable.",
+      "saved_payment_method_not_found": "Méthode de paiement enregistrée introuvable.",
+      "saved_payment_method_mismatch": "La méthode enregistrée ne correspond pas au type sélectionné.",
+      "payment_phone_required": "Fournissez un numéro Mobile Money.",
+      "cash_over_cap": "Le total dépasse la limite paiement à la livraison. Choisissez Mobile Money.",
+      "insufficient_stock": "Un article n'est plus en stock. Vérifiez votre panier.",
+      "invalid_phone": "Téléphone invalide (Cameroun : +2376XXXXXXXX ou +2372XXXXXXXX)."
+    }
+  },
+  "confirmation": {
+    "eyebrow": "Commande confirmée",
+    "title": "Merci pour votre commande",
+    "intro": "Votre numéro de commande est {orderNumber}. On revient vers vous très vite.",
+    "status": {
+      "confirmed": "Commande confirmée — on la prépare.",
+      "pending": "Paiement en attente — validez le push Mobile Money sur votre téléphone."
+    },
+    "items_heading": "Pièces",
+    "subtotal": "Sous-total",
+    "discount": "Remise",
+    "delivery_fee": "Livraison",
+    "total": "Total",
+    "vat_included": "TVA incluse",
+    "delivery_heading": "Livraison",
+    "payment_heading": "Paiement",
+    "notes_heading": "Note",
+    "continue_shopping": "Continuer mes achats",
+    "view_orders": "Mes commandes",
+    "complete_payment": "Compléter le paiement Mobile Money",
+    "complete_payment_hint": "Stub DEV — auto-complétion immédiate. Le vrai push OM/MoMo arrivera avec les credentials API."
+  },
+  "wishlist": {
+    "title": "Favoris",
+    "empty": "Votre wishlist est vide.",
+    "login_required": "Connectez-vous pour sauvegarder des pièces.",
+    "remove": "Retirer",
+    "add_to_cart": "Ajouter au panier"
+  },
+  "shop": {
+    "title": "Boutique",
+    "subtitle": "Pièces couture, prêtes à être expédiées.",
+    "filter": {
+      "search_label": "Rechercher",
+      "search_placeholder": "Rechercher par nom…",
+      "category_label": "Catégorie",
+      "category_all": "Toutes les catégories",
+      "sort_label": "Trier par",
+      "sort": {
+        "newest": "Nouveautés",
+        "price_asc": "Prix · croissant",
+        "price_desc": "Prix · décroissant"
+      },
+      "apply": "Appliquer",
+      "reset": "Réinitialiser"
+    },
+    "empty": "Aucun produit ne correspond à vos filtres.",
+    "pagination": {
+      "prev": "Précédent",
+      "next": "Suivant",
+      "page_of_total": "Page {page} sur {total}"
+    },
+    "product_card": {
+      "view": "Voir",
+      "from": "à partir de"
+    }
+  },
+  "product": {
+    "back": "Retour à la boutique",
+    "category_label": "Catégorie",
+    "description_heading": "À propos",
+    "attributes_heading": "Options",
+    "related_heading": "Complétez le look",
+    "no_image": "Image bientôt disponible",
+    "not_found": "Produit introuvable.",
+    "back_to_shop": "Retour à la boutique"
+  },
+  "collection": {
+    "back": "Toutes les collections",
+    "products_heading": "Pièces de cette collection",
+    "empty": "Aucun produit pour le moment.",
+    "not_found": "Collection introuvable."
+  },
+  "auth": {
+    "login": {
+      "title": "Bon retour",
+      "subtitle": "Connectez-vous pour suivre vos commandes et retrouver votre wishlist.",
+      "email": "Adresse email",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "forgot": "Mot de passe oublié ?",
+      "no_account": "Pas encore de compte ?",
+      "signup_link": "Créer un compte",
+      "error_credentials": "Identifiants invalides.",
+      "error_generic": "La connexion a échoué. Réessayez."
+    },
+    "signup": {
+      "title": "Bienvenue chez Celva",
+      "subtitle": "Créez votre compte en 30 secondes.",
+      "name": "Nom complet",
+      "email": "Adresse email",
+      "phone": "Téléphone (+237…)",
+      "password": "Mot de passe",
+      "password_hint": "Minimum 8 caractères.",
+      "submit": "Créer mon compte",
+      "have_account": "Déjà un compte ?",
+      "login_link": "Se connecter",
+      "error_email_used": "Cette adresse email est déjà utilisée.",
+      "error_generic": "L'inscription a échoué. Réessayez."
+    },
+    "account": {
+      "title": "Mon compte",
+      "welcome": "Bonjour {name}",
+      "email_label": "Email",
+      "role_label": "Rôle",
+      "logout": "Se déconnecter",
+      "go_to_shop": "Aller à la boutique"
+    }
+  },
+  "static": {
+    "about": {
+      "title": "Notre histoire",
+      "subtitle": "Celva est née d'un constat simple : la mode haute couture peut être camerounaise, accessible, et patiente.",
+      "p1": "Au studio Celva, on prend le temps. Une pièce, c'est une intention : tissu choisi, coupe étudiée, détails travaillés. Rien ne sort sans avoir été vu, repris, validé.",
+      "p2": "Nos pièces sont produites à Douala. La traçabilité est entière, du tissu au paquet. Quand vous portez Celva, vous savez d'où ça vient — et qui l'a fait."
+    },
+    "process": {
+      "title": "Notre processus",
+      "subtitle": "De l'idée à la pièce finie, en cinq étapes.",
+      "steps": {
+        "design": {
+          "title": "Conception",
+          "body": "L'équipe créative dessine la pièce. Croquis, références, intentions."
+        },
+        "fabric": {
+          "title": "Tissu",
+          "body": "Nous sélectionnons des tissus naturels, certifiés quand possible, locaux quand pertinent."
+        },
+        "cut": {
+          "title": "Coupe",
+          "body": "Chaque pièce est coupée à la main, dans notre atelier de Douala."
+        },
+        "sew": {
+          "title": "Couture",
+          "body": "Assemblage par nos artisans. Finitions à la main, contrôle qualité à chaque étape."
+        },
+        "deliver": {
+          "title": "Livraison",
+          "body": "Emballage soigné, livraison Mobile Money. Au Cameroun en 1 à 7 jours."
+        }
+      }
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "subtitle": "Tout ce qu'il faut savoir avant d'acheter.",
+      "items": [
+        {
+          "q": "Quels sont les délais de livraison ?",
+          "a": "Douala : 1-2 jours ouvrés. Yaoundé : 2-3 jours. National : 3-7 jours. Hors Cameroun : nous contacter."
+        },
+        {
+          "q": "Comment payer ?",
+          "a": "Orange Money, MTN Mobile Money, ou espèces à la livraison (selon zone et montant)."
+        },
+        {
+          "q": "Puis-je échanger ou retourner une pièce ?",
+          "a": "Oui, dans les 14 jours, à condition que la pièce soit non portée et avec son étiquette."
+        },
+        {
+          "q": "Comment connaître ma taille ?",
+          "a": "Chaque fiche produit lie un guide des tailles spécifique. En cas de doute, écrivez-nous sur WhatsApp."
+        },
+        {
+          "q": "Faites-vous du sur-mesure ?",
+          "a": "Le studio sur-mesure ouvre bientôt. Rejoignez la liste d'attente depuis la page d'accueil."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Nous écrire",
+      "subtitle": "Une question, une commande spéciale, un partenariat — nous répondons sous 48h.",
+      "email_label": "Email",
+      "phone_label": "Téléphone",
+      "whatsapp_label": "WhatsApp",
+      "address_label": "Adresse",
+      "address_value": "Bonapriso, Douala, Cameroun",
+      "hours_label": "Horaires",
+      "hours_value": "Lun-Sam, 9h-18h (heure du Cameroun)"
+    },
+    "terms": {
+      "title": "Conditions générales de vente",
+      "updated": "Dernière mise à jour : {date}",
+      "intro": "Les présentes conditions générales de vente régissent les ventes sur le site celva.store, exploité par Celva Design SARL.",
+      "sections": {
+        "ordering": {
+          "title": "Commandes",
+          "body": "Les commandes passées sur le site sont fermes dès validation du paiement. Un email de confirmation est adressé au client."
+        },
+        "payment": {
+          "title": "Paiement",
+          "body": "Modes acceptés : Orange Money, MTN Mobile Money, paiement à la livraison (selon zone et plafond). Tous les prix sont TTC en FCFA."
+        },
+        "delivery": {
+          "title": "Livraison",
+          "body": "Les délais et frais dépendent de la zone (Douala, Yaoundé, National). Le suivi est communiqué par email et SMS."
+        },
+        "returns": {
+          "title": "Retours",
+          "body": "Vous disposez de 14 jours pour retourner un article non porté, avec son étiquette. Remboursement sous 7 jours après réception."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "updated": "Dernière mise à jour : {date}",
+      "intro": "Celva respecte la confidentialité de vos données et applique le RGPD européen ainsi que les lois camerounaises sur la protection des données.",
+      "sections": {
+        "collect": {
+          "title": "Ce que nous collectons",
+          "body": "Lors de votre inscription : nom, email, téléphone. Lors d'une commande : adresse de livraison, méthode de paiement (numéros masqués), historique d'achats."
+        },
+        "use": {
+          "title": "Ce que nous en faisons",
+          "body": "Traitement des commandes, livraison, support client. Avec votre consentement explicite : newsletter et mesure d'audience anonyme."
+        },
+        "rights": {
+          "title": "Vos droits",
+          "body": "Vous pouvez à tout moment exporter vos données, demander leur suppression, ou refuser le traitement. Écrivez à privacy@celva.store."
+        },
+        "cookies": {
+          "title": "Cookies",
+          "body": "Seuls les cookies strictement nécessaires sont posés sans consentement. La mesure d'audience est anonyme (Plausible/Umami) et opt-in."
+        }
+      }
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "message": "Cette page n'existe pas — ou plus.",
+    "cta": "Retour à l'accueil"
+  }
+}

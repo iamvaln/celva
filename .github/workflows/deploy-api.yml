@@ -1,0 +1,47 @@
+name: Deploy · API (Railway)
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/api/**'
+      - 'packages/shared/**'
+      - 'packages/typescript-config/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'turbo.json'
+      - '.github/workflows/deploy-api.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-api-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Railway · ${{ github.ref_name == 'main' && 'production' || 'preprod' }}
+    runs-on: ubuntu-latest
+    if: ${{ vars.API_DEPLOY_ENABLED == 'true' }}
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'preprod' }}
+      url: ${{ github.ref_name == 'main' && 'https://api.celva.store' || 'https://preprod.api.celva.store' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install Railway CLI
+        run: npm install --global @railway/cli
+
+      - name: Deploy
+        # Railway service per environment: celva-api (prod) vs
+        # celva-api-preprod. Configure them in Railway as separate
+        # services pointing at the same Dockerfile but different envs.
+        run: |
+          SERVICE=$([ "${{ github.ref_name }}" = "main" ] && echo "celva-api" || echo "celva-api-preprod")
+          railway up --service "$SERVICE" --detach
+        env:
+          RAILWAY_TOKEN: ${{ github.ref_name == 'main' && secrets.RAILWAY_TOKEN || secrets.RAILWAY_TOKEN_PREPROD }}

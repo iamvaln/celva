@@ -1,0 +1,55 @@
+name: Deploy · Admin (Cloudflare Pages)
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/admin/**'
+      - 'packages/shared/**'
+      - 'packages/tailwind-config/**'
+      - 'packages/typescript-config/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'turbo.json'
+      - '.github/workflows/deploy-admin.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-admin-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Cloudflare Pages · ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+    runs-on: ubuntu-latest
+    if: ${{ vars.ADMIN_DEPLOY_ENABLED == 'true' }}
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'preprod' }}
+      url: ${{ github.ref_name == 'main' && 'https://admin.celva.store' || 'https://preprod.admin.celva.store' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+        env:
+          NPM_CONFIG_ENGINE_STRICT: 'false'
+
+      - name: Build @celva/shared
+        run: npm run build --workspace=@celva/shared
+
+      - name: Build admin
+        run: npm run build --workspace=@celva/admin
+        env:
+          VITE_API_URL: ${{ github.ref_name == 'main' && secrets.VITE_API_URL_ADMIN || secrets.VITE_API_URL_ADMIN_PREPROD }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/admin/dist --project-name=celva-admin --branch=${{ github.ref_name }}

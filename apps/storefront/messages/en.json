@@ -1,0 +1,433 @@
+{
+  "meta": {
+    "title": "Celva — Cameroonian couture",
+    "title_template": "%s · Celva",
+    "description": "Couture pieces designed in Cameroon, shipped everywhere. Dresses, tops, accessories.",
+    "og_image_alt": "Celva — Cameroonian couture"
+  },
+  "common": {
+    "skip_to_content": "Skip to content",
+    "loading": "Loading…",
+    "error_generic": "Something went wrong. Try again.",
+    "currency_xaf": "XAF"
+  },
+  "announce": {
+    "free_delivery": "Free delivery over 50,000 XAF · Mobile Money payments"
+  },
+  "nav": {
+    "brand": "Celva",
+    "shop": "Shop",
+    "collections": "Collections",
+    "journal": "Journal",
+    "studio": "Studio",
+    "search": "Search",
+    "account": "My account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "menu_open": "Open menu",
+    "menu_close": "Close menu",
+    "language": "Language",
+    "theme_toggle": "Toggle theme"
+  },
+  "footer": {
+    "tagline": "A Cameroonian brand, for people who take their time.",
+    "boutique": "Shop",
+    "about": "About",
+    "help": "Help",
+    "contact": "Contact",
+    "links": {
+      "shop_all": "All pieces",
+      "collections": "Collections",
+      "new": "New arrivals",
+      "our_story": "Our story",
+      "process": "Our process",
+      "journal": "Journal",
+      "faq": "FAQ",
+      "shipping": "Shipping & returns",
+      "size_guide": "Size guide",
+      "terms": "Terms",
+      "privacy": "Privacy policy",
+      "contact_us": "Contact us",
+      "whatsapp": "WhatsApp"
+    },
+    "payment": "We accept Orange Money · MTN Mobile Money · Cash on delivery",
+    "copyright": "© {year} Celva. All rights reserved."
+  },
+  "cookies": {
+    "title": "Cookies",
+    "body": "We use cookies to measure traffic anonymously. No third-party cookies are set without your consent.",
+    "accept": "Accept",
+    "reject": "Decline",
+    "learn_more": "Learn more"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Current collection",
+      "title": "Craft,\nworn calmly.",
+      "subtitle": "Couture pieces designed in Douala, cut one at a time, shipped to Cameroon and beyond.",
+      "cta_primary": "Discover the collection",
+      "cta_secondary": "Our process"
+    },
+    "featured": {
+      "eyebrow": "Selection",
+      "title": "Signature pieces",
+      "subtitle": "A few highlights from the current season.",
+      "cta": "Browse the shop",
+      "placeholder": "Selection coming soon"
+    },
+    "studio": {
+      "eyebrow": "Made-to-measure",
+      "title": "Make your own",
+      "body": "The Celva studio opens soon: choose the fabric, the cut, the details. One piece, made for you.",
+      "cta": "Join the waitlist"
+    },
+    "collections": {
+      "eyebrow": "Worlds",
+      "title": "Collections",
+      "soiree": "Evening wear",
+      "fete": "Festive",
+      "bureau": "Workwear"
+    },
+    "newsletter": {
+      "title": "Stay with us",
+      "body": "Join the list for drops, studio updates, and a 10% off code on your first order.",
+      "email_label": "Email address",
+      "email_placeholder": "you@example.com",
+      "submit": "Subscribe",
+      "success": "Thanks — we'll keep it precious.",
+      "error": "Couldn't subscribe. Try again."
+    }
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "continue_shopping": "Continue shopping",
+    "login_required": "Log in to access your cart.",
+    "summary": "Order summary",
+    "subtotal": "Subtotal",
+    "vat_included": "VAT included",
+    "delivery_at_checkout": "Delivery calculated at checkout",
+    "total": "Total",
+    "checkout": "Checkout",
+    "checkout_coming_soon": "Checkout opens in Phase 3.",
+    "unavailable": "Currently unavailable",
+    "low_stock": "Only {n} left",
+    "quantity": "Quantity",
+    "update": "Update",
+    "remove": "Remove",
+    "clear": "Empty cart",
+    "go_to_cart": "View cart ({count})",
+    "discount": "Discount",
+    "flash": {
+      "added": "Added to your cart.",
+      "add_failed": "Couldn't add this piece. Please try again.",
+      "insufficient_stock": "Not enough stock for this variant."
+    },
+    "promo": {
+      "label": "Promo code",
+      "placeholder": "Enter your code",
+      "apply": "Apply",
+      "checking": "Checking…",
+      "applied": "Code {code} applied",
+      "remove": "Remove code",
+      "errors": {
+        "invalid": "Code unknown, inactive or expired.",
+        "exhausted": "This code has reached its usage limit.",
+        "min_order": "Subtotal does not meet this code's minimum.",
+        "user_limit": "You have already used this code the maximum number of times.",
+        "format": "Invalid format. Letters, digits, '_' or '-'.",
+        "unknown": "Could not apply this code. Try again."
+      }
+    }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "login_required": "Log in to place your order.",
+    "back_to_cart": "Back to cart",
+    "place_order": "Place order",
+    "delivery": {
+      "heading": "Delivery mode",
+      "home": "Home delivery",
+      "home_hint": "Couriered to your address. Fees apply by zone.",
+      "store": "Pickup at our store",
+      "store_hint": "Free. Pick up from our Douala atelier.",
+      "relay": "Pickup at a relay point",
+      "relay_hint": "Free. Pick up from a partner location."
+    },
+    "delivery_details": {
+      "heading": "Delivery details",
+      "zone": "Delivery zone",
+      "days": "days",
+      "saved_address": "Saved address",
+      "new_address": "Use a new address",
+      "inline_address": "Or enter a new address",
+      "address_line": "Address",
+      "city": "City",
+      "phone": "Phone",
+      "pickup_point": "Pickup point"
+    },
+    "payment": {
+      "heading": "Payment",
+      "orange": "Orange Money",
+      "mtn": "MTN Mobile Money",
+      "cash": "Cash on delivery",
+      "cash_hint": "Pay the courier on delivery. Subject to amount cap.",
+      "saved_method": "Saved method",
+      "new_method": "Use a new number",
+      "phone_label": "Mobile Money number"
+    },
+    "notes": {
+      "label": "Note for the team",
+      "placeholder": "Apartment access code, gift wrap, etc."
+    },
+    "errors": {
+      "unknown": "Couldn't place the order. Please try again.",
+      "cart_empty": "Your cart is empty.",
+      "delivery_zone_required": "Pick a delivery zone for home delivery.",
+      "delivery_zone_unavailable": "This delivery zone is no longer available.",
+      "pickup_point_required": "Pick a pickup point.",
+      "pickup_point_unavailable": "This pickup point is no longer available.",
+      "shipping_address_not_found": "Saved address not found.",
+      "saved_payment_method_not_found": "Saved payment method not found.",
+      "saved_payment_method_mismatch": "Saved method doesn't match the selected type.",
+      "payment_phone_required": "Provide a Mobile Money phone number.",
+      "cash_over_cap": "Total exceeds the cash-on-delivery limit. Pick Mobile Money.",
+      "insufficient_stock": "One of the items is out of stock. Please review your cart.",
+      "invalid_phone": "Invalid phone (Cameroon: +2376XXXXXXXX or +2372XXXXXXXX)."
+    }
+  },
+  "confirmation": {
+    "eyebrow": "Order confirmed",
+    "title": "Thank you for your order",
+    "intro": "Your order number is {orderNumber}. We'll be in touch shortly.",
+    "status": {
+      "confirmed": "Order confirmed — we're preparing it.",
+      "pending": "Payment pending — complete the Mobile Money push on your phone."
+    },
+    "items_heading": "Pieces",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "delivery_fee": "Delivery",
+    "total": "Total",
+    "vat_included": "VAT included",
+    "delivery_heading": "Delivery",
+    "payment_heading": "Payment",
+    "notes_heading": "Note",
+    "continue_shopping": "Keep shopping",
+    "view_orders": "My orders",
+    "complete_payment": "Complete Mobile Money payment",
+    "complete_payment_hint": "DEV stub — auto-completes immediately. Real OM/MoMo push lands when API credentials are wired."
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "empty": "Your wishlist is empty.",
+    "login_required": "Log in to save items.",
+    "remove": "Remove",
+    "add_to_cart": "Add to cart"
+  },
+  "shop": {
+    "title": "Shop",
+    "subtitle": "Couture pieces, ready to ship.",
+    "filter": {
+      "search_label": "Search",
+      "search_placeholder": "Search by name…",
+      "category_label": "Category",
+      "category_all": "All categories",
+      "sort_label": "Sort by",
+      "sort": {
+        "newest": "Newest",
+        "price_asc": "Price · low to high",
+        "price_desc": "Price · high to low"
+      },
+      "apply": "Apply",
+      "reset": "Reset"
+    },
+    "empty": "No products match your filters.",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page_of_total": "Page {page} of {total}"
+    },
+    "product_card": {
+      "view": "View",
+      "from": "from"
+    }
+  },
+  "product": {
+    "back": "Back to shop",
+    "category_label": "Category",
+    "description_heading": "About this piece",
+    "attributes_heading": "Options",
+    "related_heading": "Complete the look",
+    "no_image": "Image coming soon",
+    "not_found": "Product not found.",
+    "back_to_shop": "Back to the shop"
+  },
+  "collection": {
+    "back": "All collections",
+    "products_heading": "Pieces in this collection",
+    "empty": "No products yet.",
+    "not_found": "Collection not found."
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to follow your orders and find your wishlist.",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Log in",
+      "forgot": "Forgot password?",
+      "no_account": "No account yet?",
+      "signup_link": "Create one",
+      "error_credentials": "Invalid credentials.",
+      "error_generic": "Login failed. Try again."
+    },
+    "signup": {
+      "title": "Welcome to Celva",
+      "subtitle": "Create your account in 30 seconds.",
+      "name": "Full name",
+      "email": "Email address",
+      "phone": "Phone (+237…)",
+      "password": "Password",
+      "password_hint": "At least 8 characters.",
+      "submit": "Create my account",
+      "have_account": "Already have an account?",
+      "login_link": "Log in",
+      "error_email_used": "This email is already used.",
+      "error_generic": "Signup failed. Try again."
+    },
+    "account": {
+      "title": "My account",
+      "welcome": "Hello {name}",
+      "email_label": "Email",
+      "role_label": "Role",
+      "logout": "Log out",
+      "go_to_shop": "Go to the shop"
+    }
+  },
+  "static": {
+    "about": {
+      "title": "Our story",
+      "subtitle": "Celva was born from a simple idea: couture fashion can be Cameroonian, accessible, and patient.",
+      "p1": "At the Celva studio, we take our time. A piece is an intention: fabric chosen, cut studied, details worked. Nothing leaves without being seen, reworked, validated.",
+      "p2": "Every piece is made in Douala. Traceability is complete, from fabric to packaging. When you wear Celva, you know where it comes from — and who made it."
+    },
+    "process": {
+      "title": "Our process",
+      "subtitle": "From idea to finished piece, in five steps.",
+      "steps": {
+        "design": {
+          "title": "Design",
+          "body": "The creative team draws the piece. Sketches, references, intent."
+        },
+        "fabric": {
+          "title": "Fabric",
+          "body": "We select natural fabrics, certified when possible, local when relevant."
+        },
+        "cut": {
+          "title": "Cut",
+          "body": "Every piece is cut by hand in our Douala atelier."
+        },
+        "sew": {
+          "title": "Sew",
+          "body": "Assembled by our artisans. Hand-finished, quality-checked at every step."
+        },
+        "deliver": {
+          "title": "Delivery",
+          "body": "Careful packaging, Mobile Money payment. 1 to 7 days in Cameroon."
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently asked",
+      "subtitle": "Everything you need before you buy.",
+      "items": [
+        {
+          "q": "How long does delivery take?",
+          "a": "Douala: 1-2 business days. Yaoundé: 2-3 days. National: 3-7 days. Outside Cameroon: please contact us."
+        },
+        {
+          "q": "How do I pay?",
+          "a": "Orange Money, MTN Mobile Money, or cash on delivery (subject to zone and amount)."
+        },
+        {
+          "q": "Can I exchange or return a piece?",
+          "a": "Yes, within 14 days, provided the piece is unworn and has its tag."
+        },
+        {
+          "q": "How do I find my size?",
+          "a": "Each product page links to a specific size guide. If in doubt, write to us on WhatsApp."
+        },
+        {
+          "q": "Do you do made-to-measure?",
+          "a": "The made-to-measure studio opens soon. Join the waitlist from the homepage."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Get in touch",
+      "subtitle": "A question, a special order, a partnership — we reply within 48h.",
+      "email_label": "Email",
+      "phone_label": "Phone",
+      "whatsapp_label": "WhatsApp",
+      "address_label": "Address",
+      "address_value": "Bonapriso, Douala, Cameroon",
+      "hours_label": "Hours",
+      "hours_value": "Mon-Sat, 9am-6pm (Cameroon time)"
+    },
+    "terms": {
+      "title": "Terms of sale",
+      "updated": "Last updated: {date}",
+      "intro": "These terms govern sales on celva.store, operated by Celva Design SARL.",
+      "sections": {
+        "ordering": {
+          "title": "Orders",
+          "body": "Orders placed on the site are firm once payment is validated. A confirmation email is sent to the customer."
+        },
+        "payment": {
+          "title": "Payment",
+          "body": "Accepted: Orange Money, MTN Mobile Money, cash on delivery (subject to zone and cap). All prices include VAT, in XAF."
+        },
+        "delivery": {
+          "title": "Delivery",
+          "body": "Lead times and fees depend on the zone (Douala, Yaoundé, National). Tracking is sent by email and SMS."
+        },
+        "returns": {
+          "title": "Returns",
+          "body": "You have 14 days to return an unworn item with its tag. Refund within 7 days of receipt."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "updated": "Last updated: {date}",
+      "intro": "Celva respects your privacy and applies European GDPR and Cameroonian data protection laws.",
+      "sections": {
+        "collect": {
+          "title": "What we collect",
+          "body": "On signup: name, email, phone. On purchase: shipping address, payment method (numbers masked), order history."
+        },
+        "use": {
+          "title": "How we use it",
+          "body": "Order processing, delivery, customer support. With your explicit consent: newsletter and anonymous traffic measurement."
+        },
+        "rights": {
+          "title": "Your rights",
+          "body": "You can export your data, request deletion, or refuse processing at any time. Write to privacy@celva.store."
+        },
+        "cookies": {
+          "title": "Cookies",
+          "body": "Only strictly necessary cookies are set without consent. Audience measurement is anonymous (Plausible/Umami) and opt-in."
+        }
+      }
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "message": "This page doesn't exist — or no longer does.",
+    "cta": "Back home"
+  }
+}

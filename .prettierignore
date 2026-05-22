@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+.next
+.turbo
+coverage
+package-lock.json
+pnpm-lock.yaml
+*.min.*
+
+# Design reference (HTML mockups from Claude Design)
+design/

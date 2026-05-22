@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page introuvable — Celva</title>
+  <link rel="stylesheet" href="css/celva.css" />
+</head>
+<body data-screen-label="10 · 404">
+
+  <div data-celva="svg-defs"></div>
+  <div data-celva="announce"></div>
+  <div data-celva="header"></div>
+
+  <main class="error">
+    <div class="container error__inner">
+      <div class="error__copy">
+        <p class="eyebrow">Erreur 404 · Page introuvable</p>
+        <h1 class="error__num">4<span class="error__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></span>4</h1>
+        <p class="error__lede">
+          Ce que vous cherchez n'est plus là — peut-être à l'atelier, peut-être déplacé. Le reste de la boutique est ouvert.
+        </p>
+        <div class="error__actions">
+          <a href="index.html" class="btn btn--primary">Retour à l'accueil</a>
+          <a href="shop.html" class="btn btn--ghost">Voir la boutique <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-arrow-right"/></svg></a>
+        </div>
+
+        <div class="error__links">
+          <p class="eyebrow">Ou plutôt :</p>
+          <ul>
+            <li><a href="collection.html">→ La collection Printemps 26</a></li>
+            <li><a href="article.html">→ Notes d'atelier · Journal</a></li>
+            <li><a href="index.html#sur-mesure">→ Prendre un rendez-vous sur-mesure</a></li>
+            <li><a href="#">→ Discuter sur WhatsApp</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div data-celva="footer"></div>
+
+  <style>
+    .error {
+      min-height: 72vh;
+      display: flex;
+      align-items: center;
+      padding: 96px 0 64px;
+    }
+    .error__inner {
+      max-width: 760px;
+    }
+    .error__copy .eyebrow { color: var(--accent); margin: 0 0 28px; }
+    .error__num {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(120px, 22vw, 240px);
+      line-height: 0.9;
+      color: var(--accent);
+      margin: 0 0 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.04em;
+      letter-spacing: -0.03em;
+    }
+    .error__mono {
+      display: inline-block;
+      width: 0.7em;
+      height: 0.7em;
+      color: var(--accent);
+    }
+    .error__lede {
+      font-size: 22px;
+      line-height: 1.5;
+      max-width: 44ch;
+      margin: 0 0 40px;
+      color: var(--fg);
+    }
+    .error__actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+    .error__links { padding-top: 32px; border-top: 1px solid var(--border); }
+    .error__links .eyebrow { margin: 0 0 18px; color: var(--fg-muted); }
+    .error__links ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .error__links a {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--fg);
+    }
+    .error__links a:hover { color: var(--accent); padding-left: 6px; transition: padding 200ms ease, color 200ms ease; }
+  </style>
+
+  <script src="js/celva-shell.js"></script>
+  <script src="js/celva.js"></script>
+</body>
+</html>

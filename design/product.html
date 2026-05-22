@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trench Ekiti — Celva</title>
+  <link rel="stylesheet" href="css/celva.css" />
+</head>
+<body data-screen-label="03 Fiche produit">
+
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="i-monogram" viewBox="0 0 100 100">
+        <g fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="butt" stroke-linejoin="miter">
+          <path d="M 66 27.3 A 32 32 0 1 1 34 27.3" />
+          <path d="M 24 8 L 50 78 L 74 6" />
+          <path d="M 84 6 L 91 1" stroke-width="6.5" />
+        </g>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7" /><path d="M16 16l5 5" stroke-linecap="round" /></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke-linecap="round" /></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-4.5-9.5-9C1 9 2.6 5 6.5 5c2 0 3.6 1 5.5 3 1.9-2 3.5-3 5.5-3 3.9 0 5.5 4 4 7-2.5 4.5-9.5 9-9.5 9z" stroke-linejoin="round" /></symbol>
+      <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 7h12l-1 13H7L6 7z" stroke-linejoin="round" /><path d="M9 7V5a3 3 0 0 1 6 0v2" /></symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M11 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14" stroke-linecap="round" /></symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11 11 0 0 0 2.5 17.4L1 23l5.7-1.5A11 11 0 0 0 23 12a10.9 10.9 0 0 0-2.5-8.5zM12 21a9 9 0 0 1-4.6-1.3l-.3-.2-3.4.9.9-3.3-.2-.3A9 9 0 1 1 12 21zm5-6.7c-.3-.2-1.6-.8-1.9-.9-.3-.1-.4-.1-.6.1l-.8 1c-.2.3-.4.3-.7.1-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.3 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.2.3 2.1 3.2 5 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3z"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="announce">Livraison offerte dès 50 000 FCFA · Retours gratuits sous 14 jours</div>
+
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a class="nav__brand" href="index.html">
+          <svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg>
+          <span>CELVA</span>
+        </a>
+        <ul class="nav__links">
+          <li><a href="shop.html">Boutique</a></li>
+          <li><a href="collection.html">Collections</a></li>
+          <li><a href="index.html#sur-mesure">Studio sur-mesure</a></li>
+          <li><a href="article.html">Journal</a></li>
+        </ul>
+        <div class="nav__actions">
+          <button class="icon-btn" aria-label="Rechercher"><svg viewBox="0 0 24 24" fill="none"><use href="#i-search"/></svg></button>
+          <a class="icon-btn" href="account.html" aria-label="Compte"><svg viewBox="0 0 24 24" fill="none"><use href="#i-user"/></svg></a>
+          <button class="icon-btn" aria-label="Wishlist"><svg viewBox="0 0 24 24" fill="none"><use href="#i-heart"/></svg></button>
+          <a class="icon-btn" href="cart.html" aria-label="Panier"><svg viewBox="0 0 24 24" fill="none"><use href="#i-bag"/></svg><span class="cart-badge">2</span></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- BREADCRUMBS -->
+  <div class="crumbs">
+    <div class="container">
+      <a href="index.html">Accueil</a><span>·</span>
+      <a href="shop.html">Boutique</a><span>·</span>
+      <a href="shop.html">Vestes</a><span>·</span>
+      <span class="crumbs__current">Trench Ekiti</span>
+    </div>
+  </div>
+
+  <!-- PRODUCT -->
+  <section class="product">
+    <div class="container product__grid">
+
+      <!-- Gallery -->
+      <div class="product__gallery">
+        <div class="ph product__main" data-ratio="3/4">
+          <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+          <span class="ph__label">trench ekiti — porté ¾ face, lumière douce</span>
+        </div>
+        <div class="product__row">
+          <div class="ph" data-ratio="3/4">
+            <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+            <span class="ph__label">dos, ceinture nouée</span>
+          </div>
+          <div class="ph" data-ratio="3/4">
+            <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+            <span class="ph__label">détail manche, fil rouge</span>
+          </div>
+        </div>
+        <div class="ph" data-ratio="4/5">
+          <div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div>
+          <span class="ph__label">macro tissu — coton ciré, grain</span>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <aside class="product__info">
+        <p class="eyebrow">Veste · Collection Printemps 26</p>
+        <h1 class="h1 product__name">Trench Ekiti</h1>
+        <p class="product__price">68 500 <span>FCFA</span></p>
+        <p class="product__desc">Trench long en coton ciré, ceinture nouée, doublure intérieure légère en lin écru. Coupe droite, manches montées. Pièce de transition pour les saisons de pluie.</p>
+
+        <!-- Color -->
+        <div class="opt">
+          <div class="opt__head">
+            <span class="opt__label">Couleur</span>
+            <span class="opt__value">Terre cuite</span>
+          </div>
+          <div class="swatches">
+            <button class="swatch is-active" style="--c:#B26248" aria-label="Terre cuite"></button>
+            <button class="swatch" style="--c:#595D40" aria-label="Olive sombre"></button>
+            <button class="swatch" style="--c:#E8D9C6" aria-label="Sable"></button>
+            <button class="swatch" style="--c:#1A1A18" aria-label="Noir doux"></button>
+          </div>
+        </div>
+
+        <!-- Size -->
+        <div class="opt">
+          <div class="opt__head">
+            <span class="opt__label">Taille</span>
+            <a href="aide.html#panel-sizes" class="opt__link">Guide des tailles</a>
+          </div>
+          <div class="sizes">
+            <button class="size">34</button>
+            <button class="size">36</button>
+            <button class="size is-active">38</button>
+            <button class="size">40</button>
+            <button class="size">42</button>
+            <button class="size is-disabled" disabled>44</button>
+            <button class="size">46</button>
+            <button class="size size--custom">Sur-mesure</button>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="product__cta">
+          <div class="qty">
+            <button aria-label="Diminuer"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-minus"/></svg></button>
+            <span>1</span>
+            <button aria-label="Augmenter"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-plus"/></svg></button>
+          </div>
+          <a href="cart.html" class="btn btn--primary btn--block product__add">Ajouter au panier · 68 500 FCFA</a>
+          <button class="icon-btn product__wishlist" aria-label="Ajouter à la wishlist">
+            <svg viewBox="0 0 24 24" fill="none"><use href="#i-heart"/></svg>
+          </button>
+        </div>
+
+        <ul class="product__perks">
+          <li>Livraison sous 2–4 jours à Douala et Yaoundé</li>
+          <li>Retours gratuits sous 14 jours</li>
+          <li>Paiement Orange Money, MoMo, carte ou à la livraison</li>
+        </ul>
+
+        <!-- Accordions -->
+        <div class="accordion">
+          <details open>
+            <summary>
+              <span>Description complète</span>
+              <span class="accordion__icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion__body">
+              <p>Le trench Ekiti est notre veste signature, repensée chaque saison. Coupe droite, longueur sous le genou, ceinture détachable. Quatre poches plaquées avec rabats, deux poches intérieures.</p>
+              <p>Coton 100% indien, ciré à froid à l'atelier — finition mate, légèrement imperméable. Doublure légère en lin écru. Boutonnage discret en corne. Coutures anglaises, ourlet à la main.</p>
+            </div>
+          </details>
+          <details>
+            <summary>
+              <span>Composition &amp; entretien</span>
+              <span class="accordion__icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion__body">
+              <p>Extérieur : 100% coton ciré. Doublure : 100% lin. Boutons : corne véritable.</p>
+              <p>Nettoyage à sec uniquement. Ne pas repasser sur le cirage. Réenduire à la cire d'abeille tous les 18 mois — service disponible à l'atelier.</p>
+            </div>
+          </details>
+          <details>
+            <summary>
+              <span>Livraison &amp; retours</span>
+              <span class="accordion__icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion__body">
+              <p>Livraison sous 2–4 jours ouvrés à Douala et Yaoundé. 5–8 jours en province. International sous 10–14 jours via DHL Express.</p>
+              <p>Retours gratuits sous 14 jours. La pièce doit être non portée, avec étiquettes. Remboursement sous 5 jours après réception.</p>
+            </div>
+          </details>
+          <details>
+            <summary>
+              <span>Notre processus</span>
+              <span class="accordion__icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion__body">
+              <p>Chaque pièce passe par sept paires de mains, de la coupe à l'ourlet. Le tissu est sourcé chez nos quatre partenaires d'Afrique de l'Ouest. Tout est cousu rue Foch.</p>
+            </div>
+          </details>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- CROSS SELL -->
+  <section class="section section--alt">
+    <div class="container">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Complétez le look</p>
+          <h2 class="h2">Avec ces pièces</h2>
+        </div>
+        <a href="shop.html" class="btn btn--ghost">Voir la collection <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px"><use href="#i-arrow-right"/></svg></a>
+      </header>
+      <div class="product-grid">
+        <a class="product-card" href="product.html">
+          <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">chemise wouri</span></div></div>
+          <h3 class="product-card__name">Chemise Wouri</h3>
+          <p class="product-card__meta">Lin filé</p>
+          <p class="product-card__price">34 000 FCFA</p>
+        </a>
+        <a class="product-card" href="product.html">
+          <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">pantalon mbalmayo</span></div></div>
+          <h3 class="product-card__name">Pantalon Mbalmayo</h3>
+          <p class="product-card__meta">Soie sauvage</p>
+          <p class="product-card__price">52 000 FCFA</p>
+        </a>
+        <a class="product-card" href="product.html">
+          <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">ceinture cuir</span></div></div>
+          <h3 class="product-card__name">Ceinture Sanaga</h3>
+          <p class="product-card__meta">Cuir tanné main</p>
+          <p class="product-card__price">22 500 FCFA</p>
+        </a>
+        <a class="product-card" href="product.html">
+          <div class="product-card__media"><div class="ph" data-ratio="3/4"><div class="ph__mono"><svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg></div><span class="ph__label">foulard lin</span></div></div>
+          <h3 class="product-card__name">Foulard Douala</h3>
+          <p class="product-card__meta">Lin lavé, frangé</p>
+          <p class="product-card__price">14 000 FCFA</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a class="footer__brand-mark" href="index.html">
+            <svg viewBox="0 0 100 100" fill="none"><use href="#i-monogram"/></svg>
+            <span>CELVA</span>
+          </a>
+          <p>Maison camerounaise de prêt-à-porter et sur-mesure. Atelier rue Foch, Douala.</p>
+        </div>
+        <div class="footer__col"><h4>Boutique</h4><ul><li><a href="shop.html">Nouveautés</a></li><li><a href="shop.html">Femme</a></li><li><a href="shop.html">Homme</a></li><li><a href="shop.html">Archive</a></li></ul></div>
+        <div class="footer__col"><h4>Maison</h4><ul><li><a href="#">Notre histoire</a></li><li><a href="#">Atelier</a></li><li><a href="#">Le sur-mesure</a></li><li><a href="#">Journal</a></li></ul></div>
+        <div class="footer__col"><h4>Aide</h4><ul><li><a href="aide.html#panel-sizes">Guide des tailles</a></li><li><a href="aide.html#panel-shipping">Livraison &amp; retours</a></li><li><a href="aide.html#panel-care">Entretien</a></li><li><a href="aide.html">Nous contacter</a></li></ul></div>
+        <div class="footer__col"><h4>Contact</h4><ul><li><a href="#">bonjour@celva.cm</a></li><li><a href="#">+237 6 90 12 34 56</a></li><li><a href="#">WhatsApp</a></li><li><a href="#">Instagram</a></li></ul></div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Celva. Tous droits réservés.</span>
+        <div class="footer__pay"><span>Orange Money</span><span>MTN MoMo</span><span>Visa</span><span>Mastercard</span></div>
+        <span>FR · EN</span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="fab-whatsapp" href="#" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-whatsapp"/></svg>
+  </a>
+
+  <style>
+    .crumbs {
+      padding: 24px 0;
+      font-size: 13px;
+      color: var(--fg-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .crumbs span { margin: 0 10px; }
+    .crumbs a { color: var(--fg-muted); }
+    .crumbs a:hover { color: var(--accent); }
+    .crumbs__current { color: var(--fg); }
+
+    .product { padding-block: 48px 96px; }
+    .product__grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) { .product__grid { grid-template-columns: 1fr; gap: 40px; } }
+
+    .product__gallery { display: flex; flex-direction: column; gap: 24px; }
+    .product__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .product__main { width: 100%; }
+
+    .product__info {
+      position: sticky;
+      top: 110px;
+      align-self: start;
+    }
+    @media (max-width: 1024px) { .product__info { position: static; } }
+    .product__info .eyebrow { margin: 0 0 14px; display: block; }
+    .product__name { margin: 0 0 16px; }
+    .product__price {
+      font-family: var(--font-display);
+      font-size: 26px;
+      color: var(--accent);
+      margin: 0 0 24px;
+    }
+    .product__price span { font-size: 14px; color: var(--accent); margin-left: 6px; letter-spacing: 0.12em; }
+    .product__desc { font-size: 17px; line-height: 1.6; margin: 0 0 32px; max-width: 46ch; }
+
+    .opt { margin-bottom: 28px; }
+    .opt__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .opt__label {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+    .opt__value { font-family: var(--font-display); font-size: 15px; color: var(--fg); }
+    .opt__link { font-size: 13px; color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 1px; font-style: italic; }
+
+    .swatches { display: flex; gap: 14px; }
+    .swatch {
+      width: 32px; height: 32px;
+      border-radius: 999px;
+      background: var(--c);
+      border: 2px solid transparent;
+      cursor: pointer;
+      position: relative;
+      transition: all 200ms ease;
+    }
+    .swatch::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+    }
+    .swatch.is-active::after { border-color: var(--accent); }
+
+    .sizes { display: flex; gap: 10px; flex-wrap: wrap; }
+    .size {
+      min-width: 58px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .size:hover { border-color: var(--fg); }
+    .size.is-active { background: var(--olive); color: var(--cream); border-color: var(--olive); }
+    [data-theme="dark"] .size.is-active { background: var(--cream); color: var(--dark); border-color: var(--cream); }
+    .size.is-disabled { color: var(--gray-light); text-decoration: line-through; cursor: not-allowed; }
+    .size--custom { font-style: italic; color: var(--accent); border-color: var(--accent); }
+
+    .product__cta {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: stretch;
+      margin: 36px 0 24px;
+    }
+    .qty {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border);
+    }
+    .qty button {
+      width: 44px;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: var(--fg);
+    }
+    .qty button:hover { color: var(--accent); }
+    .qty span {
+      min-width: 32px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 16px;
+    }
+    .product__add { font-size: 12px; }
+    .product__wishlist {
+      width: 56px;
+      height: 56px;
+      border: 1px solid var(--border);
+    }
+    .product__wishlist:hover { color: var(--accent); border-color: var(--accent); }
+
+    .product__perks {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--fg-muted);
+    }
+    .product__perks li::before {
+      content: "—";
+      color: var(--accent);
+      margin-right: 10px;
+    }
+
+    /* Accordion */
+    .accordion details {
+      border-top: 1px solid var(--border);
+    }
+    .accordion details:last-child { border-bottom: 1px solid var(--border); }
+    .accordion summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 22px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--fg);
+    }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion__icon {
+      font-family: var(--font-body);
+      font-size: 22px;
+      color: var(--accent);
+      transition: transform 200ms ease;
+      display: inline-block;
+    }
+    .accordion details[open] .accordion__icon { transform: rotate(45deg); }
+    .accordion__body {
+      padding: 0 0 24px;
+      color: var(--fg-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 56ch;
+    }
+    .accordion__body p { margin: 0 0 10px; }
+    .accordion__body p:last-child { margin: 0; }
+  </style>
+
+  <script src="js/celva.js"></script>
+  <script>
+    // Simple interactivity: swatch / size selection
+    document.querySelectorAll('.swatches').forEach(group => {
+      group.addEventListener('click', e => {
+        const t = e.target.closest('.swatch');
+        if (!t) return;
+        group.querySelectorAll('.swatch').forEach(b => b.classList.remove('is-active'));
+        t.classList.add('is-active');
+        const label = t.getAttribute('aria-label');
+        const valueEl = group.closest('.opt').querySelector('.opt__value');
+        if (valueEl) valueEl.textContent = label;
+      });
+    });
+    document.querySelectorAll('.sizes').forEach(group => {
+      group.addEventListener('click', e => {
+        const t = e.target.closest('.size');
+        if (!t || t.classList.contains('is-disabled')) return;
+        group.querySelectorAll('.size').forEach(b => b.classList.remove('is-active'));
+        t.classList.add('is-active');
+      });
+    });
+    document.querySelectorAll('.qty').forEach(q => {
+      const span = q.querySelector('span');
+      const [minus, plus] = q.querySelectorAll('button');
+      let n = 1;
+      const upd = () => span.textContent = n;
+      minus.addEventListener('click', () => { if (n > 1) { n--; upd(); } });
+      plus.addEventListener('click', () => { n++; upd(); });
+    });
+  </script>
+</body>
+</html>
