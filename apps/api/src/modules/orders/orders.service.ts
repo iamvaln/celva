@@ -24,12 +24,16 @@ import {
   type OrderStatus,
   type PaymentMethod,
 } from '@celva/shared';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { StockMovementsService } from '../stock-movements/stock-movements.service';
 import { DeliveryZonesService } from '../delivery-zones/delivery-zones.service';
 import { PromoCodesService } from '../promo-codes/promo-codes.service';
+import { MailService } from '../mail/mail.service';
+import type { Env } from '../../config/env';
 import type { CreateOrderDto } from './dto/create-order.dto';
 import type { ListOrdersQuery } from './dto/list-orders.query';
+import { CUSTOMER_VISIBLE_TRANSITIONS, fireOrderEmail } from './order-emails';
 
 const TERMINAL_STATUSES: OrderStatus[] = [ORDER_STATUS.COMPLETED, ORDER_STATUS.CANCELLED];
 
@@ -62,6 +66,8 @@ export class OrdersService {
     private readonly stockMovements: StockMovementsService,
     private readonly deliveryZones: DeliveryZonesService,
     private readonly promoCodes: PromoCodesService,
+    private readonly mail: MailService,
+    private readonly config: ConfigService<Env, true>,
   ) {}
 
   async listForUser(userId: string): Promise<Order[]> {
@@ -350,6 +356,14 @@ export class OrdersService {
     });
 
     this.logger.log(`Order ${orderNumber} created (status=${created.status}, total=${total.toFixed(2)})`);
+
+    // Cash flow lands at CONFIRMED at checkout — send confirmation now. The
+    // OM/MoMo path stays PENDING here; PaymentsService.markCompleted triggers
+    // confirmation when the callback (or dev stub) promotes it to CONFIRMED.
+    if (created.status === ORDER_STATUS.CONFIRMED) {
+      this.dispatchOrderEmail(created.id, 'confirmation');
+    }
+
     return this.findByIdForUser(created.id, userId);
   }
 
@@ -451,6 +465,10 @@ export class OrdersService {
       data: { status: nextStatus },
     });
     this.logger.log(`Order ${order.orderNumber} ${order.status} → ${nextStatus}`);
+
+    if (CUSTOMER_VISIBLE_TRANSITIONS.includes(nextStatus)) {
+      this.dispatchOrderEmail(orderId, 'status');
+    }
     return updated;
   }
 
@@ -521,6 +539,9 @@ export class OrdersService {
         `Order ${order.orderNumber} CANCELLED${reason ? ` (${reason})` : ''} — stock restored on ${order.items.length} line(s)`,
       );
       return updated;
+    }).then((result) => {
+      this.dispatchOrderEmail(orderId, 'cancelled', reason);
+      return result;
     });
   }
 
@@ -546,6 +567,24 @@ export class OrdersService {
   // ──────────────────────────────────────────────────────────────────────
   // Helpers
   // ──────────────────────────────────────────────────────────────────────
+
+  private dispatchOrderEmail(
+    orderId: string,
+    kind: 'confirmation' | 'status' | 'cancelled',
+    reason?: string,
+  ): void {
+    fireOrderEmail(
+      {
+        prisma: this.prisma,
+        mail: this.mail,
+        storefrontUrl: this.config.get('STOREFRONT_URL', { infer: true }),
+        logger: this.logger,
+      },
+      orderId,
+      kind,
+      reason,
+    );
+  }
 
   private async readSettingDecimal(key: string, fallback: number): Promise<Prisma.Decimal> {
     const setting = await this.prisma.setting.findUnique({ where: { key } });
