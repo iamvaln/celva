@@ -22,7 +22,39 @@ import type { JwtPayload } from './strategies/jwt.strategy';
 export type SessionMeta = {
   userAgent?: string;
   ip?: string;
+  /** Locale from Accept-Language. Persisted on the User row at signup. */
+  locale?: string;
 };
+
+const SUPPORTED_LOCALES = ['fr', 'en'] as const;
+type Supported = (typeof SUPPORTED_LOCALES)[number];
+
+/**
+ * Normalize an Accept-Language-ish string ('en-US,en;q=0.9,fr;q=0.8') to
+ * one of our supported locales. Defaults to 'fr'.
+ */
+export const normalizeLocale = (raw: string | undefined): Supported => {
+  if (!raw) return 'fr';
+  const first = raw.split(',')[0]?.split('-')[0]?.toLowerCase() ?? '';
+  return (SUPPORTED_LOCALES as readonly string[]).includes(first)
+    ? (first as Supported)
+    : 'fr';
+};
+
+/**
+ * Localized storefront paths that appear inside transactional emails. Kept
+ * in sync with apps/storefront/src/i18n/routing.ts — drift here would
+ * break the email links.
+ */
+const resetPasswordPath = (locale: string): string =>
+  normalizeLocale(locale) === 'en'
+    ? '/en/reset-password'
+    : '/fr/reinitialiser-mot-de-passe';
+
+const confirmEmailChangePath = (locale: string): string =>
+  normalizeLocale(locale) === 'en'
+    ? '/en/confirm-email-change'
+    : '/fr/confirmer-changement-email';
 
 export type AuthResult = {
   accessToken: string;
@@ -35,6 +67,7 @@ export type AuthResult = {
     role: string;
     phone: string | null;
     isActive: boolean;
+    locale: string;
     createdAt: Date;
   };
 };
@@ -62,6 +95,7 @@ export class AuthService {
         phone: dto.phone,
         passwordHash,
         role: 'CLIENT',
+        locale: normalizeLocale(meta.locale),
         cart: { create: {} },
       },
     });
@@ -129,10 +163,7 @@ export class AuthService {
 
     const rawToken = await this.tokens.createPasswordResetToken(user.id, '1h');
     const storefrontUrl = this.config.get('STOREFRONT_URL', { infer: true });
-    // Storefront uses always-prefixed locales. We don't track the user's
-    // preferred locale yet, so default to FR (Cameroon primary). The
-    // language toggle on the page lets them flip if needed.
-    const resetUrl = `${storefrontUrl}/fr/reinitialiser-mot-de-passe?token=${rawToken}`;
+    const resetUrl = `${storefrontUrl}${resetPasswordPath(user.locale)}?token=${rawToken}`;
 
     void this.mail
       .send({
@@ -175,6 +206,7 @@ export class AuthService {
         phone: true,
         role: true,
         isActive: true,
+        locale: true,
         createdAt: true,
       },
     });
@@ -190,14 +222,15 @@ export class AuthService {
    */
   async updateProfile(
     userId: string,
-    dto: { name?: string; phone?: string },
+    dto: { name?: string; phone?: string; locale?: string },
   ): Promise<AuthResult['user']> {
-    const data: { name?: string; phone?: string | null } = {};
+    const data: { name?: string; phone?: string | null; locale?: string } = {};
     if (dto.name !== undefined) data.name = dto.name.trim();
     if (dto.phone !== undefined) {
       const trimmed = dto.phone.trim();
       data.phone = trimmed.length === 0 ? null : trimmed;
     }
+    if (dto.locale !== undefined) data.locale = normalizeLocale(dto.locale);
     await this.prisma.user.update({ where: { id: userId }, data });
     return this.getProfile(userId);
   }
@@ -259,8 +292,7 @@ export class AuthService {
 
     const rawToken = await this.tokens.createEmailChangeToken(user.id, normalized, '1h');
     const storefrontUrl = this.config.get('STOREFRONT_URL', { infer: true });
-    // Default FR locale (Cameroon primary) — see notes on resetPassword URL.
-    const confirmUrl = `${storefrontUrl}/fr/confirmer-changement-email?token=${rawToken}`;
+    const confirmUrl = `${storefrontUrl}${confirmEmailChangePath(user.locale)}?token=${rawToken}`;
 
     void this.mail
       .send({
@@ -349,6 +381,7 @@ export class AuthService {
         phone: true,
         role: true,
         isActive: true,
+        locale: true,
         createdAt: true,
       },
     });

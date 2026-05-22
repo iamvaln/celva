@@ -1,4 +1,5 @@
 import {
+  IsIn,
   IsOptional,
   IsString,
   Matches,
@@ -25,4 +26,9 @@ export class UpdateProfileDto {
   @IsString()
   @Matches(/^(\+237[26]\d{8})?$/, { message: 'errors.invalid_phone' })
   phone?: string;
+
+  @ApiPropertyOptional({ enum: ['fr', 'en'], description: 'Preferred UI language.' })
+  @IsOptional()
+  @IsIn(['fr', 'en'])
+  locale?: 'fr' | 'en';
 }
