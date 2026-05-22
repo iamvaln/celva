@@ -99,4 +99,38 @@ export class TokensService {
     });
     return { userId: record.userId };
   }
+
+  async createEmailChangeToken(
+    userId: string,
+    newEmail: string,
+    ttl = '1h',
+  ): Promise<string> {
+    const raw = TokensService.randomToken();
+    await this.prisma.emailChangeToken.create({
+      data: {
+        userId,
+        newEmail,
+        tokenHash: TokensService.hash(raw),
+        expiresAt: TokensService.expirationFromString(ttl),
+      },
+    });
+    return raw;
+  }
+
+  async consumeEmailChangeToken(
+    rawToken: string,
+  ): Promise<{ userId: string; newEmail: string } | null> {
+    const hash = TokensService.hash(rawToken);
+    const record = await this.prisma.emailChangeToken.findUnique({
+      where: { tokenHash: hash },
+      select: { id: true, userId: true, newEmail: true, expiresAt: true, usedAt: true },
+    });
+    if (!record || record.usedAt) return null;
+    if (record.expiresAt < new Date()) return null;
+    await this.prisma.emailChangeToken.update({
+      where: { id: record.id },
+      data: { usedAt: new Date() },
+    });
+    return { userId: record.userId, newEmail: record.newEmail };
+  }
 }

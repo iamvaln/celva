@@ -38,6 +38,10 @@ export const routing = defineRouting({
       en: '/reset-password',
     },
     '/account/profile': { fr: '/compte/profil', en: '/account/profile' },
+    '/confirm-email-change': {
+      fr: '/confirmer-changement-email',
+      en: '/confirm-email-change',
+    },
     '/journal': { fr: '/journal', en: '/journal' },
     '/journal/[slug]': { fr: '/journal/[slug]', en: '/journal/[slug]' },
     '/aide': { fr: '/aide', en: '/help' },

@@ -298,6 +298,16 @@
       "error_email": "Email invalide.",
       "error_generic": "Une erreur est survenue. Réessayez."
     },
+    "confirm_email_change": {
+      "success_title": "Email mis à jour",
+      "success_body": "Votre nouvel email est désormais {email}. Connectez-vous avec cette adresse — vos autres sessions ont été déconnectées.",
+      "login_cta": "Se connecter",
+      "error_title": "Lien invalide",
+      "error_missing": "Ce lien de confirmation est incomplet.",
+      "error_invalid": "Ce lien est invalide ou a expiré. Demandez-en un nouveau depuis votre compte.",
+      "error_email_taken": "Cette adresse a été prise par un autre compte entretemps. Choisissez-en une autre.",
+      "back_to_profile": "Retour au profil"
+    },
     "reset": {
       "title": "Nouveau mot de passe",
       "subtitle": "Choisissez un nouveau mot de passe pour votre compte.",
@@ -449,6 +459,13 @@
       "phone": "Téléphone",
       "phone_hint": "Format : +2376XXXXXXXX. Laissez vide pour le retirer.",
       "save_profile": "Enregistrer",
+      "email_change_heading": "Changer mon email",
+      "email_change_explainer": "Pour des raisons de sécurité, un lien de confirmation sera envoyé à la nouvelle adresse. Le changement ne prend effet qu'après confirmation.",
+      "email_change_current": "Email actuel",
+      "email_change_new": "Nouvel email",
+      "email_change_submit": "Envoyer le lien de confirmation",
+      "email_change_hint": "Lien valable 1 heure. Vos autres sessions seront déconnectées à la confirmation.",
+      "email_change_requested": "Lien de confirmation envoyé. Vérifiez la boîte de réception de la nouvelle adresse.",
       "password_heading": "Changer mon mot de passe",
       "password_explainer": "Après changement, toutes vos autres sessions seront déconnectées.",
       "current_password": "Mot de passe actuel",
@@ -460,6 +477,9 @@
       "error_current_password": "Le mot de passe actuel est incorrect.",
       "error_password_too_short": "Le nouveau mot de passe doit faire au moins 8 caractères.",
       "error_invalid_phone": "Numéro de téléphone invalide.",
+      "error_invalid_email": "Adresse email invalide.",
+      "error_email_taken": "Cette adresse est déjà utilisée par un autre compte.",
+      "error_email_unchanged": "Le nouvel email est identique à l'actuel.",
       "error_generic": "Une erreur est survenue. Réessayez."
     }
   },
