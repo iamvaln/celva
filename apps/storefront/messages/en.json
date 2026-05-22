@@ -500,6 +500,24 @@
       "error_generic": "Something went wrong. Try again."
     }
   },
+  "journal": {
+    "eyebrow": "Journal",
+    "title": "The Celva Journal",
+    "subtitle": "Studio behind-the-scenes, inspirations, style notes — between collections.",
+    "all": "All",
+    "category": {
+      "STYLE": "Style",
+      "BEHIND_THE_SCENES": "Behind the scenes",
+      "EVENTS": "Events",
+      "GUIDES": "Guides"
+    },
+    "empty": "No articles in this category yet.",
+    "back_to_journal": "Back to the journal",
+    "previous": "Previous",
+    "next": "Next",
+    "filters_aria": "Filter by category",
+    "pagination_aria": "Journal pagination"
+  },
   "static": {
     "about": {
       "title": "Our story",

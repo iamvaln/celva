@@ -11,6 +11,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import ArticleIcon from '@mui/icons-material/Article';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -53,6 +54,9 @@ import { PickupPointEdit } from './resources/pickup-points/PickupPointEdit';
 import { PickupPointCreate } from './resources/pickup-points/PickupPointCreate';
 import { OrderList } from './resources/orders/OrderList';
 import { OrderShow } from './resources/orders/OrderShow';
+import { ArticleList } from './resources/articles/ArticleList';
+import { ArticleCreate } from './resources/articles/ArticleCreate';
+import { ArticleEdit } from './resources/articles/ArticleEdit';
 
 export const App = () => (
   <Admin
@@ -151,6 +155,14 @@ export const App = () => (
           list={OrderList}
           show={OrderShow}
           options={{ label: 'Commandes' }}
+        />
+        <Resource
+          name="articles"
+          icon={ArticleIcon}
+          list={ArticleList}
+          create={ArticleCreate}
+          edit={ArticleEdit}
+          options={{ label: 'Journal' }}
         />
         <Resource
           name="settings"

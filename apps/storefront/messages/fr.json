@@ -500,6 +500,24 @@
       "error_generic": "Une erreur est survenue. Réessayez."
     }
   },
+  "journal": {
+    "eyebrow": "Journal",
+    "title": "Le Journal Celva",
+    "subtitle": "Coulisses du studio, inspirations, conseils de style — entre deux collections.",
+    "all": "Tous",
+    "category": {
+      "STYLE": "Style",
+      "BEHIND_THE_SCENES": "Coulisses",
+      "EVENTS": "Événements",
+      "GUIDES": "Guides"
+    },
+    "empty": "Aucun article pour cette catégorie pour l'instant.",
+    "back_to_journal": "Retour au journal",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "filters_aria": "Filtres par catégorie",
+    "pagination_aria": "Pagination du journal"
+  },
   "static": {
     "about": {
       "title": "Notre histoire",
