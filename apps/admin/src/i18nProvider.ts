@@ -286,6 +286,41 @@ const celvaFr = {
         invoice_failed: 'Impossible de télécharger la facture. La commande a-t-elle été payée ?',
       },
     },
+    articles: {
+      name: 'Article |||| Articles',
+      fields: {
+        title: 'Titre (FR / EN)',
+        'title.fr': 'Titre (FR)',
+        'title.en': 'Title (EN)',
+        slug: 'Slug',
+        category: 'Catégorie',
+        'excerpt.fr': 'Chapeau (FR)',
+        'excerpt.en': 'Excerpt (EN)',
+        'content.fr': 'Contenu (FR, Markdown)',
+        'content.en': 'Content (EN, Markdown)',
+        coverImage: 'Image de couverture (URL)',
+        isPublished: 'Publié',
+        publishedAt: 'Publié le',
+        updatedAt: 'Mis à jour le',
+      },
+      helpers: {
+        slug: 'Lettres minuscules, chiffres, tirets. Verrouillé dans l\'URL — changez-le avec parcimonie après publication.',
+        cover_image: 'URL d\'une image hébergée (R2, externe…). Optionnel.',
+        excerpt: 'Court résumé affiché dans la liste du journal et sur les cartes liées.',
+        content_markdown: 'Markdown : # titres, **gras**, *italique*, listes, [liens](url), ![images](url).',
+      },
+      actions: {
+        publish: 'Publier',
+        unpublish: 'Dépublier',
+      },
+      notifications: {
+        published: 'Article publié — visible sur le storefront.',
+        unpublished: 'Article dépublié — masqué du storefront.',
+      },
+      errors: {
+        invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets).',
+      },
+    },
   },
 };
 
@@ -534,6 +569,41 @@ const celvaEn = {
         transitioned: 'Status updated.',
         cancelled: 'Order cancelled. Stock restored.',
         invoice_failed: "Couldn't download the invoice. Has the order been paid yet?",
+      },
+    },
+    articles: {
+      name: 'Article |||| Articles',
+      fields: {
+        title: 'Title (FR / EN)',
+        'title.fr': 'Title (FR)',
+        'title.en': 'Title (EN)',
+        slug: 'Slug',
+        category: 'Category',
+        'excerpt.fr': 'Excerpt (FR)',
+        'excerpt.en': 'Excerpt (EN)',
+        'content.fr': 'Content (FR, Markdown)',
+        'content.en': 'Content (EN, Markdown)',
+        coverImage: 'Cover image (URL)',
+        isPublished: 'Published',
+        publishedAt: 'Published at',
+        updatedAt: 'Updated at',
+      },
+      helpers: {
+        slug: 'Lowercase letters, digits, dashes. Baked into the URL — change cautiously after publishing.',
+        cover_image: 'URL to a hosted image (R2, external…). Optional.',
+        excerpt: 'Short summary shown on the journal list and related cards.',
+        content_markdown: 'Markdown: # headings, **bold**, *italic*, lists, [links](url), ![images](url).',
+      },
+      actions: {
+        publish: 'Publish',
+        unpublish: 'Unpublish',
+      },
+      notifications: {
+        published: 'Article published — live on the storefront.',
+        unpublished: 'Article unpublished — hidden from the storefront.',
+      },
+      errors: {
+        invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',
       },
     },
   },
