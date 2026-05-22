@@ -12,8 +12,21 @@ export const routing = defineRouting({
     '/cart': { fr: '/panier', en: '/cart' },
     '/wishlist': { fr: '/favoris', en: '/wishlist' },
     '/checkout': { fr: '/commande', en: '/checkout' },
-    '/checkout/confirmation': { fr: '/commande/confirmation', en: '/checkout/confirmation' },
+    '/checkout/confirmation/[orderNumber]': {
+      fr: '/commande/confirmation/[orderNumber]',
+      en: '/checkout/confirmation/[orderNumber]',
+    },
     '/account': { fr: '/compte', en: '/account' },
+    '/account/orders': { fr: '/compte/commandes', en: '/account/orders' },
+    '/account/orders/[orderNumber]': {
+      fr: '/compte/commandes/[orderNumber]',
+      en: '/account/orders/[orderNumber]',
+    },
+    '/account/addresses': { fr: '/compte/adresses', en: '/account/addresses' },
+    '/account/payment-methods': {
+      fr: '/compte/methodes-paiement',
+      en: '/account/payment-methods',
+    },
     '/login': { fr: '/connexion', en: '/login' },
     '/signup': { fr: '/inscription', en: '/signup' },
     '/journal': { fr: '/journal', en: '/journal' },
