@@ -89,5 +89,7 @@
   "email_unchanged": "The new email matches your current email.",
   "email_change_invalid": "This email-change link is invalid or has expired.",
   "account_has_open_orders": "You have an order in progress. Wait for it to be delivered or cancel it before deleting your account.",
-  "invalid_delivery_transition": "Invalid delivery status transition."
+  "invalid_delivery_transition": "Invalid delivery status transition.",
+  "transaction_immutable": "Auto-generated transactions (linked to an order) can't be edited or deleted.",
+  "order_not_found": "Order not found."
 }

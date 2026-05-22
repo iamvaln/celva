@@ -354,6 +354,29 @@ const celvaFr = {
         updated: 'Livraison mise à jour.',
       },
     },
+    transactions: {
+      name: 'Transaction |||| Transactions',
+      fields: {
+        type: 'Type',
+        category: 'Catégorie',
+        amount: 'Montant',
+        description: 'Description',
+        receiptUrl: 'Justificatif (URL)',
+        date: 'Date',
+        orderId: 'Commande liée',
+        source: 'Source',
+      },
+      helpers: {
+        amount: 'Montant positif en XAF. Le type (INCOME / EXPENSE) détermine le signe au reporting.',
+        date: 'Quand la transaction a réellement eu lieu. Par défaut : maintenant.',
+        receipt: 'URL vers un reçu / facture (R2 plus tard).',
+        order_id: 'Optionnel — lier à une commande (refund partiel, remboursement…). Laisser vide pour une dépense classique.',
+      },
+      source: {
+        manual: 'Manuelle',
+        order: 'Commande {number}',
+      },
+    },
   },
 };
 
@@ -670,6 +693,29 @@ const celvaEn = {
       notifications: {
         transitioned: 'Status updated. Order synced when applicable.',
         updated: 'Delivery updated.',
+      },
+    },
+    transactions: {
+      name: 'Transaction |||| Transactions',
+      fields: {
+        type: 'Type',
+        category: 'Category',
+        amount: 'Amount',
+        description: 'Description',
+        receiptUrl: 'Receipt (URL)',
+        date: 'Date',
+        orderId: 'Linked order',
+        source: 'Source',
+      },
+      helpers: {
+        amount: 'Positive XAF amount. Type (INCOME / EXPENSE) drives the sign at reporting.',
+        date: "When the transaction actually happened. Defaults to now.",
+        receipt: 'URL to a receipt / invoice (R2 upload comes later).',
+        order_id: 'Optional — link to an order (partial refund, customer payback…). Leave empty for a regular expense.',
+      },
+      source: {
+        manual: 'Manual',
+        order: 'Order {number}',
       },
     },
   },
