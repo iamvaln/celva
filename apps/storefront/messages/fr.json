@@ -217,7 +217,9 @@
     "payment_heading": "Paiement",
     "notes_heading": "Note",
     "continue_shopping": "Continuer mes achats",
-    "view_orders": "Mes commandes"
+    "view_orders": "Mes commandes",
+    "complete_payment": "Compléter le paiement Mobile Money",
+    "complete_payment_hint": "Stub DEV — auto-complétion immédiate. Le vrai push OM/MoMo arrivera avec les credentials API."
   },
   "wishlist": {
     "title": "Favoris",
