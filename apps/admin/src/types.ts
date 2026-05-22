@@ -109,6 +109,34 @@ export type Product = {
   updatedAt: string;
 };
 
+export type Transaction = {
+  id: string;
+  type: 'INCOME' | 'EXPENSE';
+  category:
+    | 'SALE'
+    | 'RAW_MATERIALS'
+    | 'SUBCONTRACTING'
+    | 'MARKETING'
+    | 'TRANSPORT'
+    | 'CUSTOMS'
+    | 'SALARY'
+    | 'RENT'
+    | 'EQUIPMENT'
+    | 'PACKAGING'
+    | 'DELIVERY'
+    | 'COMMISSION'
+    | 'OTHER';
+  amount: string | number;
+  description: string | null;
+  receiptUrl: string | null;
+  date: string;
+  createdAt: string;
+  orderId: string | null;
+  order?: { id: string; orderNumber: string } | null;
+  createdById: string;
+  createdBy?: { id: string; name: string; email: string };
+};
+
 export type Delivery = {
   id: string;
   mode: 'HOME_DELIVERY' | 'STAFF_DELIVERY' | 'STORE_PICKUP' | 'RELAY_PICKUP';
