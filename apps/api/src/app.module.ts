@@ -35,6 +35,7 @@ import { PickupPointsModule } from './modules/pickup-points/pickup-points.module
 import { OrdersModule } from './modules/orders/orders.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { InvoicesModule } from './modules/invoices/invoices.module';
+import { ArticlesModule } from './modules/articles/articles.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -123,6 +124,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     OrdersModule,
     PaymentsModule,
     InvoicesModule,
+    ArticlesModule,
   ],
   providers: [
     {

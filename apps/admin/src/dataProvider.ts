@@ -37,6 +37,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'collections',
   'promo-codes',
   'orders',
+  'articles',
 ]);
 
 /**
@@ -52,7 +53,11 @@ const ALT_PRIMARY_KEY: Record<string, string> = {
  * `/{resource}*` — used to expose internal fields (e.g. DeliveryZone.actualCost)
  * or include inactive rows that the public endpoint hides.
  */
-const ADMIN_PATH_RESOURCES = new Set<string>(['delivery-zones', 'pickup-points']);
+const ADMIN_PATH_RESOURCES = new Set<string>([
+  'delivery-zones',
+  'pickup-points',
+  'articles',
+]);
 
 const resourceListPath = (resource: string): string =>
   ADMIN_PATH_RESOURCES.has(resource)
