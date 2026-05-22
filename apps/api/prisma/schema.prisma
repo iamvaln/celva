@@ -208,6 +208,10 @@ model User {
   phone        String?
   role         UserRole @default(CLIENT)
   isActive     Boolean  @default(true)
+  // Preferred UI language. Captured from Accept-Language at signup,
+  // updated whenever the customer toggles the storefront locale. Drives
+  // transactional email links (which path to embed: FR vs EN slug).
+  locale       String   @default("fr")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
