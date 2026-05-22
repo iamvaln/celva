@@ -89,5 +89,7 @@
   "email_unchanged": "Le nouvel email est identique à l'actuel.",
   "email_change_invalid": "Ce lien de changement d'email est invalide ou expiré.",
   "account_has_open_orders": "Vous avez une commande en cours. Attendez sa livraison ou annulez-la avant de supprimer votre compte.",
-  "invalid_delivery_transition": "Transition de statut de livraison invalide."
+  "invalid_delivery_transition": "Transition de statut de livraison invalide.",
+  "transaction_immutable": "Les transactions auto-générées (liées à une commande) ne peuvent pas être modifiées ou supprimées.",
+  "order_not_found": "Commande introuvable."
 }

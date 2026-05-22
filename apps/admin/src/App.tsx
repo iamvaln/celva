@@ -13,6 +13,7 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import ArticleIcon from '@mui/icons-material/Article';
 import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -60,6 +61,9 @@ import { ArticleCreate } from './resources/articles/ArticleCreate';
 import { ArticleEdit } from './resources/articles/ArticleEdit';
 import { DeliveryList } from './resources/deliveries/DeliveryList';
 import { DeliveryShow } from './resources/deliveries/DeliveryShow';
+import { TransactionList } from './resources/transactions/TransactionList';
+import { TransactionCreate } from './resources/transactions/TransactionCreate';
+import { TransactionEdit } from './resources/transactions/TransactionEdit';
 
 export const App = () => (
   <Admin
@@ -173,6 +177,14 @@ export const App = () => (
           list={DeliveryList}
           show={DeliveryShow}
           options={{ label: 'Livraisons' }}
+        />
+        <Resource
+          name="transactions"
+          icon={AccountBalanceIcon}
+          list={TransactionList}
+          create={permissions === 'ADMIN' || permissions === 'MANAGER' ? TransactionCreate : undefined}
+          edit={TransactionEdit}
+          options={{ label: 'Transactions' }}
         />
         <Resource
           name="settings"
