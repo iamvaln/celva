@@ -382,7 +382,6 @@ export const OrderShow = () => (
       <Labeled label="resources.orders.fields.totals">
         <Totals />
       </Labeled>
-      {/* eslint-disable-next-line react/jsx-no-undef */}
       <TextField source="notes" label="resources.orders.fields.notes" />
       <DateField source="createdAt" showTime />
       <DateField source="updatedAt" showTime />
