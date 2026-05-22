@@ -1,4 +1,10 @@
-import type { UserRole } from '@celva/shared';
+import type {
+  OrderChannel,
+  OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
+  UserRole,
+} from '@celva/shared';
 
 export type AdminUser = {
   id: string;
@@ -118,4 +124,57 @@ export type PaginatedResponse<T> = {
   total: number;
   page: number;
   pageSize: number;
+};
+
+export type AdminOrderRow = {
+  id: string;
+  orderNumber: string;
+  status: OrderStatus;
+  channel: OrderChannel;
+  subtotal: string | number;
+  deliveryFee: string | number;
+  discount?: string | number | null;
+  total: string | number;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user: { id: string; email: string; name: string };
+  items: Array<{ id: string }>;
+  payment: { method: PaymentMethod; status: PaymentStatus } | null;
+};
+
+export type AdminOrderDetail = Omit<AdminOrderRow, 'user' | 'items' | 'payment'> & {
+  user: { id: string; email: string; name: string; phone?: string | null };
+  items: Array<{
+    id: string;
+    quantity: number;
+    unitPrice: string | number;
+    lineTotal: string | number;
+    variantId: string;
+    variant: {
+      id: string;
+      sku: string;
+      product: { id: string; slug: string; name: { fr: string; en: string } };
+    };
+  }>;
+  payment: {
+    id: string;
+    method: PaymentMethod;
+    status: PaymentStatus;
+    phoneNumber?: string | null;
+    transactionRef?: string | null;
+    paidAt?: string | null;
+  } | null;
+  delivery: {
+    id: string;
+    mode: 'HOME_DELIVERY' | 'STORE_PICKUP';
+    fee: string | number;
+    shippingAddress?: string | null;
+    shippingCity?: string | null;
+    shippingPhone?: string | null;
+    deliveryZoneId?: string | null;
+    pickupPointId?: string | null;
+    pickupPoint?: { id: string; name: { fr: string; en: string } } | null;
+  } | null;
+  promoCode?: { id: string; code: string } | null;
 };

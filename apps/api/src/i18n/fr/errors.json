@@ -78,5 +78,10 @@
   "cash_on_delivery_over_cap": "Le total dépasse la limite paiement à la livraison. Choisissez Mobile Money.",
   "payment_already_completed": "Ce paiement est déjà complété.",
   "payment_not_found": "Paiement introuvable.",
-  "payment_cash_no_retry": "Les paiements à la livraison se règlent hors ligne et ne peuvent pas être réessayés en ligne."
+  "payment_cash_no_retry": "Les paiements à la livraison se règlent hors ligne et ne peuvent pas être réessayés en ligne.",
+  "invalid_order_transition": "Transition de statut de commande invalide.",
+  "order_terminal": "Cette commande est dans un état terminal et ne peut plus changer.",
+  "order_already_cancelled": "Cette commande est déjà annulée.",
+  "order_too_late_to_cancel": "Cette commande a déjà été expédiée et ne peut plus être annulée.",
+  "order_customer_cancel_too_late": "Cette commande est en cours de préparation. Contactez le support pour l'annuler."
 }

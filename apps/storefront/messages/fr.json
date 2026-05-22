@@ -347,7 +347,15 @@
       "vat_included": "TVA incluse",
       "delivery_heading": "Livraison",
       "payment_heading": "Paiement",
-      "notes_heading": "Note"
+      "notes_heading": "Note",
+      "cancel_heading": "Annuler la commande",
+      "cancel_explainer": "Tant que la commande n'a pas été confirmée par notre équipe, vous pouvez l'annuler. Le stock est restauré.",
+      "cancel_reason_label": "Motif (optionnel)",
+      "cancel_reason_placeholder": "Ex. Je me suis trompée de taille.",
+      "cancel_submit": "Annuler la commande",
+      "cancel_success": "Votre commande a bien été annulée.",
+      "cancel_too_late": "Cette commande est déjà en préparation. Contactez le support pour l'annuler.",
+      "cancel_error": "Impossible d'annuler la commande. Réessayez ou contactez le support."
     },
     "addresses_page": {
       "title": "Adresses de livraison",
