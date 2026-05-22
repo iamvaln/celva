@@ -14,6 +14,7 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import ArticleIcon from '@mui/icons-material/Article';
 import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import InsightsIcon from '@mui/icons-material/Insights';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -64,6 +65,7 @@ import { DeliveryShow } from './resources/deliveries/DeliveryShow';
 import { TransactionList } from './resources/transactions/TransactionList';
 import { TransactionCreate } from './resources/transactions/TransactionCreate';
 import { TransactionEdit } from './resources/transactions/TransactionEdit';
+import { FinanceDashboard } from './resources/finance/FinanceDashboard';
 
 export const App = () => (
   <Admin
@@ -185,6 +187,12 @@ export const App = () => (
           create={permissions === 'ADMIN' || permissions === 'MANAGER' ? TransactionCreate : undefined}
           edit={TransactionEdit}
           options={{ label: 'Transactions' }}
+        />
+        <Resource
+          name="finance"
+          icon={InsightsIcon}
+          list={FinanceDashboard}
+          options={{ label: 'Finance' }}
         />
         <Resource
           name="settings"

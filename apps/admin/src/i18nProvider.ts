@@ -377,6 +377,27 @@ const celvaFr = {
         order: 'Commande {number}',
       },
     },
+    finance: {
+      name: 'Finance |||| Finance',
+      title: 'Tableau de bord financier',
+      from: 'Du',
+      to: 'Au',
+      loading: 'Chargement…',
+      empty: 'Aucune donnée sur la période sélectionnée.',
+      kpi: {
+        revenue: "Chiffre d'affaires",
+        expenses: 'Dépenses',
+        net: 'Net',
+        orders: 'Commandes',
+        delivered_subtle: '{n} livrée(s)',
+        aov: 'Panier moyen',
+      },
+      timeseries: {
+        title: 'Revenus vs dépenses — 12 derniers mois',
+      },
+      revenue_by_channel: 'CA par canal',
+      expenses_by_category: 'Dépenses par catégorie',
+    },
   },
 };
 
@@ -717,6 +738,27 @@ const celvaEn = {
         manual: 'Manual',
         order: 'Order {number}',
       },
+    },
+    finance: {
+      name: 'Finance |||| Finance',
+      title: 'Finance dashboard',
+      from: 'From',
+      to: 'To',
+      loading: 'Loading…',
+      empty: 'No data for the selected window.',
+      kpi: {
+        revenue: 'Revenue',
+        expenses: 'Expenses',
+        net: 'Net',
+        orders: 'Orders',
+        delivered_subtle: '{n} delivered',
+        aov: 'Average order',
+      },
+      timeseries: {
+        title: 'Revenue vs expenses — last 12 months',
+      },
+      revenue_by_channel: 'Revenue by channel',
+      expenses_by_category: 'Expenses by category',
     },
   },
 };
