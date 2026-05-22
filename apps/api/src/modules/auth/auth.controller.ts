@@ -26,6 +26,8 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { RequestEmailChangeDto } from './dto/request-email-change.dto';
+import { ConfirmEmailChangeDto } from './dto/confirm-email-change.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 
 @ApiTags('auth')
@@ -146,6 +148,32 @@ export class AuthController {
     @Body() dto: ChangePasswordDto,
   ): Promise<void> {
     await this.auth.changePassword(user.id, dto.currentPassword, dto.newPassword);
+  }
+
+  @Post('me/email-change-request')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Throttle({ default: { limit: 5, ttl: 60 * 60_000 } })
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary:
+      'Step 1 of email change: send a verification email to the new address. The change only takes effect once the link is followed (step 2). User keeps logging in with the old email until then.',
+  })
+  async requestEmailChange(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: RequestEmailChangeDto,
+  ): Promise<void> {
+    await this.auth.requestEmailChange(user.id, dto.currentPassword, dto.newEmail);
+  }
+
+  @Public()
+  @Post('email-change-confirm')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary:
+      'Step 2 of email change: consume the token from the verification email. Swaps user.email and revokes all refresh tokens.',
+  })
+  async confirmEmailChange(@Body() dto: ConfirmEmailChangeDto): Promise<{ email: string }> {
+    return this.auth.confirmEmailChange(dto.token);
   }
 
   // ─── helpers ───

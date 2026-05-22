@@ -8,6 +8,7 @@ import { MailService, type MailMessage } from '../src/modules/mail/mail.service'
 
 const SUITE_TAG = `e2e-rec-${Date.now()}`;
 const CLIENT_EMAIL = `client-${SUITE_TAG}@celva.test`;
+const NEW_EMAIL = `client-${SUITE_TAG}-new@celva.test`;
 const PASSWORD = 'OldPass123!';
 const NEW_PASSWORD = 'NewPass456!';
 
@@ -59,21 +60,19 @@ describe('Auth recovery + profile (e2e)', () => {
   });
 
   afterAll(async () => {
-    await prisma.refreshToken.deleteMany({
-      where: { user: { email: CLIENT_EMAIL } },
-    });
-    await prisma.passwordResetToken.deleteMany({
-      where: { user: { email: CLIENT_EMAIL } },
-    });
-    await prisma.auditLog.deleteMany({
-      where: { user: { email: CLIENT_EMAIL } },
-    });
-    await prisma.user.deleteMany({ where: { email: CLIENT_EMAIL } });
+    const where = { user: { email: { in: [CLIENT_EMAIL, NEW_EMAIL] } } };
+    await prisma.refreshToken.deleteMany({ where });
+    await prisma.passwordResetToken.deleteMany({ where });
+    await prisma.emailChangeToken.deleteMany({ where });
+    await prisma.auditLog.deleteMany({ where });
+    await prisma.user.deleteMany({ where: { email: { in: [CLIENT_EMAIL, NEW_EMAIL] } } });
     await app?.close();
   });
 
   const signupFresh = async (): Promise<string> => {
-    await prisma.user.deleteMany({ where: { email: CLIENT_EMAIL } });
+    await prisma.user.deleteMany({
+      where: { email: { in: [CLIENT_EMAIL, NEW_EMAIL] } },
+    });
     const res = await request(server)
       .post('/api/v1/auth/signup')
       .send({ email: CLIENT_EMAIL, name: 'Recovery Test', password: PASSWORD })
@@ -278,6 +277,163 @@ describe('Auth recovery + profile (e2e)', () => {
       await request(server)
         .post('/api/v1/auth/reset-password')
         .send({ token: 'whatever', newPassword: 'short' })
+        .expect(400);
+    });
+  });
+
+  describe('Email change (verify-before-change)', () => {
+    const requestChange = async (
+      token: string,
+      body: { currentPassword: string; newEmail: string },
+      expectStatus = 204,
+    ): Promise<void> => {
+      await request(server)
+        .post('/api/v1/auth/me/email-change-request')
+        .set('Authorization', `Bearer ${token}`)
+        .send(body)
+        .expect(expectStatus);
+    };
+
+    const grabTokenFromMail = async (): Promise<string> => {
+      await new Promise((r) => setTimeout(r, 100));
+      const mail = mailSpy.sends.find((m) => m.tag === 'email_change_confirm');
+      expect(mail).toBeDefined();
+      const m = mail!.text?.match(/token=([^\s&]+)/);
+      expect(m).toBeTruthy();
+      return m![1]!;
+    };
+
+    it('sends a verification email to the new address (not the old one)', async () => {
+      const token = await signupFresh();
+      mailSpy.clear();
+      await requestChange(token, { currentPassword: PASSWORD, newEmail: NEW_EMAIL });
+      await new Promise((r) => setTimeout(r, 100));
+      const mail = mailSpy.sends.find((m) => m.tag === 'email_change_confirm');
+      expect(mail).toBeDefined();
+      expect(mail?.to).toBe(NEW_EMAIL);
+      // Dev-mode contract: the URL includes the localized FR path so the
+      // operator can grab it from logs and walk the flow manually.
+      expect(mail?.text).toMatch(/confirmer-changement-email\?token=/);
+    });
+
+    it("does NOT change the user's email at request time", async () => {
+      const token = await signupFresh();
+      await requestChange(token, { currentPassword: PASSWORD, newEmail: NEW_EMAIL });
+      const me = await request(server)
+        .get('/api/v1/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(me.body.data.email).toBe(CLIENT_EMAIL);
+    });
+
+    it('rejects a wrong current password (400)', async () => {
+      const token = await signupFresh();
+      await requestChange(
+        token,
+        { currentPassword: 'nope', newEmail: NEW_EMAIL },
+        400,
+      );
+    });
+
+    it('rejects an email matching the current one (400 email_unchanged)', async () => {
+      const token = await signupFresh();
+      await requestChange(
+        token,
+        { currentPassword: PASSWORD, newEmail: CLIENT_EMAIL.toUpperCase() },
+        400,
+      );
+    });
+
+    it('rejects an email already used by another account (400)', async () => {
+      // Seed a second user with NEW_EMAIL so it's taken.
+      const token = await signupFresh();
+      await request(server)
+        .post('/api/v1/auth/signup')
+        .send({ email: NEW_EMAIL, name: 'Other', password: PASSWORD })
+        .expect(201);
+      await requestChange(
+        token,
+        { currentPassword: PASSWORD, newEmail: NEW_EMAIL },
+        400,
+      );
+    });
+
+    it('rejects malformed new email (400)', async () => {
+      const token = await signupFresh();
+      await requestChange(
+        token,
+        { currentPassword: PASSWORD, newEmail: 'not-an-email' },
+        400,
+      );
+    });
+
+    it('401 anon on request', async () => {
+      await request(server)
+        .post('/api/v1/auth/me/email-change-request')
+        .send({ currentPassword: PASSWORD, newEmail: NEW_EMAIL })
+        .expect(401);
+    });
+
+    it('confirms with the token from email → user.email is swapped, sessions revoked', async () => {
+      const token = await signupFresh();
+      // Take a second session to verify it gets killed.
+      const otherLogin = await request(server)
+        .post('/api/v1/auth/login')
+        .send({ email: CLIENT_EMAIL, password: PASSWORD })
+        .expect(200);
+      expect(otherLogin.body.data.accessToken).toBeTruthy();
+
+      mailSpy.clear();
+      await requestChange(token, { currentPassword: PASSWORD, newEmail: NEW_EMAIL });
+      const t = await grabTokenFromMail();
+
+      const res = await request(server)
+        .post('/api/v1/auth/email-change-confirm')
+        .send({ token: t })
+        .expect(200);
+      expect(res.body.data.email).toBe(NEW_EMAIL);
+
+      // Old email no longer logs in
+      const oldLogin = await request(server)
+        .post('/api/v1/auth/login')
+        .send({ email: CLIENT_EMAIL, password: PASSWORD });
+      expect(oldLogin.status).toBe(401);
+
+      // New email does
+      const newLogin = await request(server)
+        .post('/api/v1/auth/login')
+        .send({ email: NEW_EMAIL, password: PASSWORD });
+      expect(newLogin.status).toBe(200);
+
+      // All refresh tokens revoked
+      const tokens = await prisma.refreshToken.findMany({
+        where: { user: { email: NEW_EMAIL } },
+      });
+      // The fresh login above issues a new refresh token; everything BEFORE
+      // it should be revoked.
+      const olderRevoked = tokens.filter((t) => t.createdAt < new Date()).slice(0, -1);
+      expect(olderRevoked.every((t) => t.revokedAt !== null || tokens.length === 1)).toBe(true);
+    });
+
+    it('rejects an invalid confirm token (400)', async () => {
+      await request(server)
+        .post('/api/v1/auth/email-change-confirm')
+        .send({ token: 'totally-invalid-12345' })
+        .expect(400);
+    });
+
+    it('a single token can only be consumed once', async () => {
+      const token = await signupFresh();
+      mailSpy.clear();
+      await requestChange(token, { currentPassword: PASSWORD, newEmail: NEW_EMAIL });
+      const t = await grabTokenFromMail();
+      await request(server)
+        .post('/api/v1/auth/email-change-confirm')
+        .send({ token: t })
+        .expect(200);
+      await request(server)
+        .post('/api/v1/auth/email-change-confirm')
+        .send({ token: t })
         .expect(400);
     });
   });

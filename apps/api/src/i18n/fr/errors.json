@@ -85,5 +85,7 @@
   "order_too_late_to_cancel": "Cette commande a déjà été expédiée et ne peut plus être annulée.",
   "order_customer_cancel_too_late": "Cette commande est en cours de préparation. Contactez le support pour l'annuler.",
   "invoice_not_ready": "La facture sera disponible une fois le paiement complété.",
-  "current_password_invalid": "Le mot de passe actuel est incorrect."
+  "current_password_invalid": "Le mot de passe actuel est incorrect.",
+  "email_unchanged": "Le nouvel email est identique à l'actuel.",
+  "email_change_invalid": "Ce lien de changement d'email est invalide ou expiré."
 }

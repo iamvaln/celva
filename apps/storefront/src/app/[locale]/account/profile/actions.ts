@@ -69,6 +69,31 @@ export async function updateProfileAction(formData: FormData): Promise<void> {
   redirect(profilePath(locale));
 }
 
+export async function requestEmailChangeAction(formData: FormData): Promise<void> {
+  const locale = (formData.get('locale') as 'fr' | 'en' | null) ?? 'fr';
+  const accessToken = await requireToken(locale);
+  const currentPassword = String(formData.get('currentPassword') ?? '');
+  const newEmail = String(formData.get('newEmail') ?? '').trim();
+  if (!newEmail) {
+    await setFlash('error:invalid_email');
+    revalidateProfile();
+    redirect(profilePath(locale));
+  }
+  try {
+    await apiFetch('/auth/me/email-change-request', {
+      method: 'POST',
+      body: { currentPassword, newEmail },
+      accessToken,
+      locale,
+    });
+    await setFlash('email_change_requested');
+  } catch (err) {
+    await setFlash(`error:${err instanceof ApiError ? err.key : 'unknown'}`);
+  }
+  revalidateProfile();
+  redirect(profilePath(locale));
+}
+
 export async function changePasswordAction(formData: FormData): Promise<void> {
   const locale = (formData.get('locale') as 'fr' | 'en' | null) ?? 'fr';
   const accessToken = await requireToken(locale);
