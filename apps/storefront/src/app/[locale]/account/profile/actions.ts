@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { apiFetch, ApiError } from '@/lib/api';
-import { getAccessToken } from '@/lib/auth-cookies';
+import { clearAccessToken, getAccessToken } from '@/lib/auth-cookies';
 import { routing } from '@/i18n/routing';
 
 const FLASH_COOKIE = 'celva.profile_flash';
@@ -92,6 +92,68 @@ export async function requestEmailChangeAction(formData: FormData): Promise<void
   }
   revalidateProfile();
   redirect(profilePath(locale));
+}
+
+/**
+ * After a sign-out-all or account deletion, drop the storefront's local
+ * access-token cookie so the next render redirects to /login. The API
+ * has already revoked the refresh token on its side.
+ */
+const clearStorefrontSession = async (): Promise<void> => {
+  await clearAccessToken();
+};
+
+export async function signOutAllAction(formData: FormData): Promise<void> {
+  const locale = (formData.get('locale') as 'fr' | 'en' | null) ?? 'fr';
+  const accessToken = await requireToken(locale);
+  const currentPassword = String(formData.get('currentPassword') ?? '');
+  try {
+    await apiFetch('/auth/me/sign-out-all', {
+      method: 'POST',
+      body: { currentPassword },
+      accessToken,
+      locale,
+    });
+    await clearStorefrontSession();
+    redirect(`/${locale}/login`);
+  } catch (err) {
+    // redirect() throws — re-throw to let Next handle the redirect.
+    if (err instanceof Error && err.message === 'NEXT_REDIRECT') throw err;
+    await setFlash(`error:${err instanceof ApiError ? err.key : 'unknown'}`);
+    revalidateProfile();
+    redirect(profilePath(locale));
+  }
+}
+
+export async function deleteAccountAction(formData: FormData): Promise<void> {
+  const locale = (formData.get('locale') as 'fr' | 'en' | null) ?? 'fr';
+  const accessToken = await requireToken(locale);
+  const currentPassword = String(formData.get('currentPassword') ?? '');
+  const confirm = String(formData.get('confirm') ?? '');
+
+  // Client guard: textual confirmation token. Server doesn't need this,
+  // but it's a small friction so people don't tap "delete" on autopilot.
+  if (confirm.toUpperCase() !== 'SUPPRIMER') {
+    await setFlash('error:delete_confirm_required');
+    revalidateProfile();
+    redirect(profilePath(locale));
+  }
+
+  try {
+    await apiFetch('/auth/me/delete', {
+      method: 'POST',
+      body: { currentPassword },
+      accessToken,
+      locale,
+    });
+    await clearStorefrontSession();
+    redirect(`/${locale}/login`);
+  } catch (err) {
+    if (err instanceof Error && err.message === 'NEXT_REDIRECT') throw err;
+    await setFlash(`error:${err instanceof ApiError ? err.key : 'unknown'}`);
+    revalidateProfile();
+    redirect(profilePath(locale));
+  }
 }
 
 export async function changePasswordAction(formData: FormData): Promise<void> {

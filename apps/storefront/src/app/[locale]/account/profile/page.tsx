@@ -7,6 +7,7 @@ import { getAccessToken } from '@/lib/auth-cookies';
 import { ProfileForm } from './ProfileForm';
 import { PasswordForm } from './PasswordForm';
 import { EmailChangeForm } from './EmailChangeForm';
+import { DangerZone } from './DangerZone';
 import { readAndClearProfileFlash } from './actions';
 
 type Profile = {
@@ -78,7 +79,11 @@ export default async function ProfilePage({
                       ? t('error_email_taken')
                       : flashError === 'email_unchanged'
                         ? t('error_email_unchanged')
-                        : t('error_generic')}
+                        : flashError === 'account_has_open_orders'
+                          ? t('error_account_has_open_orders')
+                          : flashError === 'delete_confirm_required'
+                            ? t('error_delete_confirm_required')
+                            : t('error_generic')}
           </div>
         )}
 
@@ -106,6 +111,14 @@ export default async function ProfilePage({
               {t('password_explainer')}
             </p>
             <PasswordForm locale={locale} />
+          </section>
+
+          <section className="border border-accent p-6">
+            <h2 className="eyebrow mb-1 text-accent">{t('danger_zone_heading')}</h2>
+            <p className="mb-6 font-body text-small text-foreground-muted">
+              {t('danger_zone_explainer')}
+            </p>
+            <DangerZone locale={locale} />
           </section>
         </div>
       </div>
