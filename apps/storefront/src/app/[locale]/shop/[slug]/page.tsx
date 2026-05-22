@@ -20,6 +20,7 @@ import {
 } from '@/lib/catalogue';
 import { fetchWishlistVariantIds } from '@/lib/cart';
 import { ProductCard } from '@/components/ProductCard';
+import { StockBadge } from '@/components/StockBadge';
 import { addToCartAction, readAndClearCartFlash } from '../../cart/actions';
 import { addToWishlistAction, removeFromWishlistAction } from '../../wishlist/actions';
 
@@ -216,16 +217,9 @@ export default async function ProductPage({
                           <p className="font-body text-small text-foreground-muted">
                             {variant.sku} · {formatPriceXAF(variantPrice(variant), locale)}
                           </p>
-                          {!inStock && (
-                            <p className="font-body text-caption uppercase tracking-eyebrow text-accent">
-                              {tCart('unavailable')}
-                            </p>
-                          )}
-                          {inStock && variant.stock <= 3 && (
-                            <p className="font-body text-caption uppercase tracking-eyebrow text-foreground-muted">
-                              {tCart('low_stock', { n: variant.stock })}
-                            </p>
-                          )}
+                          <div className="mt-1">
+                            <StockBadge stock={variant.stock} />
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <form action={addToCartAction}>
