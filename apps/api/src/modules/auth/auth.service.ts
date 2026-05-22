@@ -129,7 +129,10 @@ export class AuthService {
 
     const rawToken = await this.tokens.createPasswordResetToken(user.id, '1h');
     const storefrontUrl = this.config.get('STOREFRONT_URL', { infer: true });
-    const resetUrl = `${storefrontUrl}/auth/reset-password?token=${rawToken}`;
+    // Storefront uses always-prefixed locales. We don't track the user's
+    // preferred locale yet, so default to FR (Cameroon primary). The
+    // language toggle on the page lets them flip if needed.
+    const resetUrl = `${storefrontUrl}/fr/reinitialiser-mot-de-passe?token=${rawToken}`;
 
     void this.mail
       .send({
@@ -177,6 +180,48 @@ export class AuthService {
     });
     if (!user) throw new UnauthorizedException('errors.unauthorized');
     return user;
+  }
+
+  /**
+   * Self-service profile update. Only name + phone are touchable here.
+   * Email change is intentionally NOT supported (needs a verify-by-email
+   * round-trip we don't have yet). Role + isActive stay admin-only.
+   * Pass phone='' to unset it.
+   */
+  async updateProfile(
+    userId: string,
+    dto: { name?: string; phone?: string },
+  ): Promise<AuthResult['user']> {
+    const data: { name?: string; phone?: string | null } = {};
+    if (dto.name !== undefined) data.name = dto.name.trim();
+    if (dto.phone !== undefined) {
+      const trimmed = dto.phone.trim();
+      data.phone = trimmed.length === 0 ? null : trimmed;
+    }
+    await this.prisma.user.update({ where: { id: userId }, data });
+    return this.getProfile(userId);
+  }
+
+  /**
+   * Customer-initiated password change. Requires the current password —
+   * mirrors the password-reset flow's "all sessions revoked" guarantee
+   * so that if an attacker briefly had access they're locked out once
+   * the legitimate owner rotates.
+   */
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('errors.unauthorized');
+    const ok = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!ok) {
+      throw new BadRequestException('errors.current_password_invalid');
+    }
+    const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+    await this.prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+    await this.tokens.revokeAllRefreshTokens(userId);
   }
 
   private async issueTokens(

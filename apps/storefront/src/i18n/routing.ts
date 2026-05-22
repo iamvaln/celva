@@ -29,6 +29,15 @@ export const routing = defineRouting({
     },
     '/login': { fr: '/connexion', en: '/login' },
     '/signup': { fr: '/inscription', en: '/signup' },
+    '/forgot-password': {
+      fr: '/mot-de-passe-oublie',
+      en: '/forgot-password',
+    },
+    '/reset-password': {
+      fr: '/reinitialiser-mot-de-passe',
+      en: '/reset-password',
+    },
+    '/account/profile': { fr: '/compte/profil', en: '/account/profile' },
     '/journal': { fr: '/journal', en: '/journal' },
     '/journal/[slug]': { fr: '/journal/[slug]', en: '/journal/[slug]' },
     '/aide': { fr: '/aide', en: '/help' },

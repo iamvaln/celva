@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   Res,
@@ -23,6 +24,8 @@ import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 
 @ApiTags('auth')
@@ -117,6 +120,32 @@ export class AuthController {
   @ApiOperation({ summary: 'Current authenticated user.' })
   async me(@CurrentUser() user: AuthenticatedUser): Promise<unknown> {
     return this.auth.getProfile(user.id);
+  }
+
+  @Patch('me')
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: 'Update my profile (name + phone). Email change is not supported here.',
+  })
+  async updateMe(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateProfileDto,
+  ): Promise<unknown> {
+    return this.auth.updateProfile(user.id, dto);
+  }
+
+  @Post('me/password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary:
+      'Change my password. Requires current password. All other sessions are revoked on success.',
+  })
+  async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<void> {
+    await this.auth.changePassword(user.id, dto.currentPassword, dto.newPassword);
   }
 
   // ─── helpers ───
