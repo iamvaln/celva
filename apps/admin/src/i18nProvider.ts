@@ -421,6 +421,17 @@ const celvaFr = {
         paid: '{n} commission(s) payée(s) · total {total}. Transaction EXPENSE créée.',
       },
     },
+    'stock-movements': {
+      name: 'Mouvement de stock |||| Mouvements de stock',
+      fields: {
+        type: 'Type',
+        product: 'Produit',
+        quantity: 'Quantité',
+        reason: 'Motif',
+        actor: 'Auteur',
+        createdAt: 'Créé le',
+      },
+    },
   },
 };
 
@@ -804,6 +815,17 @@ const celvaEn = {
       },
       notifications: {
         paid: '{n} commission(s) paid · total {total}. EXPENSE transaction created.',
+      },
+    },
+    'stock-movements': {
+      name: 'Stock movement |||| Stock movements',
+      fields: {
+        type: 'Type',
+        product: 'Product',
+        quantity: 'Quantity',
+        reason: 'Reason',
+        actor: 'Actor',
+        createdAt: 'Created at',
       },
     },
   },
