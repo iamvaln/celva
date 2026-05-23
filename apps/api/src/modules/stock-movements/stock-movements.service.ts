@@ -113,4 +113,107 @@ export class StockMovementsService {
       throw new BadRequestException('MANUAL_ADJUSTMENT requires a reason');
     }
   }
+
+  // ──────────────────────────────────────────────────────────────────
+  // Admin read-only
+  // ──────────────────────────────────────────────────────────────────
+
+  async listForAdmin(query: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    type?: string;
+    variantId?: string;
+    from?: string;
+    to?: string;
+    sortBy?: 'createdAt';
+    sortDir?: 'asc' | 'desc';
+  }): Promise<{
+    data: StockMovement[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? 25;
+    const where: Prisma.StockMovementWhereInput = {
+      ...(query.type ? { type: query.type as StockMovementType } : {}),
+      ...(query.variantId ? { variantId: query.variantId } : {}),
+      ...(query.from || query.to
+        ? {
+            createdAt: {
+              ...(query.from ? { gte: new Date(query.from) } : {}),
+              ...(query.to ? { lt: new Date(query.to) } : {}),
+            },
+          }
+        : {}),
+      ...(query.search
+        ? {
+            OR: [
+              { variant: { sku: { contains: query.search, mode: 'insensitive' } } },
+              {
+                variant: {
+                  product: {
+                    name: {
+                      path: ['fr'],
+                      string_contains: query.search,
+                    } as Prisma.JsonFilter,
+                  },
+                },
+              },
+            ],
+          }
+        : {}),
+    };
+    const sortDir = query.sortDir ?? 'desc';
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.stockMovement.findMany({
+        where,
+        include: {
+          variant: {
+            select: {
+              id: true,
+              sku: true,
+              product: { select: { id: true, slug: true, name: true } },
+            },
+          },
+          createdBy: { select: { id: true, name: true, email: true } },
+        },
+        orderBy: [{ createdAt: sortDir }, { id: 'asc' }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.stockMovement.count({ where }),
+    ]);
+    return { data, total, page, pageSize };
+  }
+
+  /**
+   * Per-type totals (signed: positive = IN, negative = OUT) + counts
+   * for the optional date window. Quick inventory health pulse.
+   */
+  async summaryByType(query: { from?: string; to?: string }): Promise<
+    Array<{ type: StockMovementType; total: number; count: number }>
+  > {
+    const where: Prisma.StockMovementWhereInput =
+      query.from || query.to
+        ? {
+            createdAt: {
+              ...(query.from ? { gte: new Date(query.from) } : {}),
+              ...(query.to ? { lt: new Date(query.to) } : {}),
+            },
+          }
+        : {};
+    const grouped = await this.prisma.stockMovement.groupBy({
+      by: ['type'],
+      where,
+      _sum: { quantity: true },
+      _count: { _all: true },
+    });
+    return grouped.map((g) => ({
+      type: g.type,
+      total: g._sum.quantity ?? 0,
+      count: g._count._all,
+    }));
+  }
 }

@@ -16,6 +16,7 @@ import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import InsightsIcon from '@mui/icons-material/Insights';
 import PaidIcon from '@mui/icons-material/Paid';
+import MoveDownIcon from '@mui/icons-material/MoveDown';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -68,6 +69,7 @@ import { TransactionCreate } from './resources/transactions/TransactionCreate';
 import { TransactionEdit } from './resources/transactions/TransactionEdit';
 import { FinanceDashboard } from './resources/finance/FinanceDashboard';
 import { SalesCommissionList } from './resources/sales-commissions/SalesCommissionList';
+import { StockMovementList } from './resources/stock-movements/StockMovementList';
 
 export const App = () => (
   <Admin
@@ -201,6 +203,12 @@ export const App = () => (
           icon={PaidIcon}
           list={SalesCommissionList}
           options={{ label: 'Commissions' }}
+        />
+        <Resource
+          name="stock-movements"
+          icon={MoveDownIcon}
+          list={StockMovementList}
+          options={{ label: 'Mouvements de stock' }}
         />
         <Resource
           name="settings"
