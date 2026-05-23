@@ -20,6 +20,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { InvoicesService } from '../invoices/invoices.service';
+import { CommissionsService } from '../commissions/commissions.service';
 import { fireOrderEmail } from '../orders/order-emails';
 import type { Env } from '../../config/env';
 
@@ -34,6 +35,7 @@ export class PaymentsService {
     private readonly mail: MailService,
     private readonly config: ConfigService<Env, true>,
     private readonly invoices: InvoicesService,
+    private readonly commissions: CommissionsService,
   ) {}
 
   async findById(id: string): Promise<Payment & { order: { id: string; status: string; userId: string } }> {
@@ -149,6 +151,9 @@ export class PaymentsService {
         result.payment.orderId,
         'confirmation',
       );
+      // Same idempotency guard applies — generateForOrder skips items
+      // already commissioned (unique on orderItemId).
+      await this.commissions.generateForOrder(result.payment.orderId);
     }
 
     return { payment: result.payment, invoice: result.invoice };
