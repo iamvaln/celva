@@ -91,5 +91,6 @@
   "account_has_open_orders": "Vous avez une commande en cours. Attendez sa livraison ou annulez-la avant de supprimer votre compte.",
   "invalid_delivery_transition": "Transition de statut de livraison invalide.",
   "transaction_immutable": "Les transactions auto-générées (liées à une commande) ne peuvent pas être modifiées ou supprimées.",
-  "order_not_found": "Commande introuvable."
+  "order_not_found": "Commande introuvable.",
+  "commission_already_paid": "Une ou plusieurs commissions ont déjà été payées."
 }

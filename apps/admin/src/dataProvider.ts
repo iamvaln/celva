@@ -40,6 +40,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'articles',
   'deliveries',
   'transactions',
+  'sales-commissions',
 ]);
 
 /**

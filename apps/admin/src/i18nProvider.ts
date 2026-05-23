@@ -404,6 +404,23 @@ const celvaFr = {
       revenue_by_channel: 'CA par canal',
       expenses_by_category: 'Dépenses par catégorie',
     },
+    'sales-commissions': {
+      name: 'Commission |||| Commissions',
+      fields: {
+        orderNumber: 'N° commande',
+        salesRep: 'Commercial',
+        product: 'Produit',
+        amount: 'Montant',
+        status: 'Statut',
+        paidAt: 'Payée le',
+      },
+      actions: {
+        mark_paid: 'Marquer payées',
+      },
+      notifications: {
+        paid: '{n} commission(s) payée(s) · total {total}. Transaction EXPENSE créée.',
+      },
+    },
   },
 };
 
@@ -771,6 +788,23 @@ const celvaEn = {
       },
       revenue_by_channel: 'Revenue by channel',
       expenses_by_category: 'Expenses by category',
+    },
+    'sales-commissions': {
+      name: 'Commission |||| Commissions',
+      fields: {
+        orderNumber: 'Order #',
+        salesRep: 'Sales rep',
+        product: 'Product',
+        amount: 'Amount',
+        status: 'Status',
+        paidAt: 'Paid at',
+      },
+      actions: {
+        mark_paid: 'Mark paid',
+      },
+      notifications: {
+        paid: '{n} commission(s) paid · total {total}. EXPENSE transaction created.',
+      },
     },
   },
 };

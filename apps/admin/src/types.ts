@@ -109,6 +109,27 @@ export type Product = {
   updatedAt: string;
 };
 
+export type SalesCommission = {
+  id: string;
+  amount: string | number;
+  status: 'PENDING' | 'PAID';
+  paidAt: string | null;
+  orderId: string;
+  orderItemId: string;
+  salesRepId: string;
+  order: { id: string; orderNumber: string; status: string; total: string | number };
+  orderItem: {
+    id: string;
+    quantity: number;
+    unitPrice: string | number;
+    variant: {
+      sku: string;
+      product: { id: string; slug: string; name: { fr: string; en: string } };
+    };
+  };
+  salesRep: { id: string; name: string; email: string };
+};
+
 export type Transaction = {
   id: string;
   type: 'INCOME' | 'EXPENSE';
