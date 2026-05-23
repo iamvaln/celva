@@ -17,6 +17,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import InsightsIcon from '@mui/icons-material/Insights';
 import PaidIcon from '@mui/icons-material/Paid';
 import MoveDownIcon from '@mui/icons-material/MoveDown';
+import HandshakeIcon from '@mui/icons-material/Handshake';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -70,6 +71,9 @@ import { TransactionEdit } from './resources/transactions/TransactionEdit';
 import { FinanceDashboard } from './resources/finance/FinanceDashboard';
 import { SalesCommissionList } from './resources/sales-commissions/SalesCommissionList';
 import { StockMovementList } from './resources/stock-movements/StockMovementList';
+import { ConsignmentList } from './resources/consignments/ConsignmentList';
+import { ConsignmentCreate } from './resources/consignments/ConsignmentCreate';
+import { ConsignmentShow } from './resources/consignments/ConsignmentShow';
 
 export const App = () => (
   <Admin
@@ -209,6 +213,14 @@ export const App = () => (
           icon={MoveDownIcon}
           list={StockMovementList}
           options={{ label: 'Mouvements de stock' }}
+        />
+        <Resource
+          name="consignments"
+          icon={HandshakeIcon}
+          list={ConsignmentList}
+          create={ConsignmentCreate}
+          show={ConsignmentShow}
+          options={{ label: 'Consignations' }}
         />
         <Resource
           name="settings"
