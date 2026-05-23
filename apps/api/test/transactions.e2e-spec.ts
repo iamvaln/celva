@@ -246,6 +246,55 @@ describe('Transactions (e2e)', () => {
     });
   });
 
+  describe('GET /transactions/export.csv', () => {
+    it('returns text/csv with the right header row and BOM', async () => {
+      const id = await create({
+        type: 'EXPENSE',
+        category: 'OTHER',
+        amount: 1234,
+        description: 'csv-marker',
+        date: '2031-01-15T00:00:00.000Z',
+      });
+      const res = await request(server)
+        .get(
+          '/api/v1/transactions/export.csv?from=2031-01-01T00:00:00.000Z&to=2031-01-31T23:59:59.000Z',
+        )
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
+      expect(res.headers['content-type']).toContain('text/csv');
+      expect(res.headers['content-disposition']).toContain('attachment');
+      const body = res.text;
+      expect(body.charCodeAt(0)).toBe(0xfeff);
+      const firstLine = body.replace(/^\uFEFF/, '').split('\n')[0];
+      expect(firstLine).toBe(
+        'id,date,type,category,amount,description,orderNumber,receiptUrl,createdBy,createdAt',
+      );
+      expect(body).toContain(id);
+      expect(body).toContain('csv-marker');
+    });
+
+    it('client cannot export (403)', async () => {
+      await request(server)
+        .get('/api/v1/transactions/export.csv')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .expect(403);
+    });
+
+    it('quotes values containing commas / quotes', async () => {
+      await create({
+        description: 'Comma, in, value "quoted"',
+        date: '2031-02-15T00:00:00.000Z',
+      });
+      const res = await request(server)
+        .get(
+          '/api/v1/transactions/export.csv?from=2031-02-01T00:00:00.000Z&to=2031-02-28T23:59:59.000Z',
+        )
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
+      expect(res.text).toContain('"Comma, in, value ""quoted"""');
+    });
+  });
+
   describe('GET /transactions/summary', () => {
     it('returns totals + per-category breakdown', async () => {
       // Create two known rows in a tight date window so we can assert on them.
