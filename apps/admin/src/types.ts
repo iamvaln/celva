@@ -109,6 +109,33 @@ export type Product = {
   updatedAt: string;
 };
 
+export type StockMovement = {
+  id: string;
+  type:
+    | 'PRODUCTION_IN'
+    | 'PURCHASE_IN'
+    | 'SALE_OUT'
+    | 'CONSIGNMENT_OUT'
+    | 'CONSIGNMENT_RETURN'
+    | 'CANCELLATION_RETURN'
+    | 'MANUAL_ADJUSTMENT';
+  quantity: number;
+  reason: string | null;
+  createdAt: string;
+  variantId: string;
+  variant: {
+    id: string;
+    sku: string;
+    product: { id: string; slug: string; name: { fr: string; en: string } };
+  };
+  createdById: string;
+  createdBy: { id: string; name: string; email: string };
+  orderId: string | null;
+  orderItemId: string | null;
+  productionOrderId: string | null;
+  consignmentId: string | null;
+};
+
 export type SalesCommission = {
   id: string;
   amount: string | number;
