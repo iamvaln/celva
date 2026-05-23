@@ -376,6 +376,12 @@ const celvaFr = {
         manual: 'Manuelle',
         order: 'Commande {number}',
       },
+      actions: {
+        export_csv: 'Exporter CSV',
+      },
+      notifications: {
+        exported: 'Export téléchargé.',
+      },
     },
     finance: {
       name: 'Finance |||| Finance',
@@ -737,6 +743,12 @@ const celvaEn = {
       source: {
         manual: 'Manual',
         order: 'Order {number}',
+      },
+      actions: {
+        export_csv: 'Export CSV',
+      },
+      notifications: {
+        exported: 'Export downloaded.',
       },
     },
     finance: {
