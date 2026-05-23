@@ -92,5 +92,9 @@
   "invalid_delivery_transition": "Invalid delivery status transition.",
   "transaction_immutable": "Auto-generated transactions (linked to an order) can't be edited or deleted.",
   "order_not_found": "Order not found.",
-  "commission_already_paid": "One or more commissions have already been paid out."
+  "commission_already_paid": "One or more commissions have already been paid out.",
+  "consignment_not_active": "Only ACTIVE consignments can be reconciled or cancelled.",
+  "consignment_item_not_found": "One of the consignment items does not belong to this consignment.",
+  "consignment_overflow": "Sold + returned cannot exceed the released quantity.",
+  "user_not_found": "User not found."
 }

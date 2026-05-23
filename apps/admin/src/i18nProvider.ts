@@ -432,6 +432,37 @@ const celvaFr = {
         createdAt: 'Créé le',
       },
     },
+    consignments: {
+      name: 'Consignation |||| Consignations',
+      fields: {
+        status: 'Statut',
+        salesRep: 'Commercial',
+        lines: 'Lignes',
+        notes: 'Notes',
+        items: 'Articles',
+        releasedAt: 'Confiée le',
+        reconciledAt: 'Réconciliée le',
+      },
+      helpers: {
+        notes: 'Contexte : nom de l\'événement, lieu, dates…',
+      },
+      actions: {
+        reconcile: 'Réconcilier',
+        cancel: 'Annuler (tout récupérer)',
+      },
+      dialogs: {
+        reconcile_hint: 'Pour chaque ligne : combien d\'unités vendues + retournées. Variance = perdu / abîmé. Le revenu (vendu × prix) est enregistré comme une transaction INCOME / SALE.',
+        sold: 'Vendu',
+        returned: 'Retour',
+        variance: 'Variance',
+        notes: 'Notes de réconciliation',
+        cancel_confirm: 'Annuler cette consignation et tout remettre en stock ?',
+      },
+      notifications: {
+        reconciled: 'Consignation réconciliée. Transaction INCOME enregistrée si vente.',
+        cancelled: 'Consignation annulée. Stock entièrement restauré.',
+      },
+    },
   },
 };
 
@@ -826,6 +857,37 @@ const celvaEn = {
         reason: 'Reason',
         actor: 'Actor',
         createdAt: 'Created at',
+      },
+    },
+    consignments: {
+      name: 'Consignment |||| Consignments',
+      fields: {
+        status: 'Status',
+        salesRep: 'Sales rep',
+        lines: 'Lines',
+        notes: 'Notes',
+        items: 'Items',
+        releasedAt: 'Released at',
+        reconciledAt: 'Reconciled at',
+      },
+      helpers: {
+        notes: 'Context: event name, location, dates…',
+      },
+      actions: {
+        reconcile: 'Reconcile',
+        cancel: 'Cancel (return everything)',
+      },
+      dialogs: {
+        reconcile_hint: 'For each line: how many units sold + returned. Variance = lost / damaged. Revenue (sold × price) is recorded as an INCOME / SALE transaction.',
+        sold: 'Sold',
+        returned: 'Returned',
+        variance: 'Variance',
+        notes: 'Reconcile notes',
+        cancel_confirm: 'Cancel this consignment and return all stock?',
+      },
+      notifications: {
+        reconciled: 'Consignment reconciled. INCOME transaction recorded if sold.',
+        cancelled: 'Consignment cancelled. Stock fully restored.',
       },
     },
   },

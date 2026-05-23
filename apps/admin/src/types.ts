@@ -109,6 +109,36 @@ export type Product = {
   updatedAt: string;
 };
 
+export type Consignment = {
+  id: string;
+  status: 'ACTIVE' | 'RECONCILED' | 'CANCELLED';
+  notes: string | null;
+  releasedAt: string;
+  reconciledAt: string | null;
+  salesRepId: string;
+  salesRep: { id: string; name: string; email: string };
+  createdById: string;
+  createdBy: { id: string; name: string; email: string };
+  items: Array<{
+    id: string;
+    quantityTaken: number;
+    quantitySold: number;
+    quantityReturned: number;
+    variantId: string;
+    variant: {
+      id: string;
+      sku: string;
+      priceOverride: string | number | null;
+      product: {
+        id: string;
+        slug: string;
+        name: { fr: string; en: string };
+        displayPrice: string | number;
+      };
+    };
+  }>;
+};
+
 export type StockMovement = {
   id: string;
   type:

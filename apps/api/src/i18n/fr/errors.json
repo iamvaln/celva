@@ -92,5 +92,9 @@
   "invalid_delivery_transition": "Transition de statut de livraison invalide.",
   "transaction_immutable": "Les transactions auto-générées (liées à une commande) ne peuvent pas être modifiées ou supprimées.",
   "order_not_found": "Commande introuvable.",
-  "commission_already_paid": "Une ou plusieurs commissions ont déjà été payées."
+  "commission_already_paid": "Une ou plusieurs commissions ont déjà été payées.",
+  "consignment_not_active": "Seules les consignations ACTIVE peuvent être réconciliées ou annulées.",
+  "consignment_item_not_found": "Une ligne ne correspond pas à cette consignation.",
+  "consignment_overflow": "La somme vendu + retourné ne peut pas dépasser la quantité confiée.",
+  "user_not_found": "Utilisateur introuvable."
 }
