@@ -10,8 +10,10 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { USER_ROLE } from '@celva/shared';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { AuditLog } from '../../common/interceptors/audit-log.interceptor';
@@ -47,6 +49,25 @@ export class TransactionsController {
   })
   summary(@Query() query: { from?: string; to?: string }) {
     return this.transactions.summary(query);
+  }
+
+  @Get('export.csv')
+  @ApiOperation({
+    summary:
+      'Export every transaction in the optional date window as CSV (UTF-8 + BOM, RFC 4180 quoting). Designed for the accountant — column names match the admin UI.',
+  })
+  async exportCsv(
+    @Query() query: { from?: string; to?: string },
+    @Res() res: Response,
+  ): Promise<void> {
+    const csv = await this.transactions.exportCsv(query);
+    const stamp = new Date().toISOString().slice(0, 10);
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="celva-transactions-${stamp}.csv"`,
+    );
+    res.end(csv);
   }
 
   @Get(':id')

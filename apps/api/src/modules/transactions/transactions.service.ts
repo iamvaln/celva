@@ -199,6 +199,77 @@ export class TransactionsService {
     };
   }
 
+  /**
+   * Export every transaction in the window as CSV. Designed for the
+   * accountant's monthly close — columns mirror the admin UI fields
+   * so they can cross-check. ISO 8601 dates + decimal-point amounts
+   * so Excel reads them correctly. Prepends a UTF-8 BOM so Excel
+   * auto-detects encoding.
+   */
+  async exportCsv(query: { from?: string; to?: string }): Promise<string> {
+    const where: Prisma.TransactionWhereInput = {
+      ...(query.from || query.to
+        ? {
+            date: {
+              ...(query.from ? { gte: new Date(query.from) } : {}),
+              ...(query.to ? { lt: new Date(query.to) } : {}),
+            },
+          }
+        : {}),
+    };
+
+    const rows = await this.prisma.transaction.findMany({
+      where,
+      include: {
+        order: { select: { orderNumber: true } },
+        createdBy: { select: { email: true } },
+      },
+      orderBy: [{ date: 'asc' }, { id: 'asc' }],
+    });
+
+    const escape = (raw: unknown): string => {
+      if (raw === null || raw === undefined) return '';
+      const s = String(raw);
+      // RFC 4180: quote if contains comma / quote / newline.
+      if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+      return s;
+    };
+
+    const header = [
+      'id',
+      'date',
+      'type',
+      'category',
+      'amount',
+      'description',
+      'orderNumber',
+      'receiptUrl',
+      'createdBy',
+      'createdAt',
+    ];
+
+    const lines = [header.join(',')];
+    for (const tx of rows) {
+      lines.push(
+        [
+          tx.id,
+          tx.date.toISOString(),
+          tx.type,
+          tx.category,
+          tx.amount.toFixed(2),
+          tx.description ?? '',
+          tx.order?.orderNumber ?? '',
+          tx.receiptUrl ?? '',
+          tx.createdBy?.email ?? '',
+          tx.createdAt.toISOString(),
+        ]
+          .map(escape)
+          .join(','),
+      );
+    }
+    return '﻿' + lines.join('\n') + '\n';
+  }
+
   /** Manual rows have orderId === null (paymentService writes order-linked rows). */
   private assertManual(tx: { orderId: string | null }): void {
     if (tx.orderId !== null) {
