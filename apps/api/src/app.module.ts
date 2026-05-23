@@ -39,6 +39,7 @@ import { ArticlesModule } from './modules/articles/articles.module';
 import { DeliveriesModule } from './modules/deliveries/deliveries.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { FinanceModule } from './modules/finance/finance.module';
+import { CommissionsModule } from './modules/commissions/commissions.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -131,6 +132,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     DeliveriesModule,
     TransactionsModule,
     FinanceModule,
+    CommissionsModule,
   ],
   providers: [
     {

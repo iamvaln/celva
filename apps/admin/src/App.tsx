@@ -15,6 +15,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import InsightsIcon from '@mui/icons-material/Insights';
+import PaidIcon from '@mui/icons-material/Paid';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -66,6 +67,7 @@ import { TransactionList } from './resources/transactions/TransactionList';
 import { TransactionCreate } from './resources/transactions/TransactionCreate';
 import { TransactionEdit } from './resources/transactions/TransactionEdit';
 import { FinanceDashboard } from './resources/finance/FinanceDashboard';
+import { SalesCommissionList } from './resources/sales-commissions/SalesCommissionList';
 
 export const App = () => (
   <Admin
@@ -193,6 +195,12 @@ export const App = () => (
           icon={InsightsIcon}
           list={FinanceDashboard}
           options={{ label: 'Finance' }}
+        />
+        <Resource
+          name="sales-commissions"
+          icon={PaidIcon}
+          list={SalesCommissionList}
+          options={{ label: 'Commissions' }}
         />
         <Resource
           name="settings"

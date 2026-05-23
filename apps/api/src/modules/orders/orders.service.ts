@@ -31,6 +31,7 @@ import { DeliveryZonesService } from '../delivery-zones/delivery-zones.service';
 import { PromoCodesService } from '../promo-codes/promo-codes.service';
 import { MailService } from '../mail/mail.service';
 import { InvoicesService } from '../invoices/invoices.service';
+import { CommissionsService } from '../commissions/commissions.service';
 import type { Env } from '../../config/env';
 import type { CreateOrderDto } from './dto/create-order.dto';
 import type { ListOrdersQuery } from './dto/list-orders.query';
@@ -70,6 +71,7 @@ export class OrdersService {
     private readonly mail: MailService,
     private readonly config: ConfigService<Env, true>,
     private readonly invoices: InvoicesService,
+    private readonly commissions: CommissionsService,
   ) {}
 
   async listForUser(userId: string): Promise<Order[]> {
@@ -364,6 +366,11 @@ export class OrdersService {
     // confirmation when the callback (or dev stub) promotes it to CONFIRMED.
     if (created.status === ORDER_STATUS.CONFIRMED) {
       this.dispatchOrderEmail(created.id, 'confirmation');
+      // Storefront orders never have a salesRepId so this no-ops.
+      // It's a manual-order (spec §7.4) thing — keeping the hook here
+      // so when manual-order creation lands the wiring is already in
+      // place.
+      await this.commissions.generateForOrder(created.id);
     }
 
     return this.findByIdForUser(created.id, userId);
@@ -471,6 +478,12 @@ export class OrdersService {
     if (CUSTOMER_VISIBLE_TRANSITIONS.includes(nextStatus)) {
       this.dispatchOrderEmail(orderId, 'status');
     }
+    // Catch the rare "admin manually promotes PENDING → CONFIRMED" path
+    // — the auto-generation is idempotent so duplicates from createFromCart
+    // or markCompleted are safe.
+    if (nextStatus === ORDER_STATUS.CONFIRMED) {
+      await this.commissions.generateForOrder(orderId);
+    }
     return updated;
   }
 
@@ -480,12 +493,11 @@ export class OrdersService {
    *   - Stock restored via StockMovement CANCELLATION_RETURN for every item
    *     (signed positive — opposite of the SALE_OUT booked at checkout)
    *   - PromoCode.usedCount decremented if a code was applied
+   *   - SalesCommission rows deleted per spec §7.5 (refuses if any are
+   *     already PAID — admin must reverse the Transaction manually).
    *   - Payment stays as-is (refund flow is out of scope for this batch —
    *     a separate "refund" lifecycle would mark the Payment REFUNDED and
    *     book a Transaction EXPENSE; deferred to the finance batches).
-   * Commissions are NOT cleared here yet (they don't exist until the
-   * sales-commissions batch in Phase 6); when they do, this method should
-   * delete them per spec §7.5.
    */
   async cancel(
     orderId: string,
@@ -536,6 +548,11 @@ export class OrdersService {
           data: { usedCount: { decrement: 1 } },
         });
       }
+
+      // Delete any PENDING sales commissions linked to this order. Throws
+      // if any are already PAID — those represent real money out the door
+      // that must be reversed manually before cancellation.
+      await this.commissions.removeForOrder(order.id, tx);
 
       this.logger.log(
         `Order ${order.orderNumber} CANCELLED${reason ? ` (${reason})` : ''} — stock restored on ${order.items.length} line(s)`,
