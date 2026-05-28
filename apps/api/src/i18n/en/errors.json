@@ -108,5 +108,11 @@
   "purchase_order_received_decrease": "Received quantity can't be lower than what's already received.",
   "purchase_order_received_overflow": "Received quantity can't exceed the ordered quantity.",
   "purchase_order_not_cancellable": "This purchase order can't be cancelled.",
-  "purchase_order_partially_received": "Can't cancel — items have already been received."
+  "purchase_order_partially_received": "Can't cancel — items have already been received.",
+  "product_not_found": "Product not found.",
+  "insufficient_raw_material": "Not enough raw material in stock for this run.",
+  "production_order_not_planned": "Only PLANNED production orders can be started.",
+  "production_order_not_in_progress": "Only IN_PROGRESS production orders can be completed.",
+  "production_order_not_cancellable": "This production order can't be cancelled.",
+  "production_order_locked": "Only PLANNED production orders can be deleted."
 }

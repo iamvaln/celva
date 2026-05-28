@@ -521,6 +521,39 @@ const celvaFr = {
         cancelled: 'Commande fournisseur annulée.',
       },
     },
+    'production-orders': {
+      name: 'Ordre de production |||| Ordres de production',
+      fields: {
+        status: 'Statut',
+        type: 'Type',
+        productId: 'Produit',
+        quantity: 'Quantité',
+        consumptions: 'Matières consommées',
+        stages: 'Étapes',
+        costs: 'Coûts',
+        notes: 'Notes',
+        startDate: 'Démarré le',
+        endDate: 'Terminé le',
+        createdAt: 'Créé le',
+      },
+      helpers: {
+        labor: 'Coût de main d\'œuvre interne (XAF).',
+        subcontract: 'Coût de sous-traitance (XAF).',
+      },
+      actions: {
+        start: 'Démarrer (consommer les matières)',
+        complete: 'Terminer',
+        cancel: 'Annuler',
+      },
+      dialogs: {
+        cancel_confirm: 'Annuler cet ordre de production ?',
+      },
+      notifications: {
+        started: 'Production démarrée. Matières consommées.',
+        completed: 'Production terminée. Stock produit fini + coût de revient mis à jour.',
+        cancelled: 'Ordre de production annulé.',
+      },
+    },
   },
 };
 
@@ -1004,6 +1037,39 @@ const celvaEn = {
         ordered: 'Order placed — locked for edits.',
         received: 'Reception recorded. Stock updated.',
         cancelled: 'Purchase order cancelled.',
+      },
+    },
+    'production-orders': {
+      name: 'Production order |||| Production orders',
+      fields: {
+        status: 'Status',
+        type: 'Type',
+        productId: 'Product',
+        quantity: 'Quantity',
+        consumptions: 'Materials consumed',
+        stages: 'Stages',
+        costs: 'Costs',
+        notes: 'Notes',
+        startDate: 'Started at',
+        endDate: 'Finished at',
+        createdAt: 'Created at',
+      },
+      helpers: {
+        labor: 'Internal labour cost (XAF).',
+        subcontract: 'Subcontracting cost (XAF).',
+      },
+      actions: {
+        start: 'Start (consume materials)',
+        complete: 'Complete',
+        cancel: 'Cancel',
+      },
+      dialogs: {
+        cancel_confirm: 'Cancel this production order?',
+      },
+      notifications: {
+        started: 'Production started. Materials consumed.',
+        completed: 'Production completed. Finished-good stock + cost price updated.',
+        cancelled: 'Production order cancelled.',
       },
     },
   },
