@@ -97,5 +97,7 @@
   "consignment_item_not_found": "Une ligne ne correspond pas à cette consignation.",
   "consignment_overflow": "La somme vendu + retourné ne peut pas dépasser la quantité confiée.",
   "user_not_found": "Utilisateur introuvable.",
-  "supplier_in_use": "Ce fournisseur est référencé par des matières premières ou des commandes fournisseur et ne peut pas être supprimé."
+  "supplier_in_use": "Ce fournisseur est référencé par des matières premières ou des commandes fournisseur et ne peut pas être supprimé.",
+  "supplier_not_found": "Fournisseur introuvable.",
+  "raw_material_in_use": "Cette matière première a un historique d'achat ou de consommation et ne peut pas être supprimée."
 }

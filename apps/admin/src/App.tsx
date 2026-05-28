@@ -19,6 +19,7 @@ import PaidIcon from '@mui/icons-material/Paid';
 import MoveDownIcon from '@mui/icons-material/MoveDown';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import FactoryIcon from '@mui/icons-material/Factory';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -78,6 +79,9 @@ import { ConsignmentShow } from './resources/consignments/ConsignmentShow';
 import { SupplierList } from './resources/suppliers/SupplierList';
 import { SupplierCreate } from './resources/suppliers/SupplierCreate';
 import { SupplierEdit } from './resources/suppliers/SupplierEdit';
+import { RawMaterialList } from './resources/raw-materials/RawMaterialList';
+import { RawMaterialCreate } from './resources/raw-materials/RawMaterialCreate';
+import { RawMaterialEdit } from './resources/raw-materials/RawMaterialEdit';
 
 export const App = () => (
   <Admin
@@ -233,6 +237,14 @@ export const App = () => (
           create={SupplierCreate}
           edit={SupplierEdit}
           options={{ label: 'Fournisseurs' }}
+        />
+        <Resource
+          name="raw-materials"
+          icon={CategoryOutlinedIcon}
+          list={RawMaterialList}
+          create={RawMaterialCreate}
+          edit={RawMaterialEdit}
+          options={{ label: 'Matières premières' }}
         />
         <Resource
           name="settings"
