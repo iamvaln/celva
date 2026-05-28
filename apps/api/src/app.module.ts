@@ -43,6 +43,7 @@ import { CommissionsModule } from './modules/commissions/commissions.module';
 import { ConsignmentsModule } from './modules/consignments/consignments.module';
 import { SuppliersModule } from './modules/suppliers/suppliers.module';
 import { RawMaterialsModule } from './modules/raw-materials/raw-materials.module';
+import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -139,6 +140,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     ConsignmentsModule,
     SuppliersModule,
     RawMaterialsModule,
+    PurchaseOrdersModule,
   ],
   providers: [
     {

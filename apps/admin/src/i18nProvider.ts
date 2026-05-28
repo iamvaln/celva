@@ -493,6 +493,34 @@ const celvaFr = {
       },
       low_stock: 'Stock bas',
     },
+    'purchase-orders': {
+      name: 'Commande fournisseur |||| Commandes fournisseur',
+      fields: {
+        status: 'Statut',
+        supplierId: 'Fournisseur',
+        lines: 'Lignes',
+        totalAmount: 'Total',
+        total: 'Total',
+        items: 'Articles',
+        costs: 'Frais annexes',
+        notes: 'Notes',
+        createdAt: 'Créée le',
+      },
+      actions: {
+        order: 'Passer la commande',
+        receive: 'Réceptionner',
+        cancel: 'Annuler',
+      },
+      dialogs: {
+        receive_hint: 'Saisissez la quantité CUMULÉE reçue par ligne. La réception totale clôt la commande et enregistre la dépense.',
+        cancel_confirm: 'Annuler cette commande fournisseur ?',
+      },
+      notifications: {
+        ordered: 'Commande passée — verrouillée pour édition.',
+        received: 'Réception enregistrée. Stock mis à jour.',
+        cancelled: 'Commande fournisseur annulée.',
+      },
+    },
   },
 };
 
@@ -949,6 +977,34 @@ const celvaEn = {
         image: 'R2 key or URL. Direct upload comes later.',
       },
       low_stock: 'Low stock',
+    },
+    'purchase-orders': {
+      name: 'Purchase order |||| Purchase orders',
+      fields: {
+        status: 'Status',
+        supplierId: 'Supplier',
+        lines: 'Lines',
+        totalAmount: 'Total',
+        total: 'Total',
+        items: 'Items',
+        costs: 'Ancillary costs',
+        notes: 'Notes',
+        createdAt: 'Created at',
+      },
+      actions: {
+        order: 'Place order',
+        receive: 'Receive',
+        cancel: 'Cancel',
+      },
+      dialogs: {
+        receive_hint: 'Enter the CUMULATIVE received quantity per line. Full reception closes the order and books the expense.',
+        cancel_confirm: 'Cancel this purchase order?',
+      },
+      notifications: {
+        ordered: 'Order placed — locked for edits.',
+        received: 'Reception recorded. Stock updated.',
+        cancelled: 'Purchase order cancelled.',
+      },
     },
   },
 };
