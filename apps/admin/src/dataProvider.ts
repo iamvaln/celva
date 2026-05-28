@@ -46,6 +46,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'suppliers',
   'raw-materials',
   'purchase-orders',
+  'production-orders',
 ]);
 
 /**
