@@ -109,6 +109,20 @@ export type Product = {
   updatedAt: string;
 };
 
+export type RawMaterial = {
+  id: string;
+  name: string;
+  type: 'FABRIC' | 'ACCESSORY' | 'PACKAGING' | 'OTHER';
+  unit: string;
+  unitPrice: string | number;
+  stockQty: string | number;
+  alertThreshold: string | number | null;
+  imageKey: string | null;
+  isLowStock: boolean;
+  supplierId: string;
+  supplier?: { id: string; name: string };
+};
+
 export type Consignment = {
   id: string;
   status: 'ACTIVE' | 'RECONCILED' | 'CANCELLED';
