@@ -72,9 +72,10 @@ describe('Auth recovery + profile (e2e)', () => {
   const signupFresh = async (
     opts: { acceptLanguage?: string } = {},
   ): Promise<string> => {
-    // Order matters — User.auditLogs / refreshTokens / etc. lack
-    // onDelete: Cascade, so we need to clear them by hand before nuking
-    // the user row.
+    // Order matters — refreshTokens / reset / email-change tokens lack
+    // onDelete: Cascade, so we clear them by hand before nuking the user
+    // row. (AuditLog.user does cascade, so its deleteMany is belt-and-
+    // suspenders against fire-and-forget audit writes still in flight.)
     const where = { user: { email: { in: [CLIENT_EMAIL, NEW_EMAIL] } } };
     await prisma.auditLog.deleteMany({ where });
     await prisma.refreshToken.deleteMany({ where });
