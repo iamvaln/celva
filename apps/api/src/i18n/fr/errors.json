@@ -108,5 +108,11 @@
   "purchase_order_received_decrease": "La quantité reçue ne peut pas être inférieure à ce qui est déjà reçu.",
   "purchase_order_received_overflow": "La quantité reçue ne peut pas dépasser la quantité commandée.",
   "purchase_order_not_cancellable": "Cette commande fournisseur ne peut pas être annulée.",
-  "purchase_order_partially_received": "Annulation impossible — des articles ont déjà été reçus."
+  "purchase_order_partially_received": "Annulation impossible — des articles ont déjà été reçus.",
+  "product_not_found": "Produit introuvable.",
+  "insufficient_raw_material": "Stock de matière première insuffisant pour cette production.",
+  "production_order_not_planned": "Seuls les ordres de production PLANNED peuvent être démarrés.",
+  "production_order_not_in_progress": "Seuls les ordres EN COURS peuvent être complétés.",
+  "production_order_not_cancellable": "Cet ordre de production ne peut pas être annulé.",
+  "production_order_locked": "Seuls les ordres de production PLANNED peuvent être supprimés."
 }
