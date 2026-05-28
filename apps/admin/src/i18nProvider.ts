@@ -463,6 +463,16 @@ const celvaFr = {
         cancelled: 'Consignation annulée. Stock entièrement restauré.',
       },
     },
+    suppliers: {
+      name: 'Fournisseur |||| Fournisseurs',
+      fields: {
+        name: 'Nom',
+        contact: 'Contact',
+        phone: 'Téléphone',
+        email: 'Email',
+        address: 'Adresse',
+      },
+    },
   },
 };
 
@@ -888,6 +898,16 @@ const celvaEn = {
       notifications: {
         reconciled: 'Consignment reconciled. INCOME transaction recorded if sold.',
         cancelled: 'Consignment cancelled. Stock fully restored.',
+      },
+    },
+    suppliers: {
+      name: 'Supplier |||| Suppliers',
+      fields: {
+        name: 'Name',
+        contact: 'Contact',
+        phone: 'Phone',
+        email: 'Email',
+        address: 'Address',
       },
     },
   },

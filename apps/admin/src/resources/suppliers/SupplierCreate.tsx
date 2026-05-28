@@ -1,0 +1,13 @@
+import { Create, SimpleForm, TextInput, email, required } from 'react-admin';
+
+export const SupplierCreate = () => (
+  <Create redirect="list">
+    <SimpleForm>
+      <TextInput source="name" validate={[required()]} fullWidth />
+      <TextInput source="contact" fullWidth />
+      <TextInput source="phone" />
+      <TextInput source="email" validate={[email()]} fullWidth />
+      <TextInput source="address" multiline minRows={2} fullWidth />
+    </SimpleForm>
+  </Create>
+);
