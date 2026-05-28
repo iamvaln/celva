@@ -109,6 +109,31 @@ export type Product = {
   updatedAt: string;
 };
 
+export type PurchaseOrder = {
+  id: string;
+  status: 'DRAFT' | 'ORDERED' | 'PARTIALLY_RECEIVED' | 'RECEIVED' | 'CANCELLED';
+  totalAmount: string | number;
+  notes: string | null;
+  createdAt: string;
+  supplierId: string;
+  supplier?: { id: string; name: string };
+  createdBy?: { id: string; name: string; email: string };
+  items: Array<{
+    id: string;
+    quantity: string | number;
+    unitPrice: string | number;
+    quantityReceived: string | number;
+    rawMaterialId: string;
+    rawMaterial: { id: string; name: string; unit: string };
+  }>;
+  costs: Array<{
+    id: string;
+    type: 'TRANSPORT' | 'CUSTOMS' | 'BUYER_COMMISSION' | 'INSURANCE' | 'OTHER';
+    amount: string | number;
+    description: string | null;
+  }>;
+};
+
 export type RawMaterial = {
   id: string;
   name: string;

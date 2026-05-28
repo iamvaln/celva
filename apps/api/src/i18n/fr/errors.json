@@ -99,5 +99,14 @@
   "user_not_found": "Utilisateur introuvable.",
   "supplier_in_use": "Ce fournisseur est référencé par des matières premières ou des commandes fournisseur et ne peut pas être supprimé.",
   "supplier_not_found": "Fournisseur introuvable.",
-  "raw_material_in_use": "Cette matière première a un historique d'achat ou de consommation et ne peut pas être supprimée."
+  "raw_material_in_use": "Cette matière première a un historique d'achat ou de consommation et ne peut pas être supprimée.",
+  "raw_material_not_found": "Une ou plusieurs matières premières n'existent pas.",
+  "purchase_order_locked": "Cette commande fournisseur n'est plus un brouillon et ne peut pas être modifiée.",
+  "purchase_order_not_draft": "Seules les commandes fournisseur en brouillon peuvent être commandées.",
+  "purchase_order_not_receivable": "Cette commande fournisseur n'est pas dans un état réceptionnable.",
+  "purchase_order_item_not_found": "Une des lignes n'appartient pas à cette commande fournisseur.",
+  "purchase_order_received_decrease": "La quantité reçue ne peut pas être inférieure à ce qui est déjà reçu.",
+  "purchase_order_received_overflow": "La quantité reçue ne peut pas dépasser la quantité commandée.",
+  "purchase_order_not_cancellable": "Cette commande fournisseur ne peut pas être annulée.",
+  "purchase_order_partially_received": "Annulation impossible — des articles ont déjà été reçus."
 }

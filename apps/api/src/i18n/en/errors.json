@@ -99,5 +99,14 @@
   "user_not_found": "User not found.",
   "supplier_in_use": "This supplier is referenced by raw materials or purchase orders and cannot be deleted.",
   "supplier_not_found": "Supplier not found.",
-  "raw_material_in_use": "This raw material has purchase or consumption history and cannot be deleted."
+  "raw_material_in_use": "This raw material has purchase or consumption history and cannot be deleted.",
+  "raw_material_not_found": "One or more raw materials do not exist.",
+  "purchase_order_locked": "This purchase order is no longer a draft and can't be edited.",
+  "purchase_order_not_draft": "Only DRAFT purchase orders can be ordered.",
+  "purchase_order_not_receivable": "This purchase order isn't in a receivable state.",
+  "purchase_order_item_not_found": "One of the lines doesn't belong to this purchase order.",
+  "purchase_order_received_decrease": "Received quantity can't be lower than what's already received.",
+  "purchase_order_received_overflow": "Received quantity can't exceed the ordered quantity.",
+  "purchase_order_not_cancellable": "This purchase order can't be cancelled.",
+  "purchase_order_partially_received": "Can't cancel — items have already been received."
 }
