@@ -473,6 +473,26 @@ const celvaFr = {
         address: 'Adresse',
       },
     },
+    'raw-materials': {
+      name: 'Matière première |||| Matières premières',
+      fields: {
+        name: 'Nom',
+        type: 'Type',
+        unit: 'Unité',
+        unitPrice: 'Prix unitaire',
+        stockQty: 'Stock',
+        alertThreshold: 'Seuil d\'alerte',
+        supplierId: 'Fournisseur',
+        imageKey: 'Image (clé / URL)',
+      },
+      helpers: {
+        unit: 'Unité de mesure : m, pièce, kg, rouleau…',
+        alert_threshold: 'Stock ≤ ce seuil déclenche l\'alerte « stock bas ».',
+        stock_manual: 'Correction manuelle. Les réceptions de commande fournisseur mettront ce stock à jour automatiquement.',
+        image: 'Clé R2 ou URL. L\'upload direct arrivera plus tard.',
+      },
+      low_stock: 'Stock bas',
+    },
   },
 };
 
@@ -909,6 +929,26 @@ const celvaEn = {
         email: 'Email',
         address: 'Address',
       },
+    },
+    'raw-materials': {
+      name: 'Raw material |||| Raw materials',
+      fields: {
+        name: 'Name',
+        type: 'Type',
+        unit: 'Unit',
+        unitPrice: 'Unit price',
+        stockQty: 'Stock',
+        alertThreshold: 'Alert threshold',
+        supplierId: 'Supplier',
+        imageKey: 'Image (key / URL)',
+      },
+      helpers: {
+        unit: 'Unit of measure: m, piece, kg, roll…',
+        alert_threshold: 'Stock ≤ this threshold triggers the "low stock" flag.',
+        stock_manual: 'Manual correction. Purchase-order reception will update this stock automatically.',
+        image: 'R2 key or URL. Direct upload comes later.',
+      },
+      low_stock: 'Low stock',
     },
   },
 };
