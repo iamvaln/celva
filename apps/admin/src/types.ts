@@ -109,6 +109,35 @@ export type Product = {
   updatedAt: string;
 };
 
+export type ProductionOrder = {
+  id: string;
+  type: 'INTERNAL' | 'SUBCONTRACTED';
+  status: 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  quantity: number;
+  laborCost: string | number;
+  subcontractCost: string | number;
+  subcontractorName: string | null;
+  notes: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  createdAt: string;
+  productId: string;
+  product?: { id: string; slug: string; name: { fr: string; en: string }; costPrice: string | number };
+  materialConsumptions: Array<{
+    id: string;
+    quantityUsed: string | number;
+    rawMaterialId: string;
+    rawMaterial: { id: string; name: string; unit: string; unitPrice: string | number };
+  }>;
+  stages: Array<{
+    id: string;
+    name: string;
+    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    sortOrder: number;
+    completedAt: string | null;
+  }>;
+};
+
 export type PurchaseOrder = {
   id: string;
   status: 'DRAFT' | 'ORDERED' | 'PARTIALLY_RECEIVED' | 'RECEIVED' | 'CANCELLED';

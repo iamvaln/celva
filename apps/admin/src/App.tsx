@@ -21,6 +21,7 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 import FactoryIcon from '@mui/icons-material/Factory';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { i18nProvider } from './i18nProvider';
@@ -86,6 +87,9 @@ import { RawMaterialEdit } from './resources/raw-materials/RawMaterialEdit';
 import { PurchaseOrderList } from './resources/purchase-orders/PurchaseOrderList';
 import { PurchaseOrderCreate } from './resources/purchase-orders/PurchaseOrderCreate';
 import { PurchaseOrderShow } from './resources/purchase-orders/PurchaseOrderShow';
+import { ProductionOrderList } from './resources/production-orders/ProductionOrderList';
+import { ProductionOrderCreate } from './resources/production-orders/ProductionOrderCreate';
+import { ProductionOrderShow } from './resources/production-orders/ProductionOrderShow';
 
 export const App = () => (
   <Admin
@@ -257,6 +261,14 @@ export const App = () => (
           create={PurchaseOrderCreate}
           show={PurchaseOrderShow}
           options={{ label: 'Commandes fournisseur' }}
+        />
+        <Resource
+          name="production-orders"
+          icon={PrecisionManufacturingIcon}
+          list={ProductionOrderList}
+          create={ProductionOrderCreate}
+          show={ProductionOrderShow}
+          options={{ label: 'Ordres de production' }}
         />
         <Resource
           name="settings"
