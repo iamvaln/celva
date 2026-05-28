@@ -96,5 +96,6 @@
   "consignment_not_active": "Only ACTIVE consignments can be reconciled or cancelled.",
   "consignment_item_not_found": "One of the consignment items does not belong to this consignment.",
   "consignment_overflow": "Sold + returned cannot exceed the released quantity.",
-  "user_not_found": "User not found."
+  "user_not_found": "User not found.",
+  "supplier_in_use": "This supplier is referenced by raw materials or purchase orders and cannot be deleted."
 }
