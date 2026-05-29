@@ -1,22 +1,57 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Title, useGetList, useNotify, useRedirect, useTranslate } from 'react-admin';
+import {
+  Title,
+  useGetList,
+  useLocaleState,
+  useNotify,
+  useRedirect,
+  useTranslate,
+} from 'react-admin';
 import {
   Box,
   Card,
   CardActionArea,
   CardContent,
+  Chip,
+  Divider,
   Grid,
+  Stack,
   Typography,
 } from '@mui/material';
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import PaidIcon from '@mui/icons-material/Paid';
+import type { AdminOrderRow } from '../types';
+import { ORDER_STATUS_COLOR } from '../resources/orders/statusColors';
 import { fetchJson } from '../http';
 import { API_BASE } from '../config';
 
 const TERRACOTTA = '#B26248';
 const OLIVE = '#595D40';
+const GRID = '#D4C4AE';
+const AXIS = '#8C8680';
+
+type Dashboard = {
+  kpis: {
+    revenue: string;
+    expenses: string;
+    net: string;
+    orderCount: number;
+    deliveredOrderCount: number;
+    averageOrderValue: string;
+  };
+  timeseries: Array<{ month: string; revenue: string; expenses: string }>;
+};
 
 const formatXAF = (value: string | number): string =>
   new Intl.NumberFormat('fr-FR', {
@@ -25,7 +60,28 @@ const formatXAF = (value: string | number): string =>
     maximumFractionDigits: 0,
   }).format(Number(value));
 
-const StatCard = ({
+const formatCompactXAF = (value: number): string =>
+  new Intl.NumberFormat('fr-FR', { notation: 'compact', maximumFractionDigits: 1 }).format(value);
+
+const relativeTime = (iso: string, locale: string): string => {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const rtf = new Intl.RelativeTimeFormat(locale === 'fr' ? 'fr' : 'en', { numeric: 'auto' });
+  const mins = Math.round(diffMs / 60000);
+  if (Math.abs(mins) < 60) return rtf.format(-mins, 'minute');
+  const hours = Math.round(mins / 60);
+  if (Math.abs(hours) < 24) return rtf.format(-hours, 'hour');
+  return rtf.format(-Math.round(hours / 24), 'day');
+};
+
+const SectionHeading = ({ children }: { children: ReactNode }) => (
+  <Typography variant="overline" sx={{ letterSpacing: 1.5, color: 'text.secondary' }}>
+    {children}
+  </Typography>
+);
+
+// ─── 1. Needs attention ──────────────────────────────────────────────────
+
+const ActionCard = ({
   label,
   value,
   icon,
@@ -55,13 +111,26 @@ const StatCard = ({
   </Card>
 );
 
+// ─── 2. Business health ────────────────────────────────────────────────────
+
+const KpiTile = ({ label, value }: { label: string; value: ReactNode }) => (
+  <Card sx={{ height: '100%' }}>
+    <CardContent>
+      <Typography variant="overline" color="text.secondary">
+        {label}
+      </Typography>
+      <Typography variant="h5" sx={{ mt: 0.5, fontWeight: 500 }}>
+        {value}
+      </Typography>
+    </CardContent>
+  </Card>
+);
+
 export const Home = () => {
   const t = useTranslate();
   const notify = useNotify();
   const redirect = useRedirect();
 
-  // Counts via useGetList — it returns `total` (the envelope's top-level total,
-  // which fetchJson would otherwise discard when it unwraps { data }).
   const { total: ordersPending } = useGetList('orders', {
     filter: { status: 'PENDING' },
     pagination: { page: 1, perPage: 1 },
@@ -74,13 +143,17 @@ export const Home = () => {
     filter: { lowStock: 'true' },
     pagination: { page: 1, perPage: 1 },
   });
+  const { data: recentOrders = [] } = useGetList<AdminOrderRow>('orders', {
+    sort: { field: 'createdAt', order: 'DESC' },
+    pagination: { page: 1, perPage: 6 },
+  });
 
-  const [revenue, setRevenue] = useState<string | null>(null);
+  const [fin, setFin] = useState<Dashboard | null>(null);
   useEffect(() => {
     let cancelled = false;
-    void fetchJson<{ kpis: { revenue: string } }>(`${API_BASE}/finance/dashboard`)
+    void fetchJson<Dashboard>(`${API_BASE}/finance/dashboard`)
       .then(({ body }) => {
-        if (!cancelled) setRevenue(body.kpis.revenue);
+        if (!cancelled) setFin(body);
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -94,17 +167,26 @@ export const Home = () => {
     };
   }, [notify, t]);
 
+  const [locale] = useLocaleState();
   const goFiltered = (resource: string, filter: Record<string, unknown>) =>
     redirect(`/${resource}?filter=${encodeURIComponent(JSON.stringify(filter))}`);
-
   const num = (v: number | undefined): ReactNode => (v === undefined ? '—' : v.toString());
+
+  const trend = (fin?.timeseries ?? []).map((p) => ({
+    month: p.month.slice(5),
+    revenue: Number(p.revenue),
+    expenses: Number(p.expenses),
+  }));
 
   return (
     <Box sx={{ p: 3 }}>
       <Title title={t('menu.dashboard')} />
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
+
+      {/* 1 — Needs attention */}
+      <SectionHeading>{t('dashboard.section_attention')}</SectionHeading>
+      <Grid container spacing={2} sx={{ mt: 0, mb: 4 }}>
+        <Grid item xs={12} sm={6} md={4}>
+          <ActionCard
             label={t('dashboard.orders_to_confirm')}
             accent={TERRACOTTA}
             icon={<ReceiptLongIcon />}
@@ -112,8 +194,8 @@ export const Home = () => {
             onClick={() => goFiltered('orders', { status: 'PENDING' })}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
+        <Grid item xs={12} sm={6} md={4}>
+          <ActionCard
             label={t('dashboard.deliveries_to_arrange')}
             accent={OLIVE}
             icon={<TwoWheelerIcon />}
@@ -121,8 +203,8 @@ export const Home = () => {
             onClick={() => goFiltered('deliveries', { status: 'PENDING' })}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
+        <Grid item xs={12} sm={6} md={4}>
+          <ActionCard
             label={t('dashboard.materials_below_threshold')}
             accent={TERRACOTTA}
             icon={<WarningAmberIcon />}
@@ -130,16 +212,123 @@ export const Home = () => {
             onClick={() => goFiltered('raw-materials', { lowStock: 'true' })}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            label={t('dashboard.revenue')}
-            accent={OLIVE}
-            icon={<PaidIcon />}
-            value={revenue ? formatXAF(revenue) : '—'}
-            onClick={() => redirect('/finance')}
+      </Grid>
+
+      {/* 2 — Business health */}
+      <SectionHeading>{t('dashboard.section_health')}</SectionHeading>
+      <Grid container spacing={2} sx={{ mt: 0, mb: 2 }}>
+        <Grid item xs={6} md={3}>
+          <KpiTile
+            label={t('dashboard.kpi_revenue')}
+            value={fin ? formatXAF(fin.kpis.revenue) : '—'}
+          />
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <KpiTile label={t('dashboard.kpi_net')} value={fin ? formatXAF(fin.kpis.net) : '—'} />
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <KpiTile
+            label={t('dashboard.kpi_aov')}
+            value={fin ? formatXAF(fin.kpis.averageOrderValue) : '—'}
+          />
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <KpiTile
+            label={t('dashboard.kpi_orders')}
+            value={fin ? `${fin.kpis.orderCount}` : '—'}
           />
         </Grid>
       </Grid>
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Typography variant="subtitle2" sx={{ mb: 1 }}>
+            {t('dashboard.sales_trend')}
+          </Typography>
+          <Box sx={{ height: 260 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trend} margin={{ top: 8, right: 16, bottom: 0, left: 8 }}>
+                <CartesianGrid stroke={GRID} strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="month" stroke={AXIS} fontSize={12} />
+                <YAxis
+                  stroke={AXIS}
+                  fontSize={12}
+                  tickFormatter={(v) => formatCompactXAF(Number(v))}
+                  width={48}
+                />
+                <Tooltip formatter={(v) => formatXAF(Number(v ?? 0))} />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="revenue"
+                  name={t('dashboard.kpi_revenue')}
+                  stroke={TERRACOTTA}
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="expenses"
+                  name={t('dashboard.expenses')}
+                  stroke={OLIVE}
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* 3 — Recent activity */}
+      <SectionHeading>{t('dashboard.section_recent')}</SectionHeading>
+      <Card sx={{ mt: 1 }}>
+        <CardContent sx={{ p: 0 }}>
+          {recentOrders.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
+              {t('dashboard.no_recent')}
+            </Typography>
+          ) : (
+            <Stack divider={<Divider />}>
+              {recentOrders.map((o) => (
+                <Box
+                  key={o.id}
+                  onClick={() => redirect('show', 'orders', o.id)}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 2,
+                    px: 2,
+                    py: 1.5,
+                    cursor: 'pointer',
+                    '&:hover': { bgcolor: 'action.hover' },
+                  }}
+                >
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography variant="body2" noWrap>
+                      {o.orderNumber} · {o.user.name}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {relativeTime(o.createdAt, locale)}
+                    </Typography>
+                  </Box>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Chip
+                      label={o.status}
+                      size="small"
+                      color={ORDER_STATUS_COLOR[o.status]}
+                      variant="outlined"
+                    />
+                    <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
+                      {formatXAF(o.total)}
+                    </Typography>
+                  </Stack>
+                </Box>
+              ))}
+            </Stack>
+          )}
+        </CardContent>
+      </Card>
     </Box>
   );
 };
