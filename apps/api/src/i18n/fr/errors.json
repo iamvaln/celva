@@ -114,5 +114,6 @@
   "production_order_not_planned": "Seuls les ordres de production PLANNED peuvent être démarrés.",
   "production_order_not_in_progress": "Seuls les ordres EN COURS peuvent être complétés.",
   "production_order_not_cancellable": "Cet ordre de production ne peut pas être annulé.",
-  "production_order_locked": "Seuls les ordres de production PLANNED peuvent être supprimés."
+  "production_order_locked": "Seuls les ordres de production PLANNED peuvent être supprimés.",
+  "packaging_material_invalid": "Cette matière n'est pas un emballage."
 }
