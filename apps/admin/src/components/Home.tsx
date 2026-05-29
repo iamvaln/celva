@@ -31,10 +31,30 @@ import {
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import type { AdminOrderRow } from '../types';
-import { ORDER_STATUS_COLOR } from '../resources/orders/statusColors';
+import type { AuditLog } from '../types';
 import { fetchJson } from '../http';
 import { API_BASE } from '../config';
+
+// Best-effort: when an audit entry's entity has a clear admin route, the row
+// click jumps to it. Unknown entities just don't navigate.
+const ENTITY_ROUTE: Record<string, string> = {
+  Order: 'orders',
+  Product: 'products',
+  ProductVariant: 'variants',
+  User: 'users',
+  Delivery: 'deliveries',
+  Article: 'articles',
+  Category: 'categories',
+  Collection: 'collections',
+  Supplier: 'suppliers',
+  RawMaterial: 'raw-materials',
+  PurchaseOrder: 'purchase-orders',
+  ProductionOrder: 'production-orders',
+  Consignment: 'consignments',
+  SizeGuide: 'size-guides',
+  NewsletterSubscriber: 'newsletter',
+  PromoCode: 'promo-codes',
+};
 
 const TERRACOTTA = '#B26248';
 const OLIVE = '#595D40';
@@ -143,7 +163,7 @@ export const Home = () => {
     filter: { lowStock: 'true' },
     pagination: { page: 1, perPage: 1 },
   });
-  const { data: recentOrders = [] } = useGetList<AdminOrderRow>('orders', {
+  const { data: recentLogs = [] } = useGetList<AuditLog>('audit-logs', {
     sort: { field: 'createdAt', order: 'DESC' },
     pagination: { page: 1, perPage: 6 },
   });
@@ -279,52 +299,53 @@ export const Home = () => {
         </CardContent>
       </Card>
 
-      {/* 3 — Recent activity */}
+      {/* 3 — Recent activity (audit log) */}
       <SectionHeading>{t('dashboard.section_recent')}</SectionHeading>
       <Card sx={{ mt: 1 }}>
         <CardContent sx={{ p: 0 }}>
-          {recentOrders.length === 0 ? (
+          {recentLogs.length === 0 ? (
             <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
               {t('dashboard.no_recent')}
             </Typography>
           ) : (
             <Stack divider={<Divider />}>
-              {recentOrders.map((o) => (
-                <Box
-                  key={o.id}
-                  onClick={() => redirect('show', 'orders', o.id)}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 2,
-                    px: 2,
-                    py: 1.5,
-                    cursor: 'pointer',
-                    '&:hover': { bgcolor: 'action.hover' },
-                  }}
-                >
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography variant="body2" noWrap>
-                      {o.orderNumber} · {o.user.name}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {relativeTime(o.createdAt, locale)}
-                    </Typography>
+              {recentLogs.map((log) => {
+                const route = ENTITY_ROUTE[log.entity];
+                const clickable = Boolean(route);
+                return (
+                  <Box
+                    key={log.id}
+                    onClick={
+                      clickable ? () => redirect('show', route, log.entityId) : undefined
+                    }
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 2,
+                      px: 2,
+                      py: 1.5,
+                      cursor: clickable ? 'pointer' : 'default',
+                      '&:hover': clickable ? { bgcolor: 'action.hover' } : undefined,
+                    }}
+                  >
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="body2" noWrap>
+                        {log.user?.name ?? '—'}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {relativeTime(log.createdAt, locale)}
+                      </Typography>
+                    </Box>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Chip label={log.action} size="small" variant="outlined" />
+                      <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                        {log.entity}
+                      </Typography>
+                    </Stack>
                   </Box>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Chip
-                      label={o.status}
-                      size="small"
-                      color={ORDER_STATUS_COLOR[o.status]}
-                      variant="outlined"
-                    />
-                    <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
-                      {formatXAF(o.total)}
-                    </Typography>
-                  </Stack>
-                </Box>
-              ))}
+                );
+              })}
             </Stack>
           )}
         </CardContent>

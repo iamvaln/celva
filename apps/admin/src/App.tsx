@@ -23,6 +23,7 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import StraightenIcon from '@mui/icons-material/Straighten';
+import HistoryIcon from '@mui/icons-material/History';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
@@ -97,6 +98,7 @@ import { NewsletterList } from './resources/newsletter/NewsletterList';
 import { SizeGuideList } from './resources/size-guides/SizeGuideList';
 import { SizeGuideCreate } from './resources/size-guides/SizeGuideCreate';
 import { SizeGuideEdit } from './resources/size-guides/SizeGuideEdit';
+import { AuditLogList } from './resources/audit-logs/AuditLogList';
 
 export const App = () => (
   <Admin
@@ -298,6 +300,12 @@ export const App = () => (
           list={SettingList}
           edit={permissions === 'ADMIN' ? SettingEdit : undefined}
           create={permissions === 'ADMIN' ? SettingCreate : undefined}
+        />
+        <Resource
+          name="audit-logs"
+          icon={HistoryIcon}
+          list={AuditLogList}
+          options={{ label: "Journal d'audit" }}
         />
       </>
     )}
