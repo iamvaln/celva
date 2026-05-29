@@ -9,6 +9,7 @@ import {
   pickLocalized,
 } from '@/lib/catalogue';
 import { ProductGrid } from '@/components/ProductGrid';
+import { NewsletterForm } from '@/components/NewsletterForm';
 
 export default async function HomePage({
   params,
@@ -145,22 +146,7 @@ export default async function HomePage({
         <div className="container-celva max-w-prose text-center">
           <h2 className="mb-3 font-display text-h2">{t('newsletter.title')}</h2>
           <p className="mb-6 font-body text-base text-foreground-muted">{t('newsletter.body')}</p>
-          <form className="flex flex-col items-stretch gap-3 sm:flex-row" aria-label={t('newsletter.title')}>
-            <label className="sr-only" htmlFor="newsletter-email">
-              {t('newsletter.email_label')}
-            </label>
-            <input
-              id="newsletter-email"
-              type="email"
-              required
-              autoComplete="email"
-              placeholder={t('newsletter.email_placeholder')}
-              className="input-underline flex-1 text-center sm:text-left"
-            />
-            <button type="submit" className="btn btn-primary">
-              {t('newsletter.submit')}
-            </button>
-          </form>
+          <NewsletterForm />
         </div>
       </section>
     </>

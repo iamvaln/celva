@@ -432,6 +432,22 @@ const celvaFr = {
         createdAt: 'Créé le',
       },
     },
+    newsletter: {
+      name: 'Abonné newsletter |||| Newsletter',
+      fields: {
+        email: 'Email',
+        name: 'Nom',
+        isActive: 'Actif',
+        subscribedAt: 'Inscrit le',
+        unsubscribedAt: 'Désinscrit le',
+      },
+      actions: {
+        unsubscribe: 'Désinscrire',
+      },
+      notifications: {
+        unsubscribed: 'Abonné désinscrit.',
+      },
+    },
     consignments: {
       name: 'Consignation |||| Consignations',
       fields: {
@@ -948,6 +964,22 @@ const celvaEn = {
         reason: 'Reason',
         actor: 'Actor',
         createdAt: 'Created at',
+      },
+    },
+    newsletter: {
+      name: 'Newsletter subscriber |||| Newsletter',
+      fields: {
+        email: 'Email',
+        name: 'Name',
+        isActive: 'Active',
+        subscribedAt: 'Subscribed at',
+        unsubscribedAt: 'Unsubscribed at',
+      },
+      actions: {
+        unsubscribe: 'Unsubscribe',
+      },
+      notifications: {
+        unsubscribed: 'Subscriber unsubscribed.',
       },
     },
     consignments: {

@@ -47,6 +47,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'raw-materials',
   'purchase-orders',
   'production-orders',
+  'newsletter',
 ]);
 
 /**
@@ -66,6 +67,7 @@ const ADMIN_PATH_RESOURCES = new Set<string>([
   'delivery-zones',
   'pickup-points',
   'articles',
+  'newsletter',
 ]);
 
 const resourceListPath = (resource: string): string =>
@@ -107,7 +109,7 @@ export const dataProvider: DataProvider = {
         if (value === undefined || value === null || value === '') return;
         params.set(key, String(value));
       });
-      const url = `${API_BASE}/${resource}?${params.toString()}`;
+      const url = `${resourceListPath(resource)}?${params.toString()}`;
       const { body } = await fetchJson<PaginatedResponse<Record<string, unknown>>>(url);
       return {
         data: body.data.map((r) => tagRecord<RecordType>(resource, r)),
