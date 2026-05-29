@@ -21,6 +21,7 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 import FactoryIcon from '@mui/icons-material/Factory';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
@@ -90,6 +91,7 @@ import { PurchaseOrderShow } from './resources/purchase-orders/PurchaseOrderShow
 import { ProductionOrderList } from './resources/production-orders/ProductionOrderList';
 import { ProductionOrderCreate } from './resources/production-orders/ProductionOrderCreate';
 import { ProductionOrderShow } from './resources/production-orders/ProductionOrderShow';
+import { NewsletterList } from './resources/newsletter/NewsletterList';
 
 export const App = () => (
   <Admin
@@ -196,6 +198,12 @@ export const App = () => (
           create={ArticleCreate}
           edit={ArticleEdit}
           options={{ label: 'Journal' }}
+        />
+        <Resource
+          name="newsletter"
+          icon={MarkEmailReadIcon}
+          list={NewsletterList}
+          options={{ label: 'Newsletter' }}
         />
         <Resource
           name="deliveries"
