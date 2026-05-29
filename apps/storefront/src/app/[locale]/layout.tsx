@@ -9,6 +9,8 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CookieBanner } from '@/components/CookieBanner';
 import { FabWhatsapp } from '@/components/FabWhatsapp';
+import { JsonLd } from '@/components/JsonLd';
+import { organizationLd, websiteLd } from '@/lib/structured-data';
 
 export const generateStaticParams = () =>
   routing.locales.map((locale) => ({ locale }));
@@ -57,6 +59,8 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
+      <JsonLd data={organizationLd()} />
+      <JsonLd data={websiteLd()} />
       <ThemeProvider>
         <a
           href="#main"
