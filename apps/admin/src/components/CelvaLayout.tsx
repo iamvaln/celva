@@ -1,5 +1,6 @@
 import { AppBar, Layout, LocalesMenuButton, TitlePortal, ToggleThemeButton, type LayoutProps } from 'react-admin';
 import { Typography } from '@mui/material';
+import { CelvaMenu } from './CelvaMenu';
 
 const CelvaAppBar = () => (
   <AppBar
@@ -20,4 +21,6 @@ const CelvaAppBar = () => (
   </AppBar>
 );
 
-export const CelvaLayout = (props: LayoutProps) => <Layout {...props} appBar={CelvaAppBar} />;
+export const CelvaLayout = (props: LayoutProps) => (
+  <Layout {...props} appBar={CelvaAppBar} menu={CelvaMenu} />
+);
