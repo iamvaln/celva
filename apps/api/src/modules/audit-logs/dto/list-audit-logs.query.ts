@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDateString, IsInt, IsOptional, IsString, IsUUID, Max, MaxLength, Min } from 'class-validator';
+import { IsDateString, IsIn, IsInt, IsOptional, IsString, IsUUID, Max, MaxLength, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ListAuditLogsQuery {
@@ -50,4 +50,17 @@ export class ListAuditLogsQuery {
   @IsOptional()
   @IsDateString()
   to?: string;
+
+  // Accepted for compatibility with the admin dataProvider (which always
+  // sends sortBy/sortDir for paginated resources). The list is intrinsically
+  // ordered by createdAt desc — the service ignores these.
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsIn(['createdAt'])
+  sortBy?: 'createdAt';
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsIn(['asc', 'desc'])
+  sortDir?: 'asc' | 'desc';
 }
