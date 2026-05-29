@@ -285,6 +285,15 @@ const celvaFr = {
         cancelled: 'Commande annulée. Stock restauré.',
         invoice_failed: 'Impossible de télécharger la facture. La commande a-t-elle été payée ?',
       },
+      margin: {
+        heading: 'Marge (HT)',
+        revenue_ht: 'Revenu HT',
+        product_cost: 'Coût produit',
+        packaging_cost: 'Coût emballage',
+        delivery_cost: 'Coût livraison réel',
+        commissions: 'Commissions',
+        net_margin: 'Marge nette HT',
+      },
     },
     articles: {
       name: 'Article |||| Articles',
@@ -840,6 +849,15 @@ const celvaEn = {
         transitioned: 'Status updated.',
         cancelled: 'Order cancelled. Stock restored.',
         invoice_failed: "Couldn't download the invoice. Has the order been paid yet?",
+      },
+      margin: {
+        heading: 'Margin (excl. VAT)',
+        revenue_ht: 'Revenue (excl. VAT)',
+        product_cost: 'Product cost',
+        packaging_cost: 'Packaging cost',
+        delivery_cost: 'Actual delivery cost',
+        commissions: 'Commissions',
+        net_margin: 'Net margin (excl. VAT)',
       },
     },
     articles: {
