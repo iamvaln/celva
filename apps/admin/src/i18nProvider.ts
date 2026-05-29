@@ -11,6 +11,22 @@ const celvaFr = {
     toggle_theme: 'Basculer thème clair / sombre',
     toggle_locale: 'Changer de langue',
   },
+  menu: {
+    dashboard: 'Tableau de bord',
+    sales: 'Ventes',
+    catalog: 'Catalogue',
+    stock: 'Stock & Production',
+    finance: 'Finance',
+    content: 'Contenu',
+    logistics: 'Logistique',
+    admin: 'Administration',
+  },
+  dashboard: {
+    orders_to_confirm: 'Commandes à confirmer',
+    deliveries_to_arrange: 'Livraisons à organiser',
+    materials_below_threshold: 'Matières sous seuil',
+    revenue: "Chiffre d'affaires (ce mois)",
+  },
   resources: {
     users: {
       name: 'Utilisateur |||| Utilisateurs',
@@ -611,6 +627,22 @@ const celvaEn = {
     only_admin_or_manager: 'Only ADMIN and MANAGER roles may sign in here.',
     toggle_theme: 'Toggle light / dark theme',
     toggle_locale: 'Switch language',
+  },
+  menu: {
+    dashboard: 'Dashboard',
+    sales: 'Sales',
+    catalog: 'Catalog',
+    stock: 'Stock & Production',
+    finance: 'Finance',
+    content: 'Content',
+    logistics: 'Logistics',
+    admin: 'Administration',
+  },
+  dashboard: {
+    orders_to_confirm: 'Orders to confirm',
+    deliveries_to_arrange: 'Deliveries to arrange',
+    materials_below_threshold: 'Materials below threshold',
+    revenue: 'Revenue (this month)',
   },
   resources: {
     users: {
