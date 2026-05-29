@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/modules/prisma/prisma.service';
 import { MailService, type MailMessage } from '../src/modules/mail/mail.service';
+import { waitFor } from './utils/wait-for';
 
 const ADMIN_EMAIL = 'admin@celva.store';
 const ADMIN_PASSWORD = 'ChangeMe123!';
@@ -34,13 +35,43 @@ describe('Order transactional emails (e2e)', () => {
   let pickupId = '';
 
   /**
-   * Order emails are dispatched fire-and-forget and include a Prisma
-   * round-trip inside the promise. We need to yield long enough for the
-   * promise chain to settle before asserting on the spy.
+   * Order emails are dispatched fire-and-forget, with a Prisma round-trip
+   * inside the promise. Instead of a fixed sleep — which under full-suite
+   * DB load was too short, dropping the email past the assertion and
+   * leaking it into the next test — wait until the recorder has been quiet
+   * for `quietMs`, i.e. every in-flight send has settled. Bounded so a
+   * genuinely missing email still fails fast-ish rather than hanging.
    */
-  const flush = async (): Promise<void> => {
-    await new Promise((r) => setTimeout(r, 150));
+  const flush = async (quietMs = 150, timeoutMs = 3000): Promise<void> => {
+    const deadline = Date.now() + timeoutMs;
+    let lastCount = mailSpy.sends.length;
+    let quietSince = Date.now();
+    for (;;) {
+      await new Promise((r) => setTimeout(r, 20));
+      const count = mailSpy.sends.length;
+      if (count !== lastCount) {
+        lastCount = count;
+        quietSince = Date.now();
+      } else if (Date.now() - quietSince >= quietMs) {
+        return;
+      }
+      if (Date.now() >= deadline) return;
+    }
   };
+
+  /**
+   * Poll the recorder until a message matching `pred` appears (or timeout →
+   * null). The right primitive for "this email should be sent" assertions:
+   * unlike a quiet-window wait, it can't return before the fire-and-forget
+   * send has actually pushed.
+   */
+  const waitForMail = (
+    pred: (m: MailMessage) => boolean,
+  ): Promise<MailMessage | null> =>
+    waitFor(() => Promise.resolve(mailSpy.sends.find(pred)), {
+      timeoutMs: 3000,
+      intervalMs: 20,
+    });
 
   beforeAll(async () => {
     process.env.JWT_ACCESS_SECRET ??= 'a'.repeat(32);
@@ -159,7 +190,14 @@ describe('Order transactional emails (e2e)', () => {
         paymentMethod: 'CASH_ON_DELIVERY',
       })
       .expect(201);
-    return { id: res.body.data.id, orderNumber: res.body.data.orderNumber };
+    const order = { id: res.body.data.id, orderNumber: res.body.data.orderNumber };
+    // Cash checkout fires an order_confirmation fire-and-forget. Wait for it
+    // to land so it can't straggle past a later mailSpy.clear() and pollute
+    // the next test (the classic source of this suite's flakes).
+    await waitForMail(
+      (m) => m.tag === 'order_confirmation' && Boolean(m.subject?.includes(order.orderNumber)),
+    );
+    return order;
   };
 
   const placePendingMomoOrder = async (): Promise<{
@@ -185,7 +223,10 @@ describe('Order transactional emails (e2e)', () => {
     };
   };
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Drain any still-in-flight fire-and-forget send BEFORE clearing, so a
+    // straggler can't land in the next test's (freshly-cleared) recorder.
+    await flush();
     mailSpy.clear();
   });
 
@@ -225,8 +266,7 @@ describe('Order transactional emails (e2e)', () => {
   describe('OrderConfirmation', () => {
     it('Cash order → confirmation email sent at checkout', async () => {
       const order = await placeCashOrder();
-      await flush();
-      const confirmation = mailSpy.sends.find((m) => m.tag === 'order_confirmation');
+      const confirmation = await waitForMail((m) => m.tag === 'order_confirmation');
       expect(confirmation).toBeDefined();
       expect(confirmation?.to).toBe(CLIENT_EMAIL);
       expect(confirmation?.subject).toContain(order.orderNumber);
@@ -248,8 +288,7 @@ describe('Order transactional emails (e2e)', () => {
         .post(`/api/v1/me/orders/${order.id}/retry-payment`)
         .set('Authorization', `Bearer ${clientToken}`)
         .expect(201);
-      await flush();
-      const confirmation = mailSpy.sends.find((m) => m.tag === 'order_confirmation');
+      const confirmation = await waitForMail((m) => m.tag === 'order_confirmation');
       expect(confirmation).toBeDefined();
       expect(confirmation?.subject).toContain(order.orderNumber);
     });
@@ -282,8 +321,7 @@ describe('Order transactional emails (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .send({ status: 'PROCESSING' })
         .expect(200);
-      await flush();
-      const email = mailSpy.sends.find((m) => m.tag === 'order_status_processing');
+      const email = await waitForMail((m) => m.tag === 'order_status_processing');
       expect(email).toBeDefined();
       expect(email?.subject).toContain(order.orderNumber);
       expect(email?.text).toMatch(/préparation|prepared/i);
@@ -299,7 +337,10 @@ describe('Order transactional emails (e2e)', () => {
           .send({ status: next })
           .expect(200);
       }
-      await flush();
+      // DELIVERED is the last customer-visible hop in the walk; once its
+      // email lands, the three before it have too (transitions are
+      // sequential) — so the clear below starts from a fully-drained spy.
+      await waitForMail((m) => m.tag === 'order_status_delivered');
       mailSpy.clear();
       await request(server)
         .post(`/api/v1/orders/${order.id}/transition`)
@@ -328,8 +369,7 @@ describe('Order transactional emails (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .send({ status: 'READY' })
         .expect(200);
-      await flush();
-      const email = mailSpy.sends.find((m) => m.tag === 'order_status_ready');
+      const email = await waitForMail((m) => m.tag === 'order_status_ready');
       expect(email).toBeDefined();
       // Pickup point name was "{SUITE_TAG} Bonapriso"
       expect(email?.text).toContain(`${SUITE_TAG} Bonapriso`);
@@ -345,8 +385,7 @@ describe('Order transactional emails (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .send({ reason: 'Out of fabric' })
         .expect(200);
-      await flush();
-      const email = mailSpy.sends.find((m) => m.tag === 'order_cancelled');
+      const email = await waitForMail((m) => m.tag === 'order_cancelled');
       expect(email).toBeDefined();
       expect(email?.subject).toContain(order.orderNumber);
       expect(email?.text).toContain('Out of fabric');
@@ -360,8 +399,7 @@ describe('Order transactional emails (e2e)', () => {
         .set('Authorization', `Bearer ${clientToken}`)
         .send({ reason: 'Wrong size' })
         .expect(200);
-      await flush();
-      const email = mailSpy.sends.find((m) => m.tag === 'order_cancelled');
+      const email = await waitForMail((m) => m.tag === 'order_cancelled');
       expect(email).toBeDefined();
       expect(email?.text).toContain('Wrong size');
     });

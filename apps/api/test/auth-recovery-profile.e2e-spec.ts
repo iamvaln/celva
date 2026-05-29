@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/modules/prisma/prisma.service';
 import { MailService, type MailMessage } from '../src/modules/mail/mail.service';
+import { waitFor } from './utils/wait-for';
 
 const SUITE_TAG = `e2e-rec-${Date.now()}`;
 const CLIENT_EMAIL = `client-${SUITE_TAG}@celva.test`;
@@ -417,14 +418,18 @@ describe('Auth recovery + profile (e2e)', () => {
         .send({ email: NEW_EMAIL, password: PASSWORD });
       expect(newLogin.status).toBe(200);
 
-      // All refresh tokens revoked
+      // Every session that existed before the email change must be revoked.
+      // The post-confirm login above issued exactly one fresh token, which
+      // stays active. Order explicitly — findMany has no inherent order, so
+      // the previous `.slice(0, -1)` could drop the wrong (still-active)
+      // token and flake.
       const tokens = await prisma.refreshToken.findMany({
         where: { user: { email: NEW_EMAIL } },
+        orderBy: { createdAt: 'asc' },
       });
-      // The fresh login above issues a new refresh token; everything BEFORE
-      // it should be revoked.
-      const olderRevoked = tokens.filter((t) => t.createdAt < new Date()).slice(0, -1);
-      expect(olderRevoked.every((t) => t.revokedAt !== null || tokens.length === 1)).toBe(true);
+      const active = tokens.filter((tok) => tok.revokedAt === null);
+      expect(active).toHaveLength(1);
+      expect(active[0]?.id).toBe(tokens[tokens.length - 1]?.id);
     });
 
     it('rejects an invalid confirm token (400)', async () => {
@@ -554,10 +559,14 @@ describe('Auth recovery + profile (e2e)', () => {
       action: string,
       userEmail = CLIENT_EMAIL,
     ): Promise<{ entityId: string; metadata: unknown } | null> => {
-      const log = await prisma.auditLog.findFirst({
-        where: { action, user: { email: userEmail } },
-        orderBy: { createdAt: 'desc' },
-      });
+      // Most of these actions are recorded by the fire-and-forget @AuditLog
+      // interceptor (write lands after the response), so poll for the row.
+      const log = await waitFor(() =>
+        prisma.auditLog.findFirst({
+          where: { action, user: { email: userEmail } },
+          orderBy: { createdAt: 'desc' },
+        }),
+      );
       return log
         ? { entityId: log.entityId, metadata: log.metadata }
         : null;
