@@ -22,6 +22,7 @@ import FactoryIcon from '@mui/icons-material/Factory';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import StraightenIcon from '@mui/icons-material/Straighten';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
@@ -92,6 +93,9 @@ import { ProductionOrderList } from './resources/production-orders/ProductionOrd
 import { ProductionOrderCreate } from './resources/production-orders/ProductionOrderCreate';
 import { ProductionOrderShow } from './resources/production-orders/ProductionOrderShow';
 import { NewsletterList } from './resources/newsletter/NewsletterList';
+import { SizeGuideList } from './resources/size-guides/SizeGuideList';
+import { SizeGuideCreate } from './resources/size-guides/SizeGuideCreate';
+import { SizeGuideEdit } from './resources/size-guides/SizeGuideEdit';
 
 export const App = () => (
   <Admin
@@ -198,6 +202,14 @@ export const App = () => (
           create={ArticleCreate}
           edit={ArticleEdit}
           options={{ label: 'Journal' }}
+        />
+        <Resource
+          name="size-guides"
+          icon={StraightenIcon}
+          list={SizeGuideList}
+          create={SizeGuideCreate}
+          edit={SizeGuideEdit}
+          options={{ label: 'Guides des tailles' }}
         />
         <Resource
           name="newsletter"
