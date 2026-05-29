@@ -49,6 +49,7 @@ const PAGINATED_RESOURCES = new Set<string>([
   'production-orders',
   'newsletter',
   'size-guides',
+  'audit-logs',
 ]);
 
 /**
@@ -70,6 +71,7 @@ const ADMIN_PATH_RESOURCES = new Set<string>([
   'articles',
   'newsletter',
   'size-guides',
+  'audit-logs',
 ]);
 
 const resourceListPath = (resource: string): string =>
