@@ -338,7 +338,22 @@ export const Home = () => {
                       </Typography>
                     </Box>
                     <Stack direction="row" spacing={2} alignItems="center">
-                      <Chip label={log.action} size="small" variant="outlined" />
+                      <Chip
+                        label={log.action}
+                        size="small"
+                        color={
+                          log.action === 'CREATE'
+                            ? 'success'
+                            : log.action === 'DELETE'
+                              ? 'error'
+                              : log.action === 'UPDATE'
+                                ? 'info'
+                                : log.action === 'STATUS_CHANGE'
+                                  ? 'warning'
+                                  : 'default'
+                        }
+                        variant="outlined"
+                      />
                       <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
                         {log.entity}
                       </Typography>

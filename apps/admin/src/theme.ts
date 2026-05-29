@@ -27,6 +27,11 @@ export const celvaLightTheme: RaThemeOptions = {
     button: { fontFamily: fontStack, fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase' },
   },
   shape: { borderRadius: 0 },
+  components: {
+    // Dense tables by default — back-office tools live on this surface, and
+    // the airy MUI default makes long lists slow to scan.
+    MuiTable: { defaultProps: { size: 'small' } },
+  },
 };
 
 export const celvaDarkTheme: RaThemeOptions = {
@@ -51,4 +56,9 @@ export const celvaDarkTheme: RaThemeOptions = {
     button: { fontFamily: fontStack, fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase' },
   },
   shape: { borderRadius: 0 },
+  components: {
+    // Dense tables by default — back-office tools live on this surface, and
+    // the airy MUI default makes long lists slow to scan.
+    MuiTable: { defaultProps: { size: 'small' } },
+  },
 };
