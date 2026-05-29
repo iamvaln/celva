@@ -504,6 +504,17 @@ const celvaFr = {
         content_markdown: 'Markdown — tableaux de tailles, conseils de coupe.',
       },
     },
+    'audit-logs': {
+      name: "Entrée d'audit |||| Journal d'audit",
+      fields: {
+        createdAt: 'Date',
+        user: 'Utilisateur',
+        action: 'Action',
+        entity: 'Entité',
+        entityId: 'ID entité',
+        appSource: 'Source',
+      },
+    },
     consignments: {
       name: 'Consignation |||| Consignations',
       fields: {
@@ -1092,6 +1103,17 @@ const celvaEn = {
       },
       helpers: {
         content_markdown: 'Markdown — size tables, fit notes.',
+      },
+    },
+    'audit-logs': {
+      name: 'Audit entry |||| Audit log',
+      fields: {
+        createdAt: 'Date',
+        user: 'User',
+        action: 'Action',
+        entity: 'Entity',
+        entityId: 'Entity id',
+        appSource: 'Source',
       },
     },
     consignments: {

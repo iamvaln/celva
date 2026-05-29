@@ -101,12 +101,11 @@ export const CelvaMenu = () => {
         <Menu.ResourceItem name="pickup-points" />
       </MenuGroup>
 
-      {isAdmin && (
-        <MenuGroup labelKey="menu.admin" icon={<AdminPanelSettingsIcon />}>
-          <Menu.ResourceItem name="users" />
-          <Menu.ResourceItem name="settings" />
-        </MenuGroup>
-      )}
+      <MenuGroup labelKey="menu.admin" icon={<AdminPanelSettingsIcon />}>
+        <Menu.ResourceItem name="audit-logs" />
+        {isAdmin && <Menu.ResourceItem name="users" />}
+        {isAdmin && <Menu.ResourceItem name="settings" />}
+      </MenuGroup>
     </Menu>
   );
 };
