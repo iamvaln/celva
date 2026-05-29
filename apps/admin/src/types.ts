@@ -335,6 +335,15 @@ export type Article = {
   updatedAt: string;
 };
 
+export type NewsletterSubscriber = {
+  id: string;
+  email: string;
+  name: string | null;
+  isActive: boolean;
+  subscribedAt: string;
+  unsubscribedAt: string | null;
+};
+
 export type AuthLoginResponse = {
   accessToken: string;
   user: AdminUser;
