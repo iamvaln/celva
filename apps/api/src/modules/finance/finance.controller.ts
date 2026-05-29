@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { USER_ROLE } from '@celva/shared';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -19,5 +19,14 @@ export class FinanceController {
   })
   dashboard(@Query() query: DashboardQuery) {
     return this.finance.getDashboard(query);
+  }
+
+  @Get('orders/:orderId/margin')
+  @ApiOperation({
+    summary:
+      'Per-order net margin breakdown (spec §12.7): HT revenue minus product, packaging, real delivery and commission costs.',
+  })
+  orderMargin(@Param('orderId', ParseUUIDPipe) orderId: string) {
+    return this.finance.computeOrderMargin(orderId);
   }
 }
