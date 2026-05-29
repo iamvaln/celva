@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import {
   Prisma,
   type OrderChannel,
@@ -30,6 +30,28 @@ export type FinanceDashboard = {
   expensesByCategory: Array<{ category: TransactionCategory; total: string }>;
 };
 
+/** Per-order net margin breakdown (spec §12.7). All amounts XAF, 2 decimals. */
+export type OrderMargin = {
+  orderId: string;
+  orderNumber: string;
+  /** What the customer paid, TTC (= order.total: items − discount + delivery). */
+  saleTtc: string;
+  /** VAT embedded in saleTtc. */
+  tax: string;
+  /** HT revenue (saleTtc − tax) — already includes the delivery fee charged. */
+  revenueHt: string;
+  /** Σ product.costPrice × quantity. */
+  productCost: string;
+  /** Σ packaging quantity × rawMaterial.unitPrice (this order's delivery). */
+  packagingCost: string;
+  /** Real courier cost (delivery.actualCost). */
+  deliveryCost: string;
+  /** Σ sales commissions booked against this order. */
+  commissions: string;
+  /** revenueHt − productCost − packagingCost − deliveryCost − commissions. */
+  netMargin: string;
+};
+
 /**
  * Composite read-only dashboard endpoint that rolls up Order + Transaction
  * data. Designed to be hit once per page load by the admin; each section
@@ -57,6 +79,66 @@ export class FinanceService {
       timeseries,
       revenueByChannel,
       expensesByCategory,
+    };
+  }
+
+  /**
+   * Per-order net margin (spec §12.7). Prices are TTC-inclusive, so HT
+   * revenue is order.total − order.taxAmount (which already nets the discount
+   * and includes the delivery fee charged). We then subtract the real costs:
+   * product (costPrice × qty), packaging, the actual courier cost, and any
+   * sales commissions booked against the order.
+   */
+  async computeOrderMargin(orderId: string): Promise<OrderMargin> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        items: {
+          include: { variant: { include: { product: { select: { costPrice: true } } } } },
+        },
+        delivery: {
+          include: {
+            packagingConsumptions: {
+              include: { rawMaterial: { select: { unitPrice: true } } },
+            },
+          },
+        },
+        commissions: { select: { amount: true } },
+      },
+    });
+    if (!order) throw new NotFoundException('errors.order_not_found');
+
+    const productCost = order.items.reduce(
+      (sum, item) => sum.plus(item.variant.product.costPrice.times(item.quantity)),
+      new Prisma.Decimal(0),
+    );
+    const packagingCost = (order.delivery?.packagingConsumptions ?? []).reduce(
+      (sum, pc) => sum.plus(pc.quantity.times(pc.rawMaterial.unitPrice)),
+      new Prisma.Decimal(0),
+    );
+    const deliveryCost = order.delivery?.actualCost ?? new Prisma.Decimal(0);
+    const commissions = order.commissions.reduce(
+      (sum, c) => sum.plus(c.amount),
+      new Prisma.Decimal(0),
+    );
+    const revenueHt = order.total.minus(order.taxAmount);
+    const netMargin = revenueHt
+      .minus(productCost)
+      .minus(packagingCost)
+      .minus(deliveryCost)
+      .minus(commissions);
+
+    return {
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      saleTtc: order.total.toFixed(2),
+      tax: order.taxAmount.toFixed(2),
+      revenueHt: revenueHt.toFixed(2),
+      productCost: productCost.toFixed(2),
+      packagingCost: packagingCost.toFixed(2),
+      deliveryCost: deliveryCost.toFixed(2),
+      commissions: commissions.toFixed(2),
+      netMargin: netMargin.toFixed(2),
     };
   }
 

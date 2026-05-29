@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Button,
   DateField,
@@ -412,6 +412,68 @@ const Totals = () => {
   );
 };
 
+type OrderMargin = {
+  saleTtc: string;
+  tax: string;
+  revenueHt: string;
+  productCost: string;
+  packagingCost: string;
+  deliveryCost: string;
+  commissions: string;
+  netMargin: string;
+};
+
+/** Per-order net margin (spec §12.7), fetched from /finance/orders/:id/margin. */
+const MarginPanel = () => {
+  const record = useRecordContext<AdminOrderDetail>();
+  const t = useTranslate();
+  const [margin, setMargin] = useState<OrderMargin | null>(null);
+  const [denied, setDenied] = useState(false);
+  const orderId = record?.id;
+
+  useEffect(() => {
+    if (!orderId) return;
+    let active = true;
+    void fetchJson<OrderMargin>(`${API_BASE}/finance/orders/${orderId}/margin`)
+      .then(({ body }) => {
+        if (active) setMargin(body);
+      })
+      .catch(() => {
+        if (active) setDenied(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [orderId]);
+
+  if (!record || denied) return null;
+  if (!margin) return <Typography variant="body2" color="text.secondary">…</Typography>;
+
+  const negative = Number(margin.netMargin) < 0;
+  return (
+    <Stack spacing={0.5} sx={{ alignItems: 'flex-end' }}>
+      <Typography variant="body2">
+        {t('resources.orders.margin.revenue_ht')} : {formatXAF(margin.revenueHt)}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        − {t('resources.orders.margin.product_cost')} : {formatXAF(margin.productCost)}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        − {t('resources.orders.margin.packaging_cost')} : {formatXAF(margin.packagingCost)}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        − {t('resources.orders.margin.delivery_cost')} : {formatXAF(margin.deliveryCost)}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        − {t('resources.orders.margin.commissions')} : {formatXAF(margin.commissions)}
+      </Typography>
+      <Typography variant="h6" color={negative ? 'error.main' : 'success.main'}>
+        {t('resources.orders.margin.net_margin')} : {formatXAF(margin.netMargin)}
+      </Typography>
+    </Stack>
+  );
+};
+
 export const OrderShow = () => (
   <Show actions={<OrderShowActions />}>
     <SimpleShowLayout>
@@ -434,6 +496,9 @@ export const OrderShow = () => (
       </Labeled>
       <Labeled label="resources.orders.fields.totals">
         <Totals />
+      </Labeled>
+      <Labeled label="resources.orders.margin.heading" fullWidth>
+        <MarginPanel />
       </Labeled>
       <TextField source="notes" label="resources.orders.fields.notes" />
       <DateField source="createdAt" showTime />
