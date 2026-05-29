@@ -44,6 +44,7 @@ export const routing = defineRouting({
     },
     '/journal': { fr: '/journal', en: '/journal' },
     '/journal/[slug]': { fr: '/journal/[slug]', en: '/journal/[slug]' },
+    '/size-guides': { fr: '/guides-tailles', en: '/size-guides' },
     '/aide': { fr: '/aide', en: '/help' },
     '/about': { fr: '/a-propos', en: '/about' },
     '/process': { fr: '/processus', en: '/process' },

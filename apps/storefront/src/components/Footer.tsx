@@ -36,6 +36,7 @@ export const Footer = () => {
             heading={t('help')}
             links={[
               { href: '/faq' as const, label: t('links.faq') },
+              { href: '/size-guides' as const, label: t('links.size_guide') },
               { href: '/terms' as const, label: t('links.terms') },
               { href: '/privacy' as const, label: t('links.privacy') },
             ]}
@@ -63,7 +64,7 @@ const FooterColumn = ({
   links,
 }: {
   heading: string;
-  links: { href: '/shop' | '/about' | '/process' | '/journal' | '/faq' | '/terms' | '/privacy' | '/contact' | '/aide'; label: string }[];
+  links: { href: '/shop' | '/about' | '/process' | '/journal' | '/faq' | '/size-guides' | '/terms' | '/privacy' | '/contact' | '/aide'; label: string }[];
 }) => (
   <div>
     <h4 className="mb-4 font-body text-caption font-medium uppercase tracking-[0.2em] text-cream">
