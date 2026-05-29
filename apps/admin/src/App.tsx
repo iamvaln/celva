@@ -30,6 +30,7 @@ import { i18nProvider } from './i18nProvider';
 import { celvaLightTheme, celvaDarkTheme } from './theme';
 import { CelvaLogin } from './components/CelvaLogin';
 import { CelvaLayout } from './components/CelvaLayout';
+import { Home } from './components/Home';
 import { UserList } from './resources/users/UserList';
 import { UserEdit } from './resources/users/UserEdit';
 import { UserCreate } from './resources/users/UserCreate';
@@ -105,6 +106,7 @@ export const App = () => (
     i18nProvider={i18nProvider}
     loginPage={CelvaLogin}
     layout={CelvaLayout}
+    dashboard={Home}
     theme={celvaLightTheme}
     darkTheme={celvaDarkTheme}
     requireAuth
