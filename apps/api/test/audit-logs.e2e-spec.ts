@@ -162,4 +162,15 @@ describe('Audit logs admin read (e2e)', () => {
       .expect(200);
     expect(res.body.data.total).toBe(3);
   });
+
+  it('accepts the admin dataProvider sortBy/sortDir params (regression)', async () => {
+    // The React-Admin dataProvider always sends these for paginated resources.
+    // forbidNonWhitelisted previously rejected them — keep this test so it
+    // can't regress to a 400 from the admin UI.
+    await request(server)
+      .get('/api/v1/audit-logs/admin')
+      .query({ entity: ENTITY_TAG, sortBy: 'createdAt', sortDir: 'desc' })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+  });
 });
