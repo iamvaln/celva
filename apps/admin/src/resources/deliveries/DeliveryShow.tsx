@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Button,
   DateField,
@@ -15,6 +15,7 @@ import {
 } from 'react-admin';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import {
   Box,
   Chip,
@@ -22,6 +23,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
+  IconButton,
   MenuItem,
   Select,
   Stack,
@@ -241,6 +244,146 @@ const EditMetadataButton = () => {
   );
 };
 
+// ─── Packaging consumption (spec §12.6) ─────────────────────────────────
+
+type PackagingMaterial = { id: string; name: string; unit: string; unitPrice: string | number };
+type PackagingItem = { id: string; quantity: string | number; rawMaterial: PackagingMaterial };
+type PackagingData = { items: PackagingItem[]; totalCost: string };
+
+const PackagingPanel = () => {
+  const record = useRecordContext<Delivery>();
+  const translate = useTranslate();
+  const notify = useNotify();
+  const [data, setData] = useState<PackagingData | null>(null);
+  const [materials, setMaterials] = useState<PackagingMaterial[]>([]);
+  const [materialId, setMaterialId] = useState('');
+  const [qty, setQty] = useState('1');
+  const [busy, setBusy] = useState(false);
+  const deliveryId = record?.id;
+
+  const load = useCallback(async () => {
+    if (!deliveryId) return;
+    const { body } = await fetchJson<PackagingData>(
+      `${API_BASE}/deliveries/${deliveryId}/packaging`,
+    );
+    setData(body);
+  }, [deliveryId]);
+
+  useEffect(() => {
+    void load().catch(() => setData({ items: [], totalCost: '0.00' }));
+    void fetchJson<{ data: PackagingMaterial[] }>(
+      `${API_BASE}/raw-materials?type=PACKAGING&pageSize=100`,
+    )
+      .then(({ body }) => setMaterials(body.data))
+      .catch(() => setMaterials([]));
+  }, [load]);
+
+  if (!record) return null;
+
+  const add = async () => {
+    const quantity = Number(qty);
+    if (!materialId || !Number.isFinite(quantity) || quantity <= 0) return;
+    try {
+      setBusy(true);
+      await fetchJson(`${API_BASE}/deliveries/${deliveryId}/packaging`, {
+        method: 'POST',
+        body: JSON.stringify({ rawMaterialId: materialId, quantity }),
+      });
+      notify('resources.deliveries.packaging.recorded', { type: 'success' });
+      setMaterialId('');
+      setQty('1');
+      await load();
+    } catch (err) {
+      notify(err instanceof Error ? err.message : translate('ra.notification.http_error'), {
+        type: 'error',
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    try {
+      await fetchJson(`${API_BASE}/deliveries/${deliveryId}/packaging/${id}`, {
+        method: 'DELETE',
+      });
+      notify('resources.deliveries.packaging.removed', { type: 'success' });
+      await load();
+    } catch (err) {
+      notify(err instanceof Error ? err.message : translate('ra.notification.http_error'), {
+        type: 'error',
+      });
+    }
+  };
+
+  return (
+    <Box sx={{ mt: 1 }}>
+      {data && data.items.length > 0 ? (
+        <Stack spacing={0.5} sx={{ mb: 2 }}>
+          {data.items.map((it) => (
+            <Box
+              key={it.id}
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}
+            >
+              <Typography variant="body2">
+                {it.rawMaterial.name} — {Number(it.quantity)} {it.rawMaterial.unit} ×{' '}
+                {formatXAF(it.rawMaterial.unitPrice)}
+              </Typography>
+              <IconButton
+                size="small"
+                onClick={() => void remove(it.id)}
+                aria-label={translate('resources.deliveries.packaging.remove')}
+              >
+                <DeleteOutlineIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          ))}
+          <Divider sx={{ my: 1 }} />
+          <Typography variant="body2">
+            <strong>
+              {translate('resources.deliveries.packaging.total')} : {formatXAF(data.totalCost)}
+            </strong>
+          </Typography>
+        </Stack>
+      ) : (
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {translate('resources.deliveries.packaging.empty')}
+        </Typography>
+      )}
+      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+        <Select
+          value={materialId}
+          onChange={(e) => setMaterialId(e.target.value)}
+          displayEmpty
+          size="small"
+          sx={{ minWidth: 220 }}
+        >
+          <MenuItem value="" disabled>
+            {translate('resources.deliveries.packaging.material')}
+          </MenuItem>
+          {materials.map((m) => (
+            <MenuItem key={m.id} value={m.id}>
+              {m.name} ({formatXAF(m.unitPrice)}/{m.unit})
+            </MenuItem>
+          ))}
+        </Select>
+        <MuiTextField
+          type="number"
+          size="small"
+          label={translate('resources.deliveries.packaging.quantity')}
+          value={qty}
+          onChange={(e) => setQty(e.target.value)}
+          inputProps={{ min: 0, step: 1 }}
+          sx={{ width: 110 }}
+        />
+        <MuiButton variant="outlined" disabled={busy || !materialId} onClick={() => void add()}>
+          {translate('resources.deliveries.packaging.add')}
+        </MuiButton>
+      </Stack>
+    </Box>
+  );
+};
+
 // ─── Show layout ────────────────────────────────────────────────────────
 
 const Header = () => {
@@ -354,6 +497,9 @@ export const DeliveryShow = () => (
       </Labeled>
       <Labeled label="resources.deliveries.fields.timestamps">
         <Timestamps />
+      </Labeled>
+      <Labeled label="resources.deliveries.packaging.heading" fullWidth>
+        <PackagingPanel />
       </Labeled>
       <TextField source="order.orderNumber" label="resources.deliveries.fields.orderNumber" />
       <DateField source="createdAt" showTime />

@@ -114,5 +114,6 @@
   "production_order_not_planned": "Only PLANNED production orders can be started.",
   "production_order_not_in_progress": "Only IN_PROGRESS production orders can be completed.",
   "production_order_not_cancellable": "This production order can't be cancelled.",
-  "production_order_locked": "Only PLANNED production orders can be deleted."
+  "production_order_locked": "Only PLANNED production orders can be deleted.",
+  "packaging_material_invalid": "This material isn't a packaging material."
 }

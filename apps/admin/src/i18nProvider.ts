@@ -353,6 +353,17 @@ const celvaFr = {
         transitioned: 'Statut mis à jour. La commande a été synchronisée si applicable.',
         updated: 'Livraison mise à jour.',
       },
+      packaging: {
+        heading: 'Emballage',
+        material: 'Matériau d\'emballage',
+        quantity: 'Quantité',
+        add: 'Ajouter',
+        remove: 'Retirer',
+        total: 'Coût emballage',
+        empty: 'Aucun emballage enregistré pour cette livraison.',
+        recorded: 'Emballage enregistré. Stock décrémenté.',
+        removed: 'Emballage retiré. Stock restauré.',
+      },
     },
     transactions: {
       name: 'Transaction |||| Transactions',
@@ -897,6 +908,17 @@ const celvaEn = {
       notifications: {
         transitioned: 'Status updated. Order synced when applicable.',
         updated: 'Delivery updated.',
+      },
+      packaging: {
+        heading: 'Packaging',
+        material: 'Packaging material',
+        quantity: 'Quantity',
+        add: 'Add',
+        remove: 'Remove',
+        total: 'Packaging cost',
+        empty: 'No packaging recorded for this delivery.',
+        recorded: 'Packaging recorded. Stock decremented.',
+        removed: 'Packaging removed. Stock restored.',
       },
     },
     transactions: {
