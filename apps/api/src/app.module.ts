@@ -46,6 +46,7 @@ import { RawMaterialsModule } from './modules/raw-materials/raw-materials.module
 import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.module';
 import { ProductionOrdersModule } from './modules/production-orders/production-orders.module';
 import { NewsletterModule } from './modules/newsletter/newsletter.module';
+import { SizeGuidesModule } from './modules/size-guides/size-guides.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -145,6 +146,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     PurchaseOrdersModule,
     ProductionOrdersModule,
     NewsletterModule,
+    SizeGuidesModule,
   ],
   providers: [
     {

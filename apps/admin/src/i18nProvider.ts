@@ -448,6 +448,17 @@ const celvaFr = {
         unsubscribed: 'Abonné désinscrit.',
       },
     },
+    'size-guides': {
+      name: 'Guide des tailles |||| Guides des tailles',
+      fields: {
+        name: 'Nom',
+        category: 'Catégorie',
+        content: 'Contenu',
+      },
+      helpers: {
+        content_markdown: 'Markdown — tableaux de tailles, conseils de coupe.',
+      },
+    },
     consignments: {
       name: 'Consignation |||| Consignations',
       fields: {
@@ -980,6 +991,17 @@ const celvaEn = {
       },
       notifications: {
         unsubscribed: 'Subscriber unsubscribed.',
+      },
+    },
+    'size-guides': {
+      name: 'Size guide |||| Size guides',
+      fields: {
+        name: 'Name',
+        category: 'Category',
+        content: 'Content',
+      },
+      helpers: {
+        content_markdown: 'Markdown — size tables, fit notes.',
       },
     },
     consignments: {

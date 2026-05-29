@@ -529,6 +529,12 @@
     "filters_aria": "Filter by category",
     "pagination_aria": "Journal pagination"
   },
+  "size_guides": {
+    "eyebrow": "Size guide",
+    "title": "Size guides",
+    "intro": "Find your size by category. Between two sizes, size up — or write to us.",
+    "empty": "Size guides are coming soon."
+  },
   "static": {
     "about": {
       "title": "Our story",

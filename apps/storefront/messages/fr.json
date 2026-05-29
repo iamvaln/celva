@@ -529,6 +529,12 @@
     "filters_aria": "Filtres par catégorie",
     "pagination_aria": "Pagination du journal"
   },
+  "size_guides": {
+    "eyebrow": "Guide des tailles",
+    "title": "Guides des tailles",
+    "intro": "Trouvez votre taille par catégorie. En cas de doute entre deux tailles, prenez la plus grande — ou écrivez-nous.",
+    "empty": "Les guides des tailles arrivent bientôt."
+  },
   "static": {
     "about": {
       "title": "Notre histoire",

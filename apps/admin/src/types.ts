@@ -335,6 +335,14 @@ export type Article = {
   updatedAt: string;
 };
 
+export type SizeGuide = {
+  id: string;
+  name: { fr: string; en: string };
+  content: { fr: string; en: string };
+  categoryId: string;
+  category?: { id: string; slug: string; name: { fr: string; en: string } };
+};
+
 export type NewsletterSubscriber = {
   id: string;
   email: string;
