@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+import { preconnect, prefetchDNS } from 'react-dom';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -15,6 +16,18 @@ import { fontVariables } from '@/fonts';
 
 export const generateStaticParams = () =>
   routing.locales.map((locale) => ({ locale }));
+
+// Tints the mobile browser chrome to match the page, light + dark.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FAF7F2' },
+    { media: '(prefers-color-scheme: dark)', color: '#1A1A18' },
+  ],
+  colorScheme: 'light dark',
+};
+
+// Origin that serves product imagery (LCP hero). Warm the connection early.
+const IMAGE_ORIGIN = 'https://media.celva.store';
 
 export async function generateMetadata({
   params,
@@ -55,6 +68,8 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!routing.locales.includes(locale)) notFound();
   setRequestLocale(locale);
+  prefetchDNS(IMAGE_ORIGIN);
+  preconnect(IMAGE_ORIGIN);
   const messages = await getMessages();
   const t = await getTranslations({ locale, namespace: 'common' });
 
