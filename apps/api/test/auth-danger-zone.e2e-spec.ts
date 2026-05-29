@@ -4,6 +4,7 @@ import request from 'supertest';
 import cookieParser from 'cookie-parser';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/modules/prisma/prisma.service';
+import { waitFor } from './utils/wait-for';
 
 const SUITE_TAG = `e2e-dz-${Date.now()}`;
 const CLIENT_EMAIL = `dz-${SUITE_TAG}@celva.test`;
@@ -100,9 +101,12 @@ describe('Account danger zone (e2e)', () => {
         .set('Authorization', `Bearer ${token}`)
         .send({ currentPassword: PASSWORD })
         .expect(204);
-      const log = await prisma.auditLog.findFirst({
-        where: { userId, action: 'SIGN_OUT_ALL_DEVICES' },
-      });
+      // Fire-and-forget interceptor write — poll instead of reading once.
+      const log = await waitFor(() =>
+        prisma.auditLog.findFirst({
+          where: { userId, action: 'SIGN_OUT_ALL_DEVICES' },
+        }),
+      );
       expect(log).toBeTruthy();
       expect(log?.entityId).toBe(userId);
     });
