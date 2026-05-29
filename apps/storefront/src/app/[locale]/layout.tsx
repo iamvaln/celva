@@ -11,6 +11,7 @@ import { CookieBanner } from '@/components/CookieBanner';
 import { FabWhatsapp } from '@/components/FabWhatsapp';
 import { JsonLd } from '@/components/JsonLd';
 import { organizationLd, websiteLd } from '@/lib/structured-data';
+import { fontVariables } from '@/fonts';
 
 export const generateStaticParams = () =>
   routing.locales.map((locale) => ({ locale }));
@@ -58,25 +59,29 @@ export default async function LocaleLayout({
   const t = await getTranslations({ locale, namespace: 'common' });
 
   return (
-    <NextIntlClientProvider messages={messages} locale={locale}>
-      <JsonLd data={organizationLd()} />
-      <JsonLd data={websiteLd()} />
-      <ThemeProvider>
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-accent focus:px-4 focus:py-2 focus:text-cream"
-        >
-          {t('skip_to_content')}
-        </a>
-        <AnnounceBar />
-        <Header />
-        <main id="main" className="min-h-[60vh] animate-fade-up">
-          {children}
-        </main>
-        <Footer />
-        <CookieBanner />
-        <FabWhatsapp locale={locale} />
-      </ThemeProvider>
-    </NextIntlClientProvider>
+    <html lang={locale} suppressHydrationWarning className={fontVariables}>
+      <body>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <JsonLd data={organizationLd()} />
+          <JsonLd data={websiteLd()} />
+          <ThemeProvider>
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-accent focus:px-4 focus:py-2 focus:text-cream"
+            >
+              {t('skip_to_content')}
+            </a>
+            <AnnounceBar />
+            <Header />
+            <main id="main" className="min-h-[60vh] animate-fade-up">
+              {children}
+            </main>
+            <Footer />
+            <CookieBanner />
+            <FabWhatsapp locale={locale} />
+          </ThemeProvider>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
