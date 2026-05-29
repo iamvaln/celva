@@ -19,6 +19,7 @@ import {
   pickLocalized,
 } from '@/lib/catalogue';
 import { fetchWishlistVariantIds } from '@/lib/cart';
+import { listSizeGuidesByCategory } from '@/lib/size-guides';
 import { ProductCard } from '@/components/ProductCard';
 import { StockBadge } from '@/components/StockBadge';
 import { addToCartAction, readAndClearCartFlash } from '../../cart/actions';
@@ -76,8 +77,9 @@ export default async function ProductPage({
   const t = await getTranslations('product');
   const tCart = await getTranslations('cart');
   const tWishlist = await getTranslations('wishlist');
+  const tFooter = await getTranslations('footer');
 
-  const [images, attributesPage, variantsPage, relatedCards, wishlistIds, flash] =
+  const [images, attributesPage, variantsPage, relatedCards, wishlistIds, flash, sizeGuides] =
     await Promise.all([
       listProductImages(product.id, locale).catch(() => [] as ApiProductImage[]),
       listProductAttributes(product.id, locale).catch(() => ({
@@ -87,7 +89,9 @@ export default async function ProductPage({
       loadRelatedCards(product.id, locale),
       fetchWishlistVariantIds(locale),
       readAndClearCartFlash(),
+      listSizeGuidesByCategory(product.categoryId, locale).catch(() => []),
     ]);
+  const hasSizeGuide = sizeGuides.length > 0;
 
   // Flash from the previous add-to-cart attempt that bounced back here on
   // error. Success redirects to /cart so we only ever see "error:..." here.
@@ -200,7 +204,17 @@ export default async function ProductPage({
             {/* Variants — each row is its own add-to-cart + wishlist form. */}
             {variantsPage.data.length > 0 && (
               <section className="mb-10">
-                <h2 className="eyebrow mb-3">{t('attributes_heading')}</h2>
+                <div className="mb-3 flex items-baseline justify-between gap-4">
+                  <h2 className="eyebrow">{t('attributes_heading')}</h2>
+                  {hasSizeGuide && (
+                    <Link
+                      href={{ pathname: '/size-guides', hash: `guide-${product.categoryId}` }}
+                      className="font-body text-small text-accent underline hover:text-accent-hover"
+                    >
+                      {tFooter('links.size_guide')}
+                    </Link>
+                  )}
+                </div>
                 <ul className="divide-y divide-border border-y border-border">
                   {variantsPage.data.map((variant) => {
                     const inStock = variant.stock > 0;
