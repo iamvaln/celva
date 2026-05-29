@@ -1,14 +1,14 @@
 {
-  "$comment": "Lighthouse CI config. Run `npm run lighthouse` from apps/storefront (builds, boots `next start` on :3000, audits, asserts). The API must be reachable (API_INTERNAL_URL) so catalogue/journal pages hydrate — otherwise those routes render their empty fallbacks and perf numbers are optimistic.",
+  "$comment": "Lighthouse CI config. Run `npm run lighthouse` from apps/storefront (builds, boots `next start` on :4317 — a dedicated port so it can't collide with a dev server on :3000 — audits, asserts). For real catalogue/journal numbers the API must be reachable (API_INTERNAL_URL); when it isn't, those routes degrade to their empty state and perf is optimistic.",
   "ci": {
     "collect": {
-      "startServerCommand": "npm run start",
+      "startServerCommand": "npx next start --port 4317",
       "startServerReadyPattern": "Ready in",
       "url": [
-        "http://localhost:3000/fr",
-        "http://localhost:3000/en",
-        "http://localhost:3000/fr/boutique",
-        "http://localhost:3000/fr/journal"
+        "http://localhost:4317/fr",
+        "http://localhost:4317/en",
+        "http://localhost:4317/fr/boutique",
+        "http://localhost:4317/fr/journal"
       ],
       "numberOfRuns": 2,
       "settings": { "preset": "desktop" }
