@@ -4,11 +4,13 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Link } from '@/i18n/navigation';
+import { Link, getPathname } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { getArticleBySlug } from '@/lib/articles';
 import { ApiError } from '@/lib/api';
 import { pickLocalized } from '@/lib/catalogue';
+import { JsonLd } from '@/components/JsonLd';
+import { articleLd, breadcrumbLd } from '@/lib/structured-data';
 
 export async function generateMetadata({
   params,
@@ -78,8 +80,29 @@ export default async function ArticlePage({
         )
       : null;
 
+  const articlePath = getPathname({
+    href: { pathname: '/journal/[slug]', params: { slug } },
+    locale,
+  });
+  const articleJsonLd = articleLd({
+    headline: title,
+    description: excerpt ?? undefined,
+    url: articlePath,
+    image: article.coverImage ?? undefined,
+    datePublished: article.publishedAt ?? undefined,
+    dateModified: article.updatedAt ?? article.publishedAt ?? undefined,
+    authorName: article.author?.name,
+  });
+  const breadcrumbJsonLd = breadcrumbLd([
+    { name: 'Celva', path: `/${locale}` },
+    { name: t('title'), path: getPathname({ href: '/journal', locale }) },
+    { name: title, path: articlePath },
+  ]);
+
   return (
     <article className="bg-background py-section-tight">
+      <JsonLd data={articleJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <div className="container-celva max-w-prose">
         <Link
           href="/journal"

@@ -2,8 +2,10 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
+import { Link, getPathname } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
+import { JsonLd } from '@/components/JsonLd';
+import { breadcrumbLd, productLd } from '@/lib/structured-data';
 import {
   type ApiProduct,
   type ApiProductImage,
@@ -135,8 +137,28 @@ export default async function ProductPage({
   const variantPrice = (variant: ApiVariant): string =>
     variant.priceOverride ?? product.displayPrice;
 
+  const productPath = getPathname({
+    href: { pathname: '/shop/[slug]', params: { slug } },
+    locale,
+  });
+  const productJsonLd = productLd({
+    name,
+    description: description.slice(0, 300) || undefined,
+    url: productPath,
+    image: heroImage?.urls.original ?? heroImage?.urls.large,
+    price: product.displayPrice,
+    inStock: variantsPage.data.some((v) => v.stock > 0),
+  });
+  const breadcrumbJsonLd = breadcrumbLd([
+    { name: 'Celva', path: `/${locale}` },
+    { name: tFooter('boutique'), path: getPathname({ href: '/shop', locale }) },
+    { name, path: productPath },
+  ]);
+
   return (
     <article className="bg-background py-section-tight">
+      <JsonLd data={productJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <div className="container-celva">
         <Link href="/shop" className="btn btn-ghost mb-6 inline-flex">
           ← {t('back')}
