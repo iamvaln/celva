@@ -335,6 +335,18 @@ export type Article = {
   updatedAt: string;
 };
 
+export type AuditLog = {
+  id: string;
+  action: string;
+  entity: string;
+  entityId: string;
+  appSource: string;
+  metadata?: Record<string, unknown> | null;
+  createdAt: string;
+  userId: string;
+  user?: { id: string; name: string; email: string };
+};
+
 export type SizeGuide = {
   id: string;
   name: { fr: string; en: string };
