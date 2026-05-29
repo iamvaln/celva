@@ -50,7 +50,14 @@ export default async function JournalPage({
       : undefined;
   const page = sp.page ? Math.max(1, Number(sp.page)) : 1;
 
-  const result = await listArticles({ page, category }, locale);
+  // Degrade gracefully if the API is unreachable (render the empty state)
+  // instead of hard-500ing — matches the home/shop catalogue pages.
+  const result = await listArticles({ page, category }, locale).catch(() => ({
+    data: [],
+    total: 0,
+    page,
+    pageSize: 12,
+  }));
   const totalPages = Math.max(1, Math.ceil(result.total / result.pageSize));
 
   const buildHref = (next: { category?: string; page?: number }): string => {
