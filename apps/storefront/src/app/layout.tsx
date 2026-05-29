@@ -1,4 +1,3 @@
-import { bodoniModa, cormorantGaramond } from '@/fonts';
 import './globals.css';
 
 type RootLayoutProps = Readonly<{
@@ -7,15 +6,11 @@ type RootLayoutProps = Readonly<{
   children: React.ReactNode;
 }>;
 
-// Root layout. Owns <html>/<body> so Next's static error pages (/404, /500)
-// have a valid document. The [locale] layout below renders only chrome +
-// providers, no html/body. Lang attribute is updated client-side by the
-// LocaleSwitcher when the user changes language (best-effort), and SEO
-// hreflang covers the static export.
+// Passthrough root layout. <html>/<body> live one level down in
+// [locale]/layout.tsx so the `lang` attribute is the real locale,
+// server-rendered (not patched client-side). The only route rendered
+// outside [locale] is the root not-found, which supplies its own document.
+// globals.css is imported here so it applies to every route either way.
 export default function RootLayout({ children }: RootLayoutProps) {
-  return (
-    <html lang="fr" suppressHydrationWarning className={`${bodoniModa.variable} ${cormorantGaramond.variable}`}>
-      <body>{children}</body>
-    </html>
-  );
+  return children;
 }
