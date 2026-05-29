@@ -22,10 +22,19 @@ const celvaFr = {
     admin: 'Administration',
   },
   dashboard: {
+    section_attention: 'À traiter',
+    section_health: 'Santé du business',
+    section_recent: 'Activité récente',
     orders_to_confirm: 'Commandes à confirmer',
     deliveries_to_arrange: 'Livraisons à organiser',
     materials_below_threshold: 'Matières sous seuil',
-    revenue: "Chiffre d'affaires (ce mois)",
+    kpi_revenue: "Chiffre d'affaires (ce mois)",
+    kpi_net: 'Marge nette',
+    kpi_aov: 'Panier moyen',
+    kpi_orders: 'Commandes',
+    sales_trend: 'Tendance des ventes (12 mois)',
+    expenses: 'Dépenses',
+    no_recent: 'Aucune commande récente.',
   },
   resources: {
     users: {
@@ -639,10 +648,19 @@ const celvaEn = {
     admin: 'Administration',
   },
   dashboard: {
+    section_attention: 'Needs attention',
+    section_health: 'Business health',
+    section_recent: 'Recent activity',
     orders_to_confirm: 'Orders to confirm',
     deliveries_to_arrange: 'Deliveries to arrange',
     materials_below_threshold: 'Materials below threshold',
-    revenue: 'Revenue (this month)',
+    kpi_revenue: 'Revenue (this month)',
+    kpi_net: 'Net margin',
+    kpi_aov: 'Avg. order value',
+    kpi_orders: 'Orders',
+    sales_trend: 'Sales trend (12 months)',
+    expenses: 'Expenses',
+    no_recent: 'No recent orders.',
   },
   resources: {
     users: {
