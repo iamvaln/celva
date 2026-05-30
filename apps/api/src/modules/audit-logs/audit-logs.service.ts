@@ -51,8 +51,11 @@ export class AuditLogsService {
     const pageSize = query.pageSize ?? 25;
 
     const where: Prisma.AuditLogWhereInput = {
-      ...(query.action ? { action: query.action } : {}),
-      ...(query.entity ? { entity: query.entity } : {}),
+      // action/entity are SearchInput-driven in the admin — partial / case-
+      // insensitive match so typing "delete" finds DELETE and ACCOUNT_DELETE,
+      // "order" finds Order, etc.
+      ...(query.action ? { action: { contains: query.action, mode: 'insensitive' } } : {}),
+      ...(query.entity ? { entity: { contains: query.entity, mode: 'insensitive' } } : {}),
       ...(query.userId ? { userId: query.userId } : {}),
       ...(query.appSource ? { appSource: query.appSource as PrismaAppSource } : {}),
       ...(query.from || query.to

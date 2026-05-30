@@ -163,6 +163,27 @@ describe('Audit logs admin read (e2e)', () => {
     expect(res.body.data.total).toBe(3);
   });
 
+  it('action filter is case-insensitive partial match', async () => {
+    // The admin uses a SearchInput, so partial / wrong-case input must still
+    // hit (e.g. "DEL" → DELETE, "update" → UPDATE).
+    const res = await request(server)
+      .get('/api/v1/audit-logs/admin')
+      .query({ entity: ENTITY_TAG, action: 'del' })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+    expect(res.body.data.total).toBe(1);
+    expect(res.body.data.data[0].action).toBe('DELETE');
+  });
+
+  it('entity filter is case-insensitive partial match', async () => {
+    const res = await request(server)
+      .get('/api/v1/audit-logs/admin')
+      .query({ entity: ENTITY_TAG.slice(0, 10).toLowerCase() })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+    expect(res.body.data.total).toBe(3);
+  });
+
   it('accepts the admin dataProvider sortBy/sortDir params (regression)', async () => {
     // The React-Admin dataProvider always sends these for paginated resources.
     // forbidNonWhitelisted previously rejected them — keep this test so it
