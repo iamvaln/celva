@@ -297,6 +297,7 @@ const celvaFr = {
         transition: 'Faire avancer',
         cancel: 'Annuler la commande',
         download_invoice: 'Télécharger la facture',
+        confirm_cash_payment: "Confirmer l'encaissement",
       },
       dialogs: {
         current_status: 'Statut actuel',
@@ -304,11 +305,14 @@ const celvaFr = {
         reason: 'Motif (optionnel, journalisé)',
         cancel_warning:
           'L\'annulation restocke les articles et décrémente le code promo. Action irréversible.',
+        confirm_cash_payment_warning:
+          'Marque le paiement à la livraison comme encaissé : Paiement passe en COMPLETED, une transaction INCOME est créée et la facture est générée. Action irréversible.',
       },
       notifications: {
         transitioned: 'Statut mis à jour.',
         cancelled: 'Commande annulée. Stock restauré.',
         invoice_failed: 'Impossible de télécharger la facture. La commande a-t-elle été payée ?',
+        cash_payment_confirmed: 'Encaissement enregistré. Transaction et facture créées.',
       },
       margin: {
         heading: 'Marge (HT)',
@@ -898,6 +902,7 @@ const celvaEn = {
         transition: 'Advance status',
         cancel: 'Cancel order',
         download_invoice: 'Download invoice',
+        confirm_cash_payment: 'Confirm cash payment',
       },
       dialogs: {
         current_status: 'Current status',
@@ -905,11 +910,14 @@ const celvaEn = {
         reason: 'Reason (optional, audited)',
         cancel_warning:
           'Cancelling restocks the items and decrements the promo code. This cannot be undone.',
+        confirm_cash_payment_warning:
+          'Marks the cash-on-delivery payment as received: Payment moves to COMPLETED, an INCOME transaction is booked and the invoice is generated. This cannot be undone.',
       },
       notifications: {
         transitioned: 'Status updated.',
         cancelled: 'Order cancelled. Stock restored.',
         invoice_failed: "Couldn't download the invoice. Has the order been paid yet?",
+        cash_payment_confirmed: 'Payment recorded. Transaction and invoice created.',
       },
       margin: {
         heading: 'Margin (excl. VAT)',
