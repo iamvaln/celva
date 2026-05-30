@@ -16,6 +16,7 @@ import {
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DownloadIcon from '@mui/icons-material/Download';
+import PaymentsIcon from '@mui/icons-material/Payments';
 import {
   Box,
   Chip,
@@ -266,12 +267,82 @@ const DownloadInvoiceButton = () => {
   );
 };
 
+/**
+ * Confirms COD payment receipt. Shown only for cash-on-delivery orders whose
+ * Payment is still PENDING — `POST /payments/:id/confirm` atomically marks
+ * the Payment COMPLETED, books an INCOME/SALE transaction, and produces the
+ * invoice row.
+ */
+const ConfirmCashPaymentButton = () => {
+  const record = useRecordContext<AdminOrderDetail>();
+  const notify = useNotify();
+  const refresh = useRefresh();
+  const translate = useTranslate();
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  if (
+    !record ||
+    !record.payment ||
+    record.payment.method !== 'CASH_ON_DELIVERY' ||
+    record.payment.status !== 'PENDING'
+  ) {
+    return null;
+  }
+  const paymentId = record.payment.id;
+
+  const submit = async () => {
+    try {
+      setBusy(true);
+      await fetchJson(`${API_BASE}/payments/${paymentId}/confirm`, {
+        method: 'POST',
+        body: JSON.stringify({}),
+      });
+      notify('resources.orders.notifications.cash_payment_confirmed', { type: 'success' });
+      setOpen(false);
+      refresh();
+    } catch (err) {
+      notify(err instanceof Error ? err.message : translate('ra.notification.http_error'), {
+        type: 'error',
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        label="resources.orders.actions.confirm_cash_payment"
+        onClick={() => setOpen(true)}
+        startIcon={<PaymentsIcon />}
+        sx={{ color: 'success.main' }}
+      />
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
+        <DialogTitle>{translate('resources.orders.actions.confirm_cash_payment')}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            {translate('resources.orders.dialogs.confirm_cash_payment_warning')}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={() => setOpen(false)}>{translate('ra.action.cancel')}</MuiButton>
+          <MuiButton variant="contained" color="success" disabled={busy} onClick={submit}>
+            {translate('ra.action.confirm')}
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+
 const OrderShowActions = () => {
   const record = useRecordContext<AdminOrderDetail>();
   if (!record) return <TopToolbar />;
   return (
     <TopToolbar>
       <DownloadInvoiceButton />
+      <ConfirmCashPaymentButton />
       {!TERMINAL.includes(record.status) && <TransitionButton />}
       {!NON_CANCELLABLE.includes(record.status) && <CancelOrderButton />}
     </TopToolbar>
