@@ -1,25 +1,20 @@
 import { useState, useEffect } from 'react';
 import {
-  Button,
-  DateField,
-  FunctionField,
-  Labeled,
   Show,
-  SimpleShowLayout,
-  TextField,
-  TopToolbar,
   useNotify,
   useRecordContext,
+  useRedirect,
   useRefresh,
   useTranslate,
 } from 'react-admin';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import CancelIcon from '@mui/icons-material/Cancel';
 import DownloadIcon from '@mui/icons-material/Download';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PhoneIcon from '@mui/icons-material/Phone';
+import PlaceIcon from '@mui/icons-material/Place';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
 import {
   Box,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -35,9 +30,10 @@ import type { OrderStatus } from '@celva/shared';
 import type { AdminOrderDetail, PaymentAccount } from '../../types';
 import { fetchJson } from '../../http';
 import { API_BASE, STORAGE_KEYS } from '../../config';
-import { ORDER_STATUS_COLOR, PAYMENT_STATUS_COLOR } from './statusColors';
+import { CelvaSkin } from '../../components/CelvaSkin';
+import { ChannelIcon, ORDER_CHANNEL_LABEL, StatusPill, fmtFCFA } from './orderSkin';
 
-/** Spec §7.5 — these are the only forward-only steps an admin can pick. */
+/** Spec §7.5 — forward-only steps an admin can pick. */
 const ALLOWED_NEXT: Record<OrderStatus, OrderStatus[]> = {
   PENDING: ['CONFIRMED'],
   CONFIRMED: ['PROCESSING'],
@@ -52,12 +48,27 @@ const ALLOWED_NEXT: Record<OrderStatus, OrderStatus[]> = {
 const TERMINAL: OrderStatus[] = ['COMPLETED', 'CANCELLED'];
 const NON_CANCELLABLE: OrderStatus[] = ['SHIPPED', 'DELIVERED', 'COMPLETED', 'CANCELLED'];
 
-const formatXAF = (value: string | number): string =>
-  new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'XAF',
-    maximumFractionDigits: 0,
-  }).format(Number(value));
+/** Real payment methods selectable at encashment (spec §5.5). */
+const ENCASHMENT_METHODS = ['CASH_ON_DELIVERY', 'ORANGE_MONEY', 'MTN_MOMO'] as const;
+
+const DELIVERY_MODE_LABEL: Record<string, string> = {
+  HOME_DELIVERY: 'Livraison à domicile',
+  STAFF_DELIVERY: "Livraison par l'équipe",
+  STORE_PICKUP: 'Retrait magasin',
+  RELAY_PICKUP: 'Point relais',
+};
+
+// Contextual main action label per status (spec §5.1).
+const MAIN_ACTION_LABEL: Partial<Record<OrderStatus, string>> = {
+  PENDING: 'Confirmer la commande',
+  CONFIRMED: 'Commencer la préparation',
+  PROCESSING: 'Marquer prête',
+  READY: 'Assigner / acheminer',
+  SHIPPED: 'Marquer livrée',
+  DELIVERED: 'Clôturer la commande',
+};
+
+// ── Functional actions (preserved behaviour, brand-styled) ──────────────
 
 const TransitionButton = () => {
   const record = useRecordContext<AdminOrderDetail>();
@@ -70,7 +81,7 @@ const TransitionButton = () => {
 
   if (!record) return null;
   const choices = ALLOWED_NEXT[record.status] ?? [];
-  const disabled = choices.length === 0;
+  if (choices.length === 0) return null;
 
   const handleSubmit = async () => {
     if (!next) return;
@@ -93,14 +104,22 @@ const TransitionButton = () => {
     }
   };
 
+  // Single contextual action when there's exactly one next step; otherwise a picker.
+  const single = choices.length === 1 ? choices[0] : null;
+  const onClick = () => {
+    if (single) {
+      setNext(single);
+      setOpen(true);
+    } else {
+      setOpen(true);
+    }
+  };
+
   return (
     <>
-      <Button
-        label="resources.orders.actions.transition"
-        onClick={() => setOpen(true)}
-        startIcon={<LocalShippingIcon />}
-        disabled={disabled}
-      />
+      <button className="btn btn-primary btn-lg" onClick={onClick}>
+        {MAIN_ACTION_LABEL[record.status] ?? translate('resources.orders.actions.transition')}
+      </button>
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
         <DialogTitle>{translate('resources.orders.actions.transition')}</DialogTitle>
         <DialogContent>
@@ -127,9 +146,7 @@ const TransitionButton = () => {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <MuiButton onClick={() => setOpen(false)}>
-            {translate('ra.action.cancel')}
-          </MuiButton>
+          <MuiButton onClick={() => setOpen(false)}>{translate('ra.action.cancel')}</MuiButton>
           <MuiButton variant="contained" disabled={!next || submitting} onClick={handleSubmit}>
             {translate('ra.action.confirm')}
           </MuiButton>
@@ -148,8 +165,7 @@ const CancelOrderButton = () => {
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  if (!record) return null;
-  const disabled = NON_CANCELLABLE.includes(record.status);
+  if (!record || NON_CANCELLABLE.includes(record.status)) return null;
 
   const handleSubmit = async () => {
     try {
@@ -173,20 +189,14 @@ const CancelOrderButton = () => {
 
   return (
     <>
-      <Button
-        label="resources.orders.actions.cancel"
-        onClick={() => setOpen(true)}
-        startIcon={<CancelIcon />}
-        disabled={disabled}
-        sx={{ color: disabled ? undefined : 'error.main' }}
-      />
+      <button className="btn btn-quiet btn-danger" style={{ marginLeft: 'auto' }} onClick={() => setOpen(true)}>
+        {translate('resources.orders.actions.cancel')}
+      </button>
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
         <DialogTitle>{translate('resources.orders.actions.cancel')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
-            <Typography variant="body2">
-              {translate('resources.orders.dialogs.cancel_warning')}
-            </Typography>
+            <Typography variant="body2">{translate('resources.orders.dialogs.cancel_warning')}</Typography>
             <MuiTextField
               label={translate('resources.orders.dialogs.reason')}
               value={reason}
@@ -199,15 +209,8 @@ const CancelOrderButton = () => {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <MuiButton onClick={() => setOpen(false)}>
-            {translate('ra.action.cancel')}
-          </MuiButton>
-          <MuiButton
-            variant="contained"
-            color="error"
-            disabled={submitting}
-            onClick={handleSubmit}
-          >
+          <MuiButton onClick={() => setOpen(false)}>{translate('ra.action.cancel')}</MuiButton>
+          <MuiButton variant="contained" color="error" disabled={submitting} onClick={handleSubmit}>
             {translate('ra.action.confirm')}
           </MuiButton>
         </DialogActions>
@@ -222,9 +225,7 @@ const DownloadInvoiceButton = () => {
   const translate = useTranslate();
   const [busy, setBusy] = useState(false);
 
-  if (!record) return null;
-  const ready = record.payment?.status === 'COMPLETED';
-  if (!ready) return null;
+  if (!record || record.payment?.status !== 'COMPLETED') return null;
 
   const handleClick = async () => {
     try {
@@ -258,23 +259,11 @@ const DownloadInvoiceButton = () => {
   };
 
   return (
-    <Button
-      label="resources.orders.actions.download_invoice"
-      onClick={handleClick}
-      startIcon={<DownloadIcon />}
-      disabled={busy}
-    />
+    <button className="btn btn-quiet" onClick={handleClick} disabled={busy}>
+      <DownloadIcon sx={{ fontSize: 15 }} /> {translate('resources.orders.actions.download_invoice')}
+    </button>
   );
 };
-
-/**
- * Confirms COD payment receipt. Shown only for cash-on-delivery orders whose
- * Payment is still PENDING — `POST /payments/:id/confirm` atomically marks
- * the Payment COMPLETED, books an INCOME/SALE transaction, and produces the
- * invoice row.
- */
-/** Real payment methods selectable at encashment (spec §5.5). */
-const ENCASHMENT_METHODS = ['CASH_ON_DELIVERY', 'ORANGE_MONEY', 'MTN_MOMO'] as const;
 
 const ConfirmCashPaymentButton = () => {
   const record = useRecordContext<AdminOrderDetail>();
@@ -290,7 +279,6 @@ const ConfirmCashPaymentButton = () => {
 
   const due = record ? Number(record.total) : 0;
 
-  // Load active encashment accounts + seed the form when the dialog opens.
   useEffect(() => {
     if (!open) return;
     setMethod(record?.payment?.method ?? 'CASH_ON_DELIVERY');
@@ -312,12 +300,7 @@ const ConfirmCashPaymentButton = () => {
     };
   }, [open, record, due]);
 
-  if (
-    !record ||
-    !record.payment ||
-    record.payment.method !== 'CASH_ON_DELIVERY' ||
-    record.payment.status !== 'PENDING'
-  ) {
+  if (!record || record.payment?.method !== 'CASH_ON_DELIVERY' || record.payment?.status !== 'PENDING') {
     return null;
   }
   const paymentId = record.payment.id;
@@ -349,36 +332,26 @@ const ConfirmCashPaymentButton = () => {
 
   return (
     <>
-      <Button
-        label="resources.orders.actions.confirm_cash_payment"
-        onClick={() => setOpen(true)}
-        startIcon={<PaymentsIcon />}
-        sx={{ color: 'success.main' }}
-      />
+      <button className="btn btn-primary btn-lg" onClick={() => setOpen(true)}>
+        <PaymentsIcon sx={{ fontSize: 16 }} /> {translate('resources.orders.actions.confirm_cash_payment')}
+      </button>
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
         <DialogTitle>{translate('resources.orders.actions.confirm_cash_payment')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
-            {/* Amount due, shown large for whoever collects */}
             <Box>
               <Typography variant="overline" color="text.secondary">
                 {translate('resources.orders.dialogs.amount_due')}
               </Typography>
               <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                {formatXAF(due)}
+                {fmtFCFA(due)}
               </Typography>
             </Box>
-
             <Box>
               <Typography variant="caption" color="text.secondary">
                 {translate('resources.orders.dialogs.real_method')}
               </Typography>
-              <Select
-                fullWidth
-                size="small"
-                value={method}
-                onChange={(e) => setMethod(e.target.value)}
-              >
+              <Select fullWidth size="small" value={method} onChange={(e) => setMethod(e.target.value)}>
                 {ENCASHMENT_METHODS.map((m) => (
                   <MenuItem key={m} value={m}>
                     {translate(`resources.orders.payment_methods.${m}`)}
@@ -386,18 +359,11 @@ const ConfirmCashPaymentButton = () => {
                 ))}
               </Select>
             </Box>
-
             <Box>
               <Typography variant="caption" color="text.secondary">
                 {translate('resources.orders.dialogs.encashment_account')}
               </Typography>
-              <Select
-                fullWidth
-                size="small"
-                value={accountId}
-                onChange={(e) => setAccountId(e.target.value)}
-                displayEmpty
-              >
+              <Select fullWidth size="small" value={accountId} onChange={(e) => setAccountId(e.target.value)} displayEmpty>
                 {accounts.length === 0 && (
                   <MenuItem value="" disabled>
                     {translate('resources.orders.dialogs.no_account')}
@@ -410,7 +376,6 @@ const ConfirmCashPaymentButton = () => {
                 ))}
               </Select>
             </Box>
-
             <MuiTextField
               label={translate('resources.orders.dialogs.amount_collected')}
               type="number"
@@ -421,9 +386,7 @@ const ConfirmCashPaymentButton = () => {
             />
             {discrepancy !== 0 && (
               <Typography variant="caption" color="warning.main">
-                {translate('resources.orders.dialogs.discrepancy', {
-                  amount: formatXAF(discrepancy),
-                })}
+                {translate('resources.orders.dialogs.discrepancy', { amount: fmtFCFA(discrepancy) })}
               </Typography>
             )}
           </Stack>
@@ -439,176 +402,11 @@ const ConfirmCashPaymentButton = () => {
   );
 };
 
-const OrderShowActions = () => {
-  const record = useRecordContext<AdminOrderDetail>();
-  if (!record) return <TopToolbar />;
-  return (
-    <TopToolbar>
-      <DownloadInvoiceButton />
-      <ConfirmCashPaymentButton />
-      {!TERMINAL.includes(record.status) && <TransitionButton />}
-      {!NON_CANCELLABLE.includes(record.status) && <CancelOrderButton />}
-    </TopToolbar>
-  );
-};
+// ── Margin card (spec §12.7), brand-styled ──────────────────────────────
+type OrderMargin = { revenueHt: string; netMargin: string };
 
-const OrderHeader = () => {
+const MarginCard = () => {
   const record = useRecordContext<AdminOrderDetail>();
-  if (!record) return null;
-  return (
-    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 1 }}>
-      <Typography variant="h6">{record.orderNumber}</Typography>
-      <Chip
-        label={record.status}
-        color={ORDER_STATUS_COLOR[record.status]}
-        size="small"
-        variant="outlined"
-      />
-      <Chip label={record.channel} size="small" variant="outlined" />
-    </Stack>
-  );
-};
-
-const ItemsTable = () => {
-  const record = useRecordContext<AdminOrderDetail>();
-  if (!record) return null;
-  return (
-    <Box sx={{ mt: 1 }}>
-      {record.items.map((it) => (
-        <Box
-          key={it.id}
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 80px 120px 120px',
-            gap: 2,
-            py: 1,
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-          }}
-        >
-          <Box>
-            <Typography variant="body2">
-              {it.variant.product.name.fr}
-              {it.variant.product.name.en && ` / ${it.variant.product.name.en}`}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              SKU {it.variant.sku}
-            </Typography>
-            {it.variant.storageLocation && (
-              <Typography
-                variant="caption"
-                sx={{ display: 'block', color: 'primary.main', fontWeight: 600 }}
-              >
-                📍 {it.variant.storageLocation}
-              </Typography>
-            )}
-          </Box>
-          <Typography variant="body2" sx={{ textAlign: 'right' }}>
-            ×{it.quantity}
-          </Typography>
-          <Typography variant="body2" sx={{ textAlign: 'right' }}>
-            {formatXAF(it.unitPrice)}
-          </Typography>
-          <Typography variant="body2" sx={{ textAlign: 'right', fontWeight: 600 }}>
-            {formatXAF(it.lineTotal)}
-          </Typography>
-        </Box>
-      ))}
-    </Box>
-  );
-};
-
-const DeliveryBlock = () => {
-  const record = useRecordContext<AdminOrderDetail>();
-  if (!record?.delivery) return null;
-  const d = record.delivery;
-  return (
-    <Box>
-      <Typography variant="body2">
-        <strong>{d.mode === 'HOME_DELIVERY' ? 'Livraison à domicile' : 'Retrait en boutique'}</strong>
-      </Typography>
-      {d.mode === 'HOME_DELIVERY' ? (
-        <Typography variant="body2" color="text.secondary">
-          {d.shippingAddress}, {d.shippingCity} · {d.shippingPhone}
-        </Typography>
-      ) : d.pickupPoint ? (
-        <Typography variant="body2" color="text.secondary">
-          {d.pickupPoint.name.fr}
-        </Typography>
-      ) : null}
-      <Typography variant="caption" color="text.secondary">
-        Frais : {formatXAF(d.fee)}
-      </Typography>
-    </Box>
-  );
-};
-
-const PaymentBlock = () => {
-  const record = useRecordContext<AdminOrderDetail>();
-  if (!record?.payment) return null;
-  const p = record.payment;
-  return (
-    <Stack spacing={0.5}>
-      <Box>
-        <Chip
-          label={`${p.method} · ${p.status}`}
-          size="small"
-          color={PAYMENT_STATUS_COLOR[p.status]}
-          variant="outlined"
-        />
-      </Box>
-      {p.phoneNumber && (
-        <Typography variant="caption" color="text.secondary">
-          {p.phoneNumber}
-        </Typography>
-      )}
-      {p.transactionRef && (
-        <Typography variant="caption" color="text.secondary">
-          ref: {p.transactionRef}
-        </Typography>
-      )}
-      {p.paidAt && (
-        <Typography variant="caption" color="text.secondary">
-          {new Date(p.paidAt).toLocaleString('fr-FR')}
-        </Typography>
-      )}
-    </Stack>
-  );
-};
-
-const Totals = () => {
-  const record = useRecordContext<AdminOrderDetail>();
-  if (!record) return null;
-  return (
-    <Stack spacing={0.5} sx={{ alignItems: 'flex-end' }}>
-      <Typography variant="body2">Sous-total : {formatXAF(record.subtotal)}</Typography>
-      <Typography variant="body2">Livraison : {formatXAF(record.deliveryFee)}</Typography>
-      {record.discount && Number(record.discount) > 0 && (
-        <Typography variant="body2">
-          Remise{record.promoCode ? ` (${record.promoCode.code})` : ''} : −
-          {formatXAF(record.discount)}
-        </Typography>
-      )}
-      <Typography variant="h6">Total : {formatXAF(record.total)}</Typography>
-    </Stack>
-  );
-};
-
-type OrderMargin = {
-  saleTtc: string;
-  tax: string;
-  revenueHt: string;
-  productCost: string;
-  packagingCost: string;
-  deliveryCost: string;
-  commissions: string;
-  netMargin: string;
-};
-
-/** Per-order net margin (spec §12.7), fetched from /finance/orders/:id/margin. */
-const MarginPanel = () => {
-  const record = useRecordContext<AdminOrderDetail>();
-  const t = useTranslate();
   const [margin, setMargin] = useState<OrderMargin | null>(null);
   const [denied, setDenied] = useState(false);
   const orderId = record?.id;
@@ -628,63 +426,195 @@ const MarginPanel = () => {
     };
   }, [orderId]);
 
-  if (!record || denied) return null;
-  if (!margin) return <Typography variant="body2" color="text.secondary">…</Typography>;
-
-  const negative = Number(margin.netMargin) < 0;
+  if (!record || denied || !margin) return null;
+  const net = Number(margin.netMargin);
+  const revenue = Number(margin.revenueHt);
+  const pct = revenue > 0 ? Math.round((net / revenue) * 100) : 0;
   return (
-    <Stack spacing={0.5} sx={{ alignItems: 'flex-end' }}>
-      <Typography variant="body2">
-        {t('resources.orders.margin.revenue_ht')} : {formatXAF(margin.revenueHt)}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        − {t('resources.orders.margin.product_cost')} : {formatXAF(margin.productCost)}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        − {t('resources.orders.margin.packaging_cost')} : {formatXAF(margin.packagingCost)}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        − {t('resources.orders.margin.delivery_cost')} : {formatXAF(margin.deliveryCost)}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        − {t('resources.orders.margin.commissions')} : {formatXAF(margin.commissions)}
-      </Typography>
-      <Typography variant="h6" color={negative ? 'error.main' : 'success.main'}>
-        {t('resources.orders.margin.net_margin')} : {formatXAF(margin.netMargin)}
-      </Typography>
-    </Stack>
+    <div className="margin-card">
+      <div className="ml">Marge estimée</div>
+      <div className="mv num">{fmtFCFA(net)}</div>
+      <div className="mp">{pct}% du revenu HT · visible finance uniquement</div>
+    </div>
+  );
+};
+
+// ── Detail layout (design) ──────────────────────────────────────────────
+
+const KV = ({ k, v }: { k: string; v: React.ReactNode }) => (
+  <div className="kv-line">
+    <span className="k">{k}</span>
+    <span className="v">{v}</span>
+  </div>
+);
+
+const OrderDetailSkin = () => {
+  const record = useRecordContext<AdminOrderDetail>();
+  const redirect = useRedirect();
+  if (!record) return null;
+
+  const created = new Date(record.createdAt).toLocaleString('fr-FR', {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  const d = record.delivery;
+  const p = record.payment;
+  const discount = Number(record.discount ?? 0);
+
+  return (
+    <div className="fade-in" style={{ padding: '8px 4px 64px' }}>
+      <button className="back-link" style={{ marginBottom: 16 }} onClick={() => redirect('list', 'orders')}>
+        <ArrowBackIcon sx={{ fontSize: 16 }} /> Commandes
+      </button>
+
+      {/* Header */}
+      <div className="detail-head">
+        <div>
+          <div className="row" style={{ gap: 14 }}>
+            <span className="dh-num">{record.orderNumber}</span>
+            <StatusPill status={record.status} />
+          </div>
+          <div className="dh-meta">
+            <span className="row" style={{ gap: 6 }}>
+              <ChannelIcon channel={record.channel} size={14} />
+              {ORDER_CHANNEL_LABEL[record.channel]}
+            </span>
+            <span>·</span>
+            <span>{created}</span>
+          </div>
+        </div>
+        <div className="dh-actions">
+          <ConfirmCashPaymentButton />
+          {!TERMINAL.includes(record.status) && <TransitionButton />}
+        </div>
+      </div>
+
+      {/* Secondary actions */}
+      <div className="secondary-actions">
+        <DownloadInvoiceButton />
+        <CancelOrderButton />
+      </div>
+
+      <div className="detail-grid">
+        {/* Left column */}
+        <div className="grid">
+          <div className="info-card">
+            <h4>Articles</h4>
+            {record.items.map((it) => (
+              <div className="item-line" key={it.id}>
+                <div className="ithumb">
+                  <Inventory2Icon sx={{ fontSize: 20 }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="iname">{it.variant.product.name.fr}</div>
+                  <div className="ivar">{it.variant.sku}</div>
+                  <div className="iqty">
+                    Qté {it.quantity}
+                    {it.variant.storageLocation && (
+                      <>
+                        {' · '}
+                        <span className="iloc">📍 {it.variant.storageLocation}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="iprice num">{fmtFCFA(it.lineTotal)}</div>
+              </div>
+            ))}
+            <div className="divider" style={{ margin: '8px 0' }} />
+            <div className="fin-line">
+              <span className="k muted">Sous-total</span>
+              <span className="v num">{fmtFCFA(record.subtotal)}</span>
+            </div>
+            <div className="fin-line">
+              <span className="muted">Livraison</span>
+              <span className="num">{fmtFCFA(record.deliveryFee)}</span>
+            </div>
+            {discount > 0 && (
+              <div className="fin-line">
+                <span className="muted">Réduction{record.promoCode ? ` (${record.promoCode.code})` : ''}</span>
+                <span className="num accent">− {fmtFCFA(discount)}</span>
+              </div>
+            )}
+            <div className="fin-line total">
+              <span>
+                Total TTC
+                {record.taxAmount != null && Number(record.taxAmount) > 0 && (
+                  <span className="vat"> dont TVA {fmtFCFA(record.taxAmount)}</span>
+                )}
+              </span>
+              <span className="v num">{fmtFCFA(record.total)}</span>
+            </div>
+          </div>
+
+          {record.notes && (
+            <div className="info-card">
+              <h4>Notes</h4>
+              <div style={{ fontSize: 15 }}>{record.notes}</div>
+            </div>
+          )}
+        </div>
+
+        {/* Right column */}
+        <div className="grid">
+          <div className="info-card">
+            <h4>Cliente</h4>
+            <div style={{ fontSize: 17, fontWeight: 500, fontFamily: 'var(--font-display)' }}>
+              {record.user.name}
+            </div>
+            <div className="client-context">{record.user.email}</div>
+            {record.user.phone && (
+              <div className="row" style={{ gap: 8, fontSize: 14.5, marginTop: 12 }}>
+                <PhoneIcon sx={{ fontSize: 15, color: 'var(--fg-muted)' }} />
+                {record.user.phone}
+              </div>
+            )}
+            {(d?.shippingAddress || d?.shippingCity) && (
+              <div className="row" style={{ gap: 8, fontSize: 14.5, marginTop: 6 }}>
+                <PlaceIcon sx={{ fontSize: 15, color: 'var(--fg-muted)' }} />
+                {[d?.shippingAddress, d?.shippingCity].filter(Boolean).join(', ')}
+              </div>
+            )}
+          </div>
+
+          {p && (
+            <div className="info-card">
+              <h4>Paiement</h4>
+              <KV k="Moyen" v={p.method} />
+              <KV k="Statut" v={p.status} />
+              <KV k="Référence" v={p.transactionRef ?? '—'} />
+              {p.paidAt && <KV k="Payé le" v={new Date(p.paidAt).toLocaleString('fr-FR')} />}
+            </div>
+          )}
+
+          {d && (
+            <div className="info-card">
+              <h4>Livraison</h4>
+              <KV k="Mode" v={DELIVERY_MODE_LABEL[d.mode] ?? d.mode} />
+              {d.pickupPoint && <KV k="Point" v={d.pickupPoint.name.fr} />}
+              {d.shippingAddress && <KV k="Adresse" v={d.shippingAddress} />}
+              <KV k="Frais" v={fmtFCFA(d.fee)} />
+              {record.status === 'READY' && (
+                <div className="note" style={{ marginTop: 8, fontStyle: 'italic' }}>
+                  Le livreur sera assigné à l’acheminement.
+                </div>
+              )}
+            </div>
+          )}
+
+          <MarginCard />
+        </div>
+      </div>
+    </div>
   );
 };
 
 export const OrderShow = () => (
-  <Show actions={<OrderShowActions />}>
-    <SimpleShowLayout>
-      <OrderHeader />
-      <Labeled label="resources.orders.fields.client">
-        <FunctionField<AdminOrderDetail>
-          render={(record) =>
-            `${record.user.name} · ${record.user.email}${record.user.phone ? ` · ${record.user.phone}` : ''}`
-          }
-        />
-      </Labeled>
-      <Labeled label="resources.orders.fields.items">
-        <ItemsTable />
-      </Labeled>
-      <Labeled label="resources.orders.fields.delivery">
-        <DeliveryBlock />
-      </Labeled>
-      <Labeled label="resources.orders.fields.payment">
-        <PaymentBlock />
-      </Labeled>
-      <Labeled label="resources.orders.fields.totals">
-        <Totals />
-      </Labeled>
-      <Labeled label="resources.orders.margin.heading" fullWidth>
-        <MarginPanel />
-      </Labeled>
-      <TextField source="notes" label="resources.orders.fields.notes" />
-      <DateField source="createdAt" showTime />
-      <DateField source="updatedAt" showTime />
-    </SimpleShowLayout>
+  <Show actions={false} component="div">
+    <CelvaSkin>
+      <OrderDetailSkin />
+    </CelvaSkin>
   </Show>
 );

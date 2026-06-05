@@ -409,6 +409,7 @@ export type AdminOrderRow = {
   deliveryFee: string | number;
   discount?: string | number | null;
   total: string | number;
+  taxAmount?: string | number | null;
   notes?: string | null;
   createdAt: string;
   updatedAt: string;
