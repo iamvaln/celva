@@ -453,6 +453,26 @@ const celvaFr = {
       revenue_by_channel: 'CA par canal',
       expenses_by_category: 'Dépenses par catégorie',
     },
+    'payment-accounts': {
+      name: "Compte d'encaissement |||| Comptes d'encaissement",
+      fields: {
+        name: 'Nom',
+        type: 'Type',
+        identifier: 'Identifiant',
+        isActive: 'Actif',
+      },
+      helpers: {
+        name: 'Ex. : Caisse, OM Celva Business, MoMo Celva',
+        identifier: 'Numéro de téléphone / compte. Masqué à l’affichage.',
+      },
+    },
+    treasury: {
+      name: 'Trésorerie |||| Trésorerie',
+      title: 'Trésorerie — soldes par compte',
+      total: 'Solde total',
+      loading: 'Chargement…',
+      empty: 'Aucun compte d’encaissement configuré.',
+    },
     'sales-commissions': {
       name: 'Commission |||| Commissions',
       fields: {
@@ -1057,6 +1077,26 @@ const celvaEn = {
       },
       revenue_by_channel: 'Revenue by channel',
       expenses_by_category: 'Expenses by category',
+    },
+    'payment-accounts': {
+      name: 'Encashment account |||| Encashment accounts',
+      fields: {
+        name: 'Name',
+        type: 'Type',
+        identifier: 'Identifier',
+        isActive: 'Active',
+      },
+      helpers: {
+        name: 'E.g. Cash drawer, OM Celva Business, MoMo Celva',
+        identifier: 'Phone / account number. Masked on display.',
+      },
+    },
+    treasury: {
+      name: 'Treasury |||| Treasury',
+      title: 'Treasury — balance per account',
+      total: 'Total balance',
+      loading: 'Loading…',
+      empty: 'No encashment account configured yet.',
     },
     'sales-commissions': {
       name: 'Commission |||| Commissions',

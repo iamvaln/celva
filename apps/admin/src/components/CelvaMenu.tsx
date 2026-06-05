@@ -89,6 +89,7 @@ export const CelvaMenu = () => {
       <MenuGroup labelKey="menu.finance" icon={<SavingsIcon />}>
         <Menu.ResourceItem name="finance" />
         <Menu.ResourceItem name="transactions" />
+        <Menu.ResourceItem name="treasury" />
       </MenuGroup>
 
       <MenuGroup labelKey="menu.content" icon={<FeedIcon />}>
@@ -103,6 +104,7 @@ export const CelvaMenu = () => {
 
       <MenuGroup labelKey="menu.admin" icon={<AdminPanelSettingsIcon />}>
         <Menu.ResourceItem name="audit-logs" />
+        {isAdmin && <Menu.ResourceItem name="payment-accounts" />}
         {isAdmin && <Menu.ResourceItem name="users" />}
         {isAdmin && <Menu.ResourceItem name="settings" />}
       </MenuGroup>
