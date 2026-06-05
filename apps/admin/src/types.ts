@@ -313,6 +313,7 @@ export type Delivery = {
     | 'FAILED';
   actualCost: string | number;
   trackingNote: string | null;
+  receiptUrl: string | null;
   assignedAt: string | null;
   pickedUpAt: string | null;
   deliveredAt: string | null;
