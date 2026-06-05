@@ -65,6 +65,14 @@ export class CreateVariantDto {
   @Max(1_000_000)
   initialStock?: number;
 
+  @ApiPropertyOptional({
+    description: 'Indicative storage location, e.g. "Magasin", "Pop-up Akwa", "Portant A2".',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  storageLocation?: string;
+
   @ApiPropertyOptional({ default: true })
   @IsOptional()
   @IsBoolean()
