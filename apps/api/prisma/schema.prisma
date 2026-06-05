@@ -1,5 +1,7 @@
-// Celva Store — Prisma schema v4
-// Source of truth: docs/celva-schema.md
+// Celva Store — Prisma schema v5
+// Source of truth: docs/celva-schema.md (+ v5 back-office session additions:
+//   PaymentAccount/PaymentAccountType, Payment.paymentAccountId,
+//   Transaction.paymentAccountId, ProductVariant.storageLocation, Delivery.receiptUrl)
 // Keep this file in sync. Field comments preserved from spec.
 
 generator client {
@@ -111,6 +113,13 @@ enum PaymentMethod {
   ORANGE_MONEY
   MTN_MOMO
   CASH_ON_DELIVERY
+}
+
+enum PaymentAccountType {
+  CASH
+  ORANGE_MONEY
+  MTN_MOMO
+  BANK
 }
 
 enum PaymentStatus {
@@ -421,14 +430,15 @@ model ProductAttributeValue {
 }
 
 model ProductVariant {
-  id             String   @id @default(uuid())
-  sku            String   @unique
-  stock          Int      @default(0)
-  consignedStock Int      @default(0)
-  priceOverride  Decimal? @db.Decimal(10, 2)
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String   @id @default(uuid())
+  sku             String   @unique
+  stock           Int      @default(0)
+  consignedStock  Int      @default(0)
+  priceOverride   Decimal? @db.Decimal(10, 2)
+  storageLocation String? // emplacement indicatif: "Magasin", "Pop-up Akwa", "Portant A2"
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   productId String
   product   Product @relation(fields: [productId], references: [id])
@@ -822,7 +832,28 @@ model Payment {
   orderId String @unique
   order   Order  @relation(fields: [orderId], references: [id])
 
+  paymentAccountId String? // sur quel compte l'argent a atterri
+  paymentAccount   PaymentAccount? @relation(fields: [paymentAccountId], references: [id])
+
   @@map("payments")
+}
+
+// ─────────────────────────────────────────────
+// TRÉSORERIE
+// ─────────────────────────────────────────────
+
+model PaymentAccount {
+  id         String             @id @default(uuid())
+  name       String // "Caisse", "OM Celva Business", "MoMo Celva"
+  type       PaymentAccountType
+  identifier String? // numéro de téléphone / compte, masqué à l'affichage
+  isActive   Boolean            @default(true)
+  createdAt  DateTime           @default(now())
+
+  payments     Payment[]
+  transactions Transaction[]
+
+  @@map("payment_accounts")
 }
 
 // ─────────────────────────────────────────────
@@ -859,7 +890,8 @@ model Delivery {
   id           String         @id @default(uuid())
   mode         DeliveryMode   @default(HOME_DELIVERY)
   status       DeliveryStatus @default(PENDING)
-  actualCost   Decimal        @default(0) @db.Decimal(10, 2)
+  actualCost   Decimal        @default(0) @db.Decimal(10, 2) // coût livreur (externe) OU frais de course (équipe)
+  receiptUrl   String? // reçu de course (clé R2)
   trackingNote String?
   assignedAt   DateTime?
   pickedUpAt   DateTime?
@@ -1034,6 +1066,8 @@ model Transaction {
   purchaseOrder     PurchaseOrder?   @relation(fields: [purchaseOrderId], references: [id])
   productionOrderId String?
   productionOrder   ProductionOrder? @relation(fields: [productionOrderId], references: [id])
+  paymentAccountId  String?
+  paymentAccount    PaymentAccount?  @relation(fields: [paymentAccountId], references: [id])
 
   @@map("transactions")
 }
