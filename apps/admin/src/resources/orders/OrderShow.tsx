@@ -494,6 +494,14 @@ const ItemsTable = () => {
             <Typography variant="caption" color="text.secondary">
               SKU {it.variant.sku}
             </Typography>
+            {it.variant.storageLocation && (
+              <Typography
+                variant="caption"
+                sx={{ display: 'block', color: 'primary.main', fontWeight: 600 }}
+              >
+                📍 {it.variant.storageLocation}
+              </Typography>
+            )}
           </Box>
           <Typography variant="body2" sx={{ textAlign: 'right' }}>
             ×{it.quantity}
