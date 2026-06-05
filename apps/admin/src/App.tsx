@@ -24,6 +24,8 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import HistoryIcon from '@mui/icons-material/History';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import SavingsIcon from '@mui/icons-material/Savings';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
@@ -99,6 +101,10 @@ import { SizeGuideList } from './resources/size-guides/SizeGuideList';
 import { SizeGuideCreate } from './resources/size-guides/SizeGuideCreate';
 import { SizeGuideEdit } from './resources/size-guides/SizeGuideEdit';
 import { AuditLogList } from './resources/audit-logs/AuditLogList';
+import { PaymentAccountList } from './resources/payment-accounts/PaymentAccountList';
+import { PaymentAccountCreate } from './resources/payment-accounts/PaymentAccountCreate';
+import { PaymentAccountEdit } from './resources/payment-accounts/PaymentAccountEdit';
+import { TreasuryView } from './resources/treasury/TreasuryView';
 
 export const App = () => (
   <Admin
@@ -306,6 +312,20 @@ export const App = () => (
           icon={HistoryIcon}
           list={AuditLogList}
           options={{ label: "Journal d'audit" }}
+        />
+        <Resource
+          name="payment-accounts"
+          icon={AccountBalanceWalletIcon}
+          list={PaymentAccountList}
+          edit={permissions === 'ADMIN' ? PaymentAccountEdit : undefined}
+          create={permissions === 'ADMIN' ? PaymentAccountCreate : undefined}
+          options={{ label: "Comptes d'encaissement" }}
+        />
+        <Resource
+          name="treasury"
+          icon={SavingsIcon}
+          list={TreasuryView}
+          options={{ label: 'Trésorerie' }}
         />
       </>
     )}

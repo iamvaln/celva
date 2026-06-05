@@ -43,6 +43,23 @@ export type Setting = {
   label?: { fr?: string; en?: string } | null;
 };
 
+export type PaymentAccountType = 'CASH' | 'ORANGE_MONEY' | 'MTN_MOMO' | 'BANK';
+
+export type PaymentAccount = {
+  id: string;
+  name: string;
+  type: PaymentAccountType;
+  identifier?: string | null;
+  isActive: boolean;
+  createdAt?: string;
+};
+
+export type PaymentAccountBalance = PaymentAccount & {
+  income: string;
+  expense: string;
+  balance: string;
+};
+
 export type Category = {
   id: string;
   slug: string;
