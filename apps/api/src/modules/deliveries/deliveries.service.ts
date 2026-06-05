@@ -198,7 +198,7 @@ export class DeliveriesService {
 
   async updateMetadata(
     id: string,
-    dto: { actualCost?: number; trackingNote?: string },
+    dto: { actualCost?: number; trackingNote?: string; receiptUrl?: string },
   ): Promise<Delivery> {
     const delivery = await this.prisma.delivery.findUnique({ where: { id } });
     if (!delivery) throw new NotFoundException('errors.not_found');
@@ -209,6 +209,9 @@ export class DeliveriesService {
     }
     if (dto.trackingNote !== undefined) {
       data.trackingNote = dto.trackingNote.trim().length === 0 ? null : dto.trackingNote;
+    }
+    if (dto.receiptUrl !== undefined) {
+      data.receiptUrl = dto.receiptUrl.trim().length === 0 ? null : dto.receiptUrl;
     }
 
     if (Object.keys(data).length === 0) return delivery;
@@ -229,9 +232,11 @@ export class DeliveriesService {
       include: { pickupPoint: { select: { id: true, name: true, address: true, city: true } } },
     });
     if (!delivery) throw new NotFoundException('errors.not_found');
-    // Strip admin-internal fields (actualCost) before returning to the customer.
-    const { actualCost: _drop, ...safe } = delivery;
+    // Strip admin-internal fields (actualCost, course receipt) before
+    // returning to the customer.
+    const { actualCost: _drop, receiptUrl: _drop2, ...safe } = delivery;
     void _drop;
+    void _drop2;
     return safe;
   }
 }
