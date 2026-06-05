@@ -14,7 +14,7 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import SavingsIcon from '@mui/icons-material/Savings';
 import FeedIcon from '@mui/icons-material/Feed';
-import RouteIcon from '@mui/icons-material/Route';
+import HandshakeIcon from '@mui/icons-material/Handshake';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 type MenuGroupProps = {
@@ -60,11 +60,10 @@ export const CelvaMenu = () => {
     <Menu>
       <Menu.DashboardItem primaryText="menu.dashboard" />
 
+      {/* VENTES — daily starting point (spec §4) */}
       <MenuGroup labelKey="menu.sales" icon={<PointOfSaleIcon />} defaultOpen>
         <Menu.ResourceItem name="orders" />
         <Menu.ResourceItem name="deliveries" />
-        <Menu.ResourceItem name="consignments" />
-        <Menu.ResourceItem name="sales-commissions" />
         <Menu.ResourceItem name="promo-codes" />
       </MenuGroup>
 
@@ -79,17 +78,17 @@ export const CelvaMenu = () => {
       </MenuGroup>
 
       <MenuGroup labelKey="menu.stock" icon={<WarehouseIcon />}>
+        <Menu.ResourceItem name="suppliers" />
         <Menu.ResourceItem name="raw-materials" />
         <Menu.ResourceItem name="purchase-orders" />
         <Menu.ResourceItem name="production-orders" />
         <Menu.ResourceItem name="stock-movements" />
-        <Menu.ResourceItem name="suppliers" />
       </MenuGroup>
 
-      <MenuGroup labelKey="menu.finance" icon={<SavingsIcon />}>
-        <Menu.ResourceItem name="finance" />
-        <Menu.ResourceItem name="transactions" />
-        <Menu.ResourceItem name="treasury" />
+      {/* COMMERCIAL — resellers (spec §4) */}
+      <MenuGroup labelKey="menu.commercial" icon={<HandshakeIcon />}>
+        <Menu.ResourceItem name="consignments" />
+        <Menu.ResourceItem name="sales-commissions" />
       </MenuGroup>
 
       <MenuGroup labelKey="menu.content" icon={<FeedIcon />}>
@@ -97,16 +96,21 @@ export const CelvaMenu = () => {
         <Menu.ResourceItem name="newsletter" />
       </MenuGroup>
 
-      <MenuGroup labelKey="menu.logistics" icon={<RouteIcon />}>
-        <Menu.ResourceItem name="delivery-zones" />
-        <Menu.ResourceItem name="pickup-points" />
+      <MenuGroup labelKey="menu.finance" icon={<SavingsIcon />}>
+        <Menu.ResourceItem name="transactions" />
+        <Menu.ResourceItem name="treasury" />
+        <Menu.ResourceItem name="finance" />
       </MenuGroup>
 
-      <MenuGroup labelKey="menu.admin" icon={<AdminPanelSettingsIcon />}>
-        <Menu.ResourceItem name="audit-logs" />
-        {isAdmin && <Menu.ResourceItem name="payment-accounts" />}
+      {/* PARAMÈTRES — config (spec §4): users, livraison & retrait,
+          comptes d'encaissement, réglages, journal d'activité */}
+      <MenuGroup labelKey="menu.settings" icon={<AdminPanelSettingsIcon />}>
         {isAdmin && <Menu.ResourceItem name="users" />}
+        <Menu.ResourceItem name="delivery-zones" />
+        <Menu.ResourceItem name="pickup-points" />
+        {isAdmin && <Menu.ResourceItem name="payment-accounts" />}
         {isAdmin && <Menu.ResourceItem name="settings" />}
+        <Menu.ResourceItem name="audit-logs" />
       </MenuGroup>
     </Menu>
   );
