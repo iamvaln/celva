@@ -298,6 +298,12 @@ const celvaFr = {
         cancel: 'Annuler la commande',
         download_invoice: 'Télécharger la facture',
         confirm_cash_payment: "Confirmer l'encaissement",
+        confirm_encashment: "Confirmer l'encaissement",
+      },
+      payment_methods: {
+        CASH_ON_DELIVERY: 'Espèces',
+        ORANGE_MONEY: 'Orange Money',
+        MTN_MOMO: 'MTN MoMo',
       },
       dialogs: {
         current_status: 'Statut actuel',
@@ -307,6 +313,12 @@ const celvaFr = {
           'L\'annulation restocke les articles et décrémente le code promo. Action irréversible.',
         confirm_cash_payment_warning:
           'Marque le paiement à la livraison comme encaissé : Paiement passe en COMPLETED, une transaction INCOME est créée et la facture est générée. Action irréversible.',
+        amount_due: 'Montant à encaisser',
+        real_method: 'Moyen réel',
+        encashment_account: "Compte d'encaissement",
+        no_account: 'Aucun compte configuré',
+        amount_collected: 'Montant réellement encaissé',
+        discrepancy: 'Écart vs montant dû : {amount}',
       },
       notifications: {
         transitioned: 'Statut mis à jour.',
@@ -923,6 +935,12 @@ const celvaEn = {
         cancel: 'Cancel order',
         download_invoice: 'Download invoice',
         confirm_cash_payment: 'Confirm cash payment',
+        confirm_encashment: 'Confirm encashment',
+      },
+      payment_methods: {
+        CASH_ON_DELIVERY: 'Cash',
+        ORANGE_MONEY: 'Orange Money',
+        MTN_MOMO: 'MTN MoMo',
       },
       dialogs: {
         current_status: 'Current status',
@@ -932,6 +950,12 @@ const celvaEn = {
           'Cancelling restocks the items and decrements the promo code. This cannot be undone.',
         confirm_cash_payment_warning:
           'Marks the cash-on-delivery payment as received: Payment moves to COMPLETED, an INCOME transaction is booked and the invoice is generated. This cannot be undone.',
+        amount_due: 'Amount to collect',
+        real_method: 'Real method',
+        encashment_account: 'Encashment account',
+        no_account: 'No account configured',
+        amount_collected: 'Amount actually collected',
+        discrepancy: 'Discrepancy vs amount due: {amount}',
       },
       notifications: {
         transitioned: 'Status updated.',

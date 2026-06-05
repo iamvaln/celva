@@ -49,7 +49,12 @@ export class PaymentsController {
     @Body() dto: ConfirmPaymentDto,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.payments.markCompleted(id, user.id, dto.transactionRef);
+    return this.payments.markCompleted(id, user.id, {
+      transactionRef: dto.transactionRef,
+      method: dto.method,
+      paymentAccountId: dto.paymentAccountId,
+      actualAmount: dto.actualAmount,
+    });
   }
 
   @Post(':id/mark-failed')
