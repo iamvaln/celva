@@ -150,6 +150,11 @@ export const VariantCreate = () => {
           helperText="resources.variants.helpers.price_override"
           validate={[minValue(0)]}
         />
+        <TextInput
+          source="storageLocation"
+          helperText="resources.variants.helpers.storage_location"
+          fullWidth
+        />
         <BooleanInput source="isActive" defaultValue />
       </SimpleForm>
     </Create>

@@ -114,6 +114,7 @@ const celvaFr = {
         stock: 'Stock disponible',
         consigned: 'Stock consigné',
         priceOverride: 'Prix variante (TTC)',
+        storageLocation: 'Emplacement',
         isActive: 'Actif',
         productId: 'Produit',
         createdAt: 'Créé le',
@@ -122,6 +123,7 @@ const celvaFr = {
         sku: 'Majuscules / chiffres / . / _ / - ; 2 à 50 caractères. Doit être unique.',
         initial_stock: 'Stock d’ouverture (mouvement MANUAL_ADJUSTMENT enregistré).',
         price_override: 'Optionnel — remplace product.displayPrice pour cette variante.',
+        storage_location: 'Emplacement indicatif : « Magasin », « Pop-up Akwa », « Portant A2 ».',
         pick_product_first: 'Choisissez d’abord un produit pour afficher ses attributs.',
         product_has_no_attributes:
           'Ce produit n’a pas d’attribut. La variante sera créée sans combinaison.',
@@ -787,6 +789,7 @@ const celvaEn = {
         stock: 'Available stock',
         consigned: 'Consigned stock',
         priceOverride: 'Variant price (incl. VAT)',
+        storageLocation: 'Location',
         isActive: 'Active',
         productId: 'Product',
         createdAt: 'Created at',
@@ -795,6 +798,7 @@ const celvaEn = {
         sku: 'A-Z / 0-9 / . / _ / -, 2 to 50 chars. Must be unique.',
         initial_stock: 'Opening stock (MANUAL_ADJUSTMENT movement recorded).',
         price_override: 'Optional — overrides product.displayPrice for this variant.',
+        storage_location: 'Indicative location: "Magasin", "Pop-up Akwa", "Portant A2".',
         pick_product_first: 'Pick a product first to load its attributes.',
         product_has_no_attributes:
           'This product has no attributes. Variant will be created with no combination.',

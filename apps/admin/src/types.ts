@@ -102,6 +102,7 @@ export type ProductVariant = {
   stock: number;
   consignedStock: number;
   priceOverride?: string | number | null;
+  storageLocation?: string | null;
   isActive: boolean;
   productId: string;
   attributeValues: Array<{ attributeId: string; attributeValueId: string }>;
@@ -426,6 +427,7 @@ export type AdminOrderDetail = Omit<AdminOrderRow, 'user' | 'items' | 'payment'>
     variant: {
       id: string;
       sku: string;
+      storageLocation?: string | null;
       product: { id: string; slug: string; name: { fr: string; en: string } };
     };
   }>;
