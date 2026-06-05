@@ -65,6 +65,7 @@
   "delivery_zone_name_taken": "Une zone de livraison portant ce nom existe déjà.",
   "delivery_zone_in_use": "Cette zone est référencée par des livraisons passées et ne peut pas être supprimée. Désactivez-la à la place.",
   "pickup_point_in_use": "Ce point de retrait est référencé par des livraisons passées et ne peut pas être supprimé. Désactivez-le à la place.",
+  "payment_account_in_use": "Ce compte est référencé par des paiements ou transactions passés et ne peut pas être supprimé. Désactivez-le à la place.",
   "cart_empty": "Votre panier est vide.",
   "invalid_delivery_mode": "Mode de livraison invalide.",
   "delivery_zone_required": "Sélectionnez une zone de livraison pour la livraison à domicile.",

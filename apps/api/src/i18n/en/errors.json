@@ -65,6 +65,7 @@
   "delivery_zone_name_taken": "A delivery zone with this name already exists.",
   "delivery_zone_in_use": "This zone is referenced by past deliveries and cannot be deleted. Deactivate it instead.",
   "pickup_point_in_use": "This pickup point is referenced by past deliveries and cannot be deleted. Deactivate it instead.",
+  "payment_account_in_use": "This account is referenced by past payments or transactions and cannot be deleted. Deactivate it instead.",
   "cart_empty": "Your cart is empty.",
   "invalid_delivery_mode": "Invalid delivery mode.",
   "delivery_zone_required": "Pick a delivery zone for home delivery.",
