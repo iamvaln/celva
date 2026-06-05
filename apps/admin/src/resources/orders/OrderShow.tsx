@@ -32,7 +32,7 @@ import {
   Typography,
 } from '@mui/material';
 import type { OrderStatus } from '@celva/shared';
-import type { AdminOrderDetail } from '../../types';
+import type { AdminOrderDetail, PaymentAccount } from '../../types';
 import { fetchJson } from '../../http';
 import { API_BASE, STORAGE_KEYS } from '../../config';
 import { ORDER_STATUS_COLOR, PAYMENT_STATUS_COLOR } from './statusColors';
@@ -273,6 +273,9 @@ const DownloadInvoiceButton = () => {
  * the Payment COMPLETED, books an INCOME/SALE transaction, and produces the
  * invoice row.
  */
+/** Real payment methods selectable at encashment (spec §5.5). */
+const ENCASHMENT_METHODS = ['CASH_ON_DELIVERY', 'ORANGE_MONEY', 'MTN_MOMO'] as const;
+
 const ConfirmCashPaymentButton = () => {
   const record = useRecordContext<AdminOrderDetail>();
   const notify = useNotify();
@@ -280,6 +283,34 @@ const ConfirmCashPaymentButton = () => {
   const translate = useTranslate();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [accounts, setAccounts] = useState<PaymentAccount[]>([]);
+  const [method, setMethod] = useState<string>('CASH_ON_DELIVERY');
+  const [accountId, setAccountId] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
+
+  const due = record ? Number(record.total) : 0;
+
+  // Load active encashment accounts + seed the form when the dialog opens.
+  useEffect(() => {
+    if (!open) return;
+    setMethod(record?.payment?.method ?? 'CASH_ON_DELIVERY');
+    setAmount(String(due));
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { body } = await fetchJson<PaymentAccount[]>(`${API_BASE}/payment-accounts`);
+        if (cancelled) return;
+        const active = body.filter((a) => a.isActive);
+        setAccounts(active);
+        setAccountId(active[0]?.id ?? '');
+      } catch {
+        if (!cancelled) setAccounts([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, record, due]);
 
   if (
     !record ||
@@ -296,7 +327,11 @@ const ConfirmCashPaymentButton = () => {
       setBusy(true);
       await fetchJson(`${API_BASE}/payments/${paymentId}/confirm`, {
         method: 'POST',
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          method,
+          paymentAccountId: accountId || undefined,
+          actualAmount: amount === '' ? undefined : Number(amount),
+        }),
       });
       notify('resources.orders.notifications.cash_payment_confirmed', { type: 'success' });
       setOpen(false);
@@ -310,6 +345,8 @@ const ConfirmCashPaymentButton = () => {
     }
   };
 
+  const discrepancy = amount === '' ? 0 : Number(amount) - due;
+
   return (
     <>
       <Button
@@ -321,14 +358,80 @@ const ConfirmCashPaymentButton = () => {
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
         <DialogTitle>{translate('resources.orders.actions.confirm_cash_payment')}</DialogTitle>
         <DialogContent>
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            {translate('resources.orders.dialogs.confirm_cash_payment_warning')}
-          </Typography>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            {/* Amount due, shown large for whoever collects */}
+            <Box>
+              <Typography variant="overline" color="text.secondary">
+                {translate('resources.orders.dialogs.amount_due')}
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: 600 }}>
+                {formatXAF(due)}
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography variant="caption" color="text.secondary">
+                {translate('resources.orders.dialogs.real_method')}
+              </Typography>
+              <Select
+                fullWidth
+                size="small"
+                value={method}
+                onChange={(e) => setMethod(e.target.value)}
+              >
+                {ENCASHMENT_METHODS.map((m) => (
+                  <MenuItem key={m} value={m}>
+                    {translate(`resources.orders.payment_methods.${m}`)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+
+            <Box>
+              <Typography variant="caption" color="text.secondary">
+                {translate('resources.orders.dialogs.encashment_account')}
+              </Typography>
+              <Select
+                fullWidth
+                size="small"
+                value={accountId}
+                onChange={(e) => setAccountId(e.target.value)}
+                displayEmpty
+              >
+                {accounts.length === 0 && (
+                  <MenuItem value="" disabled>
+                    {translate('resources.orders.dialogs.no_account')}
+                  </MenuItem>
+                )}
+                {accounts.map((a) => (
+                  <MenuItem key={a.id} value={a.id}>
+                    {a.name} · {a.type}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+
+            <MuiTextField
+              label={translate('resources.orders.dialogs.amount_collected')}
+              type="number"
+              size="small"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              fullWidth
+            />
+            {discrepancy !== 0 && (
+              <Typography variant="caption" color="warning.main">
+                {translate('resources.orders.dialogs.discrepancy', {
+                  amount: formatXAF(discrepancy),
+                })}
+              </Typography>
+            )}
+          </Stack>
         </DialogContent>
         <DialogActions>
           <MuiButton onClick={() => setOpen(false)}>{translate('ra.action.cancel')}</MuiButton>
           <MuiButton variant="contained" color="success" disabled={busy} onClick={submit}>
-            {translate('ra.action.confirm')}
+            {translate('resources.orders.actions.confirm_encashment')}
           </MuiButton>
         </DialogActions>
       </Dialog>
