@@ -384,12 +384,14 @@ const celvaFr = {
         total: 'Total commande',
         actualCost: 'Coût réel (coursier)',
         trackingNote: 'Note logistique',
+        receiptUrl: 'Reçu de course',
         timestamps: 'Horodatages',
         createdAt: 'Créée le',
         updatedAt: 'Mise à jour le',
       },
       helpers: {
         actual_cost: 'Montant payé au coursier (interne). Sert à calculer la marge — jamais exposé au client.',
+        receipt_url: 'Reçu de course (taxi/carburant) pour la livraison par l’équipe. Interne, non exposé au client.',
       },
       actions: {
         transition: 'Avancer le statut',
@@ -1023,12 +1025,14 @@ const celvaEn = {
         total: 'Order total',
         actualCost: 'Actual cost (courier)',
         trackingNote: 'Logistics note',
+        receiptUrl: 'Course receipt',
         timestamps: 'Timestamps',
         createdAt: 'Created at',
         updatedAt: 'Updated at',
       },
       helpers: {
         actual_cost: "What the courier was paid (internal). Used for margin calc — never exposed to the customer.",
+        receipt_url: 'Course receipt (taxi/fuel) for a staff delivery. Internal, not exposed to the customer.',
       },
       actions: {
         transition: 'Advance status',

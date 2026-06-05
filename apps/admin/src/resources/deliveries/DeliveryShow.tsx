@@ -166,6 +166,7 @@ const EditMetadataButton = () => {
   const [open, setOpen] = useState(false);
   const [cost, setCost] = useState('');
   const [note, setNote] = useState('');
+  const [receipt, setReceipt] = useState('');
   const [busy, setBusy] = useState(false);
 
   if (!record) return null;
@@ -173,16 +174,18 @@ const EditMetadataButton = () => {
   const openDialog = () => {
     setCost(String(Number(record.actualCost) || 0));
     setNote(record.trackingNote ?? '');
+    setReceipt(record.receiptUrl ?? '');
     setOpen(true);
   };
 
   const submit = async () => {
     try {
       setBusy(true);
-      const body: { actualCost?: number; trackingNote?: string } = {};
+      const body: { actualCost?: number; trackingNote?: string; receiptUrl?: string } = {};
       const parsed = Number(cost);
       if (Number.isFinite(parsed)) body.actualCost = parsed;
       body.trackingNote = note;
+      body.receiptUrl = receipt;
       await fetchJson(`${API_BASE}/deliveries/${record.id}`, {
         method: 'PATCH',
         body: JSON.stringify(body),
@@ -228,6 +231,14 @@ const EditMetadataButton = () => {
               minRows={2}
               inputProps={{ maxLength: 500 }}
               helperText={translate('resources.deliveries.dialogs.note_hint')}
+            />
+            <MuiTextField
+              label={translate('resources.deliveries.fields.receiptUrl')}
+              value={receipt}
+              onChange={(e) => setReceipt(e.target.value)}
+              fullWidth
+              inputProps={{ maxLength: 500 }}
+              helperText={translate('resources.deliveries.helpers.receipt_url')}
             />
           </Stack>
         </DialogContent>
@@ -494,6 +505,19 @@ export const DeliveryShow = () => (
       </Labeled>
       <Labeled label="resources.deliveries.fields.actualCost">
         <FunctionField<Delivery> render={(record) => formatXAF(record.actualCost)} />
+      </Labeled>
+      <Labeled label="resources.deliveries.fields.receiptUrl">
+        <FunctionField<Delivery>
+          render={(record) =>
+            record.receiptUrl ? (
+              <a href={record.receiptUrl} target="_blank" rel="noreferrer">
+                {record.receiptUrl}
+              </a>
+            ) : (
+              '—'
+            )
+          }
+        />
       </Labeled>
       <Labeled label="resources.deliveries.fields.timestamps">
         <Timestamps />
