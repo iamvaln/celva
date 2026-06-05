@@ -20,4 +20,13 @@ export class UpdateDeliveryDto {
   @IsString()
   @MaxLength(500)
   trackingNote?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Course receipt for a staff delivery (taxi/fuel) — URL/key, admin-internal. (R2 upload deferred; URL stored as-is.)',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  receiptUrl?: string;
 }
