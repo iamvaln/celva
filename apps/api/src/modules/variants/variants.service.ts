@@ -92,6 +92,7 @@ export class VariantsService {
           stock: 0,
           consignedStock: 0,
           priceOverride: dto.priceOverride,
+          storageLocation: dto.storageLocation ?? null,
           isActive: dto.isActive ?? true,
           productId: dto.productId,
           attributeValues: {
@@ -133,6 +134,7 @@ export class VariantsService {
       data: {
         ...(dto.sku !== undefined ? { sku: dto.sku } : {}),
         ...(dto.priceOverride !== undefined ? { priceOverride: dto.priceOverride } : {}),
+        ...(dto.storageLocation !== undefined ? { storageLocation: dto.storageLocation } : {}),
         ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
       },
     });
