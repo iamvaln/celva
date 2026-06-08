@@ -69,6 +69,7 @@ export type AuthResult = {
     phone: string | null;
     isActive: boolean;
     locale: string;
+    mustChangePassword: boolean;
     createdAt: Date;
   };
 };
@@ -209,6 +210,7 @@ export class AuthService {
         role: true,
         isActive: true,
         locale: true,
+        mustChangePassword: true,
         createdAt: true,
       },
     });
@@ -255,7 +257,11 @@ export class AuthService {
       throw new BadRequestException('errors.current_password_invalid');
     }
     const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
-    await this.prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+    // Clear mustChangePassword: the user has now set their own password.
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash, mustChangePassword: false },
+    });
     await this.tokens.revokeAllRefreshTokens(userId);
   }
 
@@ -479,6 +485,7 @@ export class AuthService {
         role: true,
         isActive: true,
         locale: true,
+        mustChangePassword: true,
         createdAt: true,
       },
     });

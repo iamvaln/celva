@@ -22,6 +22,7 @@ async function main(): Promise<void> {
       name: 'Celva Admin',
       role: UserRole.ADMIN,
       passwordHash,
+      mustChangePassword: true,
     },
     update: {},
   });

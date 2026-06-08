@@ -11,6 +11,18 @@ const celvaFr = {
     toggle_theme: 'Basculer thème clair / sombre',
     toggle_locale: 'Changer de langue',
   },
+  change_password: {
+    title: 'Changer votre mot de passe',
+    body: 'Choisissez un nouveau mot de passe pour votre compte.',
+    forced_body:
+      'Pour des raisons de sécurité, vous devez changer votre mot de passe avant de continuer.',
+    current: 'Mot de passe actuel',
+    new: 'Nouveau mot de passe',
+    confirm: 'Confirmer le nouveau mot de passe',
+    submit: 'Changer le mot de passe',
+    success: 'Mot de passe changé.',
+    mismatch: 'La confirmation ne correspond pas au nouveau mot de passe.',
+  },
   menu: {
     dashboard: 'Tableau de bord',
     sales: 'Ventes',
@@ -689,6 +701,18 @@ const celvaEn = {
     only_admin_or_manager: 'Only ADMIN and MANAGER roles may sign in here.',
     toggle_theme: 'Toggle light / dark theme',
     toggle_locale: 'Switch language',
+  },
+  change_password: {
+    title: 'Change your password',
+    body: 'Pick a new password for your account.',
+    forced_body:
+      'For security reasons you must change your password before you can continue.',
+    current: 'Current password',
+    new: 'New password',
+    confirm: 'Confirm new password',
+    submit: 'Change password',
+    success: 'Password changed.',
+    mismatch: "Confirmation doesn't match the new password.",
   },
   menu: {
     dashboard: 'Dashboard',
