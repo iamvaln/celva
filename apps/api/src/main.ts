@@ -13,6 +13,7 @@ import cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import type { Env } from './config/env';
+import { requireEnv } from './common/env';
 
 async function bootstrap(): Promise<void> {
   const sentryDsn = process.env.SENTRY_DSN;
@@ -20,7 +21,7 @@ async function bootstrap(): Promise<void> {
     Sentry.init({
       dsn: sentryDsn,
       integrations: [nodeProfilingIntegration()],
-      tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE ?? '0.1'),
+      tracesSampleRate: Number(requireEnv('SENTRY_TRACES_SAMPLE_RATE')),
       profilesSampleRate: 1.0,
       environment: process.env.NODE_ENV,
     });

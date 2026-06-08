@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { AnnounceBar } from '@/components/AnnounceBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { SITE_URL } from '@/lib/structured-data';
 import { CookieBanner } from '@/components/CookieBanner';
 import { FabWhatsapp } from '@/components/FabWhatsapp';
 import { JsonLd } from '@/components/JsonLd';
@@ -36,9 +37,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'meta' });
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://celva.store';
   return {
-    metadataBase: new URL(siteUrl),
+    metadataBase: new URL(SITE_URL),
     title: { default: t('title'), template: t('title_template') },
     description: t('description'),
     alternates: {
@@ -51,7 +51,7 @@ export async function generateMetadata({
       siteName: 'Celva',
       locale: locale === 'fr' ? 'fr_FR' : 'en_US',
       type: 'website',
-      url: siteUrl,
+      url: SITE_URL,
     },
     twitter: { card: 'summary_large_image', title: t('title'), description: t('description') },
     robots: { index: true, follow: true },

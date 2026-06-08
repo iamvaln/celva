@@ -35,7 +35,7 @@ cd apps/api && npx prisma migrate dev && npx tsx prisma/seed.ts
 npx turbo run dev                # boots api + admin + storefront
 ```
 
-Default admin credentials after seed: **admin@celva.store** / **ChangeMe123!** — change on first login.
+Seed bootstrap uses `SEED_ADMIN_EMAIL` + `SEED_ADMIN_PASSWORD` from `apps/api/.env` (no defaults in code). The seeded admin is forced to change the password on first sign-in.
 
 ## Scripts
 
