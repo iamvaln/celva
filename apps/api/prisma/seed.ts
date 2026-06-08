@@ -1,15 +1,18 @@
 import { PrismaClient, UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { BCRYPT_ROUNDS, SETTING_KEYS, TAX_RATE_CAMEROON } from '@celva/shared';
+import { requireEnv } from '../src/common/env';
 
 const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
   console.log('🌱 Seeding Celva database...');
 
-  // 1) Admin user
-  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? 'admin@celva.store';
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? 'ChangeMe123!';
+  // 1) Admin user — both vars required (no fallback). The admin row is
+  // also marked mustChangePassword: true so the operator is forced to set
+  // their own password on first sign-in.
+  const adminEmail = requireEnv('SEED_ADMIN_EMAIL');
+  const adminPassword = requireEnv('SEED_ADMIN_PASSWORD');
   const passwordHash = await bcrypt.hash(adminPassword, BCRYPT_ROUNDS);
 
   const admin = await prisma.user.upsert({
@@ -23,9 +26,6 @@ async function main(): Promise<void> {
     update: {},
   });
   console.log(`  ✓ Admin user: ${admin.email}`);
-  if (adminPassword === 'ChangeMe123!') {
-    console.log('  ⚠  Default admin password is "ChangeMe123!" — change immediately after first login.');
-  }
 
   // 2) Default settings
   const settings: Array<{ key: string; value: string; label: { fr: string; en: string } }> = [
@@ -41,7 +41,7 @@ async function main(): Promise<void> {
     { key: SETTING_KEYS.CONTACT_PHONE, value: '+237000000000', label: { fr: 'Téléphone', en: 'Phone' } },
     { key: SETTING_KEYS.CONTACT_WHATSAPP, value: '+237000000000', label: { fr: 'WhatsApp', en: 'WhatsApp' } },
     { key: SETTING_KEYS.FREE_DELIVERY_ENABLED, value: 'true', label: { fr: 'Livraison gratuite activée', en: 'Free delivery enabled' } },
-    { key: SETTING_KEYS.R2_BUCKET_URL, value: process.env.R2_PUBLIC_URL ?? 'https://media.celva.store', label: { fr: 'URL publique R2', en: 'R2 public URL' } },
+    { key: SETTING_KEYS.R2_BUCKET_URL, value: requireEnv('R2_PUBLIC_URL'), label: { fr: 'URL publique R2', en: 'R2 public URL' } },
   ];
 
   for (const s of settings) {

@@ -3,7 +3,13 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
-const API_TARGET = process.env.API_INTERNAL_URL ?? 'http://localhost:3001';
+// No fallback — every var must come from .env (see apps/storefront/.env.example).
+const API_TARGET = process.env.API_INTERNAL_URL;
+if (!API_TARGET) {
+  throw new Error(
+    'API_INTERNAL_URL is required. Copy apps/storefront/.env.example to apps/storefront/.env and fill it in.',
+  );
+}
 
 const config: NextConfig = {
   reactStrictMode: true,
