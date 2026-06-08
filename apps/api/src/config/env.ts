@@ -18,13 +18,16 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET must be at least 32 chars'),
   JWT_REFRESH_EXPIRATION: z.string(),
 
+  // All R2 / Cloudflare Images vars are feature-gating: when absent, storage
+  // degrades to the local filesystem (see storage.module.ts). Dev/CI run on
+  // the local folder, so none of these are required to boot.
   R2_ACCOUNT_ID: z.string().optional(),
   R2_ACCESS_KEY_ID: z.string().optional(),
   R2_SECRET_ACCESS_KEY: z.string().optional(),
-  R2_BUCKET_NAME: z.string(),
+  R2_BUCKET_NAME: z.string().optional(),
   R2_PUBLIC_URL: z.string().url().optional(),
   R2_ENDPOINT: z.string().url().optional(),
-  CF_IMAGES_BASE_URL: z.string().url(),
+  CF_IMAGES_BASE_URL: z.string().url().optional(),
 
   CORS_ORIGINS: z.string(),
   COOKIE_SECRET: z.string().min(32),
