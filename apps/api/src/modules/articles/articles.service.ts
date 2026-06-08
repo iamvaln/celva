@@ -177,12 +177,18 @@ export class ArticlesService {
 
     const sortBy = query.sortBy ?? 'publishedAt';
     const sortDir = query.sortDir ?? 'desc';
+    // `{ sort, nulls }` is only valid on nullable columns — publishedAt is
+    // nullable, createdAt/updatedAt are not (Prisma rejects nulls on them).
+    const orderClause =
+      sortBy === 'publishedAt'
+        ? { [sortBy]: { sort: sortDir, nulls: 'last' as const } }
+        : { [sortBy]: sortDir };
 
     const [data, total] = await this.prisma.$transaction([
       this.prisma.article.findMany({
         where,
         include: PUBLIC_INCLUDE,
-        orderBy: [{ [sortBy]: { sort: sortDir, nulls: 'last' } }, { id: 'asc' }],
+        orderBy: [orderClause, { id: 'asc' }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
