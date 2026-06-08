@@ -103,7 +103,12 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
       fallbackLanguage: 'fr',
       loaderOptions: {
         path: join(__dirname, 'i18n'),
-        watch: process.env.NODE_ENV !== 'production',
+        // Only watch translations in true development. The previous
+        // `!== 'production'` was too permissive: running `node dist/src/main.js`
+        // with NODE_ENV unset left the watcher active, and a concurrent
+        // `nest build` (deleteOutDir: true) would wipe dist/src/i18n/ under
+        // it and crash with ENOENT mid-request.
+        watch: process.env.NODE_ENV === 'development',
       },
       resolvers: [
         new QueryResolver(['lang', 'l']),
