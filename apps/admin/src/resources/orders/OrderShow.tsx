@@ -502,27 +502,31 @@ const OrderDetailSkin = () => {
         <div className="grid">
           <div className="info-card">
             <h4>Articles</h4>
-            {record.items.map((it) => (
-              <div className="item-line" key={it.id}>
-                <div className="ithumb">
-                  <Inventory2Icon sx={{ fontSize: 20 }} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="iname">{it.variant.product.name.fr}</div>
-                  <div className="ivar">{it.variant.sku}</div>
-                  <div className="iqty">
-                    Qté {it.quantity}
-                    {it.variant.storageLocation && (
-                      <>
-                        {' · '}
-                        <span className="iloc">📍 {it.variant.storageLocation}</span>
-                      </>
-                    )}
+            {/* The list-view record is hydrated first (items lack `variant`)
+                before getOne completes — render only fully-loaded items. */}
+            {record.items
+              .filter((it) => it.variant)
+              .map((it) => (
+                <div className="item-line" key={it.id}>
+                  <div className="ithumb">
+                    <Inventory2Icon sx={{ fontSize: 20 }} />
                   </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="iname">{it.variant.product?.name?.fr ?? it.variant.sku}</div>
+                    <div className="ivar">{it.variant.sku}</div>
+                    <div className="iqty">
+                      Qté {it.quantity}
+                      {it.variant.storageLocation && (
+                        <>
+                          {' · '}
+                          <span className="iloc">📍 {it.variant.storageLocation}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="iprice num">{fmtFCFA(Number(it.unitPrice) * it.quantity)}</div>
                 </div>
-                <div className="iprice num">{fmtFCFA(it.lineTotal)}</div>
-              </div>
-            ))}
+              ))}
             <div className="divider" style={{ margin: '8px 0' }} />
             <div className="fin-line">
               <span className="k muted">Sous-total</span>
@@ -595,7 +599,7 @@ const OrderDetailSkin = () => {
               <KV k="Mode" v={DELIVERY_MODE_LABEL[d.mode] ?? d.mode} />
               {d.pickupPoint && <KV k="Point" v={d.pickupPoint.name.fr} />}
               {d.shippingAddress && <KV k="Adresse" v={d.shippingAddress} />}
-              <KV k="Frais" v={fmtFCFA(d.fee)} />
+              <KV k="Frais" v={fmtFCFA(record.deliveryFee)} />
               {record.status === 'READY' && (
                 <div className="note" style={{ marginTop: 8, fontStyle: 'italic' }}>
                   Le livreur sera assigné à l’acheminement.

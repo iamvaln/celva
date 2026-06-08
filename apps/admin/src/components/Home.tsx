@@ -46,9 +46,29 @@ const CHANNEL_LABEL: Record<string, string> = {
   IN_PERSON: 'En personne',
 };
 
+// Each list endpoint validates sortBy against an allow-list (and rejects the
+// default "id"), so count queries must request a field the resource accepts.
+const SAFE_SORT: Record<string, string> = {
+  orders: 'createdAt',
+  deliveries: 'createdAt',
+  'purchase-orders': 'createdAt',
+  'production-orders': 'createdAt',
+  articles: 'createdAt',
+  consignments: 'createdAt',
+  products: 'createdAt',
+  'raw-materials': 'name',
+  categories: 'sortOrder',
+  collections: 'sortOrder',
+  suppliers: 'name',
+};
+
 /** Count helper — one cheap (perPage:1) list call, returns the server total. */
 const useTotal = (resource: string, filter: Record<string, unknown> = {}): number | undefined => {
-  const { total } = useGetList(resource, { filter, pagination: { page: 1, perPage: 1 } });
+  const { total } = useGetList(resource, {
+    filter,
+    pagination: { page: 1, perPage: 1 },
+    sort: { field: SAFE_SORT[resource] ?? 'createdAt', order: 'DESC' },
+  });
   return total;
 };
 
@@ -165,6 +185,7 @@ export const Home = () => {
   const { data: lowStock = [] } = useGetList<RawMaterial>('raw-materials', {
     filter: { lowStock: 'true' },
     pagination: { page: 1, perPage: 3 },
+    sort: { field: 'name', order: 'ASC' },
   });
 
   // Finance KPIs + sales trend.
