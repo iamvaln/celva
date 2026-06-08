@@ -1,4 +1,5 @@
-import { Admin, Resource } from 'react-admin';
+import { Admin, CustomRoutes, Resource } from 'react-admin';
+import { Route } from 'react-router-dom';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CategoryIcon from '@mui/icons-material/Category';
@@ -34,6 +35,7 @@ import { celvaLightTheme, celvaDarkTheme } from './theme';
 import { CelvaLogin } from './components/CelvaLogin';
 import { CelvaLayout } from './components/CelvaLayout';
 import { Home } from './components/Home';
+import { ChangePasswordPage } from './components/ChangePasswordPage';
 import { UserList } from './resources/users/UserList';
 import { UserEdit } from './resources/users/UserEdit';
 import { UserCreate } from './resources/users/UserCreate';
@@ -327,6 +329,9 @@ export const App = () => (
           list={TreasuryView}
           options={{ label: 'Trésorerie' }}
         />
+        <CustomRoutes>
+          <Route path="/change-password" element={<ChangePasswordPage />} />
+        </CustomRoutes>
       </>
     )}
   </Admin>

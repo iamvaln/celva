@@ -1,6 +1,7 @@
 import { AppBar, Layout, LocalesMenuButton, TitlePortal, ToggleThemeButton, type LayoutProps } from 'react-admin';
 import { Typography } from '@mui/material';
 import { CelvaMenu } from './CelvaMenu';
+import { ForcePasswordChangeGuard } from './ForcePasswordChangeGuard';
 
 const CelvaAppBar = () => (
   <AppBar
@@ -22,5 +23,8 @@ const CelvaAppBar = () => (
 );
 
 export const CelvaLayout = (props: LayoutProps) => (
-  <Layout {...props} appBar={CelvaAppBar} menu={CelvaMenu} />
+  <Layout {...props} appBar={CelvaAppBar} menu={CelvaMenu}>
+    <ForcePasswordChangeGuard />
+    {props.children}
+  </Layout>
 );

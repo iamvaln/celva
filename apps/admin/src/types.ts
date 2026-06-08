@@ -13,6 +13,8 @@ export type AdminUser = {
   phone?: string | null;
   role: UserRole;
   isActive: boolean;
+  /** When true, the user must change their password before doing anything else. */
+  mustChangePassword?: boolean;
   createdAt: string;
 };
 
