@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import { requireEnv } from './common/env';
 import { type MiddlewareConsumer, Module, type NestModule, ValidationPipe } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
@@ -66,7 +67,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     LoggerModule.forRootAsync({
       useFactory: () => ({
         pinoHttp: {
-          level: process.env.LOG_LEVEL ?? 'info',
+          level: requireEnv('LOG_LEVEL'),
           customProps: () => ({ service: 'celva-api' }),
           transport:
             process.env.NODE_ENV !== 'production'

@@ -1,4 +1,5 @@
 import { APP_SOURCE, type Locale } from '@celva/shared';
+import { requireEnv } from './env';
 
 /**
  * Server-side fetch helper. Talks to the API via the Next.js rewrite
@@ -10,7 +11,7 @@ import { APP_SOURCE, type Locale } from '@celva/shared';
  *          Next's rewrite forwards.
  */
 
-const SERVER_BASE = process.env.API_INTERNAL_URL ?? 'http://localhost:3001';
+const SERVER_BASE = requireEnv('API_INTERNAL_URL');
 
 type Envelope<T> = { data: T; requestId?: string };
 

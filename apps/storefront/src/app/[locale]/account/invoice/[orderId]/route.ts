@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAccessToken } from '@/lib/auth-cookies';
+import { requireEnv } from '@/lib/env';
 
 /**
  * Proxies GET /me/orders/:id/invoice from the API to the browser. We
@@ -18,7 +19,7 @@ export async function GET(
     return NextResponse.redirect(new URL(`/${locale}/login`, _request.url));
   }
 
-  const apiBase = process.env.API_INTERNAL_URL ?? 'http://localhost:3001';
+  const apiBase = requireEnv('API_INTERNAL_URL');
   const upstream = await fetch(
     `${apiBase}/api/v1/me/orders/${encodeURIComponent(orderId)}/invoice`,
     {

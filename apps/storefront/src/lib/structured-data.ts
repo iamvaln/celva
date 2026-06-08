@@ -1,9 +1,13 @@
 /**
  * schema.org structured-data builders (JSON-LD). Kept framework-agnostic —
  * each returns a plain object that <JsonLd> serializes.
+ *
+ * Exports SITE_URL as the single source of truth for the public origin —
+ * layout/robots/sitemap import from here. No fallback (see lib/env.ts).
  */
+import { requireEnv } from './env';
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://celva.store';
+export const SITE_URL = requireEnv('NEXT_PUBLIC_SITE_URL');
 
 const abs = (path: string): string =>
   path.startsWith('http') ? path : `${SITE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
