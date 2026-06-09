@@ -402,6 +402,36 @@ const ConfirmCashPaymentButton = () => {
   );
 };
 
+// Navigates into the préparation workflow (spec §5.3). For a CONFIRMED order
+// it first advances to PROCESSING ("Commencer"), then opens the prep screen.
+const PrepActionButton = () => {
+  const record = useRecordContext<AdminOrderDetail>();
+  const redirect = useRedirect();
+  const notify = useNotify();
+  const translate = useTranslate();
+  if (!record || (record.status !== 'CONFIRMED' && record.status !== 'PROCESSING')) return null;
+  const go = async () => {
+    try {
+      if (record.status === 'CONFIRMED') {
+        await fetchJson(`${API_BASE}/orders/${record.id}/transition`, {
+          method: 'POST',
+          body: JSON.stringify({ status: 'PROCESSING' }),
+        });
+      }
+      redirect(`/orders/${record.id}/prep`);
+    } catch (err) {
+      notify(err instanceof Error ? err.message : translate('ra.notification.http_error'), {
+        type: 'error',
+      });
+    }
+  };
+  return (
+    <button className="btn btn-primary btn-lg" onClick={go}>
+      {record.status === 'CONFIRMED' ? 'Commencer la préparation' : 'Reprendre la préparation'}
+    </button>
+  );
+};
+
 // ── Margin card (spec §12.7), brand-styled ──────────────────────────────
 type OrderMargin = { revenueHt: string; netMargin: string };
 
@@ -487,7 +517,11 @@ const OrderDetailSkin = () => {
         </div>
         <div className="dh-actions">
           <ConfirmCashPaymentButton />
-          {!TERMINAL.includes(record.status) && <TransitionButton />}
+          {record.status === 'CONFIRMED' || record.status === 'PROCESSING' ? (
+            <PrepActionButton />
+          ) : (
+            !TERMINAL.includes(record.status) && <TransitionButton />
+          )}
         </div>
       </div>
 

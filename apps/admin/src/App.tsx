@@ -36,6 +36,7 @@ import { CelvaLogin } from './components/CelvaLogin';
 import { CelvaLayout } from './components/CelvaLayout';
 import { Home } from './components/Home';
 import { ChangePasswordPage } from './components/ChangePasswordPage';
+import { OrderPrepScreen } from './resources/orders/OrderPrepScreen';
 import { UserList } from './resources/users/UserList';
 import { UserEdit } from './resources/users/UserEdit';
 import { UserCreate } from './resources/users/UserCreate';
@@ -331,6 +332,7 @@ export const App = () => (
         />
         <CustomRoutes>
           <Route path="/change-password" element={<ChangePasswordPage />} />
+          <Route path="/orders/:id/prep" element={<OrderPrepScreen />} />
         </CustomRoutes>
       </>
     )}
