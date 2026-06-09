@@ -432,6 +432,18 @@ const PrepActionButton = () => {
   );
 };
 
+// READY → opens the acheminement workflow (spec §5.4).
+const RouteActionButton = () => {
+  const record = useRecordContext<AdminOrderDetail>();
+  const redirect = useRedirect();
+  if (!record || record.status !== 'READY') return null;
+  return (
+    <button className="btn btn-primary btn-lg" onClick={() => redirect(`/orders/${record.id}/route`)}>
+      Assigner / acheminer
+    </button>
+  );
+};
+
 // ── Margin card (spec §12.7), brand-styled ──────────────────────────────
 type OrderMargin = { revenueHt: string; netMargin: string };
 
@@ -519,6 +531,8 @@ const OrderDetailSkin = () => {
           <ConfirmCashPaymentButton />
           {record.status === 'CONFIRMED' || record.status === 'PROCESSING' ? (
             <PrepActionButton />
+          ) : record.status === 'READY' ? (
+            <RouteActionButton />
           ) : (
             !TERMINAL.includes(record.status) && <TransitionButton />
           )}

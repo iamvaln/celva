@@ -345,6 +345,9 @@ const celvaFr = {
       prep: {
         marked_ready: 'Commande prête. Emballage déduit du stock.',
       },
+      route: {
+        done: 'Acheminement enregistré.',
+      },
       margin: {
         heading: 'Marge (HT)',
         revenue_ht: 'Revenu HT',
@@ -1002,6 +1005,9 @@ const celvaEn = {
       },
       prep: {
         marked_ready: 'Order ready. Packaging deducted from stock.',
+      },
+      route: {
+        done: 'Routing saved.',
       },
       margin: {
         heading: 'Margin (excl. VAT)',
