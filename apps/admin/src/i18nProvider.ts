@@ -342,6 +342,9 @@ const celvaFr = {
         invoice_failed: 'Impossible de télécharger la facture. La commande a-t-elle été payée ?',
         cash_payment_confirmed: 'Encaissement enregistré. Transaction et facture créées.',
       },
+      prep: {
+        marked_ready: 'Commande prête. Emballage déduit du stock.',
+      },
       margin: {
         heading: 'Marge (HT)',
         revenue_ht: 'Revenu HT',
@@ -996,6 +999,9 @@ const celvaEn = {
         cancelled: 'Order cancelled. Stock restored.',
         invoice_failed: "Couldn't download the invoice. Has the order been paid yet?",
         cash_payment_confirmed: 'Payment recorded. Transaction and invoice created.',
+      },
+      prep: {
+        marked_ready: 'Order ready. Packaging deducted from stock.',
       },
       margin: {
         heading: 'Margin (excl. VAT)',

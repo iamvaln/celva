@@ -338,3 +338,78 @@
 
 .celva-skin .fade-in { animation: celvaFadeUp 360ms ease; }
 @keyframes celvaFadeUp { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ============================================================
+   Workflow screens (préparation / acheminement)
+   ============================================================ */
+.celva-skin .flow-head { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+.celva-skin .flow-title { font-family: var(--font-display); font-size: 28px; font-weight: 500; color: var(--fg-strong); }
+
+/* preparation checklist */
+.celva-skin .prep-item {
+  display: flex; align-items: center; gap: 16px; padding: 16px 18px; width: 100%; text-align: left;
+  border: 1px solid var(--border-soft); background: var(--surface); cursor: pointer;
+  transition: background 140ms; user-select: none;
+}
+.celva-skin .prep-item + .prep-item { border-top: 0; }
+.celva-skin .prep-item.checked { background: color-mix(in oklab, var(--st-done) 8%, var(--surface)); }
+.celva-skin .prep-item .pcheck { width: 28px; height: 28px; border: 1.5px solid var(--border); flex-shrink: 0; display: grid; place-items: center; color: transparent; transition: all 140ms; }
+.celva-skin .prep-item.checked .pcheck { background: var(--st-done); border-color: var(--st-done); color: #fff; }
+.celva-skin .prep-item .pthumb { width: 48px; height: 60px; background: var(--bg-sunk); border: 1px solid var(--border-soft); object-fit: cover; flex-shrink: 0; display: grid; place-items: center; color: var(--fg-muted); }
+.celva-skin .prep-item .pname { font-size: 16px; font-weight: 500; }
+.celva-skin .prep-item.checked .pname { text-decoration: line-through; text-decoration-color: color-mix(in oklab, var(--fg-muted) 50%, transparent); color: var(--fg-muted); }
+.celva-skin .prep-item .pvar { font-size: 13px; color: var(--fg-muted); margin-top: 2px; }
+.celva-skin .prep-item .ploc { margin-left: auto; text-align: right; }
+.celva-skin .prep-item .ploc .lbl { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); }
+.celva-skin .prep-item .ploc .val { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--accent); }
+.celva-skin .prep-item .psku { font-size: 12px; color: var(--fg-muted); font-family: var(--font-display); letter-spacing: 0.04em; }
+
+/* packaging picker */
+.celva-skin .pack-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border: 1px solid var(--border-soft); }
+.celva-skin .pack-row + .pack-row { border-top: 0; }
+.celva-skin .pack-row .pkname { flex: 1; }
+.celva-skin .pack-row .pkstock { font-size: 12.5px; color: var(--fg-muted); }
+.celva-skin .qty-step { display: inline-flex; align-items: center; border: 1px solid var(--border); }
+.celva-skin .qty-step button { width: 34px; height: 34px; display: grid; place-items: center; color: var(--fg); background: none; border: 0; cursor: pointer; }
+.celva-skin .qty-step button:hover { background: var(--bg-sunk); }
+.celva-skin .qty-step .qv { min-width: 38px; text-align: center; font-family: var(--font-display); font-weight: 600; }
+
+/* routing modes */
+.celva-skin .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 760px) { .celva-skin .mode-grid { grid-template-columns: 1fr; } }
+.celva-skin .mode-card {
+  text-align: left; display: flex; gap: 14px; align-items: flex-start; width: 100%; cursor: pointer;
+  padding: 18px; border: 1.5px solid var(--border-soft); background: var(--surface);
+  transition: border-color 160ms, background 160ms;
+}
+.celva-skin .mode-card:hover { border-color: var(--fg-muted); }
+.celva-skin .mode-card.sel { border-color: var(--accent); background: color-mix(in oklab, var(--accent) 7%, var(--surface)); }
+.celva-skin .mode-card .micon { width: 40px; height: 40px; display: grid; place-items: center; flex-shrink: 0; background: var(--bg-sunk); color: var(--fg); }
+.celva-skin .mode-card.sel .micon { background: var(--accent); color: var(--cream); }
+.celva-skin .mode-card .mtitle { font-size: 16.5px; font-weight: 600; }
+.celva-skin .mode-card .mtag { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-left: 6px; }
+.celva-skin .mode-card .mdesc { font-size: 13.5px; color: var(--fg-muted); margin-top: 4px; line-height: 1.35; }
+
+/* fields */
+.celva-skin .field { display: block; margin-bottom: 16px; }
+.celva-skin .field > label { display: block; font-size: 13px; color: var(--fg-muted); margin-bottom: 7px; letter-spacing: 0.02em; }
+.celva-skin .field input[type=text], .celva-skin .field input[type=number], .celva-skin .field select {
+  width: 100%; padding: 10px 0; background: transparent; border: 0; color: var(--fg);
+  border-bottom: 1px solid var(--border); outline: none; font-size: 16px; font-family: var(--font-body); transition: border-color 160ms;
+}
+.celva-skin .field input:focus, .celva-skin .field select:focus { border-bottom-color: var(--accent); }
+
+.celva-skin .net-box { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px; background: var(--bg-sunk); border: 1px solid var(--border-soft); }
+.celva-skin .net-box .nl { font-size: 14px; color: var(--fg-muted); }
+.celva-skin .net-box .nv { font-family: var(--font-display); font-size: 22px; font-weight: 600; }
+.celva-skin .net-pos { color: var(--st-done); }
+.celva-skin .net-neg { color: var(--st-urgent); }
+
+.celva-skin .receipt-slot {
+  border: 1.5px dashed var(--border); padding: 18px; text-align: center; color: var(--fg-muted); width: 100%;
+  font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; background: none;
+  transition: border-color 160ms, color 160ms; font-family: var(--font-body);
+}
+.celva-skin .receipt-slot:hover { border-color: var(--accent); color: var(--accent); }
+
+.celva-skin .callout { padding: 14px 16px; background: var(--bg-sunk); border-left: 3px solid var(--accent); font-size: 14px; }
