@@ -300,7 +300,14 @@ const ConfirmCashPaymentButton = () => {
     };
   }, [open, record, due]);
 
-  if (!record || record.payment?.method !== 'CASH_ON_DELIVERY' || record.payment?.status !== 'PENDING') {
+  // Encashment is the delivery-time step (spec §5.5): only surface it once the
+  // order is en route (SHIPPED), so the detail keeps a single contextual action.
+  if (
+    !record ||
+    record.status !== 'SHIPPED' ||
+    record.payment?.method !== 'CASH_ON_DELIVERY' ||
+    record.payment?.status !== 'PENDING'
+  ) {
     return null;
   }
   const paymentId = record.payment.id;
