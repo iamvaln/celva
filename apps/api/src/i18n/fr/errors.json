@@ -80,6 +80,8 @@
   "payment_already_completed": "Ce paiement est déjà complété.",
   "payment_not_found": "Paiement introuvable.",
   "payment_account_not_found": "Le compte d'encaissement sélectionné n'existe pas.",
+  "delivery_not_routable": "Seule une commande prête peut être acheminée.",
+  "deliverer_not_found": "Le livreur sélectionné n'existe pas.",
   "payment_cash_no_retry": "Les paiements à la livraison se règlent hors ligne et ne peuvent pas être réessayés en ligne.",
   "invalid_order_transition": "Transition de statut de commande invalide.",
   "order_terminal": "Cette commande est dans un état terminal et ne peut plus changer.",
