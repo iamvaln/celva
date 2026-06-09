@@ -19,6 +19,7 @@ import {
   type AuthenticatedUser,
 } from '../../common/decorators/current-user.decorator';
 import { DeliveriesService } from './deliveries.service';
+import { AssignDeliveryDto } from './dto/assign-delivery.dto';
 import { ListDeliveriesQuery } from './dto/list-deliveries.query';
 import { TransitionDeliveryDto } from './dto/transition-delivery.dto';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
@@ -44,6 +45,21 @@ export class DeliveriesController {
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.deliveries.findByIdForAdmin(id);
+  }
+
+  @Post(':id/assign')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary:
+      'Acheminement (spec §5.4): set delivery mode + courier + real cost + course receipt. Delivery modes go en route (order SHIPPED) and book an EXPENSE/DELIVERY transaction; pickup modes stay READY. Allowed only from a READY order.',
+  })
+  @AuditLog({ action: 'STATUS_CHANGE', entity: 'Delivery', entityIdFrom: 'params.id' })
+  assign(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: AssignDeliveryDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.deliveries.assign(id, dto, user.id);
   }
 
   @Post(':id/transition')

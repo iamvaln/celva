@@ -80,6 +80,8 @@
   "payment_already_completed": "This payment is already completed.",
   "payment_not_found": "Payment not found.",
   "payment_account_not_found": "The selected encashment account does not exist.",
+  "delivery_not_routable": "Only a ready order can be routed.",
+  "deliverer_not_found": "The selected deliverer does not exist.",
   "payment_cash_no_retry": "Cash-on-delivery payments settle offline and cannot be retried online.",
   "invalid_order_transition": "Invalid order status transition.",
   "order_terminal": "This order has reached a terminal state and cannot change anymore.",

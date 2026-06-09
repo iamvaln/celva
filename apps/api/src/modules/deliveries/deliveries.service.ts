@@ -7,11 +7,15 @@ import {
 } from '@nestjs/common';
 import { Prisma, type Delivery } from '@prisma/client';
 import {
+  DELIVERY_MODE,
   DELIVERY_STATUS,
   ORDER_STATUS,
+  TRANSACTION_CATEGORY,
+  TRANSACTION_TYPE,
   type DeliveryMode,
   type DeliveryStatus,
 } from '@celva/shared';
+import type { AssignDeliveryDto } from './dto/assign-delivery.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import type { ListDeliveriesQuery } from './dto/list-deliveries.query';
 
@@ -216,6 +220,93 @@ export class DeliveriesService {
 
     if (Object.keys(data).length === 0) return delivery;
     return this.prisma.delivery.update({ where: { id }, data });
+  }
+
+  /**
+   * Acheminement (spec §5.4): set the delivery mode + courier + real cost +
+   * course receipt, advance the workflow, and — for the two delivery modes —
+   * book a Transaction EXPENSE/DELIVERY for the course/courier cost on the
+   * chosen payment account. Allowed only from a READY order.
+   *
+   *   STAFF_DELIVERY / HOME_DELIVERY → delivery IN_TRANSIT, order SHIPPED,
+   *     expense booked when actualCost > 0.
+   *   STORE_PICKUP / RELAY_PICKUP    → delivery ASSIGNED, order stays READY
+   *     (client notified it's ready to collect), no expense.
+   */
+  async assign(deliveryId: string, dto: AssignDeliveryDto, actorUserId: string): Promise<Delivery> {
+    const delivery = await this.prisma.delivery.findUnique({
+      where: { id: deliveryId },
+      include: { order: { select: { id: true, status: true, orderNumber: true } } },
+    });
+    if (!delivery) throw new NotFoundException('errors.not_found');
+    if (delivery.order.status !== ORDER_STATUS.READY) {
+      throw new BadRequestException('errors.delivery_not_routable');
+    }
+    if (dto.delivererId) {
+      const exists = await this.prisma.user.findUnique({
+        where: { id: dto.delivererId },
+        select: { id: true },
+      });
+      if (!exists) throw new BadRequestException('errors.deliverer_not_found');
+    }
+    if (dto.paymentAccountId) {
+      const exists = await this.prisma.paymentAccount.findUnique({
+        where: { id: dto.paymentAccountId },
+        select: { id: true },
+      });
+      if (!exists) throw new BadRequestException('errors.payment_account_not_found');
+    }
+
+    const isDelivery =
+      dto.mode === DELIVERY_MODE.STAFF_DELIVERY || dto.mode === DELIVERY_MODE.HOME_DELIVERY;
+    const cost = dto.actualCost != null ? new Prisma.Decimal(dto.actualCost) : new Prisma.Decimal(0);
+    const now = new Date();
+
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const d = await tx.delivery.update({
+        where: { id: deliveryId },
+        data: {
+          mode: dto.mode,
+          delivererId: dto.delivererId ?? undefined,
+          actualCost: cost,
+          receiptUrl:
+            dto.receiptUrl !== undefined ? dto.receiptUrl.trim() || null : undefined,
+          trackingNote:
+            dto.trackingNote !== undefined ? dto.trackingNote.trim() || null : undefined,
+          status: isDelivery ? DELIVERY_STATUS.IN_TRANSIT : DELIVERY_STATUS.ASSIGNED,
+          assignedAt: delivery.assignedAt ?? now,
+          pickedUpAt: isDelivery ? (delivery.pickedUpAt ?? now) : delivery.pickedUpAt,
+        },
+      });
+
+      if (isDelivery) {
+        await tx.order.update({
+          where: { id: delivery.order.id },
+          data: { status: ORDER_STATUS.SHIPPED },
+        });
+      }
+
+      if (isDelivery && cost.greaterThan(0)) {
+        await tx.transaction.create({
+          data: {
+            type: TRANSACTION_TYPE.EXPENSE,
+            category: TRANSACTION_CATEGORY.DELIVERY,
+            amount: cost,
+            description: `Acheminement ${dto.mode} · commande ${delivery.order.orderNumber}`,
+            orderId: delivery.order.id,
+            createdById: actorUserId,
+            paymentAccountId: dto.paymentAccountId ?? undefined,
+          },
+        });
+      }
+
+      return d;
+    });
+
+    this.logger.log(
+      `Delivery ${deliveryId} assigned (${dto.mode}); order ${delivery.order.orderNumber} ${isDelivery ? '→ SHIPPED' : 'stays READY'}`,
+    );
+    return updated;
   }
 
   // ── Customer (own only) ─────────────────────────────────────────────
