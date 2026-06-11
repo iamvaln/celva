@@ -511,3 +511,48 @@
 .celva-skin .empty-state .es-t { font-size: 17px; color: var(--fg); }
 .celva-skin .empty-state .es-s { font-size: 14px; color: var(--fg-muted); margin-top: 6px; }
 .celva-skin .empty-state .btn { margin-top: 16px; }
+
+/* ============================================================
+   Catalogue — product detail
+   ============================================================ */
+.celva-skin .prod-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; color: var(--fg-strong); line-height: 1.12; margin: 0; }
+.celva-skin .prod-detail .kv-line { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 16px; }
+.celva-skin .prod-detail .kv-line .k { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.celva-skin .prod-detail .kv-line .v { white-space: nowrap; }
+.celva-skin .detail-grid > .grid { min-width: 0; }
+
+.celva-skin .prod-overview { display: grid; grid-template-columns: 280px 1fr; gap: 24px; background: var(--surface); border: 1px solid var(--border-soft); padding: var(--card-pad); }
+@media (max-width: 720px) { .celva-skin .prod-overview { grid-template-columns: 1fr; } }
+.celva-skin .gallery { display: grid; gap: 10px; }
+.celva-skin .gal-main { aspect-ratio: 3 / 4; background: var(--bg-sunk); border: 1px solid var(--border-soft); overflow: hidden; display: grid; place-items: center; color: var(--border); }
+.celva-skin .gal-main img { width: 100%; height: 100%; object-fit: cover; }
+.celva-skin .gal-thumbs { display: flex; gap: 8px; }
+.celva-skin .gal-th { width: 54px; height: 68px; border: 1px solid var(--border-soft); overflow: hidden; padding: 0; opacity: 0.6; transition: opacity 140ms, border-color 140ms; background: var(--bg-sunk); }
+.celva-skin .gal-th img { width: 100%; height: 100%; object-fit: cover; }
+.celva-skin .gal-th.on { opacity: 1; border-color: var(--accent); }
+.celva-skin .po-text { min-width: 0; }
+.celva-skin .po-desc { font-size: 16px; line-height: 1.55; color: var(--fg); margin: 0; }
+.celva-skin .po-tags { margin-top: 20px; display: grid; gap: 14px; }
+.celva-skin .po-axis { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.celva-skin .po-axislbl { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-muted); min-width: 70px; }
+.celva-skin .po-vals { display: flex; gap: 6px; flex-wrap: wrap; }
+.celva-skin .po-val { font-size: 13.5px; padding: 4px 11px; border: 1px solid var(--border); color: var(--fg); }
+
+.celva-skin .vtable-wrap { overflow-x: auto; margin: 0 calc(-1 * var(--card-pad)) calc(-1 * var(--card-pad)); }
+.celva-skin .vtable { width: 100%; border-collapse: collapse; }
+.celva-skin .vtable th { text-align: left; font-family: var(--font-body); font-weight: 600; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-muted); padding: 9px var(--card-pad); border-bottom: 1px solid var(--border); }
+.celva-skin .vtable th.rt { text-align: right; }
+.celva-skin .vtable td { padding: 11px var(--card-pad); border-bottom: 1px solid var(--border-soft); font-size: 14.5px; }
+.celva-skin .vtable tr:last-child td { border-bottom: 0; }
+.celva-skin .vtable td.rt { text-align: right; }
+.celva-skin .vtable .v-attr { font-weight: 500; color: var(--fg-strong); white-space: nowrap; }
+.celva-skin .vtable .v-sku { font-family: var(--font-display); letter-spacing: 0.04em; color: var(--fg-muted); font-size: 13.5px; white-space: nowrap; }
+.celva-skin .vtable tr.v-out { background: color-mix(in oklab, var(--st-urgent) 6%, transparent); }
+.celva-skin .vtable tr.v-low { background: color-mix(in oklab, var(--st-todo) 5%, transparent); }
+.celva-skin .stock-chip { display: inline-grid; place-items: center; min-width: 30px; padding: 2px 8px; font-family: var(--font-display); font-weight: 600; background: color-mix(in oklab, var(--st-done) 15%, var(--surface)); color: color-mix(in oklab, var(--st-done) 60%, var(--fg)); border: 1px solid color-mix(in oklab, var(--st-done) 30%, transparent); }
+.celva-skin .stock-chip.low { background: color-mix(in oklab, var(--st-todo) 16%, var(--surface)); color: color-mix(in oklab, var(--st-todo) 62%, var(--fg)); border-color: color-mix(in oklab, var(--st-todo) 32%, transparent); }
+.celva-skin .stock-chip.zero { background: color-mix(in oklab, var(--st-urgent) 14%, var(--surface)); color: color-mix(in oklab, var(--st-urgent) 62%, var(--fg)); border-color: color-mix(in oklab, var(--st-urgent) 30%, transparent); }
+.celva-skin .v-ov { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-left: 7px; }
+.celva-skin .price-breakdown { font-size: 12.5px; color: var(--fg-muted); margin: -2px 0 6px; font-family: var(--font-display); letter-spacing: 0.02em; }
+.celva-skin .coll-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.celva-skin .coll-chip { font-size: 13px; padding: 5px 12px; background: var(--bg-sunk); border: 1px solid var(--border-soft); color: var(--fg); }

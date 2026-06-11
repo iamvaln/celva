@@ -45,6 +45,14 @@ export class ProductsController {
     return this.products.listForAdmin(query);
   }
 
+  @Get('admin/:id')
+  @ApiBearerAuth('access-token')
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MANAGER)
+  @ApiOperation({ summary: 'Admin product detail — category, images, attribute axes, variants.' })
+  findOneAdmin(@Param('id', ParseUUIDPipe) id: string) {
+    return this.products.findByIdForAdmin(id);
+  }
+
   @Get('by-slug/:slug')
   @Public()
   findBySlug(@Param('slug') slug: string) {
