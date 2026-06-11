@@ -454,3 +454,60 @@
 .celva-skin .receipt-slot:hover { border-color: var(--accent); color: var(--accent); }
 
 .celva-skin .callout { padding: 14px 16px; background: var(--bg-sunk); border-left: 3px solid var(--accent); font-size: 14px; }
+
+/* ============================================================
+   Catalogue — produits (summary strip, grid + list)
+   ============================================================ */
+.celva-skin .cat-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-soft); border: 1px solid var(--border-soft); margin-bottom: 22px; }
+@media (max-width: 760px) { .celva-skin .cat-summary { grid-template-columns: repeat(2, 1fr); } }
+.celva-skin .cs-item { background: var(--surface); padding: 16px 20px; }
+.celva-skin .cs-item .cs-v { font-family: var(--font-display); font-size: 26px; font-weight: 500; color: var(--fg-strong); line-height: 1; }
+.celva-skin .cs-item .cs-l { font-size: 12.5px; color: var(--fg-muted); margin-top: 6px; letter-spacing: 0.02em; }
+.celva-skin .cs-item.warn .cs-v { color: var(--st-todo); }
+
+.celva-skin .viewseg button { padding: 8px 12px; display: grid; place-items: center; }
+.celva-skin .seg.viewseg { display: inline-flex; border: 1px solid var(--border); background: var(--surface); }
+
+.celva-skin .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(218px, 1fr)); gap: var(--stack); }
+.celva-skin .prod-card { display: block; text-align: left; background: var(--surface); border: 1px solid var(--border-soft); overflow: hidden; padding: 0; width: 100%; cursor: pointer; transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease; }
+.celva-skin .prod-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); border-color: var(--border); }
+.celva-skin .prod-card.dim { opacity: 0.66; }
+.celva-skin .prod-card.dim:hover { opacity: 1; }
+.celva-skin .pc-media { position: relative; aspect-ratio: 3 / 4; background: var(--bg-sunk); overflow: hidden; display: grid; place-items: center; color: var(--border); }
+.celva-skin .pc-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms ease; }
+.celva-skin .prod-card:hover .pc-media img { transform: scale(1.04); }
+.celva-skin .pc-badge { position: absolute; top: 10px; left: 10px; }
+.celva-skin .pc-body { padding: 14px 16px 16px; }
+.celva-skin .pc-cat { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-muted); }
+.celva-skin .pc-name { font-family: var(--font-display); font-size: 17px; font-weight: 500; color: var(--fg-strong); margin-top: 5px; line-height: 1.2; }
+.celva-skin .pc-foot { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+.celva-skin .pc-price { font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--fg-strong); white-space: nowrap; }
+.celva-skin .pc-stock { font-size: 12.5px; color: var(--st-done); white-space: nowrap; }
+.celva-skin .pc-stock.low { color: var(--st-todo); }
+.celva-skin .pc-stock.zero { color: var(--st-urgent); }
+
+.celva-skin .prod-listwrap { border: 1px solid var(--border-soft); background: var(--surface); }
+.celva-skin .prod-row { display: grid; align-items: center; gap: 16px; grid-template-columns: 52px 1fr auto 120px 124px 22px; padding: 10px 18px 10px 12px; cursor: pointer; border-bottom: 1px solid var(--border-soft); transition: background 130ms ease; width: 100%; text-align: left; background: var(--surface); }
+.celva-skin .prod-row:last-child { border-bottom: 0; }
+.celva-skin .prod-row:hover { background: var(--bg-sunk); }
+.celva-skin .prod-row.dim { opacity: 0.62; }
+.celva-skin .prod-row.dim:hover { opacity: 1; }
+.celva-skin .pr-thumb { width: 52px; height: 66px; object-fit: cover; background: var(--bg-sunk); border: 1px solid var(--border-soft); display: grid; place-items: center; color: var(--border); }
+.celva-skin .pr-main { min-width: 0; }
+.celva-skin .pr-name { font-family: var(--font-display); font-size: 16.5px; font-weight: 500; color: var(--fg-strong); }
+.celva-skin .pr-sub { font-size: 13px; color: var(--fg-muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 3px; }
+.celva-skin .pr-sku { font-family: var(--font-display); letter-spacing: 0.04em; }
+.celva-skin .pr-stockcell { text-align: right; }
+.celva-skin .pr-stocknum { font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--fg-strong); line-height: 1; }
+.celva-skin .pr-stocknum.low { color: var(--st-todo); }
+.celva-skin .pr-stocknum.zero { color: var(--st-urgent); }
+.celva-skin .pr-stocklbl { font-size: 11.5px; color: var(--fg-muted); margin-top: 3px; }
+.celva-skin .pr-price { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--fg-strong); text-align: right; white-space: nowrap; }
+.celva-skin .pr-chev { color: var(--fg-muted); display: grid; place-items: center; }
+
+/* shared empty state */
+.celva-skin .empty-state { text-align: center; padding: 52px 20px; }
+.celva-skin .empty-state .es-ic { width: 52px; height: 52px; margin: 0 auto 14px; color: var(--border); display: grid; place-items: center; }
+.celva-skin .empty-state .es-t { font-size: 17px; color: var(--fg); }
+.celva-skin .empty-state .es-s { font-size: 14px; color: var(--fg-muted); margin-top: 6px; }
+.celva-skin .empty-state .btn { margin-top: 16px; }
