@@ -51,6 +51,7 @@ import { CategoryCreate } from './resources/categories/CategoryCreate';
 import { ProductList } from './resources/products/ProductList';
 import { ProductEdit } from './resources/products/ProductEdit';
 import { ProductCreate } from './resources/products/ProductCreate';
+import { ProductShow } from './resources/products/ProductShow';
 import { AttributeList } from './resources/product-attributes/AttributeList';
 import { AttributeEdit } from './resources/product-attributes/AttributeEdit';
 import { AttributeCreate } from './resources/product-attributes/AttributeCreate';
@@ -147,6 +148,7 @@ export const App = () => (
           list={ProductList}
           edit={ProductEdit}
           create={ProductCreate}
+          show={ProductShow}
         />
         <Resource
           name="attributes"

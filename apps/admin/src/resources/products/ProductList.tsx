@@ -92,7 +92,7 @@ export const ProductList = () => {
     };
   }, []);
 
-  const open = (id: string) => redirect('edit', 'products', id);
+  const open = (id: string) => redirect('show', 'products', id);
 
   const filtered = useMemo(() => {
     const tabDef = TABS.find((tt) => tt.id === tab) ?? TABS[0]!;
