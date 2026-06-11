@@ -126,6 +126,66 @@ export class ProductsService {
     return product;
   }
 
+  /**
+   * Admin product detail (redesign): product + category + ordered images +
+   * attribute axes + variants with their attribute values resolved to a
+   * { attributeName: value } map (for the variants table columns).
+   */
+  async findByIdForAdmin(id: string) {
+    const p = await this.prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: { select: { id: true, name: true } },
+        images: {
+          orderBy: [{ isPrimary: 'desc' }, { position: 'asc' }],
+          select: { id: true, key: true, isPrimary: true, position: true },
+        },
+        attributes: {
+          orderBy: { sortOrder: 'asc' },
+          include: { values: { orderBy: { sortOrder: 'asc' }, select: { id: true, value: true } } },
+        },
+        variants: {
+          orderBy: { sku: 'asc' },
+          include: {
+            attributeValues: {
+              include: {
+                attribute: { select: { name: true } },
+                attributeValue: { select: { value: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!p) throw new NotFoundException('errors.not_found');
+
+    const variants = p.variants.map((v) => ({
+      id: v.id,
+      sku: v.sku,
+      stock: v.stock,
+      consignedStock: v.consignedStock,
+      priceOverride: v.priceOverride,
+      isActive: v.isActive,
+      storageLocation: v.storageLocation,
+      attributes: Object.fromEntries(
+        v.attributeValues.map((av) => [
+          (av.attribute.name as { fr?: string })?.fr ?? '',
+          (av.attributeValue.value as { fr?: string })?.fr ?? '',
+        ]),
+      ),
+    }));
+    const attributes = p.attributes.map((a) => ({
+      id: a.id,
+      name: a.name,
+      values: a.values.map((x) => x.value),
+    }));
+
+    const { variants: _v, attributes: _a, ...rest } = p;
+    void _v;
+    void _a;
+    return { ...rest, attributes, variants };
+  }
+
   async findBySlug(slug: string): Promise<Product> {
     const product = await this.prisma.product.findUnique({ where: { slug } });
     if (!product) throw new NotFoundException('errors.not_found');
