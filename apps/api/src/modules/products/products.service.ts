@@ -62,6 +62,64 @@ export class ProductsService {
     return { data, total, page, pageSize };
   }
 
+  /**
+   * Admin catalogue list (redesign): same filters as the public list but
+   * enriched with the primary image, variant count, and aggregated stock —
+   * the data the grid/list cards need. Kept off the public endpoint so
+   * inventory totals aren't exposed to the storefront.
+   */
+  async listForAdmin(query: ListProductsQuery) {
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? 24;
+
+    const where: Prisma.ProductWhereInput = {
+      ...(query.categoryId ? { categoryId: query.categoryId } : {}),
+      ...(query.productionType ? { productionType: query.productionType as ProductionType } : {}),
+      ...(query.isActive !== undefined ? { isActive: query.isActive === 'true' } : {}),
+      ...(query.search
+        ? {
+            OR: [
+              { slug: { contains: query.search, mode: 'insensitive' } },
+              { name: { path: ['fr'], string_contains: query.search } as Prisma.JsonFilter },
+              { name: { path: ['en'], string_contains: query.search } as Prisma.JsonFilter },
+            ],
+          }
+        : {}),
+    };
+
+    const sortBy = query.sortBy ?? 'createdAt';
+    const sortDir = query.sortDir ?? 'desc';
+
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        where,
+        orderBy: [{ [sortBy]: sortDir }, { id: 'asc' }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          category: { select: { name: true } },
+          images: {
+            orderBy: [{ isPrimary: 'desc' }, { position: 'asc' }],
+            take: 1,
+            select: { key: true },
+          },
+          variants: { select: { stock: true, consignedStock: true } },
+        },
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    const data = rows.map(({ images, variants, ...p }) => ({
+      ...p,
+      primaryImageKey: images[0]?.key ?? null,
+      variantCount: variants.length,
+      stockTotal: variants.reduce((s, v) => s + v.stock, 0),
+      consignedTotal: variants.reduce((s, v) => s + v.consignedStock, 0),
+    }));
+
+    return { data, total, page, pageSize };
+  }
+
   async findById(id: string): Promise<Product> {
     const product = await this.prisma.product.findUnique({ where: { id } });
     if (!product) throw new NotFoundException('errors.not_found');

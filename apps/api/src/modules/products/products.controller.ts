@@ -35,6 +35,16 @@ export class ProductsController {
     return this.products.list(query);
   }
 
+  @Get('admin')
+  @ApiBearerAuth('access-token')
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MANAGER)
+  @ApiOperation({
+    summary: 'Admin catalogue list — enriched with primary image, variant count and stock totals.',
+  })
+  listAdmin(@Query() query: ListProductsQuery) {
+    return this.products.listForAdmin(query);
+  }
+
   @Get('by-slug/:slug')
   @Public()
   findBySlug(@Param('slug') slug: string) {
