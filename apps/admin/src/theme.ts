@@ -9,12 +9,14 @@ export const celvaLightTheme: RaThemeOptions = {
   ...defaultTheme,
   palette: {
     mode: 'light',
-    primary: { main: celvaColors.olive.DEFAULT, contrastText: celvaColors.cream },
-    secondary: { main: celvaColors.terracotta.DEFAULT, contrastText: celvaColors.cream },
-    error: { main: celvaColors.terracotta.dark },
-    background: { default: celvaColors.cream, paper: celvaColors.beige.light },
-    text: { primary: celvaColors.olive.DEFAULT, secondary: celvaColors.gray.DEFAULT },
-    divider: celvaColors.beige.dark,
+    // Neutral default (redesign): near black-and-white surfaces, terracotta
+    // as the lone action accent. Warm brand palette is opt-in (data-palette).
+    primary: { main: celvaColors.terracotta.DEFAULT, contrastText: celvaColors.cream },
+    secondary: { main: celvaColors.olive.DEFAULT, contrastText: celvaColors.cream },
+    error: { main: '#BC5249' },
+    background: { default: '#F4F4F2', paper: '#FFFFFF' },
+    text: { primary: '#232320', secondary: '#65635E' },
+    divider: '#E0DFDB',
   },
   typography: {
     fontFamily: fontStack,
@@ -38,12 +40,12 @@ export const celvaDarkTheme: RaThemeOptions = {
   ...defaultTheme,
   palette: {
     mode: 'dark',
-    primary: { main: celvaColors.cream, contrastText: celvaColors.ink },
-    secondary: { main: celvaColors.terracotta.DEFAULT, contrastText: celvaColors.cream },
-    error: { main: celvaColors.terracotta.light },
-    background: { default: celvaColors.ink, paper: celvaColors['ink-surface'] },
-    text: { primary: celvaColors.cream, secondary: celvaColors.gray.light },
-    divider: celvaColors['ink-border'],
+    primary: { main: celvaColors.terracotta.light, contrastText: celvaColors.ink },
+    secondary: { main: celvaColors.olive.light, contrastText: celvaColors.cream },
+    error: { main: '#CB675D' },
+    background: { default: '#151514', paper: '#201F1E' },
+    text: { primary: '#ECEBE7', secondary: '#9C9A93' },
+    divider: '#34332F',
   },
   typography: {
     fontFamily: fontStack,
