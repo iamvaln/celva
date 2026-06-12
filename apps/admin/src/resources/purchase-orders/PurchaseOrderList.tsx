@@ -1,75 +1,175 @@
-import {
-  Datagrid,
-  DateField,
-  DateInput,
-  FunctionField,
-  List,
-  NumberField,
-  ReferenceField,
-  ReferenceInput,
-  SelectInput,
-  TextField,
-  useTranslate,
-} from 'react-admin';
-import { Chip } from '@mui/material';
+import './purchase-orders.css';
+import { useMemo, useState } from 'react';
+import { Title, useGetList, useRedirect, useTranslate } from 'react-admin';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type { PurchaseOrder } from '../../types';
+import { CelvaSkin } from '../../components/CelvaSkin';
+import { EmptyState } from '../../components/EmptyState';
+import { fmtFCFA } from '../orders/orderSkin';
 
-const STATUSES = ['DRAFT', 'ORDERED', 'PARTIALLY_RECEIVED', 'RECEIVED', 'CANCELLED'] as const;
+type POStatus = PurchaseOrder['status'];
 
-const STATUS_COLOR: Record<
-  PurchaseOrder['status'],
-  'default' | 'info' | 'warning' | 'success' | 'error'
-> = {
-  DRAFT: 'default',
-  ORDERED: 'info',
-  PARTIALLY_RECEIVED: 'warning',
-  RECEIVED: 'success',
-  CANCELLED: 'error',
+/** Status → French label + design status-class (color binding in celva-skin.css). */
+const PO_STATUS_SKIN: Record<POStatus, { label: string; sc: string }> = {
+  DRAFT: { label: 'Brouillon', sc: 's-neutral' },
+  ORDERED: { label: 'Commandée', sc: 's-info' },
+  PARTIALLY_RECEIVED: { label: 'Partielle', sc: 's-todo' },
+  RECEIVED: { label: 'Reçue', sc: 's-done' },
+  CANCELLED: { label: 'Annulée', sc: 's-neutral' },
 };
 
-const filters = [
-  <SelectInput
-    key="status"
-    source="status"
-    alwaysOn
-    choices={STATUSES.map((s) => ({ id: s, name: s }))}
-  />,
-  <ReferenceInput key="supplierId" source="supplierId" reference="suppliers">
-    <SelectInput optionText="name" />
-  </ReferenceInput>,
-  <DateInput key="from" source="from" />,
-  <DateInput key="to" source="to" />,
+type Tab = { id: string; label: string; match: (p: PurchaseOrder) => boolean };
+
+const TABS: Tab[] = [
+  { id: 'all', label: 'Toutes', match: () => true },
+  { id: 'DRAFT', label: 'Brouillons', match: (p) => p.status === 'DRAFT' },
+  { id: 'ORDERED', label: 'Commandées', match: (p) => p.status === 'ORDERED' },
+  {
+    id: 'PARTIALLY_RECEIVED',
+    label: 'Partielles',
+    match: (p) => p.status === 'PARTIALLY_RECEIVED',
+  },
+  { id: 'RECEIVED', label: 'Reçues', match: (p) => p.status === 'RECEIVED' },
+  { id: 'CANCELLED', label: 'Annulées', match: (p) => p.status === 'CANCELLED' },
 ];
+
+const POStatusPill = ({ status }: { status: POStatus }) => {
+  const s = PO_STATUS_SKIN[status];
+  return (
+    <span className={`pill ${s.sc}`}>
+      <span className="pdot" />
+      {s.label}
+    </span>
+  );
+};
+
+const dateFr = (iso: string): string =>
+  new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }).format(
+    new Date(iso),
+  );
+
+const supplierName = (p: PurchaseOrder): string => p.supplier?.name ?? '—';
+
+const PORow = ({ p, onOpen }: { p: PurchaseOrder; onOpen: (id: string) => void }) => {
+  const sc = PO_STATUS_SKIN[p.status].sc;
+  const n = p.items?.length ?? 0;
+  return (
+    <div className={`lrow po ${sc}`} onClick={() => onOpen(p.id)}>
+      <div className="obar" />
+      <div className="po-ic">
+        <Inventory2Icon sx={{ fontSize: 17 }} />
+      </div>
+      <div style={{ minWidth: 0 }}>
+        <div className="po-head">
+          <span className="lname">{supplierName(p)}</span>
+        </div>
+        <div className="lsub">
+          <span>{n + (n > 1 ? ' lignes' : ' ligne')}</span>
+          <span>·</span>
+          <span>{dateFr(p.createdAt)}</span>
+        </div>
+      </div>
+      <div />
+      <div className="lcell">
+        <div className="lc-v num">{fmtFCFA(p.totalAmount)}</div>
+        <div className="lc-l">coût total</div>
+      </div>
+      <div className="lchev">
+        <POStatusPill status={p.status} />
+        <ChevronRightIcon sx={{ fontSize: 18, ml: 1 }} />
+      </div>
+    </div>
+  );
+};
 
 export const PurchaseOrderList = () => {
   const t = useTranslate();
+  const redirect = useRedirect();
+  const [tab, setTab] = useState<string>('all');
+  const [q, setQ] = useState('');
+
+  const { data: orders = [], isLoading } = useGetList<PurchaseOrder>('purchase-orders', {
+    pagination: { page: 1, perPage: 100 },
+    sort: { field: 'createdAt', order: 'DESC' },
+  });
+
+  const open = (id: string) => redirect('show', 'purchase-orders', id);
+
+  const rows = useMemo(() => {
+    const tabDef = TABS.find((tt) => tt.id === tab) ?? TABS[0]!;
+    let r = orders.filter(tabDef.match);
+    if (q.trim()) {
+      const qq = q.toLowerCase();
+      r = r.filter((p) => supplierName(p).toLowerCase().includes(qq));
+    }
+    return r;
+  }, [orders, tab, q]);
+
   return (
-    <List filters={filters} sort={{ field: 'createdAt', order: 'DESC' }} perPage={25}>
-      <Datagrid rowClick="show" bulkActionButtons={false}>
-        <FunctionField<PurchaseOrder>
-          label={t('resources.purchase-orders.fields.status')}
-          render={(record) => (
-            <Chip
-              label={record.status}
-              size="small"
-              color={STATUS_COLOR[record.status]}
-              variant="outlined"
+    <CelvaSkin>
+      <Title title={t('resources.purchase-orders.name', { smart_count: 2 })} />
+      <div style={{ padding: '8px 4px 64px' }} className="fade-in">
+        <div className="toolbar">
+          <div className="search">
+            <SearchIcon />
+            <input
+              placeholder="Rechercher un fournisseur…"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
             />
-          )}
-        />
-        <ReferenceField source="supplierId" reference="suppliers" link={false}>
-          <TextField source="name" />
-        </ReferenceField>
-        <FunctionField<PurchaseOrder>
-          label={t('resources.purchase-orders.fields.lines')}
-          render={(record) => `${record.items.length}`}
-        />
-        <NumberField
-          source="totalAmount"
-          options={{ style: 'currency', currency: 'XAF', maximumFractionDigits: 0 }}
-        />
-        <DateField source="createdAt" showTime />
-      </Datagrid>
-    </List>
+          </div>
+          <div style={{ flex: 1 }} />
+          <button
+            className="btn btn-primary"
+            onClick={() => redirect('create', 'purchase-orders')}
+          >
+            <AddIcon sx={{ fontSize: 16 }} /> Commande fournisseur
+          </button>
+        </div>
+
+        <div className="tabs">
+          {TABS.map((tt) => {
+            const count = orders.filter(tt.match).length;
+            return (
+              <button
+                key={tt.id}
+                className={`tab${tt.id === tab ? ' active' : ''}`}
+                onClick={() => setTab(tt.id)}
+              >
+                {tt.label}
+                <span className="tcount num">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {rows.length === 0 ? (
+          <EmptyState
+            icon={<Inventory2Icon sx={{ fontSize: 52 }} />}
+            title={isLoading ? 'Chargement…' : 'Aucune commande dans cette vue'}
+            sub={
+              isLoading || q.trim() || tab !== 'all'
+                ? undefined
+                : 'Créez une commande fournisseur pour réapprovisionner vos matières.'
+            }
+            actionLabel={isLoading || q.trim() || tab !== 'all' ? undefined : 'Commande fournisseur'}
+            onAction={
+              isLoading || q.trim() || tab !== 'all'
+                ? undefined
+                : () => redirect('create', 'purchase-orders')
+            }
+          />
+        ) : (
+          <div className="list-wrap">
+            {rows.map((p) => (
+              <PORow key={p.id} p={p} onOpen={open} />
+            ))}
+          </div>
+        )}
+      </div>
+    </CelvaSkin>
   );
 };

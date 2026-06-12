@@ -1,0 +1,21 @@
+/* Suppliers module — row-specific layout. Scoped under .celva-skin so it
+   only applies inside the brand-skinned screens. Shared classes
+   (.list-wrap, .lname, .lsub, .lcell, .dom-summary, …) live in
+   celva-skin.css; only the supplier-specific bits are added here. */
+
+.celva-skin .lrow.sup {
+  grid-template-columns: 38px 1fr auto 150px 22px;
+}
+
+.celva-skin .lrow.sup .savatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-sunk);
+  border: 1px solid var(--border-soft);
+  color: var(--fg-muted);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+}
