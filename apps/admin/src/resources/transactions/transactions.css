@@ -1,0 +1,57 @@
+/* Transactions ledger — bespoke screen styles.
+   Scoped to .celva-skin. `.flow-table` is ported from the design handoff
+   (admin.css lines ~646-651) since it is not (yet) in the shared skin. */
+
+.celva-skin .flow-table { width: 100%; border-collapse: collapse; }
+.celva-skin .flow-table th {
+  text-align: left;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.celva-skin .flow-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 14.5px;
+  vertical-align: middle;
+}
+.celva-skin .flow-table tr:last-child td { border-bottom: 0; }
+.celva-skin .flow-table .amt-in {
+  color: var(--st-done);
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.celva-skin .flow-table .amt-out {
+  color: var(--st-urgent);
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Ledger-specific helpers */
+.celva-skin .tx-when { white-space: nowrap; }
+.celva-skin .tx-when .tx-ago { display: block; font-size: 12px; color: var(--fg-muted); margin-top: 1px; }
+.celva-skin .tx-desc { color: var(--fg-strong); }
+.celva-skin .tx-desc.muted { color: var(--fg-muted); }
+.celva-skin .tx-src { white-space: nowrap; color: var(--fg-muted); }
+.celva-skin .tx-src .tx-tag {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+.celva-skin .tx-src .tx-tag.order {
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+  color: var(--accent);
+}
+
+/* Horizontal scroll guard on narrow screens */
+.celva-skin .flow-scroll { overflow-x: auto; }
