@@ -195,8 +195,8 @@ export const ArticleList = () => {
                   <div className="lsub">
                     <span>
                       {a.isPublished && a.publishedAt
-                        ? t('ui.articles.published_when', { when: relativeFr(a.publishedAt) })
-                        : t('ui.articles.modified_when', { when: relativeFr(a.updatedAt) })}
+                        ? t('ui.articles.published_when', { when: relativeFr(a.publishedAt, t) })
+                        : t('ui.articles.modified_when', { when: relativeFr(a.updatedAt, t) })}
                     </span>
                     {a.author?.name && (
                       <>

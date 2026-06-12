@@ -172,7 +172,7 @@ export const StockMovementList = () => {
                     <tr key={m.id}>
                       <td className="sm-when">
                         {fmtDate(m.createdAt)}
-                        <span className="sm-ago">{relativeFr(m.createdAt)}</span>
+                        <span className="sm-ago">{relativeFr(m.createdAt, t)}</span>
                       </td>
                       <td>
                         <span className={`pill ${meta.sc}`}>

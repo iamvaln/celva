@@ -152,7 +152,7 @@ export const AuditLogList = () => {
                     <tr key={l.id}>
                       <td className="au-when">
                         {fmtDate(l.createdAt)}
-                        <span className="au-ago">{relativeFr(l.createdAt)}</span>
+                        <span className="au-ago">{relativeFr(l.createdAt, t)}</span>
                       </td>
                       <td>
                         <span className={`pill ${scFor(l.action)}`}>

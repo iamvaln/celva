@@ -12,33 +12,33 @@ import { API_BASE } from '../../config';
 import { CelvaSkin } from '../../components/CelvaSkin';
 import { fmtFCFA } from './orderSkin';
 
-type Mode = { id: string; label: string; tag?: string; icon: ReactNode; desc: string };
+type Mode = { id: string; labelKey: string; tagKey?: string; icon: ReactNode; descKey: string };
 
 const MODES: Mode[] = [
   {
     id: 'STAFF_DELIVERY',
-    label: "Livraison par l'équipe",
-    tag: 'Défaut',
+    labelKey: 'ui.orders.route_mode_staff',
+    tagKey: 'ui.orders.route_tag_default',
     icon: <LocalShippingIcon sx={{ fontSize: 20 }} />,
-    desc: "Un membre de l'équipe livre. Frais de course + reçu, suivi géré ici.",
+    descKey: 'ui.orders.route_mode_staff_desc',
   },
   {
     id: 'HOME_DELIVERY',
-    label: 'Confier à un livreur',
+    labelKey: 'ui.orders.route_mode_external',
     icon: <PersonIcon sx={{ fontSize: 20 }} />,
-    desc: "Livreur externe, suivi via l'app livreur. Coût payé au livreur.",
+    descKey: 'ui.orders.route_mode_external_desc',
   },
   {
     id: 'STORE_PICKUP',
-    label: 'Retrait magasin',
+    labelKey: 'ui.orders.route_mode_pickup',
     icon: <StoreIcon sx={{ fontSize: 20 }} />,
-    desc: 'La cliente vient retirer. Aucun frais, notifiée « prête à retirer ».',
+    descKey: 'ui.orders.route_mode_pickup_desc',
   },
   {
     id: 'RELAY_PICKUP',
-    label: 'Point relais',
+    labelKey: 'ui.orders.route_mode_relay',
     icon: <AccessTimeIcon sx={{ fontSize: 20 }} />,
-    desc: 'Dépôt en point relais. Coût configurable, cliente notifiée.',
+    descKey: 'ui.orders.route_mode_relay_desc',
   },
 ];
 
@@ -91,7 +91,7 @@ export const OrderRouteScreen = () => {
   const submit = async () => {
     const deliveryId = order.delivery?.id;
     if (!deliveryId) {
-      notify('Cette commande n’a pas de livraison.', { type: 'error' });
+      notify(t('ui.orders.route_no_delivery'), { type: 'error' });
       return;
     }
     try {
@@ -117,13 +117,13 @@ export const OrderRouteScreen = () => {
 
   return (
     <CelvaSkin>
-      <Title title="Acheminement" />
+      <Title title={t('ui.orders.route_title')} />
       <div className="fade-in" style={{ padding: '8px 4px 64px', maxWidth: 920 }}>
         <button className="back-link" style={{ marginBottom: 14 }} onClick={back}>
           <ArrowBackIcon sx={{ fontSize: 16 }} /> {order.orderNumber}
         </button>
         <div className="flow-head">
-          <div className="flow-title">Acheminement</div>
+          <div className="flow-title">{t('ui.orders.route_title')}</div>
         </div>
         <div className="dh-meta" style={{ marginBottom: 22 }}>
           <span>{order.user.name}</span>
@@ -131,7 +131,7 @@ export const OrderRouteScreen = () => {
           <span>{fmtFCFA(order.total)}</span>
         </div>
 
-        <div className="section-label">Mode d’acheminement</div>
+        <div className="section-label">{t('ui.orders.route_mode_label')}</div>
         <div className="mode-grid" style={{ marginBottom: 26 }}>
           {MODES.map((m) => (
             <button
@@ -142,10 +142,10 @@ export const OrderRouteScreen = () => {
               <span className="micon">{m.icon}</span>
               <div>
                 <div>
-                  <span className="mtitle">{m.label}</span>
-                  {m.tag && <span className="mtag">{m.tag}</span>}
+                  <span className="mtitle">{t(m.labelKey)}</span>
+                  {m.tagKey && <span className="mtag">{t(m.tagKey)}</span>}
                 </div>
-                <div className="mdesc">{m.desc}</div>
+                <div className="mdesc">{t(m.descKey)}</div>
               </div>
             </button>
           ))}
@@ -153,11 +153,11 @@ export const OrderRouteScreen = () => {
 
         {isDelivery && (
           <div className="card card-pad" style={{ marginBottom: 22 }}>
-            <div className="section-label">{isStaff ? "Livraison par l'équipe" : 'Livreur externe'}</div>
+            <div className="section-label">{isStaff ? t('ui.orders.route_mode_staff') : t('ui.orders.route_external_title')}</div>
             <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: 24 }}>
               <div>
                 <div className="field">
-                  <label>{isStaff ? 'Qui livre' : 'Livreur assigné'}</label>
+                  <label>{isStaff ? t('ui.orders.route_who_delivers') : t('ui.orders.route_assigned_deliverer')}</label>
                   <select value={delivererId} onChange={(e) => setDelivererId(e.target.value)}>
                     <option value="">—</option>
                     {users.map((u) => (
@@ -168,14 +168,14 @@ export const OrderRouteScreen = () => {
                   </select>
                 </div>
                 <div className="field">
-                  <label>Frais facturés à la cliente (FCFA)</label>
+                  <label>{t('ui.orders.route_fee_charged')}</label>
                   <input type="number" value={fee} readOnly />
                 </div>
                 <div className="field">
                   <label>
                     {isStaff
-                      ? 'Frais de course réels — taxi, carburant (FCFA)'
-                      : 'Coût payé au livreur (FCFA)'}
+                      ? t('ui.orders.route_real_cost_staff')
+                      : t('ui.orders.route_real_cost_external')}
                   </label>
                   <input type="number" value={cost} onChange={(e) => setCost(e.target.value)} />
                 </div>
@@ -184,7 +184,7 @@ export const OrderRouteScreen = () => {
                 {isStaff && (
                   <>
                     <div className="field">
-                      <label>Reçu de course (URL / référence)</label>
+                      <label>{t('ui.orders.route_receipt')}</label>
                       <input
                         type="text"
                         value={receipt}
@@ -193,7 +193,7 @@ export const OrderRouteScreen = () => {
                       />
                     </div>
                     <div className="field">
-                      <label>Compte (dépense de course)</label>
+                      <label>{t('ui.orders.route_account')}</label>
                       <select value={accountId} onChange={(e) => setAccountId(e.target.value)}>
                         <option value="">—</option>
                         {activeAccounts.map((a) => (
@@ -207,9 +207,9 @@ export const OrderRouteScreen = () => {
                 )}
                 <div className="net-box">
                   <div>
-                    <div className="nl">Net livraison</div>
+                    <div className="nl">{t('ui.orders.route_net')}</div>
                     <div className="note" style={{ marginTop: 2 }}>
-                      Facturé {fmtFCFA(fee)} − coût {fmtFCFA(costNum)}
+                      {t('ui.orders.route_net_breakdown', { fee: fmtFCFA(fee), cost: fmtFCFA(costNum) })}
                     </div>
                   </div>
                   <span className={`nv num ${net >= 0 ? 'net-pos' : 'net-neg'}`}>
@@ -219,8 +219,9 @@ export const OrderRouteScreen = () => {
                 </div>
                 {isStaff && costNum > 0 && (
                   <div className="callout" style={{ marginTop: 14 }}>
-                    Une transaction <strong>Dépense · Livraison</strong> de {fmtFCFA(costNum)} sera
-                    générée à la validation.
+                    {t('ui.orders.route_callout_prefix')}{' '}
+                    <strong>{t('ui.orders.route_callout_tx')}</strong>{' '}
+                    {t('ui.orders.route_callout_suffix', { amount: fmtFCFA(costNum) })}
                   </div>
                 )}
               </div>
@@ -231,17 +232,17 @@ export const OrderRouteScreen = () => {
         <div className="between">
           <span className="note">
             {isStaff
-              ? 'Suivi géré dans l’admin — boutons « en route » / « livrée » sur la livraison.'
+              ? t('ui.orders.route_hint_staff')
               : isExternal
-                ? 'Suivi via l’app livreur.'
-                : 'La cliente sera notifiée automatiquement.'}
+                ? t('ui.orders.route_hint_external')
+                : t('ui.orders.route_hint_pickup')}
           </span>
           <button className="btn btn-primary btn-lg" disabled={busy} onClick={submit}>
             {isStaff
-              ? 'Confirmer & marquer en route'
+              ? t('ui.orders.route_submit_staff')
               : isExternal
-                ? 'Confier au livreur'
-                : 'Notifier la cliente'}
+                ? t('ui.orders.route_submit_external')
+                : t('ui.orders.route_submit_pickup')}
           </button>
         </div>
       </div>
