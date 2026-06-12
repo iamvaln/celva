@@ -48,17 +48,31 @@ export class CategoriesService {
     const sortBy = query.sortBy ?? 'sortOrder';
     const sortDir = query.sortDir ?? 'asc';
 
-    const [data, total] = await this.prisma.$transaction([
+    const [rows, total] = await this.prisma.$transaction([
       this.prisma.category.findMany({
         where,
         orderBy: [{ [sortBy]: sortDir }, { id: 'asc' }],
         skip: (page - 1) * pageSize,
         take: pageSize,
+        include: { _count: { select: { products: true } } },
       }),
       this.prisma.category.count({ where }),
     ]);
 
+    const data = rows.map(({ _count, ...c }) => ({ ...c, productCount: _count.products }));
     return { data, total, page, pageSize };
+  }
+
+  /**
+   * Persist a drag-reordered category order: sortOrder = position in `ids`.
+   * Drives the storefront navigation order.
+   */
+  async reorder(ids: string[]): Promise<void> {
+    await this.prisma.$transaction(
+      ids.map((id, index) =>
+        this.prisma.category.update({ where: { id }, data: { sortOrder: index } }),
+      ),
+    );
   }
 
   async findById(id: string): Promise<Category> {
