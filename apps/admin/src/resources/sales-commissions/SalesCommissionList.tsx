@@ -2,10 +2,12 @@ import './sales-commissions.css';
 import { useMemo, useState } from 'react';
 import { Title, useGetList, useNotify, useRefresh, useTranslate } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
+import DownloadIcon from '@mui/icons-material/Download';
 import PaidIcon from '@mui/icons-material/Paid';
 import { CelvaSkin } from '../../components/CelvaSkin';
 import { EmptyState } from '../../components/EmptyState';
 import { fmtFCFA, relativeFr } from '../orders/orderSkin';
+import { downloadCsv } from '../../lib/csv';
 import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
 import type { SalesCommission } from '../../types';
@@ -88,6 +90,40 @@ export const SalesCommissionList = () => {
     return r;
   }, [commissions, tab, q]);
 
+  const exportCsv = () => {
+    downloadCsv<SalesCommission>(
+      'commissions',
+      [
+        {
+          label: t('resources.sales-commissions.fields.orderNumber'),
+          get: (c) => c.order?.orderNumber ?? '',
+        },
+        {
+          label: t('resources.sales-commissions.fields.salesRep'),
+          get: (c) => c.salesRep?.name ?? c.salesRep?.email ?? '',
+        },
+        {
+          label: t('resources.sales-commissions.fields.product'),
+          get: (c) => productLabel(c),
+        },
+        {
+          label: t('resources.sales-commissions.fields.amount'),
+          get: (c) => fmtFCFA(c.amount),
+        },
+        {
+          label: t('resources.sales-commissions.fields.status'),
+          get: (c) => t('ui.sales-commissions.' + STATUS_SKIN[c.status].key),
+        },
+        {
+          label: t('resources.sales-commissions.fields.paidAt'),
+          get: (c) => (c.paidAt ? dateFr(c.paidAt) : ''),
+        },
+      ],
+      rows,
+    );
+    notify('ui.actions.export_done', { type: 'info', messageArgs: { n: rows.length } });
+  };
+
   // Only PENDING rows in the current view are selectable for payment.
   const selectableIds = useMemo(
     () => rows.filter((c) => c.status === 'PENDING').map((c) => c.id),
@@ -166,6 +202,10 @@ export const SalesCommissionList = () => {
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+          <button className="btn btn-ghost" onClick={exportCsv} disabled={rows.length === 0}>
+            <DownloadIcon sx={{ fontSize: 16 }} />
+            {t('ui.actions.export')}
+          </button>
           {selectedIds.length > 0 && (
             <button className="btn btn-primary" onClick={markPaid} disabled={busy}>
               <PaidIcon sx={{ fontSize: 16 }} />

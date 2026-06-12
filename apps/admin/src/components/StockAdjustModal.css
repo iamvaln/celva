@@ -1,0 +1,214 @@
+/*
+ * StockAdjustModal — self-contained, scoped under `.celva-skin` so brand tokens
+ * (--surface / --border / --accent / --shadow-pop …) resolve from celva-skin.css.
+ * Only modal-specific layout lives here; .btn/.btn-primary/.btn-ghost are reused.
+ */
+
+.celva-skin.stockadj-portal {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+}
+
+.celva-skin .stockadj-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 24, 0.42);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow-y: auto;
+  animation: stockadj-fade 160ms ease;
+}
+
+.celva-skin[data-theme='dark'] .stockadj-overlay {
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.celva-skin .stockadj-card {
+  width: 480px;
+  max-width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-pop);
+  padding: 24px;
+  font-family: var(--font-body);
+  color: var(--fg);
+  animation: stockadj-up 220ms ease;
+}
+
+.celva-skin .stockadj-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+
+.celva-skin .stockadj-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--fg-strong);
+}
+
+.celva-skin .stockadj-close {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.celva-skin .stockadj-close:hover {
+  background: var(--bg-sunk);
+  color: var(--fg);
+}
+
+.celva-skin .stockadj-sub {
+  font-size: 13.5px;
+  color: var(--fg-muted);
+  margin-bottom: 18px;
+}
+
+.celva-skin .stockadj-field {
+  margin-bottom: 14px;
+}
+
+.celva-skin .stockadj-field > label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  margin-bottom: 6px;
+}
+
+.celva-skin .stockadj-field select,
+.celva-skin .stockadj-num input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  color: var(--fg);
+  outline: none;
+  transition: border-color 120ms ease;
+}
+
+.celva-skin .stockadj-field select:focus,
+.celva-skin .stockadj-num input:focus {
+  border-color: var(--accent);
+}
+
+.celva-skin .stockadj-seg {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.celva-skin .stockadj-seg button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.celva-skin .stockadj-seg button.on {
+  background: var(--surface);
+  color: var(--fg-strong);
+  box-shadow: var(--shadow-card);
+}
+
+.celva-skin .stockadj-num {
+  position: relative;
+}
+
+.celva-skin .stockadj-num input {
+  padding-right: 48px;
+}
+
+.celva-skin .stockadj-suffix {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--fg-muted);
+  pointer-events: none;
+}
+
+.celva-skin .stockadj-net {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--border-soft, var(--border));
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 4px;
+}
+
+.celva-skin .stockadj-net-l {
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.celva-skin .stockadj-net-v {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--fg-strong);
+}
+
+.celva-skin .stockadj-net-v.neg {
+  color: var(--st-urgent);
+}
+
+.celva-skin .stockadj-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+@keyframes stockadj-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes stockadj-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

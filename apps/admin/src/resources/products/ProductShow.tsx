@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Title, useNotify, useRedirect, useTranslate } from 'react-admin';
+import { Title, useLocaleState, useNotify, useRedirect, useTranslate } from 'react-admin';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CategoryIcon from '@mui/icons-material/Category';
 import EditIcon from '@mui/icons-material/Edit';
@@ -10,6 +10,7 @@ import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
 import { CelvaSkin } from '../../components/CelvaSkin';
 import { DetailActions } from '../../components/DetailActions';
+import { StockAdjustModal, type VariantPick } from '../../components/StockAdjustModal';
 import { fmtFCFA } from '../orders/orderSkin';
 
 const TVA = 0.1925;
@@ -68,11 +69,14 @@ const StatusPill = ({ p }: { p: AdminProductDetail }) => {
 export const ProductShow = () => {
   const { id } = useParams();
   const t = useTranslate();
+  const [localeState] = useLocaleState();
   const redirect = useRedirect();
   const notify = useNotify();
   const [p, setP] = useState<AdminProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [reload, setReload] = useState(0);
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [adjustVariantId, setAdjustVariantId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -111,6 +115,19 @@ export const ProductShow = () => {
   const floorBelowCost = floor / (1 + TVA) < cost;
   const stock = p.variants.reduce((s, v) => s + v.stock, 0);
   const attrNames = p.attributes.map((a) => a.name.fr);
+
+  // Candidates for the stock-adjustment picker (label = product · attributes).
+  const variantPicks: VariantPick[] = p.variants.map((v) => ({
+    id: v.id,
+    sku: v.sku,
+    stock: v.stock,
+    label: [p.name.fr, ...attrNames.map((n) => v.attributes[n]).filter(Boolean)].join(' · '),
+  }));
+  const adjustTarget = adjustVariantId ? p.variants.find((v) => v.id === adjustVariantId) : undefined;
+  const openAdjust = (variantId?: string) => {
+    setAdjustVariantId(variantId);
+    setAdjustOpen(true);
+  };
 
   const setActive = async (active: boolean) => {
     try {
@@ -172,6 +189,11 @@ export const ProductShow = () => {
 
         <DetailActions
           actions={[
+            {
+              icon: <Inventory2Icon sx={{ fontSize: 15 }} />,
+              label: localeState === 'en' ? 'Adjust stock' : 'Ajuster le stock',
+              onClick: () => openAdjust(p.variants.length === 1 ? p.variants[0]!.id : undefined),
+            },
             p.isActive
               ? { label: t('ui.products.unpublish'), onClick: () => setActive(false) }
               : { icon: <CheckIcon sx={{ fontSize: 15 }} />, label: t('ui.products.publish'), onClick: () => setActive(true) },
@@ -250,7 +272,15 @@ export const ProductShow = () => {
                           ))}
                           <td className="v-sku">{v.sku}</td>
                           <td className="rt">
-                            <span className={`stock-chip${out ? ' zero' : low ? ' low' : ''}`}>{v.stock}</span>
+                            <button
+                              type="button"
+                              className={`stock-chip${out ? ' zero' : low ? ' low' : ''}`}
+                              style={{ cursor: 'pointer', border: 'none', font: 'inherit' }}
+                              title={localeState === 'en' ? 'Adjust stock' : 'Ajuster le stock'}
+                              onClick={() => openAdjust(v.id)}
+                            >
+                              {v.stock}
+                            </button>
                           </td>
                           <td className="rt muted num">{v.consignedStock || '—'}</td>
                           <td className="rt num">
@@ -335,6 +365,20 @@ export const ProductShow = () => {
           </div>
         </div>
       </div>
+
+      <StockAdjustModal
+        open={adjustOpen}
+        onClose={() => setAdjustOpen(false)}
+        variantId={adjustVariantId}
+        currentStock={adjustTarget?.stock}
+        label={
+          adjustTarget
+            ? [p.name.fr, ...attrNames.map((n) => adjustTarget.attributes[n]).filter(Boolean)].join(' · ')
+            : undefined
+        }
+        variants={variantPicks}
+        onAdjusted={() => setReload((r) => r + 1)}
+      />
     </CelvaSkin>
   );
 };

@@ -3,15 +3,18 @@ import { useMemo, useState } from 'react';
 import {
   Title,
   useGetList,
+  useNotify,
   useRedirect,
   useTranslate,
 } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
+import DownloadIcon from '@mui/icons-material/Download';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { CelvaSkin } from '../../components/CelvaSkin';
 import { EmptyState } from '../../components/EmptyState';
 import { fmtFCFA, relativeFr } from '../orders/orderSkin';
+import { downloadCsv } from '../../lib/csv';
 import type { Transaction } from '../../types';
 
 type TxCategory = Transaction['category'];
@@ -46,6 +49,7 @@ type Nature = 'all' | 'INCOME' | 'EXPENSE';
 
 export const TransactionList = () => {
   const t = useTranslate();
+  const notify = useNotify();
   const redirect = useRedirect();
   const [perPage, setPerPage] = useState(50);
   const [nature, setNature] = useState<Nature>('all');
@@ -81,6 +85,36 @@ export const TransactionList = () => {
     }
     return r;
   }, [transactions, nature, category, q, t]);
+
+  const exportCsv = () => {
+    downloadCsv<Transaction>(
+      'transactions',
+      [
+        { label: t('resources.transactions.fields.date'), get: (x) => fmtDate(x.date) },
+        {
+          label: t('ui.transactions.col_type'),
+          get: (x) =>
+            x.type === 'INCOME'
+              ? t('ui.transactions.nature_income')
+              : t('ui.transactions.nature_expense'),
+        },
+        {
+          label: t('resources.transactions.fields.category'),
+          get: (x) =>
+            CATEGORY_META[x.category]
+              ? t('ui.transactions.' + CATEGORY_META[x.category].key)
+              : x.category,
+        },
+        {
+          label: t('resources.transactions.fields.description'),
+          get: (x) => x.description ?? '',
+        },
+        { label: t('resources.transactions.fields.amount'), get: (x) => fmtFCFA(x.amount) },
+      ],
+      rows,
+    );
+    notify('ui.actions.export_done', { type: 'info', messageArgs: { n: rows.length } });
+  };
 
   /* Aggregates over the loaded rows (recettes / dépenses / net). */
   const { recettes, depenses } = useMemo(() => {
@@ -126,6 +160,14 @@ export const TransactionList = () => {
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+          <button
+            className="btn btn-ghost"
+            onClick={exportCsv}
+            disabled={rows.length === 0}
+          >
+            <DownloadIcon sx={{ fontSize: 16 }} />
+            {t('ui.actions.export')}
+          </button>
           <button
             className="btn btn-primary"
             onClick={() => redirect('create', 'transactions')}

@@ -1,6 +1,14 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Title, useGetList, useGetOne, useNotify, useRedirect, useTranslate } from 'react-admin';
+import {
+  Title,
+  useGetList,
+  useGetOne,
+  useLocaleState,
+  useNotify,
+  useRedirect,
+  useTranslate,
+} from 'react-admin';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import PrintIcon from '@mui/icons-material/Print';
@@ -9,13 +17,52 @@ import type { AdminOrderDetail, RawMaterial } from '../../types';
 import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
 import { CelvaSkin } from '../../components/CelvaSkin';
+import { CelvaMonogram } from '../../components/CelvaMonogram';
 import { fmtFCFA } from './orderSkin';
+import './prep-print.css';
 
 type Line = { key: string; name: string; variant: string; sku: string; loc?: string | null };
+
+/** One printable row per order line (with its quantity), for the A4 slip. */
+type SlipRow = { key: string; name: string; variant: string; sku: string; loc?: string | null; qty: number };
+
+/**
+ * Slip-only bilingual strings. The shared interactive labels live under
+ * `ui.orders.prep_*` (i18nUi.ts), but those translation files are owned by
+ * other modules and must not be edited here, so the print-sheet copy is kept
+ * locally under the `ui.prepslip` namespace and resolved by the active locale.
+ */
+const PREPSLIP_STRINGS = {
+  fr: {
+    doc: 'Bon de préparation',
+    items: 'Articles à rassembler',
+    pieces: 'pièces',
+    col_article: 'Article',
+    col_location: 'Emplacement',
+    col_qty: 'Qté',
+    packaging: 'Emballage',
+    prepared_by: 'Préparé par',
+    datetime: 'Date & heure',
+    store: 'Magasin',
+  },
+  en: {
+    doc: 'Preparation slip',
+    items: 'Items to gather',
+    pieces: 'pieces',
+    col_article: 'Article',
+    col_location: 'Location',
+    col_qty: 'Qty',
+    packaging: 'Packaging',
+    prepared_by: 'Prepared by',
+    datetime: 'Date & time',
+    store: 'Store',
+  },
+} as const;
 
 export const OrderPrepScreen = () => {
   const { id } = useParams();
   const t = useTranslate();
+  const [locale] = useLocaleState();
   const redirect = useRedirect();
   const notify = useNotify();
   const { data: order, isLoading } = useGetOne<AdminOrderDetail>('orders', { id: id! });
@@ -45,10 +92,31 @@ export const OrderPrepScreen = () => {
       );
   }, [order]);
 
+  // One printable row per order line (keeps the quantity instead of expanding
+  // to one row per unit, so the A4 slip stays compact).
+  const slipRows: SlipRow[] = useMemo(() => {
+    if (!order) return [];
+    return order.items
+      .filter((it) => it.variant)
+      .map((it, idx) => ({
+        key: `r-${idx}`,
+        name: it.variant.product?.name?.[locale === 'en' ? 'en' : 'fr'] ?? it.variant.sku,
+        variant: it.variant.sku,
+        sku: it.variant.sku,
+        loc: it.variant.storageLocation,
+        qty: it.quantity,
+      }));
+  }, [order, locale]);
+
   const nChecked = Object.values(checked).filter(Boolean).length;
   const allChecked = lines.length > 0 && nChecked === lines.length;
   const packCost = materials.reduce((s, m) => s + (pack[m.id] ?? 0) * Number(m.unitPrice), 0);
   const setQty = (mid: string, q: number) => setPack((p) => ({ ...p, [mid]: Math.max(0, q) }));
+
+  // Packaging actually counted in by the preparer (qty > 0), for the slip summary.
+  const slipPackaging = materials.filter((m) => (pack[m.id] ?? 0) > 0);
+  const totalUnits = lines.length;
+  const slip = PREPSLIP_STRINGS[locale === 'en' ? 'en' : 'fr'];
 
   if (isLoading || !order) {
     return (
@@ -189,6 +257,91 @@ export const OrderPrepScreen = () => {
           <button className="btn btn-primary btn-lg" disabled={!allChecked || busy} onClick={markReady}>
             {t('ui.orders.action_mark_ready')}
           </button>
+        </div>
+      </div>
+
+      {/* Printable A4 preparation slip — hidden on screen, shown alone on print. */}
+      <div className="prep-slip" aria-hidden>
+        <div className="ps-head">
+          <div className="ps-brand">
+            <span className="ps-mono">
+              <CelvaMonogram size={40} />
+            </span>
+            <div>
+              <div className="ps-brand-name">Celva</div>
+              <div className="ps-doc">{slip.doc}</div>
+            </div>
+          </div>
+          <div className="ps-meta">
+            <span className="ps-num">{order.orderNumber}</span>
+            <br />
+            {order.user.name}
+            <br />
+            {new Date(order.createdAt).toLocaleString(locale === 'en' ? 'en-GB' : 'fr-FR')}
+          </div>
+        </div>
+
+        <div className="ps-section">
+          {slip.items} · {totalUnits} {slip.pieces}
+        </div>
+        <table className="ps-table">
+          <thead>
+            <tr>
+              <th className="c" style={{ width: 34 }}>
+                {' '}
+              </th>
+              <th>{slip.col_article}</th>
+              <th>{slip.col_location}</th>
+              <th className="r" style={{ width: 50 }}>
+                {slip.col_qty}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {slipRows.map((r) => (
+              <tr key={r.key} className="ps-row">
+                <td className="c">
+                  <span className="ps-box" />
+                </td>
+                <td>
+                  <div className="ps-name">{r.name}</div>
+                  <div className="ps-var">{r.variant}</div>
+                  <div className="ps-sku">{r.sku}</div>
+                </td>
+                <td>
+                  <span className="ps-loc">{r.loc || slip.store}</span>
+                </td>
+                <td className="r">
+                  <span className="ps-qty">{r.qty}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {slipPackaging.length > 0 && (
+          <>
+            <div className="ps-section">{slip.packaging}</div>
+            <div className="ps-pack">
+              {slipPackaging.map((m) => (
+                <div className="ps-pk" key={m.id}>
+                  <span>{m.name}</span>
+                  <span>× {pack[m.id]}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div className="ps-foot">
+          <div className="ps-sig">
+            <div className="ps-lbl">{slip.prepared_by}</div>
+            <div className="ps-line" />
+          </div>
+          <div className="ps-sig">
+            <div className="ps-lbl">{slip.datetime}</div>
+            <div className="ps-line" />
+          </div>
         </div>
       </div>
     </CelvaSkin>

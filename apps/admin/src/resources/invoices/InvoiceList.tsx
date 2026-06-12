@@ -7,10 +7,18 @@ import type { AdminInvoice } from '../../types';
 import { CelvaSkin } from '../../components/CelvaSkin';
 import { EmptyState } from '../../components/EmptyState';
 import { fmtFCFA, relativeFr } from '../orders/orderSkin';
+import { downloadCsv } from '../../lib/csv';
 import { API_BASE, STORAGE_KEYS } from '../../config';
 import './invoices.css';
 
 type Filter = 'all' | 'sent' | 'unsent';
+
+const csvDate = (iso: string): string =>
+  new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(new Date(iso));
 
 export const InvoiceList = () => {
   const t = useTranslate();
@@ -37,6 +45,26 @@ export const InvoiceList = () => {
     }
     return r;
   }, [data, filter, q]);
+
+  const exportCsv = () => {
+    downloadCsv<AdminInvoice>(
+      'factures',
+      [
+        { label: t('ui.invoices.col_number'), get: (iv) => iv.invoiceNumber },
+        { label: t('ui.invoices.col_order'), get: (iv) => iv.order?.orderNumber ?? '' },
+        { label: t('ui.invoices.col_client'), get: (iv) => iv.order?.user?.name ?? '' },
+        { label: t('ui.invoices.col_date'), get: (iv) => csvDate(iv.createdAt) },
+        { label: t('ui.invoices.col_ttc'), get: (iv) => fmtFCFA(iv.totalTTC) },
+        { label: t('ui.invoices.col_vat'), get: (iv) => fmtFCFA(iv.totalTVA) },
+        {
+          label: t('ui.invoices.col_status'),
+          get: (iv) => (iv.sentAt ? t('ui.invoices.sent') : t('ui.invoices.unsent')),
+        },
+      ],
+      rows,
+    );
+    notify('ui.actions.export_done', { type: 'info', messageArgs: { n: rows.length } });
+  };
 
   const totalTTC = data.reduce((s, iv) => s + Number(iv.totalTTC), 0);
   const totalTVA = data.reduce((s, iv) => s + Number(iv.totalTVA), 0);
@@ -118,6 +146,10 @@ export const InvoiceList = () => {
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+          <button className="btn btn-ghost" onClick={exportCsv} disabled={rows.length === 0}>
+            <DownloadIcon sx={{ fontSize: 16 }} />
+            {t('ui.actions.export')}
+          </button>
         </div>
 
         {rows.length === 0 ? (
