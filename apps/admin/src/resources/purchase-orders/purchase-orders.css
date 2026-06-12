@@ -40,3 +40,196 @@
   place-items: center;
   padding-right: 14px;
 }
+
+/* ───────────────────────── PO detail (Show) ─────────────────────────
+   Ported from the design handoff (stock.css) and scoped to .celva-skin.
+   Shared detail classes (.detail-head, .info-card, .kv-line, .fin-line,
+   .pill, .back-link …) live in celva-skin.css; only the PO-specific
+   item table, landed-cost recap, anticipation banner and reception
+   stepper are defined here. */
+
+/* Material line table. */
+.celva-skin .line-table { width: 100%; border-collapse: collapse; }
+.celva-skin .line-table th {
+  text-align: left;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 9px 22px;
+  border-bottom: 1px solid var(--border);
+}
+.celva-skin .line-table th.rt,
+.celva-skin .line-table td.rt { text-align: right; }
+.celva-skin .line-table td {
+  padding: 12px 22px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 14.5px;
+  vertical-align: middle;
+}
+.celva-skin .line-table tr:last-child td { border-bottom: 0; }
+.celva-skin .line-table .lt-name { font-weight: 500; color: var(--fg-strong); }
+.celva-skin .line-table .lt-ref {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.03em;
+}
+.celva-skin .line-table .num { font-family: var(--font-display); font-weight: 600; }
+
+/* Received-quantity badge under the ordered qty. */
+.celva-skin .po-recv-tag {
+  font-size: 11px;
+  color: var(--fg-muted);
+  margin-top: 3px;
+  font-family: var(--font-display);
+}
+.celva-skin .po-recv-tag.full { color: var(--st-done); }
+
+/* Landed-cost recap (coût rendu). */
+.celva-skin .recap {
+  background: color-mix(in oklab, var(--accent) 7%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--accent) 26%, transparent);
+  padding: var(--card-pad);
+}
+.celva-skin .recap .rc-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 7px 0;
+  font-size: 15px;
+}
+.celva-skin .recap .rc-line > span:first-child { min-width: 0; }
+.celva-skin .recap .rc-line .num,
+.celva-skin .recap .rc-line .v { white-space: nowrap; flex: none; }
+.celva-skin .recap .rc-line .num { font-family: var(--font-display); }
+.celva-skin .recap .rc-line.total {
+  border-top: 1px solid color-mix(in oklab, var(--accent) 30%, transparent);
+  margin-top: 8px;
+  padding-top: 14px;
+  font-size: 18px;
+}
+.celva-skin .recap .rc-line.total .v {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 22px;
+}
+.celva-skin .recap .rc-note {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin-top: 10px;
+  line-height: 1.45;
+  font-style: italic;
+}
+
+/* Anticipation banner (effets à la réception / validation). */
+.celva-skin .anticipate {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  background: color-mix(in oklab, var(--st-info) 10%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--st-info) 28%, transparent);
+  border-left-width: 3px;
+  padding: 14px 18px;
+}
+.celva-skin .anticipate .ic {
+  color: var(--st-info);
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.celva-skin .anticipate .at {
+  font-weight: 600;
+  color: color-mix(in oklab, var(--st-info) 55%, var(--fg));
+  font-size: 14.5px;
+}
+.celva-skin .anticipate .ab {
+  color: var(--fg-muted);
+  font-size: 14px;
+  margin-top: 3px;
+  line-height: 1.5;
+}
+.celva-skin .anticipate.warn {
+  background: color-mix(in oklab, var(--st-todo) 12%, var(--surface));
+  border-color: color-mix(in oklab, var(--st-todo) 30%, transparent);
+}
+.celva-skin .anticipate.warn .ic { color: var(--st-todo); }
+.celva-skin .anticipate.warn .at { color: color-mix(in oklab, var(--st-todo) 58%, var(--fg)); }
+
+/* Reception dialog — quantities table + stepper. */
+.celva-skin .po-recv-wrap {
+  border: 1px solid var(--border-soft);
+  overflow: hidden;
+}
+.celva-skin .recv-table { width: 100%; border-collapse: collapse; }
+.celva-skin .recv-table th {
+  text-align: right;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.celva-skin .recv-table th:first-child { text-align: left; }
+.celva-skin .recv-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 14.5px;
+  text-align: right;
+}
+.celva-skin .recv-table td:first-child { text-align: left; }
+.celva-skin .recv-table tr:last-child td { border-bottom: 0; }
+.celva-skin .recv-table .num { font-family: var(--font-display); font-weight: 600; }
+.celva-skin .recv-table .already { color: var(--fg-muted); }
+.celva-skin .recv-table .lt-name { font-weight: 500; color: var(--fg-strong); }
+.celva-skin .recv-table .lt-ref {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.03em;
+}
+.celva-skin .recv-step {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+}
+.celva-skin .recv-step button {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.celva-skin .recv-step button:hover { background: var(--bg-sunk); }
+.celva-skin .recv-step input {
+  width: 46px;
+  text-align: center;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  background: transparent;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 6px 0;
+  outline: none;
+}
+.celva-skin .recv-table tr.full td:first-child::after {
+  content: "complet";
+  margin-left: 8px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--st-done);
+}

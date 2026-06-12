@@ -11,6 +11,7 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { CelvaMenu } from './CelvaMenu';
 import { CelvaMonogram } from './CelvaMonogram';
+import { CelvaCommandPalette } from './CelvaCommandPalette';
 import { ForcePasswordChangeGuard } from './ForcePasswordChangeGuard';
 
 // Brand mark + wordmark, shown at the head of the bar (design brand corner).
@@ -83,6 +84,7 @@ const CelvaAppBar = () => (
 export const CelvaLayout = (props: LayoutProps) => (
   <Layout {...props} appBar={CelvaAppBar} menu={CelvaMenu}>
     <ForcePasswordChangeGuard />
+    <CelvaCommandPalette />
     {props.children}
   </Layout>
 );
