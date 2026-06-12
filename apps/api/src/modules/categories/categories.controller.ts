@@ -20,6 +20,7 @@ import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ListCategoriesQuery } from './dto/list-categories.query';
+import { ReorderCategoriesDto } from './dto/reorder-categories.dto';
 
 @ApiTags('categories')
 @Controller({ path: 'categories', version: '1' })
@@ -34,6 +35,16 @@ export class CategoriesController {
   })
   list(@Query() query: ListCategoriesQuery) {
     return this.categories.list(query);
+  }
+
+  @Post('reorder')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MANAGER)
+  @ApiOperation({ summary: 'Persist drag-reordered category order (sortOrder = position).' })
+  @AuditLog({ action: 'UPDATE', entity: 'Category', entityIdFrom: 'user.id' })
+  async reorder(@Body() dto: ReorderCategoriesDto): Promise<void> {
+    await this.categories.reorder(dto.ids);
   }
 
   @Get('by-slug/:slug')

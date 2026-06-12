@@ -68,6 +68,7 @@ export type Category = {
   name: { fr: string; en: string };
   description?: { fr?: string; en?: string } | null;
   sortOrder: number;
+  productCount?: number;
   createdAt: string;
   updatedAt: string;
 };
