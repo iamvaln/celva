@@ -75,6 +75,8 @@ import { PickupPointEdit } from './resources/pickup-points/PickupPointEdit';
 import { PickupPointCreate } from './resources/pickup-points/PickupPointCreate';
 import { OrderList } from './resources/orders/OrderList';
 import { OrderShow } from './resources/orders/OrderShow';
+import { PaymentList } from './resources/payments/PaymentList';
+import { InvoiceList } from './resources/invoices/InvoiceList';
 import { ArticleList } from './resources/articles/ArticleList';
 import { ArticleCreate } from './resources/articles/ArticleCreate';
 import { ArticleEdit } from './resources/articles/ArticleEdit';
@@ -211,6 +213,8 @@ export const App = () => (
           show={OrderShow}
           options={{ label: 'Commandes' }}
         />
+        <Resource name="payments" icon={PaidIcon} list={PaymentList} options={{ label: 'Paiements' }} />
+        <Resource name="invoices" icon={ReceiptIcon} list={InvoiceList} options={{ label: 'Factures' }} />
         <Resource
           name="articles"
           icon={ArticleIcon}

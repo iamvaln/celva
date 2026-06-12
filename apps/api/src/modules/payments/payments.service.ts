@@ -67,8 +67,14 @@ export class PaymentsService {
     return this.prisma.payment.findUnique({ where: { orderId } });
   }
 
-  async list(): Promise<Payment[]> {
-    return this.prisma.payment.findMany({ orderBy: { createdAt: 'desc' } });
+  async list() {
+    return this.prisma.payment.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        order: { select: { orderNumber: true, user: { select: { name: true } } } },
+        paymentAccount: { select: { name: true } },
+      },
+    });
   }
 
   /**
