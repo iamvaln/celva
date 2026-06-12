@@ -1,5 +1,6 @@
 import { defaultTheme } from 'react-admin';
 import type { RaThemeOptions } from 'react-admin';
+import type { Theme } from '@mui/material/styles';
 import { celvaColors } from '@celva/tailwind-config/tokens';
 
 const fontStack = '"Cormorant Garamond", "Garamond", Georgia, serif';
@@ -33,6 +34,17 @@ export const celvaLightTheme: RaThemeOptions = {
     // Dense tables by default — back-office tools live on this surface, and
     // the airy MUI default makes long lists slow to scan.
     MuiTable: { defaultProps: { size: 'small' } },
+    // Sidebar reads as the white "surface" column with a right border,
+    // distinct from the gray main area (design: .side vs .main).
+    RaSidebar: {
+      styleOverrides: {
+        root: ({ theme }: { theme: Theme }) => ({
+          backgroundColor: theme.palette.background.paper,
+          borderRight: `1px solid ${theme.palette.divider}`,
+          '& .RaSidebar-fixed': { backgroundColor: theme.palette.background.paper },
+        }),
+      },
+    },
   },
 };
 
@@ -62,5 +74,16 @@ export const celvaDarkTheme: RaThemeOptions = {
     // Dense tables by default — back-office tools live on this surface, and
     // the airy MUI default makes long lists slow to scan.
     MuiTable: { defaultProps: { size: 'small' } },
+    // Sidebar reads as the white "surface" column with a right border,
+    // distinct from the gray main area (design: .side vs .main).
+    RaSidebar: {
+      styleOverrides: {
+        root: ({ theme }: { theme: Theme }) => ({
+          backgroundColor: theme.palette.background.paper,
+          borderRight: `1px solid ${theme.palette.divider}`,
+          '& .RaSidebar-fixed': { backgroundColor: theme.palette.background.paper },
+        }),
+      },
+    },
   },
 };
