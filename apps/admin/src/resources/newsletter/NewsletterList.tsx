@@ -2,11 +2,13 @@ import './newsletter.css';
 import { useMemo, useState } from 'react';
 import { Title, useGetList, useNotify, useRefresh, useTranslate } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
+import DownloadIcon from '@mui/icons-material/Download';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { CelvaSkin } from '../../components/CelvaSkin';
 import { EmptyState } from '../../components/EmptyState';
 import { relativeFr } from '../orders/orderSkin';
+import { downloadCsv } from '../../lib/csv';
 import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
 import type { NewsletterSubscriber } from '../../types';
@@ -56,6 +58,29 @@ export const NewsletterList = () => {
     }
     return r;
   }, [subscribers, filter, q]);
+
+  const exportCsv = () => {
+    downloadCsv<NewsletterSubscriber>(
+      'newsletter',
+      [
+        { label: t('ui.newsletter.col_email'), get: (s) => s.email },
+        { label: t('ui.newsletter.col_name'), get: (s) => s.name ?? '' },
+        {
+          label: t('ui.newsletter.col_status'),
+          get: (s) =>
+            s.isActive
+              ? t('ui.newsletter.status_active')
+              : t('ui.newsletter.status_unsubscribed'),
+        },
+        {
+          label: t('ui.newsletter.col_subscribed_at'),
+          get: (s) => fmtDate(s.subscribedAt),
+        },
+      ],
+      rows,
+    );
+    notify('ui.actions.export_done', { type: 'info', messageArgs: { n: rows.length } });
+  };
 
   // Selection only applies to still-active subscribers (others can't be unsubscribed).
   const selectableIds = rows.filter((s) => s.isActive).map((s) => s.id);
@@ -130,6 +155,10 @@ export const NewsletterList = () => {
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+          <button className="btn btn-ghost" onClick={exportCsv} disabled={rows.length === 0}>
+            <DownloadIcon sx={{ fontSize: 16 }} />
+            {t('ui.actions.export')}
+          </button>
         </div>
 
         {/* Brevo handoff banner — informational */}

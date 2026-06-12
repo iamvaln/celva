@@ -11,6 +11,7 @@ import {
   useTranslate,
 } from 'react-admin';
 import { CollectionProductsPanel } from './CollectionProductsPanel';
+import { ImageDropInput } from '../../components/ImageDropInput';
 
 export const CollectionEdit = () => {
   const translate = useTranslate();
@@ -51,7 +52,7 @@ export const CollectionEdit = () => {
           minRows={2}
           fullWidth
         />
-        <TextInput source="imageUrl" fullWidth />
+        <ImageDropInput source="imageUrl" aspectRatio={21 / 9} />
         <NumberInput source="sortOrder" validate={[minValue(0)]} />
         <BooleanInput source="isActive" />
         <ProductsPanelWithRecord />

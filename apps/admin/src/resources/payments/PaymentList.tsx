@@ -1,12 +1,23 @@
 import { useMemo, useState } from 'react';
-import { Title, useGetList, useRedirect, useTranslate } from 'react-admin';
+import { Title, useGetList, useNotify, useRedirect, useTranslate } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
+import DownloadIcon from '@mui/icons-material/Download';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import type { AdminPayment } from '../../types';
 import { CelvaSkin } from '../../components/CelvaSkin';
 import { EmptyState } from '../../components/EmptyState';
 import { fmtFCFA, relativeFr } from '../orders/orderSkin';
+import { downloadCsv } from '../../lib/csv';
 import './payments.css';
+
+const csvDate = (iso: string): string =>
+  new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(iso));
 
 type Tab = { id: string; match: (p: AdminPayment) => boolean };
 const TABS: Tab[] = [
@@ -25,6 +36,7 @@ const STATUS_SC: Record<AdminPayment['status'], string> = {
 
 export const PaymentList = () => {
   const t = useTranslate();
+  const notify = useNotify();
   const redirect = useRedirect();
   const [tab, setTab] = useState('all');
   const [q, setQ] = useState('');
@@ -51,6 +63,23 @@ export const PaymentList = () => {
     }
     return r;
   }, [data, tab, q]);
+
+  const exportCsv = () => {
+    downloadCsv<AdminPayment>(
+      'paiements',
+      [
+        { label: t('ui.payments.col_order'), get: (p) => p.order?.orderNumber ?? '' },
+        { label: t('ui.payments.col_client'), get: (p) => p.order?.user?.name ?? '' },
+        { label: t('ui.payments.col_method'), get: (p) => methodLabel(p.method) },
+        { label: t('ui.payments.col_account'), get: (p) => p.paymentAccount?.name ?? '' },
+        { label: t('ui.payments.col_amount'), get: (p) => fmtFCFA(p.amount) },
+        { label: t('ui.payments.col_status'), get: (p) => statusLabel(p.status) },
+        { label: t('ui.payments.col_date'), get: (p) => csvDate(p.paidAt ?? p.createdAt) },
+      ],
+      rows,
+    );
+    notify('ui.actions.export_done', { type: 'info', messageArgs: { n: rows.length } });
+  };
 
   const received = data
     .filter((p) => p.status === 'COMPLETED')
@@ -114,6 +143,11 @@ export const PaymentList = () => {
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+          <div style={{ flex: 1 }} />
+          <button className="btn btn-ghost" onClick={exportCsv} disabled={rows.length === 0}>
+            <DownloadIcon sx={{ fontSize: 16 }} />
+            {t('ui.actions.export')}
+          </button>
         </div>
 
         {rows.length === 0 ? (

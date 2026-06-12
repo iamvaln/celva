@@ -1,0 +1,226 @@
+/* ============================================================
+   CELVA — Printable A4 preparation slip (bon de préparation)
+   Scoped to the Order Preparation screen.
+
+   On screen: the .prep-slip A4 sheet is hidden (display:none) and the
+   interactive picking checklist is shown as usual.
+   On print: the whole React-Admin app chrome is hidden via the
+   visibility technique and ONLY the .prep-slip sheet is shown, laid
+   out as a clean A4 picking list.
+   ============================================================ */
+
+/* Screen: keep the printable sheet out of the flow entirely. */
+.prep-slip {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    /* Drop scrollable heights so the browser does not emit blank pages. */
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Hide all on-screen UI (RA app shell + the interactive prep screen)
+     without removing it from layout — visibility keeps ancestors of the
+     slip painting their (now-visible) descendant. */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Reveal only the printable slip and its contents. */
+  .prep-slip,
+  .prep-slip * {
+    visibility: visible;
+  }
+
+  /* Lift the slip to the page origin and let it flow across pages. */
+  .prep-slip {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #1a1a18;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Avoid orphan slivers that the browser would push onto a blank page. */
+  .prep-slip .ps-row {
+    page-break-inside: avoid;
+  }
+  .prep-slip .ps-foot {
+    page-break-inside: avoid;
+  }
+}
+
+/* ── Slip layout (lives in print only, but defined unconditionally so the
+      markup is styled the moment @media print swaps display) ──────────── */
+.prep-slip {
+  font-family: 'Cormorant Garamond', 'Garamond', Georgia, serif;
+  color: #1a1a18;
+  background: #fff;
+}
+
+/* Header */
+.prep-slip .ps-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid #1a1a18;
+}
+.prep-slip .ps-brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.prep-slip .ps-mono {
+  color: #b26248;
+  flex: none;
+}
+.prep-slip .ps-brand-name {
+  font-family: 'Bodoni Moda', 'Didot', 'Times New Roman', serif;
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: #1a1a18;
+}
+.prep-slip .ps-doc {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6b675f;
+  margin-top: 4px;
+}
+.prep-slip .ps-meta {
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4a473f;
+}
+.prep-slip .ps-meta .ps-num {
+  color: #1a1a18;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Section labels */
+.prep-slip .ps-section {
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8c857a;
+  margin: 22px 0 8px;
+}
+
+/* Picking table */
+.prep-slip .ps-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.prep-slip .ps-table th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b675f;
+  font-weight: 600;
+  padding: 0 10px 8px;
+  border-bottom: 1.5px solid #1a1a18;
+}
+.prep-slip .ps-table th.c,
+.prep-slip .ps-table td.c {
+  text-align: center;
+}
+.prep-slip .ps-table th.r,
+.prep-slip .ps-table td.r {
+  text-align: right;
+}
+.prep-slip .ps-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd8cf;
+  font-size: 14px;
+  color: #2a2823;
+  vertical-align: top;
+}
+.prep-slip .ps-box {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #1a1a18;
+  border-radius: 3px;
+  display: inline-block;
+}
+.prep-slip .ps-name {
+  font-weight: 600;
+  color: #1a1a18;
+}
+.prep-slip .ps-var {
+  font-size: 12.5px;
+  color: #6b675f;
+  margin-top: 2px;
+}
+.prep-slip .ps-sku {
+  font-size: 12px;
+  color: #9a948a;
+  letter-spacing: 0.03em;
+}
+.prep-slip .ps-loc {
+  font-weight: 600;
+  color: #1a1a18;
+}
+.prep-slip .ps-qty {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Packaging summary */
+.prep-slip .ps-pack {
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: #4a473f;
+}
+.prep-slip .ps-pack .ps-pk {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  border-bottom: 1px dotted #ddd8cf;
+}
+
+/* Signature footer */
+.prep-slip .ps-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-top: 34px;
+  font-size: 13px;
+  color: #4a473f;
+}
+.prep-slip .ps-foot .ps-sig {
+  flex: 1;
+}
+.prep-slip .ps-foot .ps-sig .ps-line {
+  border-bottom: 1px solid #9a948a;
+  height: 30px;
+  margin-top: 6px;
+}
+.prep-slip .ps-foot .ps-lbl {
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8c857a;
+}
