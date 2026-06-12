@@ -12,36 +12,37 @@ import { fmtFCFA } from '../orders/orderSkin';
 
 type POStatus = PurchaseOrder['status'];
 
-/** Status → French label + design status-class (color binding in celva-skin.css). */
-const PO_STATUS_SKIN: Record<POStatus, { label: string; sc: string }> = {
-  DRAFT: { label: 'Brouillon', sc: 's-neutral' },
-  ORDERED: { label: 'Commandée', sc: 's-info' },
-  PARTIALLY_RECEIVED: { label: 'Partielle', sc: 's-todo' },
-  RECEIVED: { label: 'Reçue', sc: 's-done' },
-  CANCELLED: { label: 'Annulée', sc: 's-neutral' },
+/** Status → translation key + design status-class (color binding in celva-skin.css). */
+const PO_STATUS_SKIN: Record<POStatus, { key: string; sc: string }> = {
+  DRAFT: { key: 'status_draft', sc: 's-neutral' },
+  ORDERED: { key: 'status_ordered', sc: 's-info' },
+  PARTIALLY_RECEIVED: { key: 'status_partially_received', sc: 's-todo' },
+  RECEIVED: { key: 'status_received', sc: 's-done' },
+  CANCELLED: { key: 'status_cancelled', sc: 's-neutral' },
 };
 
-type Tab = { id: string; label: string; match: (p: PurchaseOrder) => boolean };
+type Tab = { id: string; key: string; match: (p: PurchaseOrder) => boolean };
 
 const TABS: Tab[] = [
-  { id: 'all', label: 'Toutes', match: () => true },
-  { id: 'DRAFT', label: 'Brouillons', match: (p) => p.status === 'DRAFT' },
-  { id: 'ORDERED', label: 'Commandées', match: (p) => p.status === 'ORDERED' },
+  { id: 'all', key: 'tab_all', match: () => true },
+  { id: 'DRAFT', key: 'tab_draft', match: (p) => p.status === 'DRAFT' },
+  { id: 'ORDERED', key: 'tab_ordered', match: (p) => p.status === 'ORDERED' },
   {
     id: 'PARTIALLY_RECEIVED',
-    label: 'Partielles',
+    key: 'tab_partially_received',
     match: (p) => p.status === 'PARTIALLY_RECEIVED',
   },
-  { id: 'RECEIVED', label: 'Reçues', match: (p) => p.status === 'RECEIVED' },
-  { id: 'CANCELLED', label: 'Annulées', match: (p) => p.status === 'CANCELLED' },
+  { id: 'RECEIVED', key: 'tab_received', match: (p) => p.status === 'RECEIVED' },
+  { id: 'CANCELLED', key: 'tab_cancelled', match: (p) => p.status === 'CANCELLED' },
 ];
 
 const POStatusPill = ({ status }: { status: POStatus }) => {
+  const t = useTranslate();
   const s = PO_STATUS_SKIN[status];
   return (
     <span className={`pill ${s.sc}`}>
       <span className="pdot" />
-      {s.label}
+      {t('ui.purchase-orders.' + s.key)}
     </span>
   );
 };
@@ -54,6 +55,7 @@ const dateFr = (iso: string): string =>
 const supplierName = (p: PurchaseOrder): string => p.supplier?.name ?? '—';
 
 const PORow = ({ p, onOpen }: { p: PurchaseOrder; onOpen: (id: string) => void }) => {
+  const t = useTranslate();
   const sc = PO_STATUS_SKIN[p.status].sc;
   const n = p.items?.length ?? 0;
   return (
@@ -67,7 +69,7 @@ const PORow = ({ p, onOpen }: { p: PurchaseOrder; onOpen: (id: string) => void }
           <span className="lname">{supplierName(p)}</span>
         </div>
         <div className="lsub">
-          <span>{n + (n > 1 ? ' lignes' : ' ligne')}</span>
+          <span>{n + (n > 1 ? ' ' + t('ui.purchase-orders.lines') : ' ' + t('ui.purchase-orders.line'))}</span>
           <span>·</span>
           <span>{dateFr(p.createdAt)}</span>
         </div>
@@ -75,7 +77,7 @@ const PORow = ({ p, onOpen }: { p: PurchaseOrder; onOpen: (id: string) => void }
       <div />
       <div className="lcell">
         <div className="lc-v num">{fmtFCFA(p.totalAmount)}</div>
-        <div className="lc-l">coût total</div>
+        <div className="lc-l">{t('ui.purchase-orders.total_cost_label')}</div>
       </div>
       <div className="lchev">
         <POStatusPill status={p.status} />
@@ -116,7 +118,7 @@ export const PurchaseOrderList = () => {
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher un fournisseur…"
+              placeholder={t('ui.purchase-orders.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -126,7 +128,7 @@ export const PurchaseOrderList = () => {
             className="btn btn-primary"
             onClick={() => redirect('create', 'purchase-orders')}
           >
-            <AddIcon sx={{ fontSize: 16 }} /> Commande fournisseur
+            <AddIcon sx={{ fontSize: 16 }} /> {t('ui.purchase-orders.new')}
           </button>
         </div>
 
@@ -139,7 +141,7 @@ export const PurchaseOrderList = () => {
                 className={`tab${tt.id === tab ? ' active' : ''}`}
                 onClick={() => setTab(tt.id)}
               >
-                {tt.label}
+                {t('ui.purchase-orders.' + tt.key)}
                 <span className="tcount num">{count}</span>
               </button>
             );
@@ -149,13 +151,19 @@ export const PurchaseOrderList = () => {
         {rows.length === 0 ? (
           <EmptyState
             icon={<Inventory2Icon sx={{ fontSize: 52 }} />}
-            title={isLoading ? 'Chargement…' : 'Aucune commande dans cette vue'}
+            title={
+              isLoading
+                ? t('ui.purchase-orders.loading')
+                : t('ui.purchase-orders.empty_title')
+            }
             sub={
               isLoading || q.trim() || tab !== 'all'
                 ? undefined
-                : 'Créez une commande fournisseur pour réapprovisionner vos matières.'
+                : t('ui.purchase-orders.empty_sub')
             }
-            actionLabel={isLoading || q.trim() || tab !== 'all' ? undefined : 'Commande fournisseur'}
+            actionLabel={
+              isLoading || q.trim() || tab !== 'all' ? undefined : t('ui.purchase-orders.new')
+            }
             onAction={
               isLoading || q.trim() || tab !== 'all'
                 ? undefined

@@ -1,7 +1,7 @@
 import './articles.css';
 
 import { useMemo, useState } from 'react';
-import { Title, useGetList, useRedirect } from 'react-admin';
+import { Title, useGetList, useRedirect, useTranslate } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -13,46 +13,49 @@ import { relativeFr } from '../orders/orderSkin';
 
 type ArticleCategory = Article['category'];
 
-const CATEGORY_META: Record<ArticleCategory, { label: string; tone: string }> = {
-  STYLE: { label: 'Style', tone: '#9a6a4f' },
-  BEHIND_THE_SCENES: { label: 'Coulisses', tone: '#6b7f54' },
-  EVENTS: { label: 'Événements', tone: '#9a5a6a' },
-  GUIDES: { label: 'Guides', tone: '#5a7f9a' },
+const CATEGORY_META: Record<ArticleCategory, { labelKey: string; tone: string }> = {
+  STYLE: { labelKey: 'ui.articles.cat_style', tone: '#9a6a4f' },
+  BEHIND_THE_SCENES: { labelKey: 'ui.articles.cat_behind_the_scenes', tone: '#6b7f54' },
+  EVENTS: { labelKey: 'ui.articles.cat_events', tone: '#9a5a6a' },
+  GUIDES: { labelKey: 'ui.articles.cat_guides', tone: '#5a7f9a' },
 };
 
 const CATEGORY_KEYS = Object.keys(CATEGORY_META) as ArticleCategory[];
 
 const PUB_META = {
-  pub: { label: 'Publié', sc: 's-done' },
-  draft: { label: 'Brouillon', sc: 's-neutral' },
+  pub: { labelKey: 'ui.articles.status_published', sc: 's-done' },
+  draft: { labelKey: 'ui.articles.status_draft', sc: 's-neutral' },
 } as const;
 
-const TABS: Array<{ id: string; label: string; match: (a: Article) => boolean }> = [
-  { id: 'all', label: 'Tous', match: () => true },
-  { id: 'pub', label: 'Publiés', match: (a) => a.isPublished },
-  { id: 'draft', label: 'Brouillons', match: (a) => !a.isPublished },
+const TABS: Array<{ id: string; labelKey: string; match: (a: Article) => boolean }> = [
+  { id: 'all', labelKey: 'ui.articles.tab_all', match: () => true },
+  { id: 'pub', labelKey: 'ui.articles.tab_published', match: (a) => a.isPublished },
+  { id: 'draft', labelKey: 'ui.articles.tab_drafts', match: (a) => !a.isPublished },
 ];
 
 const CategoryPill = ({ category }: { category: ArticleCategory }) => {
+  const t = useTranslate();
   const meta = CATEGORY_META[category];
   return (
     <span className="cat-pill" style={{ ['--cc' as string]: meta?.tone }}>
-      {meta?.label ?? category}
+      {meta ? t(meta.labelKey) : category}
     </span>
   );
 };
 
 const StatusPill = ({ published }: { published: boolean }) => {
+  const t = useTranslate();
   const s = published ? PUB_META.pub : PUB_META.draft;
   return (
     <span className={`pill ${s.sc}`}>
       <span className="pdot" />
-      {s.label}
+      {t(s.labelKey)}
     </span>
   );
 };
 
 export const ArticleList = () => {
+  const t = useTranslate();
   const redirect = useRedirect();
   const [tab, setTab] = useState('all');
   const [cat, setCat] = useState<'all' | ArticleCategory>('all');
@@ -87,27 +90,27 @@ export const ArticleList = () => {
 
   return (
     <CelvaSkin>
-      <Title title="Journal" />
+      <Title title={t('ui.articles.title')} />
       <div className="fade-in" style={{ padding: '8px 4px 64px' }}>
         {/* summary strip */}
         <div className="dom-summary">
           <div className="ds-item">
             <div className="ds-v num">{articles.length}</div>
-            <div className="ds-l">articles</div>
+            <div className="ds-l">{t('ui.articles.summary_articles')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v num" style={{ color: 'var(--st-done)' }}>
               {publishedN}
             </div>
-            <div className="ds-l">publiés</div>
+            <div className="ds-l">{t('ui.articles.summary_published')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v num">{draftN}</div>
-            <div className="ds-l">brouillons</div>
+            <div className="ds-l">{t('ui.articles.summary_drafts')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v num">{CATEGORY_KEYS.length}</div>
-            <div className="ds-l">catégories</div>
+            <div className="ds-l">{t('ui.articles.summary_categories')}</div>
           </div>
         </div>
 
@@ -116,7 +119,7 @@ export const ArticleList = () => {
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher un article…"
+              placeholder={t('ui.articles.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -124,7 +127,7 @@ export const ArticleList = () => {
           <div style={{ flex: 1 }} />
           <button className="btn btn-primary" onClick={() => redirect('create', 'articles')}>
             <AddIcon sx={{ fontSize: 16 }} />
-            Article
+            {t('ui.articles.new_article')}
           </button>
         </div>
 
@@ -138,7 +141,7 @@ export const ArticleList = () => {
                 className={`tab${tt.id === tab ? ' active' : ''}`}
                 onClick={() => setTab(tt.id)}
               >
-                {tt.label}
+                {t(tt.labelKey)}
                 <span className="tcount num">{n}</span>
               </button>
             );
@@ -148,7 +151,7 @@ export const ArticleList = () => {
         {/* category chips */}
         <div className="subfilters">
           <button className={`chip${cat === 'all' ? ' on' : ''}`} onClick={() => setCat('all')}>
-            Toutes catégories
+            {t('ui.articles.all_categories')}
           </button>
           {CATEGORY_KEYS.map((k) => (
             <button
@@ -156,7 +159,7 @@ export const ArticleList = () => {
               className={`chip${cat === k ? ' on' : ''}`}
               onClick={() => setCat(k)}
             >
-              {CATEGORY_META[k].label}
+              {t(CATEGORY_META[k].labelKey)}
             </button>
           ))}
         </div>
@@ -165,9 +168,9 @@ export const ArticleList = () => {
           <div className="card">
             <EmptyState
               icon={<ArticleIcon sx={{ fontSize: 44 }} />}
-              title={isLoading ? 'Chargement…' : 'Aucun article dans cette vue'}
-              sub={isLoading ? undefined : 'Aucun résultat ne correspond à ces filtres.'}
-              actionLabel={isLoading ? undefined : 'Réinitialiser les filtres'}
+              title={isLoading ? t('ui.articles.loading') : t('ui.articles.empty_title')}
+              sub={isLoading ? undefined : t('ui.articles.empty_sub')}
+              actionLabel={isLoading ? undefined : t('ui.articles.reset_filters')}
               onAction={() => {
                 setTab('all');
                 setCat('all');
@@ -188,17 +191,17 @@ export const ArticleList = () => {
                   {!a.coverImage && <ArticleIcon sx={{ fontSize: 16 }} />}
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <div className="lname">{a.title?.fr || 'Sans titre'}</div>
+                  <div className="lname">{a.title?.fr || t('ui.articles.untitled')}</div>
                   <div className="lsub">
                     <span>
                       {a.isPublished && a.publishedAt
-                        ? `Publié ${relativeFr(a.publishedAt)}`
-                        : `Modifié ${relativeFr(a.updatedAt)}`}
+                        ? t('ui.articles.published_when', { when: relativeFr(a.publishedAt) })
+                        : t('ui.articles.modified_when', { when: relativeFr(a.updatedAt) })}
                     </span>
                     {a.author?.name && (
                       <>
                         <span>·</span>
-                        <span>par {a.author.name}</span>
+                        <span>{t('ui.articles.by_author', { name: a.author.name })}</span>
                       </>
                     )}
                   </div>

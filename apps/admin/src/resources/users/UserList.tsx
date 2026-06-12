@@ -1,6 +1,6 @@
 import './users.css';
 import { type CSSProperties, useMemo, useState } from 'react';
-import { Title, useGetIdentity, useGetList, useRedirect } from 'react-admin';
+import { Title, useGetIdentity, useGetList, useRedirect, useTranslate } from 'react-admin';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -26,13 +26,13 @@ type UserRow = {
 
 type RoleFilter = 'all' | UserRow['role'];
 
-/** FR label + status hue for each role (per design role-badge tones). */
-const ROLE_META: Record<UserRow['role'], { label: string; hue: string }> = {
-  ADMIN: { label: 'Administrateur', hue: 's-urgent' },
-  MANAGER: { label: 'Manager', hue: 's-info' },
-  SALES_REP: { label: 'Commercial', hue: 's-todo' },
-  DELIVERER: { label: 'Livreur', hue: 's-neutral' },
-  CLIENT: { label: 'Client', hue: 's-neutral' },
+/** Role label key + status hue for each role (per design role-badge tones). */
+const ROLE_META: Record<UserRow['role'], { labelKey: string; hue: string }> = {
+  ADMIN: { labelKey: 'ui.users.role_admin', hue: 's-urgent' },
+  MANAGER: { labelKey: 'ui.users.role_manager', hue: 's-info' },
+  SALES_REP: { labelKey: 'ui.users.role_sales_rep', hue: 's-todo' },
+  DELIVERER: { labelKey: 'ui.users.role_deliverer', hue: 's-neutral' },
+  CLIENT: { labelKey: 'ui.users.role_client', hue: 's-neutral' },
 };
 
 /** CSS var fed to the avatar tint; mirrors the role-badge tone. */
@@ -56,6 +56,7 @@ const initials = (name: string): string =>
     .toUpperCase() || '?';
 
 export const UserList = () => {
+  const t = useTranslate();
   const redirect = useRedirect();
   const { identity } = useGetIdentity();
   const { data, isLoading } = useGetList<UserRow>('users', {
@@ -94,41 +95,41 @@ export const UserList = () => {
 
   return (
     <CelvaSkin>
-      <Title title="Utilisateurs" />
+      <Title title={t('ui.users.title')} />
       <div className="fade-in" style={{ padding: '8px 4px 64px' }}>
         <div className="toolbar">
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher un utilisateur…"
+              placeholder={t('ui.users.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
           <div style={{ flex: 1 }} />
           <button className="btn btn-primary" onClick={() => redirect('create', 'users')}>
-            <AddIcon sx={{ fontSize: 16 }} /> Utilisateur
+            <AddIcon sx={{ fontSize: 16 }} /> {t('ui.users.new_user')}
           </button>
         </div>
 
         <div className="dom-summary">
           <div className="ds-item">
             <div className="ds-v">{users.length}</div>
-            <div className="ds-l">Utilisateurs</div>
+            <div className="ds-l">{t('ui.users.summary_users')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v" style={{ color: 'var(--st-done)' }}>
               {activeN}
             </div>
-            <div className="ds-l">Actifs</div>
+            <div className="ds-l">{t('ui.users.summary_active')}</div>
           </div>
           <div className={`ds-item${inactiveN ? ' warn' : ''}`}>
             <div className="ds-v">{inactiveN}</div>
-            <div className="ds-l">Désactivés</div>
+            <div className="ds-l">{t('ui.users.summary_inactive')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v">{presentRoles.length}</div>
-            <div className="ds-l">Rôles présents</div>
+            <div className="ds-l">{t('ui.users.summary_roles_present')}</div>
           </div>
         </div>
 
@@ -137,7 +138,7 @@ export const UserList = () => {
             className={`chip${roleFilter === 'all' ? ' on' : ''}`}
             onClick={() => setRoleFilter('all')}
           >
-            Tous les rôles
+            {t('ui.users.all_roles')}
           </button>
           {presentRoles.map((role) => (
             <button
@@ -145,23 +146,23 @@ export const UserList = () => {
               className={`chip${roleFilter === role ? ' on' : ''}`}
               onClick={() => setRoleFilter(role)}
             >
-              {ROLE_META[role].label}
+              {t(ROLE_META[role].labelKey)}
             </button>
           ))}
           <div style={{ flex: 1 }} />
           {(
             [
-              ['all', 'Tous'],
-              ['active', 'Actifs'],
-              ['inactive', 'Désactivés'],
+              ['all', 'ui.users.filter_all'],
+              ['active', 'ui.users.filter_active'],
+              ['inactive', 'ui.users.filter_inactive'],
             ] as const
-          ).map(([id, label]) => (
+          ).map(([id, labelKey]) => (
             <button
               key={id}
               className={`chip${activeFilter === id ? ' on' : ''}`}
               onClick={() => setActiveFilter(id)}
             >
-              {label}
+              {t(labelKey)}
             </button>
           ))}
         </div>
@@ -172,12 +173,12 @@ export const UserList = () => {
               icon={<PeopleOutlineIcon sx={{ fontSize: 40 }} />}
               title={
                 isLoading
-                  ? 'Chargement…'
+                  ? t('ui.users.loading')
                   : filtering
-                    ? 'Aucun utilisateur pour cette recherche'
-                    : 'Aucun utilisateur'
+                    ? t('ui.users.empty_filtered')
+                    : t('ui.users.empty_title')
               }
-              actionLabel={!isLoading && !filtering ? 'Ajouter un utilisateur' : undefined}
+              actionLabel={!isLoading && !filtering ? t('ui.users.add_user') : undefined}
               onAction={!isLoading && !filtering ? () => redirect('create', 'users') : undefined}
             />
           </div>
@@ -201,7 +202,7 @@ export const UserList = () => {
                   <div style={{ minWidth: 0 }}>
                     <div className="lname">
                       {u.name}
-                      {isSelf && <span className="self-tag">vous</span>}
+                      {isSelf && <span className="self-tag">{t('ui.users.self_tag')}</span>}
                     </div>
                     <div className="lsub">
                       <span>{u.email}</span>
@@ -210,19 +211,19 @@ export const UserList = () => {
                     </div>
                   </div>
                   <div>
-                    <span className={`pill ${meta.hue}`}>{meta.label}</span>
+                    <span className={`pill ${meta.hue}`}>{t(meta.labelKey)}</span>
                   </div>
                   <div className="u-status-cell">
                     <span className="u-tags">
                       {u.isActive ? (
                         <span className="pill s-done">
                           <span className="pdot" />
-                          Actif
+                          {t('ui.users.status_active')}
                         </span>
                       ) : (
                         <span className="pill s-neutral">
                           <span className="pdot" />
-                          Désactivé
+                          {t('ui.users.status_inactive')}
                         </span>
                       )}
                     </span>

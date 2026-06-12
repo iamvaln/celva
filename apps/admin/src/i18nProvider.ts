@@ -2,6 +2,7 @@ import polyglotI18nProvider from 'ra-i18n-polyglot';
 import frenchMessages from 'ra-language-french';
 import englishMessages from 'ra-language-english';
 import { STORAGE_KEYS } from './config';
+import { uiFr, uiEn } from './i18nUi';
 
 const celvaFr = {
   celva: {
@@ -1569,8 +1570,8 @@ const celvaEn = {
 };
 
 const messages = {
-  fr: { ...frenchMessages, ...celvaFr },
-  en: { ...englishMessages, ...celvaEn },
+  fr: { ...frenchMessages, ...celvaFr, ui: uiFr },
+  en: { ...englishMessages, ...celvaEn, ui: uiEn },
 };
 
 const initialLocale = (): 'fr' | 'en' => {

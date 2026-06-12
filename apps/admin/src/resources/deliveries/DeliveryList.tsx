@@ -15,52 +15,53 @@ import { fmtFCFA, relativeFr } from '../orders/orderSkin';
 type DeliveryStatus = Delivery['status'];
 type DeliveryMode = Delivery['mode'];
 
-/** Status → French label + design status-class (color binding in celva-skin.css). */
-const STATUS_SKIN: Record<DeliveryStatus, { label: string; sc: string }> = {
-  PENDING: { label: 'À organiser', sc: 's-todo' },
-  ASSIGNED: { label: 'Assignée', sc: 's-todo' },
-  PICKED_UP: { label: 'Récupérée', sc: 's-info' },
-  IN_TRANSIT: { label: 'En transit', sc: 's-info' },
-  DELIVERED: { label: 'Livrée', sc: 's-done' },
-  FAILED: { label: 'Échouée', sc: 's-urgent' },
+/** Status → translation key + design status-class (color binding in celva-skin.css). */
+const STATUS_SKIN: Record<DeliveryStatus, { key: string; sc: string }> = {
+  PENDING: { key: 'status_pending', sc: 's-todo' },
+  ASSIGNED: { key: 'status_assigned', sc: 's-todo' },
+  PICKED_UP: { key: 'status_picked_up', sc: 's-info' },
+  IN_TRANSIT: { key: 'status_in_transit', sc: 's-info' },
+  DELIVERED: { key: 'status_delivered', sc: 's-done' },
+  FAILED: { key: 'status_failed', sc: 's-urgent' },
 };
 
-const MODE_LABEL: Record<DeliveryMode, string> = {
-  HOME_DELIVERY: 'Livraison à domicile',
-  STAFF_DELIVERY: 'Livraison équipe',
-  STORE_PICKUP: 'Retrait boutique',
-  RELAY_PICKUP: 'Point relais',
+const MODE_KEY: Record<DeliveryMode, string> = {
+  HOME_DELIVERY: 'mode_home_delivery',
+  STAFF_DELIVERY: 'mode_staff_delivery',
+  STORE_PICKUP: 'mode_store_pickup',
+  RELAY_PICKUP: 'mode_relay_pickup',
 };
 
 const isPickup = (mode: DeliveryMode): boolean =>
   mode === 'STORE_PICKUP' || mode === 'RELAY_PICKUP';
 
-type Tab = { id: string; label: string; sc: string; match: (d: Delivery) => boolean };
+type Tab = { id: string; key: string; sc: string; match: (d: Delivery) => boolean };
 
 const TABS: Tab[] = [
   {
     id: 'arrange',
-    label: 'À organiser',
+    key: 'tab_arrange',
     sc: 's-todo',
     match: (d) => d.status === 'PENDING' || d.status === 'ASSIGNED',
   },
   {
     id: 'transit',
-    label: 'En cours',
+    key: 'tab_transit',
     sc: 's-info',
     match: (d) => d.status === 'PICKED_UP' || d.status === 'IN_TRANSIT',
   },
-  { id: 'delivered', label: 'Livrées', sc: 's-done', match: (d) => d.status === 'DELIVERED' },
-  { id: 'failed', label: 'Échouées', sc: 's-urgent', match: (d) => d.status === 'FAILED' },
-  { id: 'all', label: 'Toutes', sc: 's-neutral', match: () => true },
+  { id: 'delivered', key: 'tab_delivered', sc: 's-done', match: (d) => d.status === 'DELIVERED' },
+  { id: 'failed', key: 'tab_failed', sc: 's-urgent', match: (d) => d.status === 'FAILED' },
+  { id: 'all', key: 'tab_all', sc: 's-neutral', match: () => true },
 ];
 
 const StatusPill = ({ status }: { status: DeliveryStatus }) => {
+  const t = useTranslate();
   const s = STATUS_SKIN[status];
   return (
     <span className={`pill ${s.sc}`}>
       <span className="pdot" />
-      {s.label}
+      {t('ui.deliveries.' + s.key)}
     </span>
   );
 };
@@ -75,6 +76,7 @@ const eventDate = (d: Delivery): string =>
   d.deliveredAt ?? d.pickedUpAt ?? d.assignedAt ?? d.createdAt;
 
 const DeliveryRow = ({ d, onOpen }: { d: Delivery; onOpen: (id: string) => void }) => {
+  const t = useTranslate();
   const sc = STATUS_SKIN[d.status].sc;
   const city = d.order.shippingCity ?? d.pickupPoint?.city ?? null;
   const pickup = isPickup(d.mode);
@@ -91,11 +93,13 @@ const DeliveryRow = ({ d, onOpen }: { d: Delivery; onOpen: (id: string) => void 
       <div style={{ minWidth: 0 }}>
         <div className="dlv-head">
           <span className="lname">{d.order.orderNumber}</span>
-          {d.mode === 'STAFF_DELIVERY' && <span className="dlv-tag">équipe</span>}
-          {pickup && <span className="dlv-tag">retrait</span>}
+          {d.mode === 'STAFF_DELIVERY' && (
+            <span className="dlv-tag">{t('ui.deliveries.tag_staff')}</span>
+          )}
+          {pickup && <span className="dlv-tag">{t('ui.deliveries.tag_pickup')}</span>}
         </div>
         <div className="lsub">
-          <span>{MODE_LABEL[d.mode]}</span>
+          <span>{t('ui.deliveries.' + MODE_KEY[d.mode])}</span>
           {city && (
             <>
               <span>·</span>
@@ -176,14 +180,14 @@ export const DeliveryList = () => {
                 color: 'var(--fg-strong)',
               }}
             >
-              Suivi des livraisons
+              {t('ui.deliveries.heading')}
             </div>
             <div className="note" style={{ marginTop: 4 }}>
-              Pilotez les livraisons en cours sans ouvrir chaque commande.
+              {t('ui.deliveries.subtitle')}
             </div>
           </div>
           <span className="note">
-            {inProgress} en cours
+            {t('ui.deliveries.in_progress_count', { n: inProgress })}
           </span>
         </div>
 
@@ -196,7 +200,7 @@ export const DeliveryList = () => {
                 className={`tab${tt.id === tab ? ' active' : ''}`}
                 onClick={() => setTab(tt.id)}
               >
-                {tt.label}
+                {t('ui.deliveries.' + tt.key)}
                 <span className="tcount num">{count}</span>
               </button>
             );
@@ -207,7 +211,7 @@ export const DeliveryList = () => {
           <div className="search" style={{ minWidth: 220 }}>
             <SearchIcon />
             <input
-              placeholder="N° commande ou ville…"
+              placeholder={t('ui.deliveries.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -217,11 +221,13 @@ export const DeliveryList = () => {
         {rows.length === 0 ? (
           <EmptyState
             icon={<LocalShippingIcon sx={{ fontSize: 52 }} />}
-            title={isLoading ? 'Chargement…' : 'Aucune livraison dans cette vue'}
+            title={
+              isLoading ? t('ra.page.loading') : t('ui.deliveries.empty_title')
+            }
             sub={
               isLoading || q.trim() || tab !== 'all'
                 ? undefined
-                : 'Les livraisons apparaîtront ici dès qu’une commande est expédiée.'
+                : t('ui.deliveries.empty_sub')
             }
           />
         ) : (
