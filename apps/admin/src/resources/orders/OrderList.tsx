@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
-import { Title, useGetList, useRedirect, useTranslate } from 'react-admin';
+import { Title, useGetList, useNotify, useRedirect, useTranslate } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
+import DownloadIcon from '@mui/icons-material/Download';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import type { OrderChannel, OrderStatus } from '@celva/shared';
 import type { AdminOrderRow } from '../../types';
 import { CelvaSkin } from '../../components/CelvaSkin';
-import { ChannelIcon, ORDER_CHANNEL_KEY, StatusPill, fmtFCFA, relativeFr } from './orderSkin';
+import { ChannelIcon, ORDER_CHANNEL_KEY, ORDER_STATUS_SKIN, StatusPill, fmtFCFA, relativeFr } from './orderSkin';
+import { downloadCsv } from '../../lib/csv';
 
 type Tab = { id: string; labelKey: string; match: (o: AdminOrderRow) => boolean };
 
@@ -101,8 +103,18 @@ const OrderRow = ({ o, onOpen }: { o: AdminOrderRow; onOpen: (id: string) => voi
   );
 };
 
+const csvDate = (iso: string): string =>
+  new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(iso));
+
 export const OrderList = () => {
   const t = useTranslate();
+  const notify = useNotify();
   const redirect = useRedirect();
   const [tab, setTab] = useState<string>(initialTab);
   const [q, setQ] = useState('');
@@ -116,6 +128,23 @@ export const OrderList = () => {
   });
 
   const open = (id: string) => redirect('show', 'orders', id);
+
+  const exportCsv = () => {
+    downloadCsv<AdminOrderRow>(
+      'commandes',
+      [
+        { label: t('ui.orders.col_number'), get: (o) => o.orderNumber },
+        { label: t('ui.orders.col_client'), get: (o) => o.user.name },
+        { label: t('ui.orders.col_channel'), get: (o) => t(ORDER_CHANNEL_KEY[o.channel]) },
+        { label: t('ui.orders.col_status'), get: (o) => t(ORDER_STATUS_SKIN[o.status].key) },
+        { label: t('ui.orders.col_items'), get: (o) => o.items.length },
+        { label: t('ui.orders.col_amount'), get: (o) => fmtFCFA(o.total) },
+        { label: t('ui.orders.col_date'), get: (o) => csvDate(o.createdAt) },
+      ],
+      rows,
+    );
+    notify('ui.actions.export_done', { type: 'info', messageArgs: { n: rows.length } });
+  };
 
   const rows = useMemo(() => {
     const tabDef = TABS.find((tt) => tt.id === tab) ?? TABS[0]!;
@@ -144,6 +173,11 @@ export const OrderList = () => {
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+          <div style={{ flex: 1 }} />
+          <button className="btn btn-ghost" onClick={exportCsv} disabled={rows.length === 0}>
+            <DownloadIcon sx={{ fontSize: 16 }} />
+            {t('ui.actions.export')}
+          </button>
         </div>
 
         <div className="tabs">

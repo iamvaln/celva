@@ -1,0 +1,155 @@
+.celva-imgdrop {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 640px;
+  margin: 8px 0;
+}
+
+.celva-imgdrop__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--mui-palette-text-secondary, rgba(0, 0, 0, 0.6));
+}
+
+.celva-imgdrop__zone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  border: 2px dashed var(--mui-palette-divider, rgba(0, 0, 0, 0.23));
+  border-radius: 10px;
+  background: var(--mui-palette-action-hover, rgba(0, 0, 0, 0.02));
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.celva-imgdrop__zone[data-has-image='true'] {
+  cursor: default;
+  border-style: solid;
+  background: #000;
+}
+
+.celva-imgdrop__zone[data-dragging='true'] {
+  border-color: var(--mui-palette-primary-main, #1976d2);
+  background: var(--mui-palette-action-selected, rgba(25, 118, 210, 0.08));
+}
+
+.celva-imgdrop[data-error='true'] .celva-imgdrop__zone {
+  border-color: var(--mui-palette-error-main, #d32f2f);
+}
+
+.celva-imgdrop__zone:focus-visible {
+  outline: 2px solid var(--mui-palette-primary-main, #1976d2);
+  outline-offset: 2px;
+}
+
+.celva-imgdrop__preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.celva-imgdrop__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.celva-imgdrop__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  background: var(--mui-palette-background-paper, #fff);
+  border: 1px solid var(--mui-palette-divider, rgba(0, 0, 0, 0.12));
+  color: var(--mui-palette-text-secondary, rgba(0, 0, 0, 0.6));
+}
+
+.celva-imgdrop__hint {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--mui-palette-text-primary, rgba(0, 0, 0, 0.87));
+}
+
+.celva-imgdrop__sub {
+  font-size: 0.75rem;
+  color: var(--mui-palette-text-secondary, rgba(0, 0, 0, 0.55));
+}
+
+.celva-imgdrop__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.celva-imgdrop__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.celva-imgdrop__btn {
+  appearance: none;
+  border: 1px solid var(--mui-palette-divider, rgba(0, 0, 0, 0.23));
+  background: var(--mui-palette-background-paper, #fff);
+  color: var(--mui-palette-text-primary, rgba(0, 0, 0, 0.87));
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.celva-imgdrop__btn:hover:not(:disabled) {
+  background: var(--mui-palette-action-hover, rgba(0, 0, 0, 0.04));
+}
+
+.celva-imgdrop__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.celva-imgdrop__btn--danger {
+  color: var(--mui-palette-error-main, #d32f2f);
+  border-color: var(--mui-palette-error-main, #d32f2f);
+}
+
+.celva-imgdrop__file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.celva-imgdrop__helper {
+  font-size: 0.75rem;
+  color: var(--mui-palette-text-secondary, rgba(0, 0, 0, 0.55));
+}
+
+.celva-imgdrop[data-error='true'] .celva-imgdrop__helper {
+  color: var(--mui-palette-error-main, #d32f2f);
+}

@@ -3,6 +3,7 @@ import { Global, Module, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LocalStorageService } from './local-storage.service';
 import { R2StorageService } from './r2-storage.service';
+import { StorageController } from './storage.controller';
 import { STORAGE_SERVICE, type StorageService } from './storage.types';
 
 const LOCAL_ROOT_DEFAULT = resolve(process.cwd(), 'uploads');
@@ -10,6 +11,7 @@ const LOCAL_URL_DEFAULT = 'http://localhost:3001/uploads';
 
 @Global()
 @Module({
+  controllers: [StorageController],
   providers: [
     {
       provide: STORAGE_SERVICE,

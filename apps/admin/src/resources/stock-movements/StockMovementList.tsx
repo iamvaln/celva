@@ -1,12 +1,22 @@
 import './stock-movements.css';
 import { useMemo, useState } from 'react';
-import { Title, useGetList, useTranslate } from 'react-admin';
+import { Title, useGetList, useLocaleState, useTranslate } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
+import TuneIcon from '@mui/icons-material/Tune';
 import { CelvaSkin } from '../../components/CelvaSkin';
 import { EmptyState } from '../../components/EmptyState';
+import { StockAdjustModal, type VariantPick } from '../../components/StockAdjustModal';
 import { relativeFr } from '../orders/orderSkin';
 import type { StockMovement } from '../../types';
+
+/** Minimal variant row for the generic adjust picker. */
+interface VariantRow {
+  id: string;
+  sku: string;
+  stock: number;
+  product?: { name?: { fr?: string; en?: string } } | null;
+}
 
 type MovementType = StockMovement['type'];
 
@@ -41,9 +51,11 @@ const fmtDate = (iso: string): string =>
 
 export const StockMovementList = () => {
   const t = useTranslate();
+  const [locale] = useLocaleState();
   const [perPage, setPerPage] = useState(50);
   const [type, setType] = useState<'all' | MovementType>('all');
   const [q, setQ] = useState('');
+  const [adjustOpen, setAdjustOpen] = useState(false);
 
   const {
     data: movements = [],
@@ -53,6 +65,19 @@ export const StockMovementList = () => {
     pagination: { page: 1, perPage },
     sort: { field: 'createdAt', order: 'DESC' },
   });
+
+  // Variant candidates for the generic adjust picker (loaded lazily on open).
+  const { data: variantRows = [] } = useGetList<VariantRow>(
+    'variants',
+    { pagination: { page: 1, perPage: 200 }, sort: { field: 'sku', order: 'ASC' } },
+    { enabled: adjustOpen },
+  );
+  const variantPicks: VariantPick[] = variantRows.map((v) => ({
+    id: v.id,
+    sku: v.sku,
+    stock: v.stock,
+    label: v.product?.name?.fr ?? v.product?.name?.en,
+  }));
 
   const rows = useMemo(() => {
     let r = movements;
@@ -92,6 +117,10 @@ export const StockMovementList = () => {
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+          <button className="btn btn-primary" onClick={() => setAdjustOpen(true)}>
+            <TuneIcon sx={{ fontSize: 16 }} />{' '}
+            {locale === 'en' ? 'Adjust stock' : 'Ajuster le stock'}
+          </button>
         </div>
 
         <div className="dom-summary">
@@ -218,6 +247,12 @@ export const StockMovementList = () => {
           </div>
         )}
       </div>
+
+      <StockAdjustModal
+        open={adjustOpen}
+        onClose={() => setAdjustOpen(false)}
+        variants={variantPicks}
+      />
     </CelvaSkin>
   );
 };

@@ -21,6 +21,7 @@ import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import type { Article } from '../../types';
 import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
+import { ImageDropInput } from '../../components/ImageDropInput';
 
 const ARTICLE_CATEGORIES = ['STYLE', 'BEHIND_THE_SCENES', 'EVENTS', 'GUIDES'] as const;
 
@@ -101,10 +102,10 @@ export const ArticleEdit = () => (
         choices={ARTICLE_CATEGORIES.map((c) => ({ id: c, name: c }))}
         validate={[required()]}
       />
-      <TextInput
+      <ImageDropInput
         source="coverImage"
+        aspectRatio={16 / 9}
         helperText="resources.articles.helpers.cover_image"
-        fullWidth
       />
       <TextInput
         source="excerpt.fr"
