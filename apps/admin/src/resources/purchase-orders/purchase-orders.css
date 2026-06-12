@@ -1,0 +1,42 @@
+/* Purchase orders list — bespoke row anatomy.
+   Reuses shared celva-skin classes (.list-wrap, .lrow, .lname, .lsub, .lcell,
+   .pill, .s-*). Only the PO-specific grid, colour bar and icon box live here. */
+
+.celva-skin .lrow.po {
+  grid-template-columns: 4px 34px 1fr auto 160px auto;
+  gap: 14px;
+  padding-left: 0;
+}
+
+/* Left status colour bar — bound to the row's .s-* class via --sc. */
+.celva-skin .lrow.po .obar {
+  width: 4px;
+  align-self: stretch;
+  background: var(--sc);
+}
+
+/* Icon box. */
+.celva-skin .lrow.po .po-ic {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: var(--fg-muted);
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+}
+
+.celva-skin .lrow.po .po-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Chevron column. */
+.celva-skin .lrow.po .lchev {
+  color: var(--fg-muted);
+  display: grid;
+  place-items: center;
+  padding-right: 14px;
+}

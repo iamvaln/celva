@@ -9,12 +9,19 @@ import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { ListSuppliersQuery } from './dto/list-suppliers.query';
 
+/** A supplier list row enriched with read-only aggregates for the admin UI. */
+export type SupplierWithStats = Supplier & {
+  purchaseOrderCount: number;
+  materialCount: number;
+  totalSpent: number;
+};
+
 @Injectable()
 export class SuppliersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async list(query: ListSuppliersQuery): Promise<{
-    data: Supplier[];
+    data: SupplierWithStats[];
     total: number;
     page: number;
     pageSize: number;
@@ -32,15 +39,40 @@ export class SuppliersService {
       : {};
     const sortBy = query.sortBy ?? 'name';
     const sortDir = query.sortDir ?? 'asc';
-    const [data, total] = await this.prisma.$transaction([
+    const [rows, total] = await this.prisma.$transaction([
       this.prisma.supplier.findMany({
         where,
         orderBy: [{ [sortBy]: sortDir }, { id: 'asc' }],
         skip: (page - 1) * pageSize,
         take: pageSize,
+        include: {
+          _count: { select: { purchaseOrders: true, rawMaterials: true } },
+        },
       }),
       this.prisma.supplier.count({ where }),
     ]);
+
+    // Read-only aggregate: total amount spent per supplier across their
+    // purchase orders. Grouped in one query, then mapped onto each row.
+    const ids = rows.map((s) => s.id);
+    const spentBySupplier = ids.length
+      ? await this.prisma.purchaseOrder.groupBy({
+          by: ['supplierId'],
+          where: { supplierId: { in: ids } },
+          _sum: { totalAmount: true },
+        })
+      : [];
+    const spentMap = new Map(
+      spentBySupplier.map((g) => [g.supplierId, Number(g._sum.totalAmount ?? 0)]),
+    );
+
+    const data: SupplierWithStats[] = rows.map(({ _count, ...supplier }) => ({
+      ...supplier,
+      purchaseOrderCount: _count.purchaseOrders,
+      materialCount: _count.rawMaterials,
+      totalSpent: spentMap.get(supplier.id) ?? 0,
+    }));
+
     return { data, total, page, pageSize };
   }
 
