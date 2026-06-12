@@ -1,0 +1,69 @@
+/* Consignations list — bespoke row anatomy.
+   Reuses shared celva-skin classes (.dom-summary/.ds-item, .tabs/.tab/.tcount,
+   .subfilters/.chip, .list-wrap, .lrow, .lname, .lsub, .lcell, .pill, .s-*,
+   .empty-state). Only the consignment-specific grid, colour bar, avatar and
+   age flag live here. All rules are scoped under .celva-skin. */
+
+.celva-skin .lrow.csg {
+  grid-template-columns: 4px 38px 1fr auto auto 168px;
+  gap: 14px;
+  padding-left: 0;
+}
+
+/* Left status colour bar — bound to the row's .s-* class via --sc. */
+.celva-skin .lrow.csg .obar {
+  width: 4px;
+  align-self: stretch;
+  background: var(--sc);
+}
+
+/* Sales-rep initials avatar. */
+.celva-skin .lrow.csg .csg-av {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display, inherit);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--fg-muted);
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+}
+
+.celva-skin .lrow.csg .csg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Short reference (truncated id). */
+.celva-skin .lrow.csg .csg-ref {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.02em;
+}
+
+/* Age flag on stale active consignments. */
+.celva-skin .lrow.csg .age-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--st-todo);
+}
+
+/* Chevron / status column. */
+.celva-skin .lrow.csg .lchev {
+  color: var(--fg-muted);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-right: 14px;
+}
