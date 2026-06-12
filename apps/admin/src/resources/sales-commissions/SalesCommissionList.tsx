@@ -302,7 +302,7 @@ export const SalesCommissionList = () => {
                           <>
                             {dateFr(c.paidAt)}
                             <span style={{ display: 'block', fontSize: 12 }}>
-                              {relativeFr(c.paidAt)}
+                              {relativeFr(c.paidAt, t)}
                             </span>
                           </>
                         ) : (

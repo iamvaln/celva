@@ -238,7 +238,7 @@ export const NewsletterList = () => {
                     </td>
                     <td className="sub-when">
                       {fmtDate(s.subscribedAt)}
-                      <span className="sub-ago">{relativeFr(s.subscribedAt)}</span>
+                      <span className="sub-ago">{relativeFr(s.subscribedAt, t)}</span>
                     </td>
                   </tr>
                 ))}
