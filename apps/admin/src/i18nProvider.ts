@@ -94,6 +94,16 @@ const celvaFr = {
       errors: {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
       },
+      add: 'Catégorie',
+      empty: 'Aucune catégorie pour le moment.',
+      reorder_hint:
+        "Liste plate : l'ordre ci-dessous est celui de la navigation sur la boutique. Glissez pour réordonner.",
+      delete_blocked: 'Suppression bloquée — la catégorie contient des produits.',
+      delete_note:
+        "La suppression est bloquée tant que la catégorie contient des produits — reclassez-les d'abord.",
+      notifications: {
+        reordered: 'Ordre des catégories mis à jour.',
+      },
     },
     attributes: {
       name: 'Attribut |||| Attributs',
@@ -790,6 +800,16 @@ const celvaEn = {
       },
       errors: {
         invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',
+      },
+      add: 'Category',
+      empty: 'No categories yet.',
+      reorder_hint:
+        'Flat list: the order below drives the storefront navigation. Drag to reorder.',
+      delete_blocked: 'Delete blocked — the category contains products.',
+      delete_note:
+        'Deletion is blocked while a category still contains products — reclassify them first.',
+      notifications: {
+        reordered: 'Category order updated.',
       },
     },
     attributes: {
