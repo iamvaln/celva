@@ -113,7 +113,7 @@ const DeliveryRow = ({ d, onOpen }: { d: Delivery; onOpen: (id: string) => void 
       <div />
       <div className="lcell dlv-cost">
         <div className="lc-v num">{fmtFCFA(d.actualCost)}</div>
-        <div className="lc-l">{relativeFr(eventDate(d))}</div>
+        <div className="lc-l">{relativeFr(eventDate(d), t)}</div>
       </div>
       <div className="lchev">
         <StatusPill status={d.status} />
