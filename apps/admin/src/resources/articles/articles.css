@@ -1,0 +1,57 @@
+/* ============================================================
+   Articles (Journal) — list. Scoped to .celva-skin, extends
+   celva-skin.css. Only NEW classes the shared sheet lacks.
+   ============================================================ */
+
+/* Category pill — tone bound per-category via --cc inline var. */
+.celva-skin .cat-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 3px 11px;
+  white-space: nowrap;
+  color: var(--cc, var(--accent));
+  background: color-mix(in oklab, var(--cc, var(--accent)) 13%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--cc, var(--accent)) 26%, transparent);
+}
+
+/* Article list rows — cover-forward, 16:9 thumb + category + status. */
+.celva-skin .lrow.art {
+  grid-template-columns: 84px 1fr 132px 124px 22px;
+}
+@media (max-width: 760px) {
+  .celva-skin .lrow.art {
+    grid-template-columns: 64px 1fr 110px 22px;
+  }
+  .celva-skin .lrow.art .art-catcell {
+    display: none;
+  }
+}
+
+/* 16:9 list thumbnail (vs the shared 84x36 collection vignette). */
+.celva-skin .cover-thumb.art-vig {
+  width: 84px;
+  height: 47px;
+  background-size: cover;
+  background-position: center;
+}
+.celva-skin .cover-thumb.art-vig.nocover {
+  background-image: none;
+  background-color: var(--bg-sunk);
+}
+@media (max-width: 760px) {
+  .celva-skin .cover-thumb.art-vig {
+    width: 64px;
+    height: 36px;
+  }
+}
+
+.celva-skin .lrow.art .art-catcell {
+  display: flex;
+  justify-content: flex-start;
+}
+.celva-skin .lrow.art .art-statuscell {
+  display: flex;
+  justify-content: flex-end;
+}
