@@ -74,3 +74,54 @@
   color: var(--fg-muted);
   white-space: nowrap;
 }
+
+/* ── Show (detail) — prod-only classes ──────────────────────────────────
+   Reuses shared .timeline/.tl-item, .info-card, .margin-card, .item-line,
+   .fin-line, .kv-line, .callout. Only the completed-stage node tint and the
+   "anticipate" outcome callout live here. */
+
+/* Completed stage node — green fill on the shared timeline dot. */
+.celva-skin .timeline .tl-item.done::before {
+  background: var(--st-done);
+  border-color: var(--st-done);
+}
+
+.celva-skin .timeline .tl-item.done .tlt {
+  color: var(--fg-muted);
+}
+
+/* Outcome preview (stock + cost effects on start / completion). */
+.celva-skin .anticipate {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--border-soft);
+}
+
+.celva-skin .anticipate .ic {
+  flex-shrink: 0;
+  color: var(--fg-muted);
+  font-size: 22px;
+  margin-top: 1px;
+}
+
+.celva-skin .anticipate .at {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg-strong);
+}
+
+.celva-skin .anticipate .ab {
+  font-size: 13px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+  margin-top: 3px;
+}
+
+.celva-skin .anticipate .ab strong {
+  color: var(--fg);
+  font-weight: 600;
+}

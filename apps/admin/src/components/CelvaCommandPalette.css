@@ -1,0 +1,232 @@
+/* ============================================================
+   CELVA — ⌘K command palette
+   Self-contained, scoped under `.celva-cmdk`. The overlay is portalled
+   to <body>, so it cannot rely on inheriting `.celva-skin` tokens from
+   an ancestor — the wrapper re-declares the handful it needs (mirroring
+   celva-skin.css light/dark · neutral/warm) keyed off data-theme /
+   data-palette set on the wrapper itself.
+   Brand-faithful: sharp corners, serif type, terracotta accent.
+   ============================================================ */
+
+.celva-cmdk {
+  --cmdk-surface: #ffffff;
+  --cmdk-bg-sunk: #eaeae7;
+  --cmdk-fg: #232320;
+  --cmdk-fg-strong: #111110;
+  --cmdk-fg-muted: #65635e;
+  --cmdk-border: #e0dfdb;
+  --cmdk-border-soft: #ecebe7;
+  --cmdk-accent: #b26248;
+  --cmdk-shadow-pop: 0 12px 40px rgba(20, 20, 18, 0.16);
+  --cmdk-font-display: "Bodoni Moda", "Didot", "Times New Roman", serif;
+  --cmdk-font-body: "Cormorant Garamond", "Garamond", Georgia, serif;
+}
+
+.celva-cmdk[data-theme="dark"] {
+  --cmdk-surface: #201f1e;
+  --cmdk-bg-sunk: #0f0f0e;
+  --cmdk-fg: #ecebe7;
+  --cmdk-fg-strong: #ffffff;
+  --cmdk-fg-muted: #9c9a93;
+  --cmdk-border: #34332f;
+  --cmdk-border-soft: #292825;
+  --cmdk-accent: #c4836b;
+  --cmdk-shadow-pop: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.celva-cmdk[data-palette="warm"] {
+  --cmdk-surface: #fffdfa;
+  --cmdk-bg-sunk: #f2ece2;
+  --cmdk-fg: #2e3120;
+  --cmdk-fg-strong: #3f422d;
+  --cmdk-fg-muted: #6b6557;
+  --cmdk-border: #d4c4ae;
+  --cmdk-border-soft: #e7dccd;
+  --cmdk-shadow-pop: 0 12px 40px rgba(45, 32, 24, 0.14);
+}
+
+.celva-cmdk[data-palette="warm"][data-theme="dark"] {
+  --cmdk-surface: #262622;
+  --cmdk-bg-sunk: #141413;
+  --cmdk-fg: #faf7f2;
+  --cmdk-fg-strong: #ffffff;
+  --cmdk-fg-muted: #aba59a;
+  --cmdk-border: #3a3a35;
+  --cmdk-border-soft: #322f2b;
+  --cmdk-accent: #c4836b;
+}
+
+/* ── Overlay ── */
+.celva-cmdk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1600; /* above MUI AppBar/Drawer */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12vh 16px 16px;
+  background: rgba(20, 20, 18, 0.42);
+  backdrop-filter: blur(2px);
+  animation: celva-cmdk-fade 120ms ease-out;
+}
+
+@keyframes celva-cmdk-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Panel ── */
+.celva-cmdk-panel {
+  width: 100%;
+  max-width: 620px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cmdk-surface);
+  color: var(--cmdk-fg);
+  border: 1px solid var(--cmdk-border);
+  box-shadow: var(--cmdk-shadow-pop);
+  font-family: var(--cmdk-font-body);
+  /* sharp corners — brand */
+  border-radius: 0;
+  animation: celva-cmdk-rise 140ms ease-out;
+}
+
+@keyframes celva-cmdk-rise {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Head (search) ── */
+.celva-cmdk-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--cmdk-border-soft);
+}
+.celva-cmdk-head .celva-cmdk-ic {
+  color: var(--cmdk-fg-muted);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+.celva-cmdk-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-family: var(--cmdk-font-body);
+  font-size: 18px;
+  color: var(--cmdk-fg-strong);
+}
+.celva-cmdk-input::placeholder { color: var(--cmdk-fg-muted); }
+.celva-cmdk-kbd-esc {
+  font-family: var(--cmdk-font-body);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--cmdk-fg-muted);
+  border: 1px solid var(--cmdk-border);
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+/* ── List ── */
+.celva-cmdk-list {
+  overflow-y: auto;
+  padding: 6px;
+  flex: 1;
+}
+.celva-cmdk-group-label {
+  font-family: var(--cmdk-font-body);
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cmdk-fg-muted);
+  padding: 12px 12px 5px;
+}
+
+.celva-cmdk-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font-family: var(--cmdk-font-body);
+}
+.celva-cmdk-item .celva-cmdk-item-ic {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--cmdk-fg-muted);
+  background: var(--cmdk-bg-sunk);
+}
+.celva-cmdk-item .celva-cmdk-item-ic svg { font-size: 17px; }
+.celva-cmdk-item-main { flex: 1; min-width: 0; }
+.celva-cmdk-item-title {
+  color: var(--cmdk-fg-strong);
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.celva-cmdk-item-sub {
+  font-size: 12.5px;
+  color: var(--cmdk-fg-muted);
+}
+
+.celva-cmdk-item.is-selected {
+  background: color-mix(in oklab, var(--cmdk-accent) 9%, var(--cmdk-surface));
+  border-color: color-mix(in oklab, var(--cmdk-accent) 26%, var(--cmdk-border));
+}
+.celva-cmdk-item.is-selected .celva-cmdk-item-ic {
+  color: var(--cmdk-accent);
+  background: color-mix(in oklab, var(--cmdk-accent) 14%, var(--cmdk-surface));
+}
+
+/* ── Empty ── */
+.celva-cmdk-empty {
+  padding: 38px 20px;
+  text-align: center;
+  color: var(--cmdk-fg-muted);
+  font-size: 15px;
+}
+
+/* ── Foot ── */
+.celva-cmdk-foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 9px 16px;
+  border-top: 1px solid var(--cmdk-border-soft);
+  font-size: 12px;
+  color: var(--cmdk-fg-muted);
+  flex-wrap: wrap;
+}
+.celva-cmdk-foot .celva-cmdk-kb {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.celva-cmdk-foot .celva-cmdk-key {
+  font-size: 11px;
+  border: 1px solid var(--cmdk-border);
+  padding: 1px 6px;
+  min-width: 18px;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .celva-cmdk-overlay { padding: 7vh 12px 12px; }
+  .celva-cmdk-panel { max-height: 78vh; }
+  .celva-cmdk-input { font-size: 16px; }
+}
