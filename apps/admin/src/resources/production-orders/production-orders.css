@@ -1,0 +1,76 @@
+/* Production orders list — bespoke row anatomy.
+   Reuses shared celva-skin classes (.list-wrap, .lrow, .lname, .lsub, .lcell,
+   .pill, .s-*, .note). Only the production-specific grid, colour bar, icon box
+   and stage-progress meter live here. */
+
+.celva-skin .lrow.prod {
+  grid-template-columns: 4px 34px 1fr auto 160px auto;
+  gap: 14px;
+  padding-left: 0;
+}
+
+/* Left status colour bar — bound to the row's .s-* class via --sc. */
+.celva-skin .lrow.prod .obar {
+  width: 4px;
+  align-self: stretch;
+  background: var(--sc);
+}
+
+/* Icon box (no product photo in the list payload). */
+.celva-skin .lrow.prod .prod-ic {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: var(--fg-muted);
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+}
+
+.celva-skin .lrow.prod .prod-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Chevron column. */
+.celva-skin .lrow.prod .lchev {
+  color: var(--fg-muted);
+  display: grid;
+  place-items: center;
+  padding-right: 14px;
+}
+
+/* Stage-progress meter (INTERNAL · IN_PROGRESS rows). */
+.celva-skin .pmeter {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.celva-skin .pmeter .pm-track {
+  width: 64px;
+  height: 5px;
+  background: var(--bg-sunk);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.celva-skin .pmeter .pm-fill {
+  height: 100%;
+  background: var(--st-prod);
+  transition: width 300ms ease;
+}
+
+.celva-skin .pmeter.done .pm-fill {
+  background: var(--st-done);
+}
+
+.celva-skin .pmeter .pm-txt {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
