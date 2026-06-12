@@ -45,36 +45,32 @@ const statusOf = (p: PromoCodeRow, now: number): StatusId => {
   return p.isActive ? 'active' : 'inactive';
 };
 
-/** Status → French label + design status-class (color binding in celva-skin.css). */
-const STATUS: Record<StatusId, { label: string; sc: string }> = {
-  active: { label: 'Actif', sc: 's-done' },
-  expired: { label: 'Expiré', sc: 's-neutral' },
-  inactive: { label: 'Inactif', sc: 's-neutral' },
+/** Status → design status-class (color binding in celva-skin.css); label resolved via t(). */
+const STATUS_SC: Record<StatusId, string> = {
+  active: 's-done',
+  expired: 's-neutral',
+  inactive: 's-neutral',
 };
 
 const fmtDate = (iso: string): string =>
   new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 
-/** "1 juin 2026 → 30 juin 2026" / "dès le 1 juin" / "jusqu'au 30 juin" / "illimitée". */
-const validity = (p: PromoCodeRow): string => {
-  const from = p.startsAt ? fmtDate(p.startsAt) : null;
-  const to = p.expiresAt ? fmtDate(p.expiresAt) : null;
-  if (from && to) return `${from} → ${to}`;
-  if (from) return `dès le ${from}`;
-  if (to) return `jusqu'au ${to}`;
-  return 'illimitée';
-};
-
-const TABS: Array<{ id: StatusId | 'all'; label: string }> = [
-  { id: 'active', label: 'Actifs' },
-  { id: 'inactive', label: 'Inactifs' },
-  { id: 'expired', label: 'Expirés' },
-  { id: 'all', label: 'Tous' },
-];
+const TAB_IDS: Array<StatusId | 'all'> = ['active', 'inactive', 'expired', 'all'];
 
 export const PromoCodeList = () => {
   const t = useTranslate();
   const redirect = useRedirect();
+
+  /** "1 juin 2026 → 30 juin 2026" / "dès le 1 juin" / "jusqu'au 30 juin" / "illimitée". */
+  const validity = (p: PromoCodeRow): string => {
+    const from = p.startsAt ? fmtDate(p.startsAt) : null;
+    const to = p.expiresAt ? fmtDate(p.expiresAt) : null;
+    if (from && to) return `${from} → ${to}`;
+    if (from) return t('ui.promo-codes.validityFrom', { date: from });
+    if (to) return t('ui.promo-codes.validityTo', { date: to });
+    return t('ui.promo-codes.validityUnlimited');
+  };
+
   const [tab, setTab] = useState<StatusId | 'all'>('active');
   const [q, setQ] = useState('');
 
@@ -115,26 +111,26 @@ export const PromoCodeList = () => {
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher un code…"
+              placeholder={t('ui.promo-codes.searchPlaceholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
           <div style={{ flex: 1 }} />
           <button className="btn btn-primary" onClick={() => redirect('create', 'promo-codes')}>
-            <AddIcon sx={{ fontSize: 16 }} /> Code promo
+            <AddIcon sx={{ fontSize: 16 }} /> {t('ui.promo-codes.create')}
           </button>
         </div>
 
         <div className="tabs">
-          {TABS.map((tt) => (
+          {TAB_IDS.map((id) => (
             <button
-              key={tt.id}
-              className={`tab${tt.id === tab ? ' active' : ''}`}
-              onClick={() => setTab(tt.id)}
+              key={id}
+              className={`tab${id === tab ? ' active' : ''}`}
+              onClick={() => setTab(id)}
             >
-              {tt.label}
-              <span className="tcount num">{counts[tt.id]}</span>
+              {t(`ui.promo-codes.tab_${id}`)}
+              <span className="tcount num">{counts[id]}</span>
             </button>
           ))}
         </div>
@@ -147,12 +143,12 @@ export const PromoCodeList = () => {
                 isLoading
                   ? t('ra.page.loading')
                   : q.trim()
-                    ? 'Aucun code ne correspond à la recherche'
-                    : 'Aucun code promo pour ce filtre'
+                    ? t('ui.promo-codes.emptySearch')
+                    : t('ui.promo-codes.emptyFilter')
               }
               {...(!isLoading && !q.trim()
                 ? {
-                    actionLabel: 'Créer un code promo',
+                    actionLabel: t('ui.promo-codes.emptyAction'),
                     onAction: () => redirect('create', 'promo-codes'),
                   }
                 : {})}
@@ -161,7 +157,7 @@ export const PromoCodeList = () => {
         ) : (
           <div className="list-wrap">
             {rows.map((p) => {
-              const st = STATUS[statusOf(p, now)];
+              const stId = statusOf(p, now);
               const min = p.minOrderAmount != null && Number(p.minOrderAmount) > 0;
               return (
                 <div
@@ -172,7 +168,9 @@ export const PromoCodeList = () => {
                   <div style={{ minWidth: 0 }}>
                     <div className="lname promo-code">{p.code}</div>
                     {min && (
-                      <div className="promo-sub">min. {fmtFCFA(p.minOrderAmount as string)}</div>
+                      <div className="promo-sub">
+                        {t('ui.promo-codes.minPrefix')} {fmtFCFA(p.minOrderAmount as string)}
+                      </div>
                     )}
                   </div>
 
@@ -185,16 +183,18 @@ export const PromoCodeList = () => {
                       {p.usedCount} / {p.maxUses ?? '∞'}
                     </div>
                     {p.maxUsesPerUser != null && (
-                      <div className="lc-l">{p.maxUsesPerUser} / client</div>
+                      <div className="lc-l">
+                        {p.maxUsesPerUser} {t('ui.promo-codes.perClient')}
+                      </div>
                     )}
                   </div>
 
                   <div className="promo-validity">{validity(p)}</div>
 
                   <div style={{ textAlign: 'right' }}>
-                    <span className={`pill ${st.sc}`}>
+                    <span className={`pill ${STATUS_SC[stId]}`}>
                       <span className="pdot" />
-                      {st.label}
+                      {t(`ui.promo-codes.status_${stId}`)}
                     </span>
                   </div>
 

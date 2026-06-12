@@ -16,9 +16,9 @@ const TVA = 0.1925;
 const LOW = 5;
 
 const PRODTYPE: Record<string, string> = {
-  INTERNAL: 'Production interne',
-  SUBCONTRACTED: 'Sous-traitance',
-  PURCHASED: 'Achat-revente',
+  INTERNAL: 'ui.products.prodtype_internal',
+  SUBCONTRACTED: 'ui.products.prodtype_subcontracted',
+  PURCHASED: 'ui.products.prodtype_purchased',
 };
 
 type Loc = { fr: string; en: string };
@@ -48,18 +48,19 @@ type AdminProductDetail = {
 };
 
 const StatusPill = ({ p }: { p: AdminProductDetail }) => {
+  const t = useTranslate();
   const stock = p.variants.reduce((s, v) => s + v.stock, 0);
-  const [label, sc] = !p.isActive
-    ? ['Inactif', 's-neutral']
+  const [labelKey, sc] = !p.isActive
+    ? ['ui.products.status_inactive', 's-neutral']
     : stock === 0
-      ? ['Rupture', 's-urgent']
+      ? ['ui.products.status_out', 's-urgent']
       : stock <= LOW
-        ? ['Stock bas', 's-todo']
-        : ['Actif', 's-done'];
+        ? ['ui.products.status_low', 's-todo']
+        : ['ui.products.status_active', 's-done'];
   return (
     <span className={`pill ${sc}`}>
       <span className="pdot" />
-      {label}
+      {t(labelKey!)}
     </span>
   );
 };
@@ -94,7 +95,7 @@ export const ProductShow = () => {
     return (
       <CelvaSkin>
         <div style={{ padding: 24 }} className="note">
-          {loading ? t('ra.page.loading') : 'Produit introuvable.'}
+          {loading ? t('ra.page.loading') : t('ui.products.not_found')}
         </div>
       </CelvaSkin>
     );
@@ -117,7 +118,7 @@ export const ProductShow = () => {
         method: 'PATCH',
         body: JSON.stringify({ isActive: active }),
       });
-      notify(active ? 'Produit publié.' : 'Produit retiré de la boutique.', { type: 'success' });
+      notify(active ? t('ui.products.notify_published') : t('ui.products.notify_unpublished'), { type: 'success' });
       setReload((r) => r + 1);
     } catch (err) {
       notify(err instanceof Error ? err.message : t('ra.notification.http_error'), { type: 'error' });
@@ -129,7 +130,7 @@ export const ProductShow = () => {
       const { body } = await fetchJson<{ id: string }>(`${API_BASE}/products/${p.id}/duplicate`, {
         method: 'POST',
       });
-      notify('Produit dupliqué.', { type: 'success' });
+      notify(t('ui.products.notify_duplicated'), { type: 'success' });
       redirect('edit', 'products', body.id);
     } catch (err) {
       notify(err instanceof Error ? err.message : t('ra.notification.http_error'), { type: 'error' });
@@ -141,7 +142,7 @@ export const ProductShow = () => {
       <Title title={p.name.fr} />
       <div className="fade-in prod-detail" style={{ padding: '8px 4px 64px' }}>
         <button className="back-link" style={{ marginBottom: 16 }} onClick={() => redirect('list', 'products')}>
-          <ArrowBackIcon sx={{ fontSize: 16 }} /> Catalogue
+          <ArrowBackIcon sx={{ fontSize: 16 }} /> {t('ui.products.catalog')}
         </button>
 
         <div className="detail-head">
@@ -154,17 +155,17 @@ export const ProductShow = () => {
                 {p.category?.name?.fr ?? '—'}
               </span>
               <span>·</span>
-              <span>{PRODTYPE[p.productionType] ?? p.productionType}</span>
+              <span>{PRODTYPE[p.productionType] ? t(PRODTYPE[p.productionType]!) : p.productionType}</span>
               <span>·</span>
               <span className="pr-sku">/{p.slug}</span>
             </div>
           </div>
           <div className="dh-actions">
             <button className="btn btn-ghost" onClick={duplicate}>
-              Dupliquer
+              {t('ui.products.duplicate')}
             </button>
             <button className="btn btn-primary btn-lg" onClick={() => redirect('edit', 'products', p.id)}>
-              <EditIcon sx={{ fontSize: 15 }} /> Modifier
+              <EditIcon sx={{ fontSize: 15 }} /> {t('ui.products.edit')}
             </button>
           </div>
         </div>
@@ -172,8 +173,8 @@ export const ProductShow = () => {
         <DetailActions
           actions={[
             p.isActive
-              ? { label: 'Retirer de la boutique', onClick: () => setActive(false) }
-              : { icon: <CheckIcon sx={{ fontSize: 15 }} />, label: 'Publier sur la boutique', onClick: () => setActive(true) },
+              ? { label: t('ui.products.unpublish'), onClick: () => setActive(false) }
+              : { icon: <CheckIcon sx={{ fontSize: 15 }} />, label: t('ui.products.publish'), onClick: () => setActive(true) },
           ]}
         />
 
@@ -188,12 +189,12 @@ export const ProductShow = () => {
               </div>
               <div className="po-text">
                 <div className="section-label" style={{ marginBottom: 8 }}>
-                  Description
+                  {t('ui.products.description')}
                 </div>
-                <p className="po-desc">{p.description?.fr || 'Aucune description.'}</p>
+                <p className="po-desc">{p.description?.fr || t('ui.products.no_description')}</p>
                 {!p.isActive && (
                   <div className="callout" style={{ marginTop: 14 }}>
-                    Ce produit est retiré : invisible sur la boutique tant qu’il n’est pas publié.
+                    {t('ui.products.unpublished_notice')}
                   </div>
                 )}
                 {p.attributes.length > 0 && (
@@ -217,9 +218,10 @@ export const ProductShow = () => {
 
             <div className="info-card">
               <div className="between" style={{ marginBottom: 14 }}>
-                <h4 style={{ margin: 0 }}>Variantes &amp; stock</h4>
+                <h4 style={{ margin: 0 }}>{t('ui.products.variants_stock')}</h4>
                 <span className="note">
-                  {p.variants.length} variante{p.variants.length > 1 ? 's' : ''} · {stock} en stock
+                  {t('ui.products.variant_count', { smart_count: p.variants.length })} ·{' '}
+                  {t('ui.products.in_stock_count', { smart_count: stock })}
                 </span>
               </div>
               <div className="vtable-wrap">
@@ -229,10 +231,10 @@ export const ProductShow = () => {
                       {attrNames.map((n) => (
                         <th key={n}>{n}</th>
                       ))}
-                      <th>SKU</th>
-                      <th className="rt">Dispo</th>
-                      <th className="rt">Consigné</th>
-                      <th className="rt">Prix</th>
+                      <th>{t('ui.products.col_sku')}</th>
+                      <th className="rt">{t('ui.products.col_available')}</th>
+                      <th className="rt">{t('ui.products.col_consigned')}</th>
+                      <th className="rt">{t('ui.products.col_price')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -255,7 +257,7 @@ export const ProductShow = () => {
                             {v.priceOverride ? (
                               <span>
                                 {fmtFCFA(v.priceOverride)}
-                                <span className="v-ov">modifié</span>
+                                <span className="v-ov">{t('ui.products.price_overridden')}</span>
                               </span>
                             ) : (
                               <span className="muted">{fmtFCFA(display)}</span>
@@ -273,57 +275,57 @@ export const ProductShow = () => {
           {/* right column */}
           <div className="grid">
             <div className="margin-card">
-              <div className="ml">Marge unitaire (HT)</div>
+              <div className="ml">{t('ui.products.unit_margin')}</div>
               <div className="mv num">{fmtFCFA(margin)}</div>
               <div className="mp">
-                {marginPct}% · sur prix affiché {fmtFCFA(display)}
+                {t('ui.products.margin_on_display', { pct: marginPct, price: fmtFCFA(display) })}
               </div>
             </div>
 
             <div className="info-card">
               <div className="between" style={{ marginBottom: 14 }}>
-                <h4 style={{ margin: 0 }}>Tarification</h4>
-                <span className="note">Prix TTC · coût HT</span>
+                <h4 style={{ margin: 0 }}>{t('ui.products.pricing')}</h4>
+                <span className="note">{t('ui.products.pricing_note')}</span>
               </div>
               <div className="kv-line">
-                <span className="k">Prix affiché</span>
+                <span className="k">{t('ui.products.display_price')}</span>
                 <span className="v num">{fmtFCFA(display)}</span>
               </div>
               <div className="price-breakdown">
-                HT {fmtFCFA(ht)} · TVA {fmtFCFA(display - ht)}
+                {t('ui.products.price_breakdown', { ht: fmtFCFA(ht), tva: fmtFCFA(display - ht) })}
               </div>
               <div className="kv-line">
-                <span className="k">Prix plancher</span>
+                <span className="k">{t('ui.products.floor_price')}</span>
                 <span className="v num">{fmtFCFA(floor)}</span>
               </div>
               <div className="kv-line">
-                <span className="k">Coût de revient</span>
+                <span className="k">{t('ui.products.cost_price')}</span>
                 <span className="v num">{fmtFCFA(cost)}</span>
               </div>
               <div className="divider" style={{ margin: '10px 0 4px' }} />
               <div className="kv-line">
-                <span className="k">Marge au plancher</span>
+                <span className="k">{t('ui.products.floor_margin')}</span>
                 <span className={`v num${floorBelowCost ? '' : ' accent'}`}>{fmtFCFA(floorMargin)}</span>
               </div>
               {floorBelowCost && (
                 <div className="note" style={{ color: 'var(--st-urgent)', marginTop: 4 }}>
-                  Plancher sous le coût de revient.
+                  {t('ui.products.floor_below_cost')}
                 </div>
               )}
             </div>
 
             <div className="info-card">
-              <h4>Catalogue</h4>
+              <h4>{t('ui.products.catalog')}</h4>
               <div className="kv-line">
-                <span className="k">Catégorie</span>
+                <span className="k">{t('ui.products.category')}</span>
                 <span className="v">{p.category?.name?.fr ?? '—'}</span>
               </div>
               <div className="kv-line">
-                <span className="k">Production</span>
-                <span className="v">{PRODTYPE[p.productionType] ?? p.productionType}</span>
+                <span className="k">{t('ui.products.production')}</span>
+                <span className="v">{PRODTYPE[p.productionType] ? t(PRODTYPE[p.productionType]!) : p.productionType}</span>
               </div>
               <div className="kv-line">
-                <span className="k">Commission</span>
+                <span className="k">{t('ui.products.commission')}</span>
                 <span className="v">
                   {String(p.defaultCommissionValue)}
                   {p.defaultCommissionType === 'PERCENTAGE' ? ' %' : ' FCFA'}
