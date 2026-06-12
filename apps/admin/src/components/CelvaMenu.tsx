@@ -9,13 +9,16 @@ import {
 } from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
-import WarehouseIcon from '@mui/icons-material/Warehouse';
-import SavingsIcon from '@mui/icons-material/Savings';
-import FeedIcon from '@mui/icons-material/Feed';
-import HandshakeIcon from '@mui/icons-material/Handshake';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import {
+  NavDashboard,
+  NavSales,
+  NavCatalog,
+  NavStock,
+  NavCommercial,
+  NavContent,
+  NavFinance,
+  NavSettings,
+} from './CelvaNavIcons';
 
 type MenuGroupProps = {
   labelKey: string;
@@ -58,16 +61,16 @@ export const CelvaMenu = () => {
 
   return (
     <Menu>
-      <Menu.DashboardItem primaryText="menu.dashboard" />
+      <Menu.DashboardItem primaryText="menu.dashboard" leftIcon={<NavDashboard />} />
 
       {/* VENTES — daily starting point (spec §4) */}
-      <MenuGroup labelKey="menu.sales" icon={<PointOfSaleIcon />} defaultOpen>
+      <MenuGroup labelKey="menu.sales" icon={<NavSales />} defaultOpen>
         <Menu.ResourceItem name="orders" />
         <Menu.ResourceItem name="deliveries" />
         <Menu.ResourceItem name="promo-codes" />
       </MenuGroup>
 
-      <MenuGroup labelKey="menu.catalog" icon={<Inventory2Icon />}>
+      <MenuGroup labelKey="menu.catalog" icon={<NavCatalog />}>
         <Menu.ResourceItem name="products" />
         <Menu.ResourceItem name="collections" />
         <Menu.ResourceItem name="categories" />
@@ -77,7 +80,7 @@ export const CelvaMenu = () => {
         <Menu.ResourceItem name="attribute-values" />
       </MenuGroup>
 
-      <MenuGroup labelKey="menu.stock" icon={<WarehouseIcon />}>
+      <MenuGroup labelKey="menu.stock" icon={<NavStock />}>
         <Menu.ResourceItem name="suppliers" />
         <Menu.ResourceItem name="raw-materials" />
         <Menu.ResourceItem name="purchase-orders" />
@@ -86,17 +89,17 @@ export const CelvaMenu = () => {
       </MenuGroup>
 
       {/* COMMERCIAL — resellers (spec §4) */}
-      <MenuGroup labelKey="menu.commercial" icon={<HandshakeIcon />}>
+      <MenuGroup labelKey="menu.commercial" icon={<NavCommercial />}>
         <Menu.ResourceItem name="consignments" />
         <Menu.ResourceItem name="sales-commissions" />
       </MenuGroup>
 
-      <MenuGroup labelKey="menu.content" icon={<FeedIcon />}>
+      <MenuGroup labelKey="menu.content" icon={<NavContent />}>
         <Menu.ResourceItem name="articles" />
         <Menu.ResourceItem name="newsletter" />
       </MenuGroup>
 
-      <MenuGroup labelKey="menu.finance" icon={<SavingsIcon />}>
+      <MenuGroup labelKey="menu.finance" icon={<NavFinance />}>
         <Menu.ResourceItem name="transactions" />
         <Menu.ResourceItem name="treasury" />
         <Menu.ResourceItem name="finance" />
@@ -104,7 +107,7 @@ export const CelvaMenu = () => {
 
       {/* PARAMÈTRES — config (spec §4): users, livraison & retrait,
           comptes d'encaissement, réglages, journal d'activité */}
-      <MenuGroup labelKey="menu.settings" icon={<AdminPanelSettingsIcon />}>
+      <MenuGroup labelKey="menu.settings" icon={<NavSettings />}>
         {isAdmin && <Menu.ResourceItem name="users" />}
         <Menu.ResourceItem name="delivery-zones" />
         <Menu.ResourceItem name="pickup-points" />
