@@ -31,7 +31,7 @@ import type { AdminOrderDetail, PaymentAccount } from '../../types';
 import { fetchJson } from '../../http';
 import { API_BASE, STORAGE_KEYS } from '../../config';
 import { CelvaSkin } from '../../components/CelvaSkin';
-import { ChannelIcon, ORDER_CHANNEL_LABEL, StatusPill, fmtFCFA } from './orderSkin';
+import { ChannelIcon, ORDER_CHANNEL_KEY, StatusPill, fmtFCFA } from './orderSkin';
 
 /** Spec §7.5 — forward-only steps an admin can pick. */
 const ALLOWED_NEXT: Record<OrderStatus, OrderStatus[]> = {
@@ -51,21 +51,21 @@ const NON_CANCELLABLE: OrderStatus[] = ['SHIPPED', 'DELIVERED', 'COMPLETED', 'CA
 /** Real payment methods selectable at encashment (spec §5.5). */
 const ENCASHMENT_METHODS = ['CASH_ON_DELIVERY', 'ORANGE_MONEY', 'MTN_MOMO'] as const;
 
-const DELIVERY_MODE_LABEL: Record<string, string> = {
-  HOME_DELIVERY: 'Livraison à domicile',
-  STAFF_DELIVERY: "Livraison par l'équipe",
-  STORE_PICKUP: 'Retrait magasin',
-  RELAY_PICKUP: 'Point relais',
+const DELIVERY_MODE_KEY: Record<string, string> = {
+  HOME_DELIVERY: 'ui.orders.mode_home_delivery',
+  STAFF_DELIVERY: 'ui.orders.mode_staff_delivery',
+  STORE_PICKUP: 'ui.orders.mode_store_pickup',
+  RELAY_PICKUP: 'ui.orders.mode_relay_pickup',
 };
 
-// Contextual main action label per status (spec §5.1).
-const MAIN_ACTION_LABEL: Partial<Record<OrderStatus, string>> = {
-  PENDING: 'Confirmer la commande',
-  CONFIRMED: 'Commencer la préparation',
-  PROCESSING: 'Marquer prête',
-  READY: 'Assigner / acheminer',
-  SHIPPED: 'Marquer livrée',
-  DELIVERED: 'Clôturer la commande',
+// Contextual main action key per status (spec §5.1).
+const MAIN_ACTION_KEY: Partial<Record<OrderStatus, string>> = {
+  PENDING: 'ui.orders.action_confirm',
+  CONFIRMED: 'ui.orders.action_start_prep',
+  PROCESSING: 'ui.orders.action_mark_ready',
+  READY: 'ui.orders.action_route',
+  SHIPPED: 'ui.orders.action_mark_delivered',
+  DELIVERED: 'ui.orders.action_complete',
 };
 
 // ── Functional actions (preserved behaviour, brand-styled) ──────────────
@@ -118,7 +118,8 @@ const TransitionButton = () => {
   return (
     <>
       <button className="btn btn-primary btn-lg" onClick={onClick}>
-        {MAIN_ACTION_LABEL[record.status] ?? translate('resources.orders.actions.transition')}
+        {(MAIN_ACTION_KEY[record.status] && translate(MAIN_ACTION_KEY[record.status] as string)) ??
+          translate('resources.orders.actions.transition')}
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
         <DialogTitle>{translate('resources.orders.actions.transition')}</DialogTitle>
@@ -434,7 +435,9 @@ const PrepActionButton = () => {
   };
   return (
     <button className="btn btn-primary btn-lg" onClick={go}>
-      {record.status === 'CONFIRMED' ? 'Commencer la préparation' : 'Reprendre la préparation'}
+      {record.status === 'CONFIRMED'
+        ? translate('ui.orders.action_start_prep')
+        : translate('ui.orders.action_resume_prep')}
     </button>
   );
 };
@@ -443,10 +446,11 @@ const PrepActionButton = () => {
 const RouteActionButton = () => {
   const record = useRecordContext<AdminOrderDetail>();
   const redirect = useRedirect();
+  const translate = useTranslate();
   if (!record || record.status !== 'READY') return null;
   return (
     <button className="btn btn-primary btn-lg" onClick={() => redirect(`/orders/${record.id}/route`)}>
-      Assigner / acheminer
+      {translate('ui.orders.action_route')}
     </button>
   );
 };
@@ -456,6 +460,7 @@ type OrderMargin = { revenueHt: string; netMargin: string };
 
 const MarginCard = () => {
   const record = useRecordContext<AdminOrderDetail>();
+  const translate = useTranslate();
   const [margin, setMargin] = useState<OrderMargin | null>(null);
   const [denied, setDenied] = useState(false);
   const orderId = record?.id;
@@ -481,9 +486,9 @@ const MarginCard = () => {
   const pct = revenue > 0 ? Math.round((net / revenue) * 100) : 0;
   return (
     <div className="margin-card">
-      <div className="ml">Marge estimée</div>
+      <div className="ml">{translate('ui.orders.margin_label')}</div>
       <div className="mv num">{fmtFCFA(net)}</div>
-      <div className="mp">{pct}% du revenu HT · visible finance uniquement</div>
+      <div className="mp">{translate('ui.orders.margin_note', { pct })}</div>
     </div>
   );
 };
@@ -500,6 +505,7 @@ const KV = ({ k, v }: { k: string; v: React.ReactNode }) => (
 const OrderDetailSkin = () => {
   const record = useRecordContext<AdminOrderDetail>();
   const redirect = useRedirect();
+  const translate = useTranslate();
   if (!record) return null;
 
   const created = new Date(record.createdAt).toLocaleString('fr-FR', {
@@ -515,7 +521,7 @@ const OrderDetailSkin = () => {
   return (
     <div className="fade-in" style={{ padding: '8px 4px 64px' }}>
       <button className="back-link" style={{ marginBottom: 16 }} onClick={() => redirect('list', 'orders')}>
-        <ArrowBackIcon sx={{ fontSize: 16 }} /> Commandes
+        <ArrowBackIcon sx={{ fontSize: 16 }} /> {translate('ui.orders.title')}
       </button>
 
       {/* Header */}
@@ -528,7 +534,7 @@ const OrderDetailSkin = () => {
           <div className="dh-meta">
             <span className="row" style={{ gap: 6 }}>
               <ChannelIcon channel={record.channel} size={14} />
-              {ORDER_CHANNEL_LABEL[record.channel]}
+              {translate(ORDER_CHANNEL_KEY[record.channel])}
             </span>
             <span>·</span>
             <span>{created}</span>
@@ -556,7 +562,7 @@ const OrderDetailSkin = () => {
         {/* Left column */}
         <div className="grid">
           <div className="info-card">
-            <h4>Articles</h4>
+            <h4>{translate('ui.orders.card_items')}</h4>
             {/* The list-view record is hydrated first (items lack `variant`)
                 before getOne completes — render only fully-loaded items. */}
             {record.items
@@ -570,7 +576,7 @@ const OrderDetailSkin = () => {
                     <div className="iname">{it.variant.product?.name?.fr ?? it.variant.sku}</div>
                     <div className="ivar">{it.variant.sku}</div>
                     <div className="iqty">
-                      Qté {it.quantity}
+                      {translate('ui.orders.qty', { n: it.quantity })}
                       {it.variant.storageLocation && (
                         <>
                           {' · '}
@@ -584,24 +590,24 @@ const OrderDetailSkin = () => {
               ))}
             <div className="divider" style={{ margin: '8px 0' }} />
             <div className="fin-line">
-              <span className="k muted">Sous-total</span>
+              <span className="k muted">{translate('ui.orders.subtotal')}</span>
               <span className="v num">{fmtFCFA(record.subtotal)}</span>
             </div>
             <div className="fin-line">
-              <span className="muted">Livraison</span>
+              <span className="muted">{translate('ui.orders.delivery')}</span>
               <span className="num">{fmtFCFA(record.deliveryFee)}</span>
             </div>
             {discount > 0 && (
               <div className="fin-line">
-                <span className="muted">Réduction{record.promoCode ? ` (${record.promoCode.code})` : ''}</span>
+                <span className="muted">{translate('ui.orders.discount')}{record.promoCode ? ` (${record.promoCode.code})` : ''}</span>
                 <span className="num accent">− {fmtFCFA(discount)}</span>
               </div>
             )}
             <div className="fin-line total">
               <span>
-                Total TTC
+                {translate('ui.orders.total_ttc')}
                 {record.taxAmount != null && Number(record.taxAmount) > 0 && (
-                  <span className="vat"> dont TVA {fmtFCFA(record.taxAmount)}</span>
+                  <span className="vat"> {translate('ui.orders.incl_vat', { amount: fmtFCFA(record.taxAmount) })}</span>
                 )}
               </span>
               <span className="v num">{fmtFCFA(record.total)}</span>
@@ -610,7 +616,7 @@ const OrderDetailSkin = () => {
 
           {record.notes && (
             <div className="info-card">
-              <h4>Notes</h4>
+              <h4>{translate('ui.orders.card_notes')}</h4>
               <div style={{ fontSize: 15 }}>{record.notes}</div>
             </div>
           )}
@@ -619,7 +625,7 @@ const OrderDetailSkin = () => {
         {/* Right column */}
         <div className="grid">
           <div className="info-card">
-            <h4>Cliente</h4>
+            <h4>{translate('ui.orders.card_client')}</h4>
             <div style={{ fontSize: 17, fontWeight: 500, fontFamily: 'var(--font-display)' }}>
               {record.user.name}
             </div>
@@ -640,24 +646,24 @@ const OrderDetailSkin = () => {
 
           {p && (
             <div className="info-card">
-              <h4>Paiement</h4>
-              <KV k="Moyen" v={p.method} />
-              <KV k="Statut" v={p.status} />
-              <KV k="Référence" v={p.transactionRef ?? '—'} />
-              {p.paidAt && <KV k="Payé le" v={new Date(p.paidAt).toLocaleString('fr-FR')} />}
+              <h4>{translate('ui.orders.card_payment')}</h4>
+              <KV k={translate('ui.orders.kv_method')} v={p.method} />
+              <KV k={translate('ui.orders.kv_status')} v={p.status} />
+              <KV k={translate('ui.orders.kv_reference')} v={p.transactionRef ?? '—'} />
+              {p.paidAt && <KV k={translate('ui.orders.kv_paid_at')} v={new Date(p.paidAt).toLocaleString('fr-FR')} />}
             </div>
           )}
 
           {d && (
             <div className="info-card">
-              <h4>Livraison</h4>
-              <KV k="Mode" v={DELIVERY_MODE_LABEL[d.mode] ?? d.mode} />
-              {d.pickupPoint && <KV k="Point" v={d.pickupPoint.name.fr} />}
-              {d.shippingAddress && <KV k="Adresse" v={d.shippingAddress} />}
-              <KV k="Frais" v={fmtFCFA(record.deliveryFee)} />
+              <h4>{translate('ui.orders.card_delivery')}</h4>
+              <KV k={translate('ui.orders.kv_mode')} v={DELIVERY_MODE_KEY[d.mode] ? translate(DELIVERY_MODE_KEY[d.mode] as string) : d.mode} />
+              {d.pickupPoint && <KV k={translate('ui.orders.kv_point')} v={d.pickupPoint.name.fr} />}
+              {d.shippingAddress && <KV k={translate('ui.orders.kv_address')} v={d.shippingAddress} />}
+              <KV k={translate('ui.orders.kv_fees')} v={fmtFCFA(record.deliveryFee)} />
               {record.status === 'READY' && (
                 <div className="note" style={{ marginTop: 8, fontStyle: 'italic' }}>
-                  Le livreur sera assigné à l’acheminement.
+                  {translate('ui.orders.deliverer_pending')}
                 </div>
               )}
             </div>

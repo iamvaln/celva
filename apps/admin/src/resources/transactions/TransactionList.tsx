@@ -235,7 +235,7 @@ export const TransactionList = () => {
                     <tr key={x.id}>
                       <td className="tx-when">
                         {fmtDate(x.date)}
-                        <span className="tx-ago">{relativeFr(x.date)}</span>
+                        <span className="tx-ago">{relativeFr(x.date, t)}</span>
                       </td>
                       <td>
                         <span className={`pill ${meta?.sc ?? 's-neutral'}`}>

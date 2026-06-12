@@ -99,18 +99,18 @@ export const OrderPrepScreen = () => {
 
   return (
     <CelvaSkin>
-      <Title title="Préparation" />
+      <Title title={t('ui.orders.prep_title')} />
       <div className="fade-in" style={{ padding: '8px 4px 64px', maxWidth: 920 }}>
         <button className="back-link" style={{ marginBottom: 14 }} onClick={back}>
           <ArrowBackIcon sx={{ fontSize: 16 }} /> {order.orderNumber}
         </button>
         <div className="flow-head">
-          <div className="flow-title">Bon de préparation</div>
+          <div className="flow-title">{t('ui.orders.prep_slip')}</div>
         </div>
         <div className="dh-meta" style={{ marginBottom: 22 }}>
           <span>{order.user.name}</span>
           <span>·</span>
-          <span>{lines.length} article(s)</span>
+          <span>{t('ui.orders.item_count', { smart_count: lines.length })}</span>
           <span>·</span>
           <span>{fmtFCFA(order.total)}</span>
         </div>
@@ -118,14 +118,14 @@ export const OrderPrepScreen = () => {
         {/* Pick checklist */}
         <div className="between" style={{ marginBottom: 12 }}>
           <div className="section-label" style={{ margin: 0 }}>
-            Articles à rassembler
+            {t('ui.orders.prep_items_to_gather')}
           </div>
           <div className="row" style={{ gap: 14 }}>
             <div className="prep-counter num">
-              <span className={nChecked ? 'done-n' : ''}>{nChecked}</span> / {lines.length} rassemblés
+              <span className={nChecked ? 'done-n' : ''}>{nChecked}</span> {t('ui.orders.prep_gathered', { total: lines.length })}
             </div>
             <button className="btn btn-ghost" onClick={() => window.print()}>
-              <PrintIcon sx={{ fontSize: 15 }} /> Imprimer le bon
+              <PrintIcon sx={{ fontSize: 15 }} /> {t('ui.orders.prep_print')}
             </button>
           </div>
         </div>
@@ -146,25 +146,25 @@ export const OrderPrepScreen = () => {
                 <div className="psku">{l.sku}</div>
               </div>
               <div className="ploc">
-                <div className="lbl">Emplacement</div>
-                <div className="val">{l.loc || 'Magasin'}</div>
+                <div className="lbl">{t('ui.orders.prep_location')}</div>
+                <div className="val">{l.loc || t('ui.orders.prep_store')}</div>
               </div>
             </button>
           ))}
         </div>
 
         {/* Packaging picker */}
-        <div className="section-label">Emballage utilisé</div>
+        <div className="section-label">{t('ui.orders.prep_packaging_used')}</div>
         <div className="card" style={{ marginBottom: 14 }}>
           {materials.length === 0 ? (
-            <div className="pack-row note">Aucune matière d’emballage configurée.</div>
+            <div className="pack-row note">{t('ui.orders.prep_no_packaging')}</div>
           ) : (
             materials.map((m) => (
               <div key={m.id} className="pack-row">
                 <div className="pkname">
                   <div style={{ fontSize: 15.5 }}>{m.name}</div>
                   <div className="pkstock">
-                    Stock {String(m.stockQty)} {m.unit} · {fmtFCFA(m.unitPrice)}/{m.unit}
+                    {t('ui.orders.prep_stock', { qty: String(m.stockQty), unit: m.unit })} · {fmtFCFA(m.unitPrice)}/{m.unit}
                   </div>
                 </div>
                 <div className="qty-step">
@@ -178,16 +178,16 @@ export const OrderPrepScreen = () => {
         </div>
 
         <div className="net-box" style={{ marginBottom: 26 }}>
-          <span className="nl">Coût d’emballage · déduit du stock à la validation</span>
+          <span className="nl">{t('ui.orders.prep_packaging_cost')}</span>
           <span className="nv num">{fmtFCFA(packCost)}</span>
         </div>
 
         <div className="between">
           <span className="note">
-            {allChecked ? 'Tous les articles sont rassemblés.' : 'Cochez tous les articles pour activer.'}
+            {allChecked ? t('ui.orders.prep_all_gathered') : t('ui.orders.prep_check_all')}
           </span>
           <button className="btn btn-primary btn-lg" disabled={!allChecked || busy} onClick={markReady}>
-            Marquer prête
+            {t('ui.orders.action_mark_ready')}
           </button>
         </div>
       </div>

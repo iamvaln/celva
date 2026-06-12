@@ -1,23 +1,23 @@
 import { useMemo, useState } from 'react';
-import { Title, useGetList, useRedirect } from 'react-admin';
+import { Title, useGetList, useRedirect, useTranslate } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import type { OrderChannel, OrderStatus } from '@celva/shared';
 import type { AdminOrderRow } from '../../types';
 import { CelvaSkin } from '../../components/CelvaSkin';
-import { ChannelIcon, ORDER_CHANNEL_LABEL, StatusPill, fmtFCFA, relativeFr } from './orderSkin';
+import { ChannelIcon, ORDER_CHANNEL_KEY, StatusPill, fmtFCFA, relativeFr } from './orderSkin';
 
-type Tab = { id: string; label: string; match: (o: AdminOrderRow) => boolean };
+type Tab = { id: string; labelKey: string; match: (o: AdminOrderRow) => boolean };
 
 const TABS: Tab[] = [
-  { id: 'all', label: 'Toutes', match: () => true },
-  { id: 'PENDING', label: 'En attente', match: (o) => o.status === 'PENDING' },
-  { id: 'PREP', label: 'À préparer', match: (o) => o.status === 'CONFIRMED' || o.status === 'PROCESSING' },
-  { id: 'READY', label: 'Prêtes', match: (o) => o.status === 'READY' },
-  { id: 'SHIPPED', label: 'Expédiées', match: (o) => o.status === 'SHIPPED' },
-  { id: 'DELIVERED', label: 'Livrées', match: (o) => o.status === 'DELIVERED' || o.status === 'COMPLETED' },
-  { id: 'CANCELLED', label: 'Annulées', match: (o) => o.status === 'CANCELLED' },
+  { id: 'all', labelKey: 'ui.orders.tab_all', match: () => true },
+  { id: 'PENDING', labelKey: 'ui.orders.tab_pending', match: (o) => o.status === 'PENDING' },
+  { id: 'PREP', labelKey: 'ui.orders.tab_prep', match: (o) => o.status === 'CONFIRMED' || o.status === 'PROCESSING' },
+  { id: 'READY', labelKey: 'ui.orders.tab_ready', match: (o) => o.status === 'READY' },
+  { id: 'SHIPPED', labelKey: 'ui.orders.tab_shipped', match: (o) => o.status === 'SHIPPED' },
+  { id: 'DELIVERED', labelKey: 'ui.orders.tab_delivered', match: (o) => o.status === 'DELIVERED' || o.status === 'COMPLETED' },
+  { id: 'CANCELLED', labelKey: 'ui.orders.tab_cancelled', match: (o) => o.status === 'CANCELLED' },
 ];
 
 // status-class only (the celva-skin status color binding)
@@ -58,21 +58,22 @@ const initialTab = (): string => {
 };
 
 const CHANNELS: Array<['all' | OrderChannel, string]> = [
-  ['all', 'Tous canaux'],
-  ['WEBSITE', 'Boutique'],
-  ['WHATSAPP', 'WhatsApp'],
-  ['INSTAGRAM', 'Instagram'],
-  ['FACEBOOK', 'Facebook'],
-  ['IN_PERSON', 'En personne'],
+  ['all', 'ui.orders.chan_all'],
+  ['WEBSITE', 'ui.orders.chan_website'],
+  ['WHATSAPP', 'ui.orders.chan_whatsapp'],
+  ['INSTAGRAM', 'ui.orders.chan_instagram'],
+  ['FACEBOOK', 'ui.orders.chan_facebook'],
+  ['IN_PERSON', 'ui.orders.chan_in_person'],
 ];
 
 const OrderRow = ({ o, onOpen }: { o: AdminOrderRow; onOpen: (id: string) => void }) => {
+  const t = useTranslate();
   const cod = o.payment?.method === 'CASH_ON_DELIVERY';
   const n = o.items.length;
   return (
     <div className={`order-row ${STATUS_SC[o.status]}`} onClick={() => onOpen(o.id)}>
       <div className="obar" />
-      <div className="ochan" title={ORDER_CHANNEL_LABEL[o.channel]}>
+      <div className="ochan" title={t(ORDER_CHANNEL_KEY[o.channel])}>
         <ChannelIcon channel={o.channel} />
       </div>
       <div className="ometa">
@@ -81,19 +82,19 @@ const OrderRow = ({ o, onOpen }: { o: AdminOrderRow; onOpen: (id: string) => voi
           <span className="oclient">{o.user.name}</span>
           {cod && (
             <span className="tag-cash">
-              <PaymentsIcon sx={{ fontSize: 13 }} /> cash à la livraison
+              <PaymentsIcon sx={{ fontSize: 13 }} /> {t('ui.orders.cash_on_delivery')}
             </span>
           )}
         </div>
         <div className="osub">
-          <span>{ORDER_CHANNEL_LABEL[o.channel]}</span>
+          <span>{t(ORDER_CHANNEL_KEY[o.channel])}</span>
           <span>·</span>
-          <span>{n + (n > 1 ? ' articles' : ' article')}</span>
+          <span>{t('ui.orders.item_count', { smart_count: n })}</span>
         </div>
       </div>
       <div>
         <div className="oamt num">{fmtFCFA(o.total)}</div>
-        <div className="otime">{relativeFr(o.createdAt)}</div>
+        <div className="otime">{relativeFr(o.createdAt, t)}</div>
       </div>
       <StatusPill status={o.status} />
     </div>
@@ -101,6 +102,7 @@ const OrderRow = ({ o, onOpen }: { o: AdminOrderRow; onOpen: (id: string) => voi
 };
 
 export const OrderList = () => {
+  const t = useTranslate();
   const redirect = useRedirect();
   const [tab, setTab] = useState<string>(initialTab);
   const [q, setQ] = useState('');
@@ -131,13 +133,13 @@ export const OrderList = () => {
 
   return (
     <CelvaSkin>
-      <Title title="Commandes" />
+      <Title title={t('ui.orders.title')} />
       <div style={{ padding: '8px 4px 64px' }} className="fade-in">
         <div className="toolbar">
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher n° ou cliente…"
+              placeholder={t('ui.orders.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -153,7 +155,7 @@ export const OrderList = () => {
                 className={`tab${tt.id === tab ? ' active' : ''}`}
                 onClick={() => setTab(tt.id)}
               >
-                {tt.label}
+                {t(tt.labelKey)}
                 <span className="tcount num">{count}</span>
               </button>
             );
@@ -161,24 +163,24 @@ export const OrderList = () => {
         </div>
 
         <div className="subfilters">
-          {CHANNELS.map(([id, label]) => (
+          {CHANNELS.map(([id, labelKey]) => (
             <button
               key={id}
               className={`chip${chan === id ? ' on' : ''}`}
               onClick={() => setChan(id)}
             >
-              {label}
+              {t(labelKey)}
             </button>
           ))}
           <div style={{ flex: 1 }} />
           <span className="note" style={{ marginRight: 4 }}>
-            Trier
+            {t('ui.orders.sort')}
           </span>
           <button className={`chip${sort === 'recent' ? ' on' : ''}`} onClick={() => setSort('recent')}>
-            Récentes
+            {t('ui.orders.sort_recent')}
           </button>
           <button className={`chip${sort === 'amount' ? ' on' : ''}`} onClick={() => setSort('amount')}>
-            Montant
+            {t('ui.orders.sort_amount')}
           </button>
         </div>
 
@@ -188,7 +190,7 @@ export const OrderList = () => {
               <ReceiptLongIcon sx={{ fontSize: 56 }} />
             </div>
             <div style={{ fontSize: 17 }}>
-              {isLoading ? 'Chargement…' : 'Aucune commande dans cette vue'}
+              {isLoading ? t('ui.orders.loading') : t('ui.orders.empty_title')}
             </div>
           </div>
         ) : (
@@ -202,7 +204,7 @@ export const OrderList = () => {
         {orders.length < total && (
           <div className="load-more">
             <button className="btn btn-ghost" onClick={() => setPerPage((p) => p + 50)}>
-              Charger plus
+              {t('ui.orders.load_more')}
             </button>
           </div>
         )}
