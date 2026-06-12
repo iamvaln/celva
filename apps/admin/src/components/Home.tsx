@@ -60,6 +60,7 @@ const SAFE_SORT: Record<string, string> = {
   categories: 'sortOrder',
   collections: 'sortOrder',
   suppliers: 'name',
+  users: 'createdAt',
 };
 
 /** Count helper — one cheap (perPage:1) list call, returns the server total. */
@@ -82,7 +83,7 @@ type ActionDef = {
   onClick: () => void;
 };
 
-const ActionCard = ({ a }: { a: ActionDef }) => {
+const ActionCard = ({ a, uptodate }: { a: ActionDef; uptodate: string }) => {
   const live = (a.value ?? 0) > 0;
   return (
     <button className={`action-card ${a.sc} ${live ? 'live' : 'clear'}`} onClick={a.onClick}>
@@ -97,7 +98,7 @@ const ActionCard = ({ a }: { a: ActionDef }) => {
         </>
       ) : (
         <div className="ac-value">
-          <CheckIcon sx={{ fontSize: 18 }} /> À jour
+          <CheckIcon sx={{ fontSize: 18 }} /> {uptodate}
         </div>
       )}
     </button>
@@ -128,23 +129,10 @@ const Kpi = ({
   </div>
 );
 
-const SETUP_STEPS: Array<{ t: string; resource: string; nav: string }> = [
-  { t: 'Ajouter vos fournisseurs', resource: 'suppliers', nav: 'suppliers' },
-  { t: 'Enregistrer vos matières premières et leur coût', resource: 'raw-materials', nav: 'raw-materials' },
-  { t: 'Créer vos premières catégories', resource: 'categories', nav: 'categories' },
-  { t: 'Lancer votre première production', resource: 'production-orders', nav: 'production-orders' },
-  { t: 'Créer vos produits', resource: 'products', nav: 'products' },
-  { t: 'Composer une collection', resource: 'collections', nav: 'collections' },
-  { t: 'Configurer les zones de livraison', resource: 'delivery-zones', nav: 'delivery-zones' },
-  { t: "Configurer vos comptes d'encaissement", resource: 'payment-accounts', nav: 'payment-accounts' },
-  { t: 'Publier votre premier article', resource: 'articles', nav: 'articles' },
-];
-
 export const Home = () => {
   const t = useTranslate();
   const redirect = useRedirect();
   const { identity } = useGetIdentity();
-  const [mode, setMode] = useState<'operational' | 'setup'>('operational');
 
   const goFiltered = (resource: string, filter: Record<string, unknown>) =>
     redirect(`/${resource}?filter=${encodeURIComponent(JSON.stringify(filter))}`);
@@ -159,27 +147,23 @@ export const Home = () => {
   const draftArticles = useTotal('articles', { isPublished: false });
   const consignActive = useTotal('consignments', { status: 'ACTIVE' });
 
-  // Setup-completion signals (one count per onboarding step).
-  const totSuppliers = useTotal('suppliers');
-  const totMaterials = useTotal('raw-materials');
-  const totCategories = useTotal('categories');
-  const totProduction = useTotal('production-orders');
+  // Onboarding signals (the 5 condensed setup steps shown in the banner).
   const totProducts = useTotal('products');
-  const totCollections = useTotal('collections');
-  const totZones = useTotal('delivery-zones');
   const totAccounts = useTotal('payment-accounts');
-  const totArticles = useTotal('articles');
-  const setupDone = [
-    totSuppliers,
-    totMaterials,
-    totCategories,
-    totProduction,
-    totProducts,
-    totCollections,
-    totZones,
-    totAccounts,
-    totArticles,
-  ].map((v) => (v ?? 0) > 0);
+  const totZones = useTotal('delivery-zones');
+  const totSettings = useTotal('settings');
+  const totUsers = useTotal('users');
+  const onboard = [
+    { key: 'store_profile', done: (totSettings ?? 0) > 0, nav: 'settings' },
+    { key: 'first_product', done: (totProducts ?? 0) > 0, nav: 'products' },
+    { key: 'accounts', done: (totAccounts ?? 0) > 0, nav: 'payment-accounts' },
+    { key: 'delivery_zones', done: (totZones ?? 0) > 0, nav: 'delivery-zones' },
+    { key: 'invite_team', done: (totUsers ?? 0) > 1, nav: 'users' },
+  ];
+  const onboardDone = onboard.filter((s) => s.done).length;
+  const onboardPct = Math.round((onboardDone / onboard.length) * 100);
+  const onboardRemaining = onboard.length - onboardDone;
+  const firstIncomplete = onboard.find((s) => !s.done);
 
   // Low-stock alerts (real raw materials under threshold).
   const { data: lowStock = [] } = useGetList<RawMaterial>('raw-materials', {
@@ -206,70 +190,70 @@ export const Home = () => {
 
   const daily: ActionDef[] = [
     {
-      label: 'Commandes à confirmer',
+      label: t('dashboard.cards.orders_confirm'),
       value: ordersPending,
       sc: 's-urgent',
       icon: <ReceiptLongIcon />,
-      foot: 'à valider',
+      foot: t('dashboard.cards.orders_confirm_foot'),
       onClick: () => goFiltered('orders', { status: 'PENDING' }),
     },
     {
-      label: 'Commandes à préparer',
+      label: t('dashboard.cards.orders_prepare'),
       value: ordersConfirmed,
       sc: 's-todo',
       icon: <Inventory2Icon />,
-      foot: 'confirmées, à emballer',
+      foot: t('dashboard.cards.orders_prepare_foot'),
       onClick: () => goFiltered('orders', { status: 'CONFIRMED' }),
     },
     {
-      label: 'Livraisons en cours',
+      label: t('dashboard.cards.deliveries'),
       value: deliveriesTransit,
       sc: 's-info',
       icon: <LocalShippingIcon />,
-      foot: 'en acheminement',
+      foot: t('dashboard.cards.deliveries_foot'),
       onClick: () => goFiltered('deliveries', { status: 'IN_TRANSIT' }),
     },
     {
-      label: 'Paiements à confirmer',
+      label: t('dashboard.cards.payments'),
       value: ordersShipped,
       sc: 's-urgent',
       icon: <PaymentsIcon />,
-      foot: 'cash à la livraison',
+      foot: t('dashboard.cards.payments_foot'),
       onClick: () => goFiltered('orders', { status: 'SHIPPED' }),
     },
   ];
 
   const periodic: ActionDef[] = [
     {
-      label: 'Réceptions fournisseur',
+      label: t('dashboard.cards.receptions'),
       value: poOrdered,
       sc: 's-todo',
       icon: <MoveToInboxIcon />,
-      foot: 'en transit',
+      foot: t('dashboard.cards.receptions_foot'),
       onClick: () => goFiltered('purchase-orders', { status: 'ORDERED' }),
     },
     {
-      label: 'Production en cours',
+      label: t('dashboard.cards.production'),
       value: prodInProgress,
       sc: 's-prod',
       icon: <PrecisionManufacturingIcon />,
-      foot: 'atelier',
+      foot: t('dashboard.cards.production_foot'),
       onClick: () => goFiltered('production-orders', { status: 'IN_PROGRESS' }),
     },
     {
-      label: 'Publications à valider',
+      label: t('dashboard.cards.publications'),
       value: draftArticles,
       sc: 's-done',
       icon: <ArticleIcon />,
-      foot: 'brouillons',
+      foot: t('dashboard.cards.publications_foot'),
       onClick: () => goFiltered('articles', { isPublished: false }),
     },
     {
-      label: 'Consignations à réconcilier',
+      label: t('dashboard.cards.consignments'),
       value: consignActive,
       sc: 's-done',
       icon: <HandshakeIcon />,
-      foot: 'actives',
+      foot: t('dashboard.cards.consignments_foot'),
       onClick: () => goFiltered('consignments', { status: 'ACTIVE' }),
     },
   ];
@@ -292,7 +276,7 @@ export const Home = () => {
     if (prev > 0) {
       const pct = Math.round(((cur - prev) / prev) * 100);
       salesTrend = pct >= 0 ? 'up' : 'down';
-      salesDelta = `${pct >= 0 ? '+' : ''}${pct}% vs mois préc.`;
+      salesDelta = t('dashboard.kpi_vs_prev', { pct: `${pct >= 0 ? '+' : ''}${pct}` });
     }
   }
 
@@ -300,172 +284,162 @@ export const Home = () => {
     <CelvaSkin>
       <Title title={t('menu.dashboard')} />
       <div style={{ padding: '8px 4px 64px' }} className="fade-in">
-        {/* Greeting + state toggle */}
-        <div className="between" style={{ alignItems: 'flex-start', marginBottom: 26 }}>
-          <div>
-            <div className="greeting">{firstName ? `Bonjour, ${firstName}` : 'Bonjour'}</div>
-            <div className="greeting-sub">
-              {mode === 'operational'
-                ? 'Voici ce qui demande votre attention.'
-                : 'Préparons votre boutique.'}
-            </div>
+        {/* Greeting */}
+        <div style={{ marginBottom: 26 }}>
+          <div className="greeting">
+            {firstName ? t('dashboard.greeting', { name: firstName }) : t('dashboard.greeting_plain')}
           </div>
-          <div className="seg">
-            <button className={mode === 'operational' ? 'on' : ''} onClick={() => setMode('operational')}>
-              Opérationnel
-            </button>
-            <button className={mode === 'setup' ? 'on' : ''} onClick={() => setMode('setup')}>
-              Démarrage
-            </button>
-          </div>
+          <div className="greeting-sub">{t('dashboard.subtitle')}</div>
         </div>
 
-        {mode === 'operational' ? (
-          <>
-            {/* 1 — Action center */}
-            <div className="section-label">Centre d’action · à traiter maintenant</div>
-            <div className="action-grid" style={{ marginBottom: 14 }}>
-              {daily.map((a) => (
-                <ActionCard key={a.label} a={a} />
-              ))}
+        {/* Onboarding banner — pinned while setup is incomplete */}
+        {onboardDone < onboard.length && (
+          <div className="onboard-banner">
+            <div className="onboard-ring" style={{ ['--p' as string]: onboardPct }}>
+              <span className="or-num">
+                {onboardDone}/{onboard.length}
+              </span>
             </div>
-            <div className="action-grid" style={{ marginBottom: 26 }}>
-              {periodic.map((a) => (
-                <ActionCard key={a.label} a={a} />
-              ))}
-            </div>
-
-            {/* 2 — Alerts */}
-            {lowStock.length > 0 && (
-              <div className="alert-banner" style={{ marginBottom: 28 }}>
-                <WarningAmberIcon />
-                <div style={{ flex: 1 }}>
-                  <div className="at" style={{ marginBottom: 4 }}>
-                    À surveiller
-                  </div>
-                  {lowStock.map((m) => (
-                    <div className="alert-line" key={m.id}>
-                      <span style={{ fontWeight: 500 }}>{m.name}</span>
-                      <span className="ab">
-                        — matière sous le seuil ({String(m.stockQty)} {m.unit}
-                        {m.alertThreshold != null ? ` / seuil ${String(m.alertThreshold)}` : ''})
+            <div className="onboard-main">
+              <div className="ob-t">{t('dashboard.onboard.title')}</div>
+              <div className="ob-s">
+                {t(
+                  onboardRemaining > 1
+                    ? 'dashboard.onboard.subtitle_other'
+                    : 'dashboard.onboard.subtitle_one',
+                  { count: onboardRemaining },
+                )}
+              </div>
+              <div className="onboard-steps">
+                {onboard.map((s) => (
+                  <button
+                    key={s.key}
+                    className={`ob-chip${s.done ? ' done' : ''}`}
+                    onClick={() => redirect(`/${s.nav}`)}
+                  >
+                    {s.done && (
+                      <span className="obc-ic">
+                        <CheckIcon sx={{ fontSize: 12 }} />
                       </span>
-                    </div>
-                  ))}
-                  <div style={{ marginTop: 8 }}>
-                    <a onClick={() => goFiltered('raw-materials', { lowStock: 'true' })}>Voir le stock →</a>
-                  </div>
-                </div>
+                    )}
+                    {t(`dashboard.onboard.${s.key}`)}
+                  </button>
+                ))}
               </div>
-            )}
-
-            {/* 3 — Metrics */}
-            <div className="section-label">Activité du mois</div>
-            <div className="kpi-grid" style={{ marginBottom: 18 }}>
-              <Kpi
-                l="Ventes du mois"
-                v={<span className="num">{fmt(revenue)}</span>}
-                trend={salesTrend}
-                dv={salesDelta || ' '}
-              />
-              <Kpi
-                l="Marge nette"
-                v={<span className="num">{fmt(net)}</span>}
-                trend="up"
-                dv={`${netPct}% du CA`}
-              />
-              <Kpi
-                l="Commandes · panier moyen"
-                v={<span className="num">{fin ? fin.kpis.orderCount : '—'}</span>}
-                dv={fin ? `Panier moyen ${fmt(fin.kpis.averageOrderValue)}` : ' '}
-              />
-              <Kpi
-                l="Top canal de vente"
-                v={topChannel ? CHANNEL_LABEL[topChannel.channel] ?? topChannel.channel : '—'}
-                dv={
-                  topChannel && topChannelOrders > 0
-                    ? `${Math.round((topChannel.orderCount / topChannelOrders) * 100)}% des commandes`
-                    : ' '
-                }
-              />
             </div>
-
-            {/* Sales trend sparkline */}
-            <div className="card card-pad">
-              <div className="between" style={{ marginBottom: 16 }}>
-                <div className="section-label" style={{ margin: 0 }}>
-                  Évolution des ventes
-                </div>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: 13, color: 'var(--fg-muted)' }}>
-                  pic{' '}
-                  <span className="num accent">{fmtCompact(peak)} FCFA</span>
-                </div>
-              </div>
-              {series.length > 0 ? (
-                <div className="spark">
-                  {series.map((v, i) => (
-                    <div
-                      key={i}
-                      className={`bar${v === peak ? ' peak' : ''}`}
-                      style={{ height: `${(v / peak) * 100}%` }}
-                      title={fmt(v)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="note">Données de ventes à venir.</div>
-              )}
+            <div className="onboard-actions">
+              <button
+                className="btn btn-primary"
+                onClick={() => redirect(`/${(firstIncomplete ?? onboard[0]!).nav}`)}
+              >
+                {t('dashboard.onboard.continue')}
+              </button>
             </div>
-          </>
-        ) : (
-          <Setup setupDone={setupDone} onNav={(r) => redirect(`/${r}`)} />
+          </div>
         )}
+
+        {/* 1 — Action center */}
+        <div className="section-label">{t('dashboard.action_center')}</div>
+        <div className="action-grid" style={{ marginBottom: 14 }}>
+          {daily.map((a) => (
+            <ActionCard key={a.label} a={a} uptodate={t('dashboard.uptodate')} />
+          ))}
+        </div>
+        <div className="action-grid" style={{ marginBottom: 26 }}>
+          {periodic.map((a) => (
+            <ActionCard key={a.label} a={a} uptodate={t('dashboard.uptodate')} />
+          ))}
+        </div>
+
+        {/* 2 — Alerts */}
+        {lowStock.length > 0 && (
+          <div className="alert-banner" style={{ marginBottom: 28 }}>
+            <WarningAmberIcon />
+            <div style={{ flex: 1 }}>
+              <div className="at" style={{ marginBottom: 4 }}>
+                {t('dashboard.alerts_title')}
+              </div>
+              {lowStock.map((m) => (
+                <div className="alert-line" key={m.id}>
+                  <span style={{ fontWeight: 500 }}>{m.name}</span>
+                  <span className="ab">
+                    {' — '}
+                    {t('dashboard.material_below')} ({String(m.stockQty)} {m.unit}
+                    {m.alertThreshold != null
+                      ? ` / ${t('dashboard.threshold')} ${String(m.alertThreshold)}`
+                      : ''}
+                    )
+                  </span>
+                </div>
+              ))}
+              <div style={{ marginTop: 8 }}>
+                <a onClick={() => goFiltered('raw-materials', { lowStock: 'true' })}>
+                  {t('dashboard.view_stock')}
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 3 — Metrics */}
+        <div className="section-label">{t('dashboard.activity_month')}</div>
+        <div className="kpi-grid" style={{ marginBottom: 18 }}>
+          <Kpi
+            l={t('dashboard.kpi_sales')}
+            v={<span className="num">{fmt(revenue)}</span>}
+            trend={salesTrend}
+            dv={salesDelta || ' '}
+          />
+          <Kpi
+            l={t('dashboard.kpi_net')}
+            v={<span className="num">{fmt(net)}</span>}
+            trend="up"
+            dv={t('dashboard.kpi_net_of_ca', { pct: netPct })}
+          />
+          <Kpi
+            l={t('dashboard.kpi_orders_aov')}
+            v={<span className="num">{fin ? fin.kpis.orderCount : '—'}</span>}
+            dv={fin ? t('dashboard.kpi_aov', { v: fmt(fin.kpis.averageOrderValue) }) : ' '}
+          />
+          <Kpi
+            l={t('dashboard.kpi_top_channel')}
+            v={topChannel ? CHANNEL_LABEL[topChannel.channel] ?? topChannel.channel : '—'}
+            dv={
+              topChannel && topChannelOrders > 0
+                ? t('dashboard.kpi_pct_orders', {
+                    pct: Math.round((topChannel.orderCount / topChannelOrders) * 100),
+                  })
+                : ' '
+            }
+          />
+        </div>
+
+        {/* Sales trend sparkline */}
+        <div className="card card-pad">
+          <div className="between" style={{ marginBottom: 16 }}>
+            <div className="section-label" style={{ margin: 0 }}>
+              {t('dashboard.sales_evolution')}
+            </div>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 13, color: 'var(--fg-muted)' }}>
+              {t('dashboard.peak')} <span className="num accent">{fmtCompact(peak)} FCFA</span>
+            </div>
+          </div>
+          {series.length > 0 ? (
+            <div className="spark">
+              {series.map((v, i) => (
+                <div
+                  key={i}
+                  className={`bar${v === peak ? ' peak' : ''}`}
+                  style={{ height: `${(v / peak) * 100}%` }}
+                  title={fmt(v)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="note">{t('dashboard.sales_coming')}</div>
+          )}
+        </div>
       </div>
     </CelvaSkin>
-  );
-};
-
-const Setup = ({ setupDone, onNav }: { setupDone: boolean[]; onNav: (r: string) => void }) => {
-  const doneN = setupDone.filter(Boolean).length;
-  const pct = Math.round((doneN / SETUP_STEPS.length) * 100);
-  return (
-    <div style={{ maxWidth: 760 }}>
-      <div className="card card-pad" style={{ marginBottom: 22 }}>
-        <div className="eyebrow" style={{ marginBottom: 10 }}>
-          Bienvenue chez Celva
-        </div>
-        <div className="greeting" style={{ marginBottom: 8 }}>
-          Préparons votre boutique
-        </div>
-        <p className="note" style={{ fontSize: 15.5, maxWidth: '52ch' }}>
-          Quelques étapes pour passer en mode opérationnel. Le tableau de bord bascule
-          automatiquement dès que l’essentiel est en place.
-        </p>
-        <div className="between" style={{ margin: '18px 0 8px' }}>
-          <div className="prep-counter num">
-            <span className="done-n">{doneN}</span> / {SETUP_STEPS.length} étapes
-          </div>
-          <div style={{ fontFamily: 'var(--font-display)', color: 'var(--accent)', fontWeight: 600 }}>
-            {pct}%
-          </div>
-        </div>
-        <div className="setup-progress">
-          <i style={{ width: `${pct}%` }} />
-        </div>
-      </div>
-      <div className="checklist">
-        {SETUP_STEPS.map((s, i) => (
-          <button
-            key={s.t}
-            className={`check-row${setupDone[i] ? ' done' : ''}`}
-            onClick={() => onNav(s.nav)}
-          >
-            <span className="check-box">{setupDone[i] && <CheckIcon sx={{ fontSize: 16 }} />}</span>
-            <span className="ct">{s.t}</span>
-            {!setupDone[i] && <span className="cgo">Commencer →</span>}
-          </button>
-        ))}
-      </div>
-    </div>
   );
 };
