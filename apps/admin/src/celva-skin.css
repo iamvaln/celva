@@ -556,3 +556,41 @@
 .celva-skin .price-breakdown { font-size: 12.5px; color: var(--fg-muted); margin: -2px 0 6px; font-family: var(--font-display); letter-spacing: 0.02em; }
 .celva-skin .coll-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .celva-skin .coll-chip { font-size: 13px; padding: 5px 12px; background: var(--bg-sunk); border: 1px solid var(--border-soft); color: var(--fg); }
+
+/* ============================================================
+   Shared flat list rows (categories, collections, suppliers,
+   materials, PO, production…) — base from stock.css + collections.css
+   ============================================================ */
+.celva-skin .list-wrap { border: 1px solid var(--border-soft); background: var(--surface); }
+.celva-skin .lrow { display: grid; align-items: center; gap: 16px; padding: var(--row-py) 18px; cursor: pointer; border-bottom: 1px solid var(--border-soft); transition: background 130ms ease; position: relative; width: 100%; text-align: left; background: var(--surface); }
+.celva-skin .lrow:last-child { border-bottom: 0; }
+.celva-skin .lrow:hover { background: var(--bg-sunk); }
+.celva-skin .lrow.archived { opacity: 0.6; }
+.celva-skin .lrow.archived:hover { opacity: 1; }
+.celva-skin .lrow .lname { font-family: var(--font-display); font-size: 16.5px; font-weight: 500; color: var(--fg-strong); }
+.celva-skin .lrow .lsub { font-size: 13px; color: var(--fg-muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 3px; }
+.celva-skin .lrow .lref { font-family: var(--font-display); letter-spacing: 0.04em; }
+.celva-skin .lrow .lnum { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--fg-strong); }
+.celva-skin .lcell { text-align: right; }
+.celva-skin .lcell .lc-v, .celva-skin .lcell .lc-count { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--fg-strong); line-height: 1; }
+.celva-skin .lcell .lc-l { font-size: 11.5px; color: var(--fg-muted); margin-top: 3px; }
+.celva-skin .lchev { color: var(--fg-muted); display: grid; place-items: center; }
+.celva-skin .cat-en { font-size: 13px; color: var(--fg-muted); margin-left: 8px; font-family: var(--font-body); }
+
+/* category row layout: grip | name/slug | count | actions */
+.celva-skin .lrow.cat { grid-template-columns: 26px 1fr 110px auto; }
+.celva-skin .lrow.coll { grid-template-columns: 26px 84px 1fr 120px 130px 22px; }
+
+/* drag-reorder */
+.celva-skin .drag-handle { opacity: 0.35; color: var(--fg-muted); display: grid; place-items: center; transition: opacity 140ms; }
+.celva-skin .lrow:hover .drag-handle { opacity: 1; }
+.celva-skin .drag-handle:active { cursor: grabbing; }
+.celva-skin .lrow.dragging { opacity: 0.4; background: var(--bg-sunk); }
+.celva-skin .lrow.drop-target { box-shadow: inset 0 2px 0 var(--accent); }
+
+/* cover placeholder (collection hero, 21:9 landscape) */
+.celva-skin .cover-thumb { position: relative; flex-shrink: 0; overflow: hidden; border: 1px solid var(--border-soft); background-color: var(--bg-sunk); display: grid; place-items: center; color: var(--fg-muted); }
+.celva-skin .cover-thumb.vignette { width: 84px; height: 36px; }
+
+.celva-skin .icon-btn { width: 34px; height: 34px; display: grid; place-items: center; color: var(--fg); border: 1px solid transparent; background: none; cursor: pointer; transition: background 160ms ease, border-color 160ms ease; }
+.celva-skin .icon-btn:hover { background: var(--bg-sunk); border-color: var(--border-soft); }
