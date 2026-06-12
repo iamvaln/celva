@@ -21,6 +21,16 @@ export class InvoicesService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+  /** Admin invoices ledger — issued invoices, newest first, with order ref. */
+  async listForAdmin() {
+    return this.prisma.invoice.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        order: { select: { orderNumber: true, user: { select: { name: true } } } },
+      },
+    });
+  }
+
   async renderForUser(orderId: string, userId: string): Promise<{
     buffer: Buffer;
     invoiceNumber: string;

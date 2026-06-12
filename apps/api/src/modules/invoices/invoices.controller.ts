@@ -76,3 +76,18 @@ export class AdminInvoicesController {
     sendPdf(res, buffer, invoiceNumber);
   }
 }
+
+/** Admin invoices ledger list (issued invoices). */
+@ApiTags('admin-invoices')
+@ApiBearerAuth('access-token')
+@Controller({ path: 'invoices', version: '1' })
+@Roles(USER_ROLE.ADMIN, USER_ROLE.MANAGER)
+export class InvoicesListController {
+  constructor(private readonly invoices: InvoicesService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List issued invoices (admin ledger).' })
+  list() {
+    return this.invoices.listForAdmin();
+  }
+}

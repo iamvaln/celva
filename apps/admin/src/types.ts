@@ -62,6 +62,34 @@ export type PaymentAccountBalance = PaymentAccount & {
   balance: string;
 };
 
+export type AdminPayment = {
+  id: string;
+  method: 'ORANGE_MONEY' | 'MTN_MOMO' | 'CASH_ON_DELIVERY';
+  status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED';
+  amount: string | number;
+  transactionRef?: string | null;
+  phoneNumber?: string | null;
+  paidAt?: string | null;
+  createdAt: string;
+  orderId: string;
+  order?: { orderNumber: string; user?: { name: string } | null } | null;
+  paymentAccountId?: string | null;
+  paymentAccount?: { name: string } | null;
+};
+
+export type AdminInvoice = {
+  id: string;
+  invoiceNumber: string;
+  totalHT: string | number;
+  totalTVA: string | number;
+  totalTTC: string | number;
+  pdfKey?: string | null;
+  sentAt?: string | null;
+  createdAt: string;
+  orderId: string;
+  order?: { orderNumber: string; user?: { name: string } | null } | null;
+};
+
 export type Category = {
   id: string;
   slug: string;
