@@ -13,35 +13,36 @@ import { fmtFCFA } from '../orders/orderSkin';
 type ProdStatus = ProductionOrder['status'];
 type ProdType = ProductionOrder['type'];
 
-/** Status → French label + design status-class (colour binding in celva-skin.css). */
-const PROD_STATUS_SKIN: Record<ProdStatus, { label: string; sc: string }> = {
-  PLANNED: { label: 'Planifiée', sc: 's-todo' },
-  IN_PROGRESS: { label: 'En cours', sc: 's-prod' },
-  COMPLETED: { label: 'Terminée', sc: 's-done' },
-  CANCELLED: { label: 'Annulée', sc: 's-neutral' },
+/** Status → translation key + design status-class (colour binding in celva-skin.css). */
+const PROD_STATUS_SKIN: Record<ProdStatus, { key: string; sc: string }> = {
+  PLANNED: { key: 'status_planned', sc: 's-todo' },
+  IN_PROGRESS: { key: 'status_in_progress', sc: 's-prod' },
+  COMPLETED: { key: 'status_completed', sc: 's-done' },
+  CANCELLED: { key: 'status_cancelled', sc: 's-neutral' },
 };
 
-const TYPE_LABEL: Record<ProdType, string> = {
-  INTERNAL: 'Atelier interne',
-  SUBCONTRACTED: 'Sous-traitance',
+const TYPE_KEY: Record<ProdType, string> = {
+  INTERNAL: 'type_internal',
+  SUBCONTRACTED: 'type_subcontracted',
 };
 
-type Tab = { id: string; label: string; match: (p: ProductionOrder) => boolean };
+type Tab = { id: string; key: string; match: (p: ProductionOrder) => boolean };
 
 const TABS: Tab[] = [
-  { id: 'all', label: 'Toutes', match: () => true },
-  { id: 'PLANNED', label: 'Planifiées', match: (p) => p.status === 'PLANNED' },
-  { id: 'IN_PROGRESS', label: 'En cours', match: (p) => p.status === 'IN_PROGRESS' },
-  { id: 'COMPLETED', label: 'Terminées', match: (p) => p.status === 'COMPLETED' },
-  { id: 'CANCELLED', label: 'Annulées', match: (p) => p.status === 'CANCELLED' },
+  { id: 'all', key: 'tab_all', match: () => true },
+  { id: 'PLANNED', key: 'tab_planned', match: (p) => p.status === 'PLANNED' },
+  { id: 'IN_PROGRESS', key: 'tab_in_progress', match: (p) => p.status === 'IN_PROGRESS' },
+  { id: 'COMPLETED', key: 'tab_completed', match: (p) => p.status === 'COMPLETED' },
+  { id: 'CANCELLED', key: 'tab_cancelled', match: (p) => p.status === 'CANCELLED' },
 ];
 
 const ProdStatusPill = ({ status }: { status: ProdStatus }) => {
+  const t = useTranslate();
   const s = PROD_STATUS_SKIN[status];
   return (
     <span className={`pill ${s.sc}`}>
       <span className="pdot" />
-      {s.label}
+      {t('ui.production-orders.' + s.key)}
     </span>
   );
 };
@@ -67,6 +68,7 @@ const stageProgress = (p: ProductionOrder): { done: number; total: number } => {
 };
 
 const ProdMidCell = ({ p }: { p: ProductionOrder }) => {
+  const t = useTranslate();
   if (p.status === 'IN_PROGRESS' && p.type === 'INTERNAL') {
     const { done, total } = stageProgress(p);
     if (total > 0) {
@@ -85,18 +87,19 @@ const ProdMidCell = ({ p }: { p: ProductionOrder }) => {
   }
   const note =
     p.status === 'COMPLETED'
-      ? 'Terminée'
+      ? t('ui.production-orders.note_completed')
       : p.status === 'PLANNED'
-        ? 'À démarrer'
+        ? t('ui.production-orders.note_to_start')
         : p.status === 'CANCELLED'
-          ? 'Annulée'
+          ? t('ui.production-orders.note_cancelled')
           : p.type === 'SUBCONTRACTED'
-            ? 'Chez le sous-traitant'
-            : 'En cours';
+            ? t('ui.production-orders.note_at_subcontractor')
+            : t('ui.production-orders.note_in_progress');
   return <span className="note">{note}</span>;
 };
 
 const ProdRow = ({ p, onOpen }: { p: ProductionOrder; onOpen: (id: string) => void }) => {
+  const t = useTranslate();
   const sc = PROD_STATUS_SKIN[p.status].sc;
   const partner = p.type === 'SUBCONTRACTED' ? p.subcontractorName : null;
   return (
@@ -110,10 +113,13 @@ const ProdRow = ({ p, onOpen }: { p: ProductionOrder; onOpen: (id: string) => vo
           <span className="lname">{productName(p)}</span>
         </div>
         <div className="lsub">
-          <span>{TYPE_LABEL[p.type]}</span>
+          <span>{t('ui.production-orders.' + TYPE_KEY[p.type])}</span>
           <span>·</span>
           <span>
-            {p.quantity} {p.quantity > 1 ? 'pièces' : 'pièce'}
+            {p.quantity}{' '}
+            {p.quantity > 1
+              ? t('ui.production-orders.pieces')
+              : t('ui.production-orders.piece')}
           </span>
           {partner && (
             <>
@@ -128,7 +134,7 @@ const ProdRow = ({ p, onOpen }: { p: ProductionOrder; onOpen: (id: string) => vo
       <ProdMidCell p={p} />
       <div className="lcell">
         <div className="lc-v num">{fmtFCFA(unitCost(p))}</div>
-        <div className="lc-l">coût de revient / pce</div>
+        <div className="lc-l">{t('ui.production-orders.unit_cost_label')}</div>
       </div>
       <div className="lchev">
         <ProdStatusPill status={p.status} />
@@ -175,7 +181,7 @@ export const ProductionOrderList = () => {
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher un produit ou sous-traitant…"
+              placeholder={t('ui.production-orders.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -185,7 +191,7 @@ export const ProductionOrderList = () => {
             className="btn btn-primary"
             onClick={() => redirect('create', 'production-orders')}
           >
-            <AddIcon sx={{ fontSize: 16 }} /> Production
+            <AddIcon sx={{ fontSize: 16 }} /> {t('ui.production-orders.new')}
           </button>
         </div>
 
@@ -198,7 +204,7 @@ export const ProductionOrderList = () => {
                 className={`tab${tt.id === tab ? ' active' : ''}`}
                 onClick={() => setTab(tt.id)}
               >
-                {tt.label}
+                {t('ui.production-orders.' + tt.key)}
                 <span className="tcount num">{count}</span>
               </button>
             );
@@ -208,13 +214,17 @@ export const ProductionOrderList = () => {
         {rows.length === 0 ? (
           <EmptyState
             icon={<HandymanIcon sx={{ fontSize: 52 }} />}
-            title={isLoading ? 'Chargement…' : 'Aucun ordre dans cette vue'}
+            title={
+              isLoading
+                ? t('ui.production-orders.loading')
+                : t('ui.production-orders.empty_title')
+            }
             sub={
               isLoading || filtered
                 ? undefined
-                : 'Planifiez un ordre de production pour transformer vos matières en produits finis.'
+                : t('ui.production-orders.empty_sub')
             }
-            actionLabel={isLoading || filtered ? undefined : 'Production'}
+            actionLabel={isLoading || filtered ? undefined : t('ui.production-orders.new')}
             onAction={
               isLoading || filtered ? undefined : () => redirect('create', 'production-orders')
             }

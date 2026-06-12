@@ -27,17 +27,15 @@ export const PickupPointList = () => {
         <div className="between" style={{ marginBottom: 16, alignItems: 'flex-start', gap: 12 }}>
           <div style={{ maxWidth: '52ch' }}>
             <div className="section-label" style={{ margin: '0 0 6px' }}>
-              Points de retrait
+              {t('ui.pickup-points.title')}
             </div>
-            <div className="note">
-              Boutique, pop-up et points relais où les clientes peuvent retirer leurs commandes.
-            </div>
+            <div className="note">{t('ui.pickup-points.intro')}</div>
           </div>
           <button
             className="btn btn-primary"
             onClick={() => redirect('create', 'pickup-points')}
           >
-            <AddIcon sx={{ fontSize: 16 }} /> Point de retrait
+            <AddIcon sx={{ fontSize: 16 }} /> {t('ui.pickup-points.create')}
           </button>
         </div>
 
@@ -45,10 +43,8 @@ export const PickupPointList = () => {
           <div className="card">
             <EmptyState
               icon={<StorefrontIcon sx={{ fontSize: 40 }} />}
-              title={isLoading ? t('ra.page.loading') : 'Aucun point de retrait'}
-              sub={
-                isLoading ? undefined : 'Ajoutez un point relais ou votre boutique pour le retrait.'
-              }
+              title={isLoading ? t('ra.page.loading') : t('ui.pickup-points.empty')}
+              sub={isLoading ? undefined : t('ui.pickup-points.emptySub')}
             />
           </div>
         ) : (
@@ -90,14 +86,14 @@ export const PickupPointList = () => {
                         {hours}
                       </div>
                     ) : (
-                      <div className="pk-hours">Horaires non précisés</div>
+                      <div className="pk-hours">{t('ui.pickup-points.noHours')}</div>
                     )}
                   </div>
 
                   <div style={{ textAlign: 'right' }}>
                     <span className={`pill ${p.isActive ? 's-done' : 's-neutral'}`}>
                       <span className="pdot" />
-                      {p.isActive ? 'Actif' : 'Inactif'}
+                      {p.isActive ? t('ui.pickup-points.active') : t('ui.pickup-points.inactive')}
                     </span>
                   </div>
 

@@ -94,10 +94,9 @@ export const NewsletterList = () => {
           }),
         ),
       );
-      notify(
-        `${ids.length} abonné${ids.length > 1 ? 's' : ''} désabonné${ids.length > 1 ? 's' : ''}`,
-        { type: 'success' },
-      );
+      notify(t('ui.newsletter.unsubscribed_notify', { smart_count: ids.length }), {
+        type: 'success',
+      });
       setSelected(new Set());
       refresh();
     } catch (err) {
@@ -118,18 +117,15 @@ export const NewsletterList = () => {
         <div className="toolbar">
           <div style={{ maxWidth: '46ch' }}>
             <div className="section-label" style={{ margin: '0 0 6px' }}>
-              Abonnés à la newsletter
+              {t('ui.newsletter.subscribers_label')}
             </div>
-            <div className="note">
-              Celva gère la collecte et l’export de la liste. Les envois, le tracking
-              et la conformité se font dans Brevo.
-            </div>
+            <div className="note">{t('ui.newsletter.subscribers_note')}</div>
           </div>
           <div style={{ flex: 1 }} />
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher un email ou un nom…"
+              placeholder={t('ui.newsletter.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -142,32 +138,29 @@ export const NewsletterList = () => {
             <NotificationsActiveIcon sx={{ fontSize: 18 }} />
           </div>
           <div style={{ minWidth: 0 }}>
-            <div className="bb-t">La gestion des campagnes se fait dans Brevo</div>
-            <div className="bb-s">
-              Cette liste reflète les abonnés collectés sur le site. La composition,
-              l’envoi, le tracking et la conformité des campagnes se font dans Brevo.
-            </div>
+            <div className="bb-t">{t('ui.newsletter.brevo_banner_title')}</div>
+            <div className="bb-s">{t('ui.newsletter.brevo_banner_sub')}</div>
           </div>
         </div>
 
         <div className="dom-summary">
           <div className="ds-item">
             <div className="ds-v">{total}</div>
-            <div className="ds-l">Total abonnés</div>
+            <div className="ds-l">{t('ui.newsletter.summary_total')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v" style={{ color: 'var(--st-done)' }}>
               {activeCount}
             </div>
-            <div className="ds-l">Actifs</div>
+            <div className="ds-l">{t('ui.newsletter.summary_active')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v">{unsubCount}</div>
-            <div className="ds-l">Désabonnés</div>
+            <div className="ds-l">{t('ui.newsletter.summary_unsubscribed')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v">{rows.length}</div>
-            <div className="ds-l">Affichés</div>
+            <div className="ds-l">{t('ui.newsletter.summary_displayed')}</div>
           </div>
         </div>
 
@@ -176,19 +169,19 @@ export const NewsletterList = () => {
             className={`chip${filter === 'all' ? ' on' : ''}`}
             onClick={() => setFilter('all')}
           >
-            Tous
+            {t('ui.newsletter.filter_all')}
           </button>
           <button
             className={`chip${filter === 'active' ? ' on' : ''}`}
             onClick={() => setFilter('active')}
           >
-            Abonnés actifs
+            {t('ui.newsletter.filter_active')}
           </button>
           <button
             className={`chip${filter === 'inactive' ? ' on' : ''}`}
             onClick={() => setFilter('inactive')}
           >
-            Désabonnés
+            {t('ui.newsletter.filter_inactive')}
           </button>
         </div>
 
@@ -196,12 +189,8 @@ export const NewsletterList = () => {
           <div className="card">
             <EmptyState
               icon={<MarkEmailReadIcon sx={{ fontSize: 40 }} />}
-              title={isLoading ? t('ra.page.loading') : 'Aucun abonné'}
-              sub={
-                isLoading
-                  ? undefined
-                  : 'Aucun abonné ne correspond à ce filtre ou à cette recherche.'
-              }
+              title={isLoading ? t('ra.page.loading') : t('ui.newsletter.empty_title')}
+              sub={isLoading ? undefined : t('ui.newsletter.empty_sub')}
             />
           </div>
         ) : (
@@ -215,14 +204,14 @@ export const NewsletterList = () => {
                         type="checkbox"
                         checked={allSelected}
                         onChange={toggleAll}
-                        aria-label="Tout sélectionner"
+                        aria-label={t('ui.newsletter.select_all')}
                       />
                     )}
                   </th>
-                  <th>Email</th>
-                  <th>Nom</th>
-                  <th>Statut</th>
-                  <th>Inscrit le</th>
+                  <th>{t('ui.newsletter.col_email')}</th>
+                  <th>{t('ui.newsletter.col_name')}</th>
+                  <th>{t('ui.newsletter.col_status')}</th>
+                  <th>{t('ui.newsletter.col_subscribed_at')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -234,7 +223,7 @@ export const NewsletterList = () => {
                         checked={selected.has(s.id)}
                         disabled={!s.isActive}
                         onChange={() => toggleOne(s.id)}
-                        aria-label={`Sélectionner ${s.email}`}
+                        aria-label={t('ui.newsletter.select_one', { email: s.email })}
                       />
                     </td>
                     <td>
@@ -244,7 +233,7 @@ export const NewsletterList = () => {
                     <td>
                       <span className={`pill ${s.isActive ? 's-done' : 's-neutral'}`}>
                         <span className="pdot" />
-                        {s.isActive ? 'Actif' : 'Désabonné'}
+                        {s.isActive ? t('ui.newsletter.status_active') : t('ui.newsletter.status_unsubscribed')}
                       </span>
                     </td>
                     <td className="sub-when">
@@ -261,8 +250,7 @@ export const NewsletterList = () => {
         {selCount > 0 && (
           <div className="sub-bulkbar">
             <span className="sb-count">
-              {selCount} abonné{selCount > 1 ? 's' : ''} sélectionné
-              {selCount > 1 ? 's' : ''}
+              {t('ui.newsletter.selected_count', { smart_count: selCount })}
             </span>
             <div className="sb-spacer" />
             <button
@@ -270,18 +258,16 @@ export const NewsletterList = () => {
               onClick={() => setSelected(new Set())}
               disabled={busy}
             >
-              Annuler
+              {t('ui.newsletter.cancel')}
             </button>
             <button className="btn btn-danger" onClick={bulkUnsubscribe} disabled={busy}>
-              Désabonner
+              {t('ui.newsletter.unsubscribe')}
             </button>
           </div>
         )}
 
         <div className="note" style={{ marginTop: 12, fontStyle: 'italic' }}>
-          Les désabonnés sont conservés en inactif (RGPD). Le formulaire de collecte
-          (footer du site) précède l’activation par un email de confirmation (double
-          opt-in).
+          {t('ui.newsletter.gdpr_note')}
         </div>
       </div>
     </CelvaSkin>

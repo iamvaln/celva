@@ -10,15 +10,16 @@ import './delivery-zones.css';
 
 const num = (v: string | number | null | undefined): number => Number(v ?? 0);
 
-const estimatedLabel = (z: DeliveryZone): string => {
-  if (!z.estimatedDays) return 'Délai non précisé';
-  const { min, max } = z.estimatedDays;
-  return min === max ? `${min} j` : `${min}–${max} j`;
-};
-
 export const DeliveryZoneList = () => {
   const t = useTranslate();
   const redirect = useRedirect();
+
+  const estimatedLabel = (z: DeliveryZone): string => {
+    if (!z.estimatedDays) return t('ui.delivery-zones.noEstimate');
+    const { min, max } = z.estimatedDays;
+    const unit = t('ui.delivery-zones.daysUnit');
+    return min === max ? `${min} ${unit}` : `${min}–${max} ${unit}`;
+  };
   const { data, isLoading } = useGetList<DeliveryZone>('delivery-zones', {
     pagination: { page: 1, perPage: 100 },
     sort: { field: 'id', order: 'ASC' },
@@ -33,18 +34,15 @@ export const DeliveryZoneList = () => {
         <div className="between" style={{ marginBottom: 16, alignItems: 'flex-start', gap: 12 }}>
           <div style={{ maxWidth: '52ch' }}>
             <div className="section-label" style={{ margin: '0 0 6px' }}>
-              Zones de livraison
+              {t('ui.delivery-zones.title')}
             </div>
-            <div className="note">
-              Frais facturés au client, coût réel et marge par zone. Une marge négative est un choix
-              stratégique — rendue visible ici. Le coût réel reste interne.
-            </div>
+            <div className="note">{t('ui.delivery-zones.intro')}</div>
           </div>
           <button
             className="btn btn-primary"
             onClick={() => redirect('create', 'delivery-zones')}
           >
-            <AddIcon sx={{ fontSize: 16 }} /> Zone
+            <AddIcon sx={{ fontSize: 16 }} /> {t('ui.delivery-zones.create')}
           </button>
         </div>
 
@@ -52,8 +50,8 @@ export const DeliveryZoneList = () => {
           <div className="card">
             <EmptyState
               icon={<LocalShippingIcon sx={{ fontSize: 40 }} />}
-              title={isLoading ? t('ra.page.loading') : 'Aucune zone de livraison'}
-              sub={isLoading ? undefined : 'Créez votre première zone pour facturer la livraison.'}
+              title={isLoading ? t('ra.page.loading') : t('ui.delivery-zones.empty')}
+              sub={isLoading ? undefined : t('ui.delivery-zones.emptySub')}
             />
           </div>
         ) : (
@@ -78,8 +76,8 @@ export const DeliveryZoneList = () => {
                     <div className="lsub">
                       <span>
                         {threshold != null && num(threshold) > 0
-                          ? `Offerte dès ${fmtFCFA(threshold)}`
-                          : 'Jamais offerte'}
+                          ? t('ui.delivery-zones.freeFrom', { amount: fmtFCFA(threshold) })
+                          : t('ui.delivery-zones.neverFree')}
                       </span>
                     </div>
                   </div>
@@ -88,11 +86,11 @@ export const DeliveryZoneList = () => {
                     <div className="lc-v">{fmtFCFA(fee)}</div>
                     <div className="dz-cost">
                       {fmtFCFA(cost)}
-                      <span className="dz-int">interne</span>
+                      <span className="dz-int">{t('ui.delivery-zones.internal')}</span>
                     </div>
                     <div className={`dz-margin ${mClass}`}>
                       {margin > 0 ? '+ ' : margin < 0 ? '− ' : ''}
-                      {fmtFCFA(Math.abs(margin))} marge
+                      {fmtFCFA(Math.abs(margin))} {t('ui.delivery-zones.margin')}
                     </div>
                   </div>
 
@@ -105,7 +103,7 @@ export const DeliveryZoneList = () => {
                   <div style={{ textAlign: 'right' }}>
                     <span className={`pill ${z.isActive ? 's-done' : 's-neutral'}`}>
                       <span className="pdot" />
-                      {z.isActive ? 'Active' : 'Inactive'}
+                      {z.isActive ? t('ui.delivery-zones.active') : t('ui.delivery-zones.inactive')}
                     </span>
                   </div>
 
