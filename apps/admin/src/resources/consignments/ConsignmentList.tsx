@@ -16,28 +16,29 @@ type CStatus = Consignment['status'];
 /** Active consignments older than this many days are flagged on the row. */
 const STALE_DAYS = 14;
 
-/** Status → French label + design status-class (colour binding in celva-skin.css). */
-const STATUS_SKIN: Record<CStatus, { label: string; sc: string }> = {
-  ACTIVE: { label: 'Active', sc: 's-info' },
-  RECONCILED: { label: 'Réconciliée', sc: 's-neutral' },
-  CANCELLED: { label: 'Annulée', sc: 's-neutral' },
+/** Status → translation key + design status-class (colour binding in celva-skin.css). */
+const STATUS_SKIN: Record<CStatus, { key: string; sc: string }> = {
+  ACTIVE: { key: 'status_active', sc: 's-info' },
+  RECONCILED: { key: 'status_reconciled', sc: 's-neutral' },
+  CANCELLED: { key: 'status_cancelled', sc: 's-neutral' },
 };
 
-type Tab = { id: string; label: string; match: (c: Consignment) => boolean };
+type Tab = { id: string; key: string; match: (c: Consignment) => boolean };
 
 const TABS: Tab[] = [
-  { id: 'all', label: 'Toutes', match: () => true },
-  { id: 'ACTIVE', label: 'Actives', match: (c) => c.status === 'ACTIVE' },
-  { id: 'RECONCILED', label: 'Réconciliées', match: (c) => c.status === 'RECONCILED' },
-  { id: 'CANCELLED', label: 'Annulées', match: (c) => c.status === 'CANCELLED' },
+  { id: 'all', key: 'tab_all', match: () => true },
+  { id: 'ACTIVE', key: 'tab_active', match: (c) => c.status === 'ACTIVE' },
+  { id: 'RECONCILED', key: 'tab_reconciled', match: (c) => c.status === 'RECONCILED' },
+  { id: 'CANCELLED', key: 'tab_cancelled', match: (c) => c.status === 'CANCELLED' },
 ];
 
 const CStatusPill = ({ status }: { status: CStatus }) => {
+  const t = useTranslate();
   const s = STATUS_SKIN[status];
   return (
     <span className={`pill ${s.sc}`}>
       <span className="pdot" />
-      {s.label}
+      {t('ui.consignments.' + s.key)}
     </span>
   );
 };
@@ -87,6 +88,7 @@ const isStale = (c: Consignment): boolean =>
   c.status === 'ACTIVE' && daysSince(c.releasedAt) > STALE_DAYS;
 
 const ConsignmentRow = ({ c, onOpen }: { c: Consignment; onOpen: (id: string) => void }) => {
+  const t = useTranslate();
   const sc = STATUS_SKIN[c.status].sc;
   const n = c.items.length;
   const stale = isStale(c);
@@ -101,17 +103,17 @@ const ConsignmentRow = ({ c, onOpen }: { c: Consignment; onOpen: (id: string) =>
           <span className="lname">{c.salesRep.name}</span>
         </div>
         <div className="lsub">
-          <span>{n + (n > 1 ? ' références' : ' référence')}</span>
+          <span>{n + (n > 1 ? ' ' + t('ui.consignments.refs') : ' ' + t('ui.consignments.ref'))}</span>
           <span>·</span>
           <span>
             {c.status === 'RECONCILED' && c.reconciledAt
-              ? `réconciliée le ${dateFr(c.reconciledAt)}`
-              : `confiée le ${dateFr(c.releasedAt)}`}
+              ? t('ui.consignments.reconciled_on', { date: dateFr(c.reconciledAt) })
+              : t('ui.consignments.released_on', { date: dateFr(c.releasedAt) })}
           </span>
           {stale && (
             <span className="age-flag">
               <WarningAmberIcon sx={{ fontSize: 13 }} />
-              {daysSince(c.releasedAt)} j sur le terrain
+              {t('ui.consignments.days_on_field', { days: daysSince(c.releasedAt) })}
             </span>
           )}
         </div>
@@ -119,7 +121,11 @@ const ConsignmentRow = ({ c, onOpen }: { c: Consignment; onOpen: (id: string) =>
       <div />
       <div className="lcell">
         <div className="lc-v num">{out}</div>
-        <div className="lc-l">{c.status === 'ACTIVE' ? 'pièces dehors' : 'pièces confiées'}</div>
+        <div className="lc-l">
+          {c.status === 'ACTIVE'
+            ? t('ui.consignments.pieces_out_label')
+            : t('ui.consignments.pieces_taken_label')}
+        </div>
       </div>
       <div className="lchev">
         <CStatusPill status={c.status} />
@@ -177,33 +183,33 @@ export const ConsignmentList = () => {
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher un commercial…"
+              placeholder={t('ui.consignments.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
           <div style={{ flex: 1 }} />
           <button className="btn btn-primary" onClick={() => redirect('create', 'consignments')}>
-            <AddIcon sx={{ fontSize: 16 }} /> Consignation
+            <AddIcon sx={{ fontSize: 16 }} /> {t('ui.consignments.new')}
           </button>
         </div>
 
         <div className="dom-summary">
           <div className="ds-item">
             <div className="ds-v num">{summary.activeCount}</div>
-            <div className="ds-l">Consignations actives</div>
+            <div className="ds-l">{t('ui.consignments.summary_active')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v num">{summary.piecesOut}</div>
-            <div className="ds-l">Pièces sur le terrain</div>
+            <div className="ds-l">{t('ui.consignments.summary_pieces_field')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v num">{fmtFCFA(summary.value)}</div>
-            <div className="ds-l">Valeur consignée</div>
+            <div className="ds-l">{t('ui.consignments.summary_value')}</div>
           </div>
           <div className={`ds-item${summary.stale ? ' warn' : ''}`}>
             <div className="ds-v num">{summary.stale}</div>
-            <div className="ds-l">Actives &gt; {STALE_DAYS} jours</div>
+            <div className="ds-l">{t('ui.consignments.summary_stale', { days: STALE_DAYS })}</div>
           </div>
         </div>
 
@@ -216,7 +222,7 @@ export const ConsignmentList = () => {
                 className={`tab${tt.id === tab ? ' active' : ''}`}
                 onClick={() => setTab(tt.id)}
               >
-                {tt.label}
+                {t('ui.consignments.' + tt.key)}
                 <span className="tcount num">{count}</span>
               </button>
             );
@@ -226,13 +232,15 @@ export const ConsignmentList = () => {
         {rows.length === 0 ? (
           <EmptyState
             icon={<WorkOutlineIcon sx={{ fontSize: 52 }} />}
-            title={isLoading ? 'Chargement…' : 'Aucune consignation dans cette vue'}
+            title={
+              isLoading ? t('ui.consignments.loading') : t('ui.consignments.empty_title')
+            }
             sub={
               isLoading || filtered
                 ? undefined
-                : 'Confiez du stock à un commercial pour la vente terrain.'
+                : t('ui.consignments.empty_sub')
             }
-            actionLabel={isLoading || filtered ? undefined : 'Consignation'}
+            actionLabel={isLoading || filtered ? undefined : t('ui.consignments.new')}
             onAction={isLoading || filtered ? undefined : () => redirect('create', 'consignments')}
           />
         ) : (

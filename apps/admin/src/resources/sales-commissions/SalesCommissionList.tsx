@@ -12,18 +12,18 @@ import type { SalesCommission } from '../../types';
 
 type CommStatus = SalesCommission['status'];
 
-/** Status → French label + design status-class (color binding in celva-skin.css). */
-const STATUS_SKIN: Record<CommStatus, { label: string; sc: string }> = {
-  PENDING: { label: 'En attente', sc: 's-todo' },
-  PAID: { label: 'Payée', sc: 's-done' },
+/** Status → translation key + design status-class (color binding in celva-skin.css). */
+const STATUS_SKIN: Record<CommStatus, { key: string; sc: string }> = {
+  PENDING: { key: 'status_pending', sc: 's-todo' },
+  PAID: { key: 'status_paid', sc: 's-done' },
 };
 
-type Tab = { id: string; label: string; match: (c: SalesCommission) => boolean };
+type Tab = { id: string; key: string; match: (c: SalesCommission) => boolean };
 
 const TABS: Tab[] = [
-  { id: 'PENDING', label: 'En attente', match: (c) => c.status === 'PENDING' },
-  { id: 'PAID', label: 'Payées', match: (c) => c.status === 'PAID' },
-  { id: 'all', label: 'Toutes', match: () => true },
+  { id: 'PENDING', key: 'tab_pending', match: (c) => c.status === 'PENDING' },
+  { id: 'PAID', key: 'tab_paid', match: (c) => c.status === 'PAID' },
+  { id: 'all', key: 'tab_all', match: () => true },
 ];
 
 const dateFr = (iso: string): string =>
@@ -151,18 +151,17 @@ export const SalesCommissionList = () => {
         <div className="toolbar">
           <div style={{ maxWidth: '46ch' }}>
             <div className="section-label" style={{ margin: '0 0 6px' }}>
-              Commissions commerciales
+              {t('ui.sales-commissions.heading')}
             </div>
             <div className="note">
-              Calculées automatiquement sur les ventes des commerciaux — commandes
-              directes et consignations.
+              {t('ui.sales-commissions.subtitle')}
             </div>
           </div>
           <div style={{ flex: 1 }} />
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher (commande, commercial, produit)…"
+              placeholder={t('ui.sales-commissions.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -181,18 +180,20 @@ export const SalesCommissionList = () => {
               {fmtFCFA(summary.pendingTotal)}
             </div>
             <div className="ds-l">
-              À payer · {summary.pendingCount} en attente
+              {t('ui.sales-commissions.summary_to_pay', {
+                n: summary.pendingCount,
+              })}
             </div>
           </div>
           <div className="ds-item">
             <div className="ds-v" style={{ color: 'var(--st-done)' }}>
               {fmtFCFA(summary.paidTotal)}
             </div>
-            <div className="ds-l">Payé</div>
+            <div className="ds-l">{t('ui.sales-commissions.summary_paid')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v">{summary.reps}</div>
-            <div className="ds-l">Commerciaux</div>
+            <div className="ds-l">{t('ui.sales-commissions.summary_reps')}</div>
           </div>
         </div>
 
@@ -205,7 +206,7 @@ export const SalesCommissionList = () => {
                 className={`tab${tt.id === tab ? ' active' : ''}`}
                 onClick={() => setTab(tt.id)}
               >
-                {tt.label}
+                {t('ui.sales-commissions.' + tt.key)}
                 <span className="tcount num">{count}</span>
               </button>
             );
@@ -219,12 +220,12 @@ export const SalesCommissionList = () => {
               title={
                 isLoading
                   ? t('ra.page.loading')
-                  : 'Aucune commission dans cette vue'
+                  : t('ui.sales-commissions.empty_title')
               }
               sub={
                 isLoading || q.trim() || tab !== 'all'
                   ? undefined
-                  : 'Les commissions apparaissent dès qu’un commercial enregistre une vente.'
+                  : t('ui.sales-commissions.empty_sub')
               }
             />
           </div>
@@ -239,7 +240,7 @@ export const SalesCommissionList = () => {
                         type="checkbox"
                         checked={allSelected}
                         onChange={toggleAll}
-                        aria-label="Tout sélectionner"
+                        aria-label={t('ui.sales-commissions.select_all')}
                       />
                     </th>
                   )}
@@ -267,7 +268,9 @@ export const SalesCommissionList = () => {
                               type="checkbox"
                               checked={isSel}
                               onChange={() => toggleOne(c.id)}
-                              aria-label={`Sélectionner ${c.order?.orderNumber ?? ''}`}
+                              aria-label={t('ui.sales-commissions.select_one', {
+                                number: c.order?.orderNumber ?? '',
+                              })}
                             />
                           )}
                         </td>
@@ -291,7 +294,7 @@ export const SalesCommissionList = () => {
                       <td>
                         <span className={`pill ${meta.sc}`}>
                           <span className="pdot" />
-                          {meta.label}
+                          {t('ui.sales-commissions.' + meta.key)}
                         </span>
                       </td>
                       <td className={`cm-when${isPending ? ' unpaid' : ''}`}>

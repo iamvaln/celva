@@ -8,37 +8,22 @@ import { EmptyState } from '../../components/EmptyState';
 import { relativeFr } from '../orders/orderSkin';
 import type { AuditLog } from '../../types';
 
-/** Action → French label + status hue (the design's action-type legend).
+/** Action → status hue (the design's action-type legend); label resolved via t().
  *  CREATE→s-done, UPDATE→s-info, DELETE→s-urgent (per spec). */
-const ACTION_META: Record<string, { label: string; sc: string }> = {
-  CREATE: { label: 'Création', sc: 's-done' },
-  UPDATE: { label: 'Modification', sc: 's-info' },
-  DELETE: { label: 'Suppression', sc: 's-urgent' },
-  STATUS_CHANGE: { label: 'Changement de statut', sc: 's-todo' },
-  LOGIN: { label: 'Connexion', sc: 's-neutral' },
-  PAY: { label: 'Paiement', sc: 's-todo' },
+const ACTION_SC: Record<string, string> = {
+  CREATE: 's-done',
+  UPDATE: 's-info',
+  DELETE: 's-urgent',
+  STATUS_CHANGE: 's-todo',
+  LOGIN: 's-neutral',
+  PAY: 's-todo',
 };
 
 /** Common actions shown as filter chips, in legend order. */
 const ACTION_ORDER = ['CREATE', 'UPDATE', 'DELETE', 'STATUS_CHANGE', 'LOGIN', 'PAY'];
 
-/** Fallback meta for any action not in the map (keeps the journal exhaustive). */
-const metaFor = (action: string): { label: string; sc: string } =>
-  ACTION_META[action] ?? { label: action, sc: 's-neutral' };
+const scFor = (action: string): string => ACTION_SC[action] ?? 's-neutral';
 
-/** appSource → French label. */
-const SOURCE_LABEL: Record<string, string> = {
-  WEB_STORE: 'Boutique web',
-  WEB_ADMIN: 'Back-office',
-  WEB_DELIVERY: 'Livraison web',
-  MOBILE_STORE: 'Mobile boutique',
-  MOBILE_STUDIO: 'Mobile atelier',
-  MOBILE_DELIVERY: 'Mobile livraison',
-  MOBILE_RESELLER: 'Mobile revendeur',
-  API: 'API',
-};
-
-const sourceLabel = (s: string): string => SOURCE_LABEL[s] ?? s;
 const sourceClass = (s: string): string => 'src-' + s.toLowerCase().replace(/[^a-z]/g, '');
 
 const fmtDate = (iso: string): string =>
@@ -56,6 +41,12 @@ export const AuditLogList = () => {
   const [perPage, setPerPage] = useState(50);
   const [action, setAction] = useState<'all' | string>('all');
   const [q, setQ] = useState('');
+
+  /** Action → translated label (falls back to the raw action code). */
+  const actionLabel = (a: string): string =>
+    a in ACTION_SC ? t(`ui.audit-logs.action_${a}`) : a;
+  /** appSource → translated label (falls back to the raw source code). */
+  const sourceLabel = (s: string): string => t(`ui.audit-logs.source_${s}`, { _: s });
 
   const {
     data: logs = [],
@@ -90,18 +81,15 @@ export const AuditLogList = () => {
         <div className="toolbar">
           <div style={{ maxWidth: '52ch' }}>
             <div className="section-label" style={{ margin: '0 0 6px' }}>
-              Journal d&rsquo;activité
+              {t('ui.audit-logs.title')}
             </div>
-            <div className="note">
-              Trace en lecture seule de toutes les actions sensibles — qui a fait quoi, quand,
-              et depuis quelle application. Aucune entrée ne peut être modifiée ou supprimée.
-            </div>
+            <div className="note">{t('ui.audit-logs.intro')}</div>
           </div>
           <div style={{ flex: 1 }} />
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher (entité, acteur, action…)"
+              placeholder={t('ui.audit-logs.searchPlaceholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -110,11 +98,11 @@ export const AuditLogList = () => {
 
         <div className="audit-legend">
           {ACTION_ORDER.map((a) => {
-            const meta = metaFor(a);
+            const sc = scFor(a);
             return (
               <span key={a} className="leg-item">
-                <span className="leg-dot" style={{ background: `var(--st-${meta.sc.slice(2)})` }} />
-                {meta.label}
+                <span className="leg-dot" style={{ background: `var(--st-${sc.slice(2)})` }} />
+                {actionLabel(a)}
               </span>
             );
           })}
@@ -125,7 +113,7 @@ export const AuditLogList = () => {
             className={`chip${action === 'all' ? ' on' : ''}`}
             onClick={() => setAction('all')}
           >
-            Tous
+            {t('ui.audit-logs.filterAll')}
           </button>
           {ACTION_ORDER.map((a) => (
             <button
@@ -133,7 +121,7 @@ export const AuditLogList = () => {
               className={`chip${action === a ? ' on' : ''}`}
               onClick={() => setAction(a)}
             >
-              {metaFor(a).label}
+              {actionLabel(a)}
             </button>
           ))}
         </div>
@@ -142,12 +130,8 @@ export const AuditLogList = () => {
           <div className="card">
             <EmptyState
               icon={<HistoryIcon sx={{ fontSize: 40 }} />}
-              title={isLoading ? t('ra.page.loading') : 'Aucune entrée pour ce filtre'}
-              sub={
-                isLoading
-                  ? undefined
-                  : 'Ajustez les filtres ou la recherche pour afficher les entrées du journal.'
-              }
+              title={isLoading ? t('ra.page.loading') : t('ui.audit-logs.empty')}
+              sub={isLoading ? undefined : t('ui.audit-logs.emptySub')}
             />
           </div>
         ) : (
@@ -155,16 +139,15 @@ export const AuditLogList = () => {
             <table className="flow-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Action</th>
-                  <th>Entité</th>
-                  <th>Acteur</th>
-                  <th>Source</th>
+                  <th>{t('ui.audit-logs.colDate')}</th>
+                  <th>{t('ui.audit-logs.colAction')}</th>
+                  <th>{t('ui.audit-logs.colEntity')}</th>
+                  <th>{t('ui.audit-logs.colActor')}</th>
+                  <th>{t('ui.audit-logs.colSource')}</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((l) => {
-                  const meta = metaFor(l.action);
                   return (
                     <tr key={l.id}>
                       <td className="au-when">
@@ -172,9 +155,9 @@ export const AuditLogList = () => {
                         <span className="au-ago">{relativeFr(l.createdAt)}</span>
                       </td>
                       <td>
-                        <span className={`pill ${meta.sc}`}>
+                        <span className={`pill ${scFor(l.action)}`}>
                           <span className="pdot" />
-                          {meta.label}
+                          {actionLabel(l.action)}
                         </span>
                       </td>
                       <td>
@@ -198,14 +181,13 @@ export const AuditLogList = () => {
         {!isLoading && logs.length < total && (
           <div className="load-more">
             <button className="btn btn-ghost" onClick={() => setPerPage((p) => p + 50)}>
-              Charger plus
+              {t('ui.audit-logs.loadMore')}
             </button>
           </div>
         )}
 
         <div className="note" style={{ marginTop: 14, fontStyle: 'italic' }}>
-          Consultation uniquement. Sont tracés : créations, modifications, suppressions,
-          changements de statut, connexions et paiements.
+          {t('ui.audit-logs.footnote')}
         </div>
       </div>
     </CelvaSkin>

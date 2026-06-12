@@ -16,22 +16,22 @@ import type { Transaction } from '../../types';
 
 type TxCategory = Transaction['category'];
 
-/** French label + status hue for each transaction category. INCOME
+/** Translation key + status hue for each transaction category. INCOME
  *  categories lean «done» (green), EXPENSE categories «urgent/neutral». */
-const CATEGORY_META: Record<TxCategory, { label: string; sc: string }> = {
-  SALE: { label: 'Vente', sc: 's-done' },
-  COMMISSION: { label: 'Commission', sc: 's-urgent' },
-  RAW_MATERIALS: { label: 'Matières premières', sc: 's-urgent' },
-  SUBCONTRACTING: { label: 'Sous-traitance', sc: 's-urgent' },
-  MARKETING: { label: 'Marketing', sc: 's-todo' },
-  TRANSPORT: { label: 'Transport', sc: 's-todo' },
-  CUSTOMS: { label: 'Douane', sc: 's-todo' },
-  SALARY: { label: 'Salaires', sc: 's-info' },
-  RENT: { label: 'Loyer', sc: 's-info' },
-  EQUIPMENT: { label: 'Équipement', sc: 's-info' },
-  PACKAGING: { label: 'Emballage', sc: 's-neutral' },
-  DELIVERY: { label: 'Livraison', sc: 's-neutral' },
-  OTHER: { label: 'Autre', sc: 's-neutral' },
+const CATEGORY_META: Record<TxCategory, { key: string; sc: string }> = {
+  SALE: { key: 'cat_sale', sc: 's-done' },
+  COMMISSION: { key: 'cat_commission', sc: 's-urgent' },
+  RAW_MATERIALS: { key: 'cat_raw_materials', sc: 's-urgent' },
+  SUBCONTRACTING: { key: 'cat_subcontracting', sc: 's-urgent' },
+  MARKETING: { key: 'cat_marketing', sc: 's-todo' },
+  TRANSPORT: { key: 'cat_transport', sc: 's-todo' },
+  CUSTOMS: { key: 'cat_customs', sc: 's-todo' },
+  SALARY: { key: 'cat_salary', sc: 's-info' },
+  RENT: { key: 'cat_rent', sc: 's-info' },
+  EQUIPMENT: { key: 'cat_equipment', sc: 's-info' },
+  PACKAGING: { key: 'cat_packaging', sc: 's-neutral' },
+  DELIVERY: { key: 'cat_delivery', sc: 's-neutral' },
+  OTHER: { key: 'cat_other', sc: 's-neutral' },
 };
 
 const fmtDate = (iso: string): string =>
@@ -70,12 +70,17 @@ export const TransactionList = () => {
       r = r.filter(
         (x) =>
           (x.description ?? '').toLowerCase().includes(qq) ||
-          (CATEGORY_META[x.category]?.label ?? '').toLowerCase().includes(qq) ||
+          (CATEGORY_META[x.category]
+            ? t('ui.transactions.' + CATEGORY_META[x.category].key)
+            : x.category
+          )
+            .toLowerCase()
+            .includes(qq) ||
           (x.order?.orderNumber ?? '').toLowerCase().includes(qq),
       );
     }
     return r;
-  }, [transactions, nature, category, q]);
+  }, [transactions, nature, category, q, t]);
 
   /* Aggregates over the loaded rows (recettes / dépenses / net). */
   const { recettes, depenses } = useMemo(() => {
@@ -106,18 +111,17 @@ export const TransactionList = () => {
         <div className="toolbar">
           <div style={{ maxWidth: '46ch' }}>
             <div className="section-label" style={{ margin: '0 0 6px' }}>
-              Journal · toutes les entrées et sorties
+              {t('ui.transactions.heading')}
             </div>
             <div className="note">
-              Alimenté par les ventes, achats et commissions. La saisie manuelle
-              couvre les dépenses non capturées ailleurs.
+              {t('ui.transactions.subtitle')}
             </div>
           </div>
           <div style={{ flex: 1 }} />
           <div className="search">
             <SearchIcon />
             <input
-              placeholder="Rechercher un libellé…"
+              placeholder={t('ui.transactions.search_placeholder')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -127,7 +131,7 @@ export const TransactionList = () => {
             onClick={() => redirect('create', 'transactions')}
           >
             <AddIcon sx={{ fontSize: 18 }} />
-            Transaction
+            {t('ui.transactions.add')}
           </button>
         </div>
 
@@ -136,17 +140,17 @@ export const TransactionList = () => {
             <div className="ds-v" style={{ color: 'var(--st-done)' }}>
               {fmtFCFA(recettes)}
             </div>
-            <div className="ds-l">Recettes</div>
+            <div className="ds-l">{t('ui.transactions.summary_income')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v" style={{ color: 'var(--st-urgent)' }}>
               {fmtFCFA(depenses)}
             </div>
-            <div className="ds-l">Dépenses</div>
+            <div className="ds-l">{t('ui.transactions.summary_expense')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v">{fmtFCFA(net)}</div>
-            <div className="ds-l">Net</div>
+            <div className="ds-l">{t('ui.transactions.summary_net')}</div>
           </div>
           <div className="ds-item">
             <div className="ds-v">{total}</div>
@@ -159,19 +163,19 @@ export const TransactionList = () => {
             className={`chip${nature === 'all' ? ' on' : ''}`}
             onClick={() => setNature('all')}
           >
-            Toutes
+            {t('ui.transactions.nature_all')}
           </button>
           <button
             className={`chip${nature === 'INCOME' ? ' on' : ''}`}
             onClick={() => setNature('INCOME')}
           >
-            Recettes
+            {t('ui.transactions.nature_income')}
           </button>
           <button
             className={`chip${nature === 'EXPENSE' ? ' on' : ''}`}
             onClick={() => setNature('EXPENSE')}
           >
-            Dépenses
+            {t('ui.transactions.nature_expense')}
           </button>
           {presentCategories.length > 0 && (
             <>
@@ -180,7 +184,7 @@ export const TransactionList = () => {
                 className={`chip${category === 'all' ? ' on' : ''}`}
                 onClick={() => setCategory('all')}
               >
-                Toutes catégories
+                {t('ui.transactions.cat_all')}
               </button>
               {presentCategories.map((c) => (
                 <button
@@ -188,7 +192,7 @@ export const TransactionList = () => {
                   className={`chip${category === c ? ' on' : ''}`}
                   onClick={() => setCategory(c)}
                 >
-                  {CATEGORY_META[c].label}
+                  {t('ui.transactions.' + CATEGORY_META[c].key)}
                 </button>
               ))}
             </>
@@ -200,12 +204,12 @@ export const TransactionList = () => {
             <EmptyState
               icon={<AccountBalanceWalletIcon sx={{ fontSize: 40 }} />}
               title={
-                isLoading ? t('ra.page.loading') : 'Aucune transaction pour ce filtre'
+                isLoading
+                  ? t('ra.page.loading')
+                  : t('ui.transactions.empty_title')
               }
               sub={
-                isLoading
-                  ? undefined
-                  : 'Ajustez la nature, la catégorie ou la recherche pour voir davantage de mouvements.'
+                isLoading ? undefined : t('ui.transactions.empty_sub')
               }
             />
           </div>
@@ -236,7 +240,7 @@ export const TransactionList = () => {
                       <td>
                         <span className={`pill ${meta?.sc ?? 's-neutral'}`}>
                           <span className="pdot" />
-                          {meta?.label ?? x.category}
+                          {meta ? t('ui.transactions.' + meta.key) : x.category}
                         </span>
                       </td>
                       <td className={`tx-desc${x.description ? '' : ' muted'}`}>
@@ -276,7 +280,7 @@ export const TransactionList = () => {
               className="btn btn-ghost"
               onClick={() => setPerPage((p) => p + 50)}
             >
-              Charger plus
+              {t('ui.transactions.load_more')}
             </button>
           </div>
         )}

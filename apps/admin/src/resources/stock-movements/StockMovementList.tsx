@@ -10,15 +10,15 @@ import type { StockMovement } from '../../types';
 
 type MovementType = StockMovement['type'];
 
-/** French label + status hue for each movement type. */
-const TYPE_META: Record<MovementType, { label: string; sc: string }> = {
-  PRODUCTION_IN: { label: 'Production', sc: 's-done' },
-  PURCHASE_IN: { label: 'Achat', sc: 's-info' },
-  CANCELLATION_RETURN: { label: 'Retour annulation', sc: 's-info' },
-  CONSIGNMENT_RETURN: { label: 'Retour dépôt', sc: 's-info' },
-  SALE_OUT: { label: 'Vente', sc: 's-urgent' },
-  CONSIGNMENT_OUT: { label: 'Dépôt-vente', sc: 's-todo' },
-  MANUAL_ADJUSTMENT: { label: 'Ajustement', sc: 's-neutral' },
+/** Translation key + status hue for each movement type. */
+const TYPE_META: Record<MovementType, { labelKey: string; sc: string }> = {
+  PRODUCTION_IN: { labelKey: 'ui.stock-movements.production_in', sc: 's-done' },
+  PURCHASE_IN: { labelKey: 'ui.stock-movements.purchase_in', sc: 's-info' },
+  CANCELLATION_RETURN: { labelKey: 'ui.stock-movements.cancellation_return', sc: 's-info' },
+  CONSIGNMENT_RETURN: { labelKey: 'ui.stock-movements.consignment_return', sc: 's-info' },
+  SALE_OUT: { labelKey: 'ui.stock-movements.sale_out', sc: 's-urgent' },
+  CONSIGNMENT_OUT: { labelKey: 'ui.stock-movements.consignment_out', sc: 's-todo' },
+  MANUAL_ADJUSTMENT: { labelKey: 'ui.stock-movements.manual_adjustment', sc: 's-neutral' },
 };
 
 const TYPE_ORDER: MovementType[] = [
@@ -130,7 +130,7 @@ export const StockMovementList = () => {
               className={`chip${type === tp ? ' on' : ''}`}
               onClick={() => setType(tp)}
             >
-              {TYPE_META[tp].label}
+              {t(TYPE_META[tp].labelKey)}
             </button>
           ))}
         </div>
@@ -177,7 +177,7 @@ export const StockMovementList = () => {
                       <td>
                         <span className={`pill ${meta.sc}`}>
                           <span className="pdot" />
-                          {meta.label}
+                          {t(meta.labelKey)}
                         </span>
                       </td>
                       <td>
