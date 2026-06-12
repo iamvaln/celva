@@ -591,6 +591,9 @@ const celvaFr = {
       helpers: {
         content_markdown: 'Markdown — tableaux de tailles, conseils de coupe.',
       },
+      add: 'Guide',
+      empty: 'Aucun guide des tailles pour le moment.',
+      hint: 'Un guide par catégorie : tableau de mensurations affiché sur les fiches produit.',
     },
     'audit-logs': {
       name: "Entrée d'audit |||| Journal d'audit",
@@ -1283,6 +1286,9 @@ const celvaEn = {
       helpers: {
         content_markdown: 'Markdown — size tables, fit notes.',
       },
+      add: 'Guide',
+      empty: 'No size guides yet.',
+      hint: 'One guide per category: measurement table shown on product pages.',
     },
     'audit-logs': {
       name: 'Audit entry |||| Audit log',
