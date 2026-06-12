@@ -1,0 +1,7 @@
+/* Invoices ledger table (flow-table not in shared celva-skin.css) */
+.celva-skin .inv-scroll { overflow-x: auto; }
+.celva-skin .flow-table { width: 100%; border-collapse: collapse; }
+.celva-skin .flow-table th { text-align: left; font-family: var(--font-body); font-weight: 600; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-muted); padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.celva-skin .flow-table td { padding: 11px 14px; border-bottom: 1px solid var(--border-soft); font-size: 14.5px; }
+.celva-skin .flow-table tr:last-child td { border-bottom: 0; }
+.celva-skin .flow-table tbody tr:hover { background: var(--bg-sunk); }
