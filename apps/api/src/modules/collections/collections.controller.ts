@@ -22,6 +22,7 @@ import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { ListCollectionsQuery } from './dto/list-collections.query';
 import { SetCollectionProductsDto } from './dto/set-collection-products.dto';
+import { ReorderCollectionsDto } from './dto/reorder-collections.dto';
 
 @ApiTags('collections')
 @Controller({ path: 'collections', version: '1' })
@@ -33,6 +34,16 @@ export class CollectionsController {
   @ApiOperation({ summary: 'List collections (public, storefront-friendly).' })
   list(@Query() query: ListCollectionsQuery) {
     return this.collections.list(query);
+  }
+
+  @Post('reorder')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MANAGER)
+  @ApiOperation({ summary: 'Persist drag-reordered collection display order.' })
+  @AuditLog({ action: 'UPDATE', entity: 'Collection', entityIdFrom: 'user.id' })
+  async reorder(@Body() dto: ReorderCollectionsDto): Promise<void> {
+    await this.collections.reorder(dto.ids);
   }
 
   @Get('by-slug/:slug')
