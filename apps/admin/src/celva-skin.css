@@ -594,3 +594,15 @@
 
 .celva-skin .icon-btn { width: 34px; height: 34px; display: grid; place-items: center; color: var(--fg); border: 1px solid transparent; background: none; cursor: pointer; transition: background 160ms ease, border-color 160ms ease; }
 .celva-skin .icon-btn:hover { background: var(--bg-sunk); border-color: var(--border-soft); }
+
+/* domain summary strip (collections, stock domains) + visibility flag */
+.celva-skin .dom-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-soft); border: 1px solid var(--border-soft); margin-bottom: 22px; }
+@media (max-width: 760px) { .celva-skin .dom-summary { grid-template-columns: repeat(2, 1fr); } }
+.celva-skin .ds-item { background: var(--surface); padding: 16px 20px; }
+.celva-skin .ds-item .ds-v { font-family: var(--font-display); font-size: 26px; font-weight: 500; color: var(--fg-strong); line-height: 1; }
+.celva-skin .ds-item .ds-l { font-size: 12.5px; color: var(--fg-muted); margin-top: 6px; }
+.celva-skin .ds-item.warn .ds-v { color: var(--st-todo); }
+.celva-skin .vis-flag { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
+.celva-skin .vis-flag.live { color: var(--st-done); }
+.celva-skin .vis-flag.hidden { color: var(--st-todo); }
+.celva-skin .vis-flag .vdot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
