@@ -239,6 +239,24 @@ const celvaFr = {
       errors: {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
       },
+      add: 'Collection',
+      search: 'Rechercher une collection…',
+      empty: 'Aucune collection pour ce filtre.',
+      active: 'Active',
+      inactive: 'Inactive',
+      visible: 'Visible',
+      masked: 'Masquée',
+      reorder_hint: "Glissez pour ordonner l'affichage sur l'accueil.",
+      reorder_locked: 'Désactivez les filtres pour réordonner.',
+      summary: {
+        active: 'Actives',
+        live: 'Visibles en boutique',
+        hidden: 'Actives mais masquées',
+      },
+      filters: { all: 'Toutes', active: 'Actives', inactive: 'Inactives' },
+      notifications: {
+        reordered: "Ordre d'affichage mis à jour.",
+      },
       products: {
         title: 'Produits de la collection',
         add_label: 'Ajouter un produit',
@@ -915,6 +933,27 @@ const celvaEn = {
         make_primary: 'Set as primary image',
         confirm_delete: 'Delete this image?',
         empty: 'No images yet. Add one to get started.',
+      },
+    },
+    collections: {
+      name: 'Collection |||| Collections',
+      add: 'Collection',
+      search: 'Search a collection…',
+      empty: 'No collections for this filter.',
+      active: 'Active',
+      inactive: 'Inactive',
+      visible: 'Visible',
+      masked: 'Hidden',
+      reorder_hint: 'Drag to order the homepage display.',
+      reorder_locked: 'Clear the filters to reorder.',
+      summary: {
+        active: 'Active',
+        live: 'Visible in store',
+        hidden: 'Active but hidden',
+      },
+      filters: { all: 'All', active: 'Active', inactive: 'Inactive' },
+      notifications: {
+        reordered: 'Display order updated.',
       },
     },
     'promo-codes': {

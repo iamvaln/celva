@@ -81,6 +81,7 @@ export type Collection = {
   imageUrl?: string | null;
   isActive: boolean;
   sortOrder: number;
+  productCount?: number;
   createdAt: string;
   updatedAt: string;
 };
