@@ -1,0 +1,75 @@
+/* Newsletter — bespoke abonnés screen styles.
+   Scoped to .celva-skin. `.flow-table` is ported from the design handoff
+   (admin.css lines ~646-651) since it is not (yet) in the shared skin;
+   `.brevo-banner`/`.sub-table` ported from the design content.css. */
+
+/* ---- flow-table (ported, shared by today's modules) ---- */
+.celva-skin .flow-table { width: 100%; border-collapse: collapse; }
+.celva-skin .flow-table th {
+  text-align: left;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.celva-skin .flow-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 14.5px;
+  vertical-align: middle;
+}
+.celva-skin .flow-table tr:last-child td { border-bottom: 0; }
+.celva-skin .flow-table .amt-in {
+  color: var(--st-done);
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.celva-skin .flow-table .amt-out {
+  color: var(--st-urgent);
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---- Brevo banner (ported from design content.css) ---- */
+.celva-skin .brevo-banner {
+  display: flex; align-items: center; gap: 16px; padding: 18px 20px;
+  margin-bottom: 22px;
+  background: color-mix(in oklab, var(--accent) 6%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--accent) 22%, var(--border));
+  border-left-width: 3px;
+}
+.celva-skin .brevo-banner .bb-ic {
+  width: 40px; height: 40px; flex-shrink: 0; display: grid; place-items: center;
+  color: var(--accent); background: color-mix(in oklab, var(--accent) 14%, var(--surface));
+}
+.celva-skin .brevo-banner .bb-t { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--fg-strong); }
+.celva-skin .brevo-banner .bb-s { font-size: 13px; color: var(--fg-muted); line-height: 1.45; margin-top: 3px; }
+@media (max-width: 720px) { .celva-skin .brevo-banner { flex-wrap: wrap; } }
+
+/* ---- subscriber table helpers (ported) ---- */
+.celva-skin .sub-table .sub-email { font-family: var(--font-display); font-size: 14px; color: var(--fg-strong); }
+.celva-skin .sub-table tbody tr:hover { background: color-mix(in oklab, var(--accent) 4%, var(--surface)); }
+.celva-skin .sub-table .row-selected { background: color-mix(in oklab, var(--accent) 8%, var(--surface)); }
+.celva-skin .sub-name.muted { color: var(--fg-muted); }
+.celva-skin .sub-when { white-space: nowrap; color: var(--fg-muted); }
+.celva-skin .sub-when .sub-ago { display: block; font-size: 12px; margin-top: 1px; }
+.celva-skin .sub-table .sel-col { width: 38px; text-align: center; }
+.celva-skin .sub-table .sel-col input { cursor: pointer; accent-color: var(--accent); }
+
+/* selection action bar */
+.celva-skin .sub-bulkbar {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-top: 14px; padding: 12px 16px;
+  background: var(--bg-sunk); border: 1px solid var(--border-soft);
+}
+.celva-skin .sub-bulkbar .sb-count { font-size: 13.5px; color: var(--fg-strong); font-weight: 500; }
+.celva-skin .sub-bulkbar .sb-spacer { flex: 1; }
+
+/* horizontal scroll guard on narrow screens */
+.celva-skin .sub-scroll { overflow-x: auto; }
