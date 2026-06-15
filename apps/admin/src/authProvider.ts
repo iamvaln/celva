@@ -1,4 +1,5 @@
 import type { AuthProvider } from 'react-admin';
+import { ADMIN_ROLES as BACKOFFICE_ROLE_LIST } from '@celva/shared';
 import { API_BASE, STORAGE_KEYS } from './config';
 import { fetchJson } from './http';
 import type { HttpError } from './http';
@@ -39,7 +40,9 @@ const tryRefresh = async (): Promise<boolean> => {
   }
 };
 
-const ADMIN_ROLES = new Set(['ADMIN', 'MANAGER']);
+// Every back-office role may sign in (excludes the storefront CLIENT role);
+// what they can see/do is then governed by the RBAC permission model.
+const ADMIN_ROLES = new Set<string>(BACKOFFICE_ROLE_LIST);
 
 export const authProvider: AuthProvider = {
   async login({ username, password }: { username: string; password: string }) {

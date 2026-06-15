@@ -14,37 +14,66 @@ import { EmptyState } from '../../components/EmptyState';
  * this module. The list carries no server-side aggregates; the summary strip
  * and counts below are derived client-side from the loaded page.
  */
+type Role =
+  | 'SUPER_ADMIN'
+  | 'ADMIN'
+  | 'MANAGER'
+  | 'CATALOG_MANAGER'
+  | 'FINANCE'
+  | 'SUPPORT'
+  | 'DELIVERER'
+  | 'CLIENT'
+  | 'SALES_REP';
+
 type UserRow = {
   id: string;
   name: string;
   email: string;
   phone: string | null;
-  role: 'ADMIN' | 'MANAGER' | 'DELIVERER' | 'CLIENT' | 'SALES_REP';
+  role: Role;
   isActive: boolean;
   createdAt: string;
 };
 
-type RoleFilter = 'all' | UserRow['role'];
+type RoleFilter = 'all' | Role;
 
 /** Role label key + status hue for each role (per design role-badge tones). */
-const ROLE_META: Record<UserRow['role'], { labelKey: string; hue: string }> = {
+const ROLE_META: Record<Role, { labelKey: string; hue: string }> = {
+  SUPER_ADMIN: { labelKey: 'ui.users.role_super_admin', hue: 's-done' },
   ADMIN: { labelKey: 'ui.users.role_admin', hue: 's-urgent' },
   MANAGER: { labelKey: 'ui.users.role_manager', hue: 's-info' },
+  CATALOG_MANAGER: { labelKey: 'ui.users.role_catalog_manager', hue: 's-todo' },
+  FINANCE: { labelKey: 'ui.users.role_finance', hue: 's-prod' },
+  SUPPORT: { labelKey: 'ui.users.role_support', hue: 's-info' },
   SALES_REP: { labelKey: 'ui.users.role_sales_rep', hue: 's-todo' },
   DELIVERER: { labelKey: 'ui.users.role_deliverer', hue: 's-neutral' },
   CLIENT: { labelKey: 'ui.users.role_client', hue: 's-neutral' },
 };
 
 /** CSS var fed to the avatar tint; mirrors the role-badge tone. */
-const ROLE_TONE: Record<UserRow['role'], string> = {
+const ROLE_TONE: Record<Role, string> = {
+  SUPER_ADMIN: 'var(--st-done)',
   ADMIN: 'var(--st-urgent)',
   MANAGER: 'var(--st-info)',
+  CATALOG_MANAGER: 'var(--st-todo)',
+  FINANCE: 'var(--st-prod)',
+  SUPPORT: 'var(--st-info)',
   SALES_REP: 'var(--st-todo)',
   DELIVERER: 'var(--st-neutral)',
   CLIENT: 'var(--st-neutral)',
 };
 
-const ROLE_ORDER: UserRow['role'][] = ['ADMIN', 'MANAGER', 'SALES_REP', 'DELIVERER', 'CLIENT'];
+const ROLE_ORDER: Role[] = [
+  'SUPER_ADMIN',
+  'ADMIN',
+  'MANAGER',
+  'CATALOG_MANAGER',
+  'FINANCE',
+  'SUPPORT',
+  'SALES_REP',
+  'DELIVERER',
+  'CLIENT',
+];
 
 const initials = (name: string): string =>
   name

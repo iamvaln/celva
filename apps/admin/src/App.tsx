@@ -25,6 +25,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import HistoryIcon from '@mui/icons-material/History';
+import SecurityIcon from '@mui/icons-material/Security';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SavingsIcon from '@mui/icons-material/Savings';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
@@ -108,6 +109,8 @@ import { SizeGuideList } from './resources/size-guides/SizeGuideList';
 import { SizeGuideCreate } from './resources/size-guides/SizeGuideCreate';
 import { SizeGuideEdit } from './resources/size-guides/SizeGuideEdit';
 import { AuditLogList } from './resources/audit-logs/AuditLogList';
+import { RolesMatrix } from './resources/roles/RolesMatrix';
+import { can } from './permissions';
 import { PaymentAccountList } from './resources/payment-accounts/PaymentAccountList';
 import { PaymentAccountCreate } from './resources/payment-accounts/PaymentAccountCreate';
 import { PaymentAccountEdit } from './resources/payment-accounts/PaymentAccountEdit';
@@ -133,8 +136,8 @@ export const App = () => (
           name="users"
           icon={PeopleIcon}
           list={UserList}
-          edit={permissions === 'ADMIN' ? UserEdit : undefined}
-          create={permissions === 'ADMIN' ? UserCreate : undefined}
+          edit={can(permissions, 'users', 'edit') ? UserEdit : undefined}
+          create={can(permissions, 'users', 'create') ? UserCreate : undefined}
           show={UserShow}
         />
         <Resource
@@ -186,16 +189,16 @@ export const App = () => (
           name="promo-codes"
           icon={LocalOfferIcon}
           list={PromoCodeList}
-          edit={permissions === 'ADMIN' ? PromoCodeEdit : undefined}
-          create={permissions === 'ADMIN' ? PromoCodeCreate : undefined}
+          edit={can(permissions, 'promo', 'edit') ? PromoCodeEdit : undefined}
+          create={can(permissions, 'promo', 'create') ? PromoCodeCreate : undefined}
           options={{ label: 'Codes promo' }}
         />
         <Resource
           name="delivery-zones"
           icon={LocalShippingIcon}
           list={DeliveryZoneList}
-          edit={permissions === 'ADMIN' ? DeliveryZoneEdit : undefined}
-          create={permissions === 'ADMIN' ? DeliveryZoneCreate : undefined}
+          edit={can(permissions, 'settings', 'configure') ? DeliveryZoneEdit : undefined}
+          create={can(permissions, 'settings', 'configure') ? DeliveryZoneCreate : undefined}
           options={{ label: 'Zones de livraison' }}
         />
         <Resource
@@ -248,7 +251,7 @@ export const App = () => (
           name="transactions"
           icon={AccountBalanceIcon}
           list={TransactionList}
-          create={permissions === 'ADMIN' || permissions === 'MANAGER' ? TransactionCreate : undefined}
+          create={can(permissions, 'finance', 'create') ? TransactionCreate : undefined}
           edit={TransactionEdit}
           options={{ label: 'Transactions' }}
         />
@@ -314,8 +317,8 @@ export const App = () => (
           name="settings"
           icon={SettingsIcon}
           list={SettingList}
-          edit={permissions === 'ADMIN' ? SettingEdit : undefined}
-          create={permissions === 'ADMIN' ? SettingCreate : undefined}
+          edit={can(permissions, 'settings', 'configure') ? SettingEdit : undefined}
+          create={can(permissions, 'settings', 'configure') ? SettingCreate : undefined}
         />
         <Resource
           name="audit-logs"
@@ -323,12 +326,13 @@ export const App = () => (
           list={AuditLogList}
           options={{ label: "Journal d'audit" }}
         />
+        <Resource name="roles" icon={SecurityIcon} list={RolesMatrix} options={{ label: 'Rôles' }} />
         <Resource
           name="payment-accounts"
           icon={AccountBalanceWalletIcon}
           list={PaymentAccountList}
-          edit={permissions === 'ADMIN' ? PaymentAccountEdit : undefined}
-          create={permissions === 'ADMIN' ? PaymentAccountCreate : undefined}
+          edit={can(permissions, 'settings', 'configure') ? PaymentAccountEdit : undefined}
+          create={can(permissions, 'settings', 'configure') ? PaymentAccountCreate : undefined}
           options={{ label: "Comptes d'encaissement" }}
         />
         <Resource
