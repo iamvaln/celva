@@ -19,6 +19,7 @@ import {
   NavFinance,
   NavSettings,
 } from './CelvaNavIcons';
+import { canView } from '../permissions';
 
 type MenuGroupProps = {
   labelKey: string;
@@ -56,67 +57,95 @@ const MenuGroup = ({ labelKey, icon, defaultOpen = false, children }: MenuGroupP
 };
 
 export const CelvaMenu = () => {
-  const { permissions } = usePermissions<string>();
-  const isAdmin = permissions === 'ADMIN';
+  const { permissions: p } = usePermissions<string>();
+
+  // Per-role visibility (UX §2): a group shows when the role can view at least
+  // one of its domains; settings sub-items are gated individually.
+  const sales = canView(p, 'orders') || canView(p, 'deliveries') || canView(p, 'payments') || canView(p, 'invoices') || canView(p, 'promo');
+  const catalog = canView(p, 'catalog');
+  const stock = canView(p, 'stock');
+  const commercial = canView(p, 'commercial');
+  const content = canView(p, 'content');
+  const finance = canView(p, 'finance');
+  const settingsDomain = canView(p, 'settings');
+  const usersDomain = canView(p, 'users');
+  const rolesDomain = canView(p, 'roles');
+  const auditDomain = canView(p, 'audit');
+  const params = usersDomain || settingsDomain || rolesDomain || auditDomain;
 
   return (
     <Menu>
       <Menu.DashboardItem primaryText="menu.dashboard" leftIcon={<NavDashboard />} />
 
       {/* VENTES — daily starting point (spec §4) */}
-      <MenuGroup labelKey="menu.sales" icon={<NavSales />} defaultOpen>
-        <Menu.ResourceItem name="orders" />
-        <Menu.ResourceItem name="deliveries" />
-        <Menu.ResourceItem name="payments" />
-        <Menu.ResourceItem name="invoices" />
-        <Menu.ResourceItem name="promo-codes" />
-      </MenuGroup>
+      {sales && (
+        <MenuGroup labelKey="menu.sales" icon={<NavSales />} defaultOpen>
+          {canView(p, 'orders') && <Menu.ResourceItem name="orders" />}
+          {canView(p, 'deliveries') && <Menu.ResourceItem name="deliveries" />}
+          {canView(p, 'payments') && <Menu.ResourceItem name="payments" />}
+          {canView(p, 'invoices') && <Menu.ResourceItem name="invoices" />}
+          {canView(p, 'promo') && <Menu.ResourceItem name="promo-codes" />}
+        </MenuGroup>
+      )}
 
-      <MenuGroup labelKey="menu.catalog" icon={<NavCatalog />}>
-        <Menu.ResourceItem name="products" />
-        <Menu.ResourceItem name="collections" />
-        <Menu.ResourceItem name="categories" />
-        <Menu.ResourceItem name="size-guides" />
-        <Menu.ResourceItem name="variants" />
-        <Menu.ResourceItem name="attributes" />
-        <Menu.ResourceItem name="attribute-values" />
-      </MenuGroup>
+      {catalog && (
+        <MenuGroup labelKey="menu.catalog" icon={<NavCatalog />}>
+          <Menu.ResourceItem name="products" />
+          <Menu.ResourceItem name="collections" />
+          <Menu.ResourceItem name="categories" />
+          <Menu.ResourceItem name="size-guides" />
+          <Menu.ResourceItem name="variants" />
+          <Menu.ResourceItem name="attributes" />
+          <Menu.ResourceItem name="attribute-values" />
+        </MenuGroup>
+      )}
 
-      <MenuGroup labelKey="menu.stock" icon={<NavStock />}>
-        <Menu.ResourceItem name="suppliers" />
-        <Menu.ResourceItem name="raw-materials" />
-        <Menu.ResourceItem name="purchase-orders" />
-        <Menu.ResourceItem name="production-orders" />
-        <Menu.ResourceItem name="stock-movements" />
-      </MenuGroup>
+      {stock && (
+        <MenuGroup labelKey="menu.stock" icon={<NavStock />}>
+          <Menu.ResourceItem name="suppliers" />
+          <Menu.ResourceItem name="raw-materials" />
+          <Menu.ResourceItem name="purchase-orders" />
+          <Menu.ResourceItem name="production-orders" />
+          <Menu.ResourceItem name="stock-movements" />
+        </MenuGroup>
+      )}
 
       {/* COMMERCIAL — resellers (spec §4) */}
-      <MenuGroup labelKey="menu.commercial" icon={<NavCommercial />}>
-        <Menu.ResourceItem name="consignments" />
-        <Menu.ResourceItem name="sales-commissions" />
-      </MenuGroup>
+      {commercial && (
+        <MenuGroup labelKey="menu.commercial" icon={<NavCommercial />}>
+          <Menu.ResourceItem name="consignments" />
+          <Menu.ResourceItem name="sales-commissions" />
+        </MenuGroup>
+      )}
 
-      <MenuGroup labelKey="menu.content" icon={<NavContent />}>
-        <Menu.ResourceItem name="articles" />
-        <Menu.ResourceItem name="newsletter" />
-      </MenuGroup>
+      {content && (
+        <MenuGroup labelKey="menu.content" icon={<NavContent />}>
+          <Menu.ResourceItem name="articles" />
+          <Menu.ResourceItem name="newsletter" />
+        </MenuGroup>
+      )}
 
-      <MenuGroup labelKey="menu.finance" icon={<NavFinance />}>
-        <Menu.ResourceItem name="transactions" />
-        <Menu.ResourceItem name="treasury" />
-        <Menu.ResourceItem name="finance" />
-      </MenuGroup>
+      {finance && (
+        <MenuGroup labelKey="menu.finance" icon={<NavFinance />}>
+          <Menu.ResourceItem name="transactions" />
+          <Menu.ResourceItem name="treasury" />
+          <Menu.ResourceItem name="finance" />
+        </MenuGroup>
+      )}
 
       {/* PARAMÈTRES — config (spec §4): users, livraison & retrait,
-          comptes d'encaissement, réglages, journal d'activité */}
-      <MenuGroup labelKey="menu.settings" icon={<NavSettings />}>
-        {isAdmin && <Menu.ResourceItem name="users" />}
-        <Menu.ResourceItem name="delivery-zones" />
-        <Menu.ResourceItem name="pickup-points" />
-        {isAdmin && <Menu.ResourceItem name="payment-accounts" />}
-        {isAdmin && <Menu.ResourceItem name="settings" />}
-        <Menu.ResourceItem name="audit-logs" />
-      </MenuGroup>
+          comptes d'encaissement, réglages, rôles, journal d'activité */}
+      {params && (
+        <MenuGroup labelKey="menu.settings" icon={<NavSettings />}>
+          {usersDomain && <Menu.ResourceItem name="users" />}
+          {settingsDomain && <Menu.ResourceItem name="delivery-zones" />}
+          {settingsDomain && <Menu.ResourceItem name="pickup-points" />}
+          {settingsDomain && <Menu.ResourceItem name="payment-accounts" />}
+          {settingsDomain && <Menu.ResourceItem name="settings" />}
+          {rolesDomain && <Menu.ResourceItem name="roles" />}
+          {auditDomain && <Menu.ResourceItem name="audit-logs" />}
+        </MenuGroup>
+      )}
     </Menu>
   );
 };

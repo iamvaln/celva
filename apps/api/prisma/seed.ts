@@ -20,11 +20,12 @@ async function main(): Promise<void> {
     create: {
       email: adminEmail,
       name: 'Celva Admin',
-      role: UserRole.ADMIN,
+      role: UserRole.SUPER_ADMIN,
       passwordHash,
       mustChangePassword: true,
     },
-    update: {},
+    // Keep the owner account at SUPER_ADMIN (UX §2 — the patronne).
+    update: { role: UserRole.SUPER_ADMIN },
   });
   console.log(`  ✓ Admin user: ${admin.email}`);
 
