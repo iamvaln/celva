@@ -1,6 +1,6 @@
 import { type CanActivate, type ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import type { UserRole } from '@celva/shared';
+import { USER_ROLE, type UserRole } from '@celva/shared';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import type { AuthenticatedUser } from '../decorators/current-user.decorator';
 
@@ -18,6 +18,8 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<{ user?: AuthenticatedUser }>();
     const role = request.user?.role as UserRole | undefined;
     if (!role) return false;
+    // SUPER_ADMIN (the owner) bypasses every role guard.
+    if (role === USER_ROLE.SUPER_ADMIN) return true;
     return required.includes(role);
   }
 }
