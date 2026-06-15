@@ -621,3 +621,20 @@
 .celva-skin .ob-chip .obc-ic { width: 14px; height: 14px; display: grid; place-items: center; }
 .celva-skin .onboard-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 @media (max-width: 760px) { .celva-skin .onboard-banner { flex-wrap: wrap; } .celva-skin .onboard-actions { width: 100%; } }
+
+/* ============================================================
+   Reduced motion — respect the OS setting (design enhancements.css):
+   kill entrance/spark/hover animations, cap transitions, no smooth scroll.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .celva-skin .fade-in { animation: none !important; transform: none !important; }
+  .celva-skin .spark .bar,
+  .celva-skin .action-card,
+  .celva-skin .prod-card,
+  .celva-skin .onboard-ring,
+  .celva-skin .setup-progress > i { transition: none !important; }
+  .celva-skin *, .celva-skin *::before, .celva-skin *::after {
+    animation-iteration-count: 1 !important;
+    transition-duration: 120ms !important;
+  }
+}
