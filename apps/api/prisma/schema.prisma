@@ -30,8 +30,12 @@ enum AppSource {
 }
 
 enum UserRole {
+  SUPER_ADMIN
   ADMIN
   MANAGER
+  CATALOG_MANAGER
+  FINANCE
+  SUPPORT
   DELIVERER
   CLIENT
   SALES_REP

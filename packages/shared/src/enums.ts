@@ -11,13 +11,29 @@ export const APP_SOURCE = {
 export type AppSource = (typeof APP_SOURCE)[keyof typeof APP_SOURCE];
 
 export const USER_ROLE = {
+  SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
   MANAGER: 'MANAGER',
+  CATALOG_MANAGER: 'CATALOG_MANAGER',
+  FINANCE: 'FINANCE',
+  SUPPORT: 'SUPPORT',
   DELIVERER: 'DELIVERER',
   CLIENT: 'CLIENT',
   SALES_REP: 'SALES_REP',
 } as const;
 export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
+
+/** Back-office (admin) roles — excludes the storefront CLIENT role. */
+export const ADMIN_ROLES = [
+  USER_ROLE.SUPER_ADMIN,
+  USER_ROLE.ADMIN,
+  USER_ROLE.MANAGER,
+  USER_ROLE.CATALOG_MANAGER,
+  USER_ROLE.FINANCE,
+  USER_ROLE.SUPPORT,
+  USER_ROLE.SALES_REP,
+  USER_ROLE.DELIVERER,
+] as const;
 
 export const PRODUCTION_TYPE = {
   INTERNAL: 'INTERNAL',
