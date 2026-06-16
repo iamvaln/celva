@@ -55,3 +55,314 @@
   display: flex;
   justify-content: flex-end;
 }
+
+/* ============================================================
+   Article editor (Edit / Create) — bespoke bilingual layout.
+   Ported from the handoff (admin.css edit-* / field-* + content.css
+   rt-*, lang-tabs, vis-card). Scoped to .celva-skin.
+   ============================================================ */
+
+/* ---- header ---- */
+.celva-skin .art-edit .edit-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.celva-skin .art-edit .edit-head .dh-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.celva-skin .art-edit .prod-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--fg-strong);
+  line-height: 1.12;
+  margin: 0;
+}
+
+/* ---- grid (1fr / 320px rail) ---- */
+.celva-skin .art-edit .edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--stack);
+  align-items: start;
+}
+.celva-skin .art-edit .edit-grid > .grid {
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .celva-skin .art-edit .edit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- info card heading override (uppercase mini-label) ---- */
+.celva-skin .art-edit .info-card h4 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 16px;
+}
+
+/* ---- fields ---- */
+.celva-skin .art-edit .field {
+  display: block;
+  margin-bottom: 16px;
+}
+.celva-skin .art-edit .field > label {
+  display: block;
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 7px;
+  letter-spacing: 0.02em;
+}
+.celva-skin .art-edit .field input[type='text'],
+.celva-skin .art-edit .field textarea,
+.celva-skin .art-edit .art-cat-select {
+  width: 100%;
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  outline: none;
+  font-size: 16px;
+  color: var(--fg);
+  transition: border-color 160ms;
+}
+.celva-skin .art-edit .field input:focus,
+.celva-skin .art-edit .field textarea:focus,
+.celva-skin .art-edit .art-cat-select:focus {
+  border-bottom-color: var(--accent);
+}
+.celva-skin .art-edit .field textarea {
+  resize: vertical;
+  line-height: 1.45;
+}
+.celva-skin .art-edit .field-row {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.celva-skin .art-edit .field-row .field.half {
+  flex: 1;
+  min-width: 160px;
+}
+.celva-skin .art-edit .field .fhint {
+  font-size: 11px;
+  color: var(--fg-muted);
+  margin-left: 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- slug field ---- */
+.celva-skin .art-edit .slug-field {
+  display: flex;
+  align-items: baseline;
+  border-bottom: 1px solid var(--border);
+}
+.celva-skin .art-edit .slug-field:focus-within {
+  border-bottom-color: var(--accent);
+}
+.celva-skin .art-edit .slug-pre {
+  font-size: 13px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+.celva-skin .art-edit .field .slug-field input {
+  border: 0;
+  border-bottom: 0;
+  padding: 10px 0 10px 2px;
+  flex: 1;
+  width: auto;
+}
+.celva-skin .art-edit .mono-input {
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+
+/* ---- category select ---- */
+.celva-skin .art-edit .art-cat-select {
+  padding: 10px 4px 10px 0;
+  font-size: 16px;
+  appearance: none;
+}
+
+/* ---- language tabs ---- */
+.celva-skin .art-edit .lang-tabs {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.celva-skin .art-edit .lang-tabs button {
+  padding: 7px 16px;
+  font-size: 13.5px;
+  color: var(--fg-muted);
+  transition: all 140ms;
+}
+.celva-skin .art-edit .lang-tabs button.on {
+  background: var(--accent);
+  color: var(--cream);
+}
+
+/* ---- rich text editor ---- */
+.celva-skin .art-edit .rt-editor {
+  border-top: 1px solid var(--border-soft);
+}
+.celva-skin .art-edit .rt-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+  padding: 9px 18px;
+  background: var(--bg-sunk);
+  border-bottom: 1px solid var(--border-soft);
+}
+.celva-skin .art-edit .rt-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 14px;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: background 130ms, border-color 130ms;
+}
+.celva-skin .art-edit .rt-btn:hover {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.celva-skin .art-edit .rt-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 5px;
+}
+.celva-skin .art-edit .rt-area {
+  min-height: 260px;
+  padding: 22px 24px;
+  outline: none;
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--fg-strong);
+}
+.celva-skin .art-edit .rt-area:focus {
+  background: color-mix(in oklab, var(--accent) 2%, var(--surface));
+}
+.celva-skin .art-edit .rt-area > *:first-child {
+  margin-top: 0;
+}
+.celva-skin .art-edit .rt-area h2 {
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--fg-strong);
+  margin: 22px 0 10px;
+  line-height: 1.2;
+}
+.celva-skin .art-edit .rt-area p {
+  margin: 0 0 14px;
+}
+.celva-skin .art-edit .rt-area ul {
+  margin: 0 0 14px;
+  padding-left: 22px;
+}
+.celva-skin .art-edit .rt-area li {
+  margin-bottom: 6px;
+}
+.celva-skin .art-edit .rt-area a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.celva-skin .art-edit .rt-area blockquote {
+  margin: 18px 0;
+  padding: 6px 20px;
+  border-left: 3px solid var(--accent);
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-style: italic;
+  color: var(--fg);
+  line-height: 1.4;
+}
+
+/* ---- publish checklist (vis-card) ---- */
+.celva-skin .art-edit .vis-card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  padding: var(--card-pad);
+}
+.celva-skin .art-edit .vis-card .vis-card-head {
+  margin: 0 0 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.celva-skin .art-edit .vc-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  font-size: 15px;
+  color: var(--fg);
+}
+.celva-skin .art-edit .vc-ic {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+.celva-skin .art-edit .vc-ic.ok {
+  color: var(--st-done);
+}
+.celva-skin .art-edit .vc-ic.no {
+  color: var(--st-urgent);
+}
+.celva-skin .art-edit .vis-verdict {
+  margin-top: 12px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  border-left: 3px solid transparent;
+}
+.celva-skin .art-edit .vis-verdict.live {
+  background: color-mix(in oklab, var(--st-done) 10%, var(--surface));
+  border-left-color: var(--st-done);
+  color: color-mix(in oklab, var(--st-done) 55%, var(--fg));
+}
+.celva-skin .art-edit .vis-verdict.hidden {
+  background: var(--bg-sunk);
+  border-left-color: var(--border);
+  color: var(--fg-muted);
+}
+
+/* ---- recap key/value lines ---- */
+.celva-skin .art-edit .kv-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 6px 0;
+  font-size: 15px;
+}
+.celva-skin .art-edit .kv-line .k {
+  color: var(--fg-muted);
+}
+.celva-skin .art-edit .kv-line .v {
+  text-align: right;
+  font-weight: 500;
+}
