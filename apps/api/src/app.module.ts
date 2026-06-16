@@ -41,6 +41,7 @@ import { DeliveriesModule } from './modules/deliveries/deliveries.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { FinanceModule } from './modules/finance/finance.module';
 import { PaymentAccountsModule } from './modules/payment-accounts/payment-accounts.module';
+import { PartnersModule } from './modules/partners/partners.module';
 import { CommissionsModule } from './modules/commissions/commissions.module';
 import { ConsignmentsModule } from './modules/consignments/consignments.module';
 import { SuppliersModule } from './modules/suppliers/suppliers.module';
@@ -152,6 +153,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     TransactionsModule,
     FinanceModule,
     PaymentAccountsModule,
+    PartnersModule,
     CommissionsModule,
     ConsignmentsModule,
     SuppliersModule,

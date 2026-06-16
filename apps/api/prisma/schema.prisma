@@ -178,6 +178,8 @@ enum TransactionCategory {
   PACKAGING
   DELIVERY
   COMMISSION
+  CAPITAL_CONTRIBUTION
+  CAPITAL_WITHDRAWAL
   OTHER
 }
 
@@ -1056,6 +1058,24 @@ model NewsletterSubscriber {
 // FINANCE
 // ─────────────────────────────────────────────
 
+// Associé / cofondateur — pour le suivi du capital (apports & retraits).
+model Partner {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  // Part du capital en % (ex: 50.00). Indicatif — la cap-table reste pilotée
+  // par les apports réels enregistrés en transactions.
+  equityShare Decimal? @db.Decimal(5, 2)
+  isActive    Boolean  @default(true)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  transactions Transaction[]
+
+  @@map("partners")
+}
+
 model Transaction {
   id          String              @id @default(uuid())
   type        TransactionType
@@ -1077,6 +1097,9 @@ model Transaction {
   productionOrder   ProductionOrder? @relation(fields: [productionOrderId], references: [id])
   paymentAccountId  String?
   paymentAccount    PaymentAccount?  @relation(fields: [paymentAccountId], references: [id])
+  // Associé rattaché — requis pour les catégories CAPITAL_* (apport/retrait).
+  partnerId         String?
+  partner           Partner?         @relation(fields: [partnerId], references: [id])
 
   @@map("transactions")
 }

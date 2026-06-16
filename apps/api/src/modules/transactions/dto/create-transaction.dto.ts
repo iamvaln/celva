@@ -26,6 +26,8 @@ const TRANSACTION_CATEGORIES = [
   'PACKAGING',
   'DELIVERY',
   'COMMISSION',
+  'CAPITAL_CONTRIBUTION',
+  'CAPITAL_WITHDRAWAL',
   'OTHER',
 ] as const;
 
@@ -71,6 +73,14 @@ export class CreateTransactionDto {
   @IsOptional()
   @IsUUID()
   orderId?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Partner (co-founder) the movement is tied to. REQUIRED for the CAPITAL_CONTRIBUTION / CAPITAL_WITHDRAWAL categories.',
+  })
+  @IsOptional()
+  @IsUUID()
+  partnerId?: string;
 }
 
 export { TRANSACTION_TYPES, TRANSACTION_CATEGORIES };

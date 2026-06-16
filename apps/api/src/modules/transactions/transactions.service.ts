@@ -32,7 +32,14 @@ export class TransactionsService {
   private readonly include = {
     order: { select: { id: true, orderNumber: true } },
     createdBy: { select: { id: true, name: true, email: true } },
+    partner: { select: { id: true, name: true } },
   } as const;
+
+  /** Categories that represent partner capital movements. */
+  private static readonly CAPITAL_CATEGORIES = [
+    'CAPITAL_CONTRIBUTION',
+    'CAPITAL_WITHDRAWAL',
+  ] as const;
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -97,6 +104,29 @@ export class TransactionsService {
       });
       if (!order) throw new BadRequestException('errors.order_not_found');
     }
+
+    // Capital movements (apport / retrait d'associé) must name a partner and
+    // use the coherent sign: contribution = INCOME, withdrawal = EXPENSE.
+    const isCapital = (TransactionsService.CAPITAL_CATEGORIES as readonly string[]).includes(
+      dto.category,
+    );
+    if (isCapital) {
+      if (!dto.partnerId) throw new BadRequestException('errors.partner_required');
+      const partner = await this.prisma.partner.findUnique({
+        where: { id: dto.partnerId },
+        select: { id: true },
+      });
+      if (!partner) throw new BadRequestException('errors.partner_not_found');
+      if (dto.category === 'CAPITAL_CONTRIBUTION' && dto.type !== 'INCOME') {
+        throw new BadRequestException('errors.capital_contribution_income');
+      }
+      if (dto.category === 'CAPITAL_WITHDRAWAL' && dto.type !== 'EXPENSE') {
+        throw new BadRequestException('errors.capital_withdrawal_expense');
+      }
+    } else if (dto.partnerId) {
+      throw new BadRequestException('errors.partner_only_capital');
+    }
+
     return this.prisma.transaction.create({
       data: {
         type: dto.type as TransactionType,
@@ -106,6 +136,7 @@ export class TransactionsService {
         receiptUrl: dto.receiptUrl ?? null,
         date: dto.date ? new Date(dto.date) : new Date(),
         orderId: dto.orderId ?? null,
+        partnerId: dto.partnerId ?? null,
         createdById: actorUserId,
       },
       include: this.include,
