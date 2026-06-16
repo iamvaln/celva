@@ -62,8 +62,9 @@ export const MobileMenu = ({
         <ul className="flex-1 list-none overflow-y-auto p-7">
           {[
             { href: '/shop' as const, label: t('shop') },
-            { href: '/journal' as const, label: t('journal') },
+            { href: '/collections' as const, label: t('collections') },
             { href: '/studio' as const, label: t('studio') },
+            { href: '/journal' as const, label: t('journal') },
           ].map((item) => (
             <li key={item.href}>
               <Link
