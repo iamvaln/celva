@@ -2,3 +2,4 @@ export * from './enums';
 export * from './i18n';
 export * from './constants';
 export * from './types';
+export * from './studio';

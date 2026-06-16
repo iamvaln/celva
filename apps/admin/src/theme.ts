@@ -1,10 +1,45 @@
 import { defaultTheme } from 'react-admin';
 import type { RaThemeOptions } from 'react-admin';
-import type { Theme } from '@mui/material/styles';
 import { celvaColors } from '@celva/tailwind-config/tokens';
 
 const fontStack = '"Cormorant Garamond", "Garamond", Georgia, serif';
 const displayStack = '"Bodoni Moda", "Didot", "Times New Roman", serif';
+
+// Olive-tinted sidebar (brand charter): cream text, terracotta active. The one
+// place the brand olive is kept in the otherwise-neutral redesign. Same in
+// light + dark since it's a fixed brand element.
+const SIDEBAR_BG = celvaColors.olive.dark; // #3F422D
+const SIDEBAR_FG = celvaColors.cream;
+const SIDEBAR_MUTED = 'rgba(250, 247, 242, 0.62)';
+const SIDEBAR_HOVER = 'rgba(250, 247, 242, 0.08)';
+const SIDEBAR_ACTIVE = celvaColors.terracotta.light; // #C4836B — pops on olive
+const SIDEBAR_ACTIVE_BG = 'rgba(196, 131, 107, 0.16)';
+
+const oliveSidebar = {
+  styleOverrides: {
+    root: {
+      backgroundColor: SIDEBAR_BG,
+      borderRight: 'none',
+      '& .RaSidebar-fixed': { backgroundColor: SIDEBAR_BG },
+      '& .MuiSvgIcon-root': { color: SIDEBAR_MUTED },
+      '& .MuiListItemButton-root, & .RaMenuItemLink-root': { color: SIDEBAR_MUTED },
+      '& .MuiTypography-root': { color: 'inherit' },
+      '& .MuiListItemButton-root:hover, & .RaMenuItemLink-root:hover': {
+        backgroundColor: SIDEBAR_HOVER,
+        color: SIDEBAR_FG,
+      },
+      '& .MuiListItemButton-root:hover .MuiSvgIcon-root, & .RaMenuItemLink-root:hover .MuiSvgIcon-root':
+        { color: SIDEBAR_FG },
+      '& .RaMenuItemLink-active': {
+        color: SIDEBAR_ACTIVE,
+        backgroundColor: SIDEBAR_ACTIVE_BG,
+        fontWeight: 600,
+        boxShadow: `inset 3px 0 0 ${SIDEBAR_ACTIVE}`,
+      },
+      '& .RaMenuItemLink-active .MuiSvgIcon-root': { color: SIDEBAR_ACTIVE },
+    },
+  },
+} as const;
 
 export const celvaLightTheme: RaThemeOptions = {
   ...defaultTheme,
@@ -34,17 +69,8 @@ export const celvaLightTheme: RaThemeOptions = {
     // Dense tables by default — back-office tools live on this surface, and
     // the airy MUI default makes long lists slow to scan.
     MuiTable: { defaultProps: { size: 'small' } },
-    // Sidebar reads as the white "surface" column with a right border,
-    // distinct from the gray main area (design: .side vs .main).
-    RaSidebar: {
-      styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
-          backgroundColor: theme.palette.background.paper,
-          borderRight: `1px solid ${theme.palette.divider}`,
-          '& .RaSidebar-fixed': { backgroundColor: theme.palette.background.paper },
-        }),
-      },
-    },
+    // Olive-tinted brand sidebar (charter green), cream text, terracotta active.
+    RaSidebar: oliveSidebar,
   },
 };
 
@@ -74,16 +100,7 @@ export const celvaDarkTheme: RaThemeOptions = {
     // Dense tables by default — back-office tools live on this surface, and
     // the airy MUI default makes long lists slow to scan.
     MuiTable: { defaultProps: { size: 'small' } },
-    // Sidebar reads as the white "surface" column with a right border,
-    // distinct from the gray main area (design: .side vs .main).
-    RaSidebar: {
-      styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
-          backgroundColor: theme.palette.background.paper,
-          borderRight: `1px solid ${theme.palette.divider}`,
-          '& .RaSidebar-fixed': { backgroundColor: theme.palette.background.paper },
-        }),
-      },
-    },
+    // Olive-tinted brand sidebar (charter green), cream text, terracotta active.
+    RaSidebar: oliveSidebar,
   },
 };
