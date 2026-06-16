@@ -312,6 +312,8 @@ export const uiFr = {
   transactions: {
     cat_sale: 'Vente',
     cat_commission: 'Commission',
+    cat_capital_contribution: 'Apport en capital',
+    cat_capital_withdrawal: 'Retrait de capital',
     cat_raw_materials: 'Matières premières',
     cat_subcontracting: 'Sous-traitance',
     cat_marketing: 'Marketing',
@@ -675,6 +677,21 @@ export const uiFr = {
     hint_nav: 'naviguer',
     hint_open: 'ouvrir',
     hint_close: 'fermer',
+  },
+  partners: {
+    title: 'Capital par associé',
+    intro:
+      'Suivi du capital des cofondateurs : apports et retraits par associé, et capital net de chacun. Les montants sont dérivés des transactions de catégorie Capital.',
+    add: 'Associé',
+    total_net: 'Capital net total',
+    net_capital: 'Capital net',
+    contributed: 'Apporté',
+    withdrawn: 'Retiré',
+    empty: 'Aucun associé',
+    empty_sub: 'Ajoutez les cofondateurs pour suivre leurs apports en capital.',
+    field_partner: 'Associé',
+    capital_hint: "Associé à qui rattacher cet apport / retrait de capital.",
+    equity_hint: 'Part du capital en % (indicatif).',
   },
   reglages: {
     title: 'Réglages',
@@ -1094,6 +1111,8 @@ export const uiEn = {
   transactions: {
     cat_sale: 'Sale',
     cat_commission: 'Commission',
+    cat_capital_contribution: 'Capital contribution',
+    cat_capital_withdrawal: 'Capital withdrawal',
     cat_raw_materials: 'Raw materials',
     cat_subcontracting: 'Subcontracting',
     cat_marketing: 'Marketing',
@@ -1455,6 +1474,21 @@ export const uiEn = {
     hint_nav: 'navigate',
     hint_open: 'open',
     hint_close: 'close',
+  },
+  partners: {
+    title: 'Capital by partner',
+    intro:
+      'Co-founder capital tracking: contributions and withdrawals per partner, and each one’s net capital. Amounts derive from Capital-category transactions.',
+    add: 'Partner',
+    total_net: 'Total net capital',
+    net_capital: 'Net capital',
+    contributed: 'Contributed',
+    withdrawn: 'Withdrawn',
+    empty: 'No partner',
+    empty_sub: 'Add the co-founders to track their capital contributions.',
+    field_partner: 'Partner',
+    capital_hint: 'Partner this capital contribution / withdrawal is tied to.',
+    equity_hint: 'Equity share in % (indicative).',
   },
   reglages: {
     title: 'Settings',

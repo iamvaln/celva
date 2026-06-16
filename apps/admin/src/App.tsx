@@ -121,6 +121,10 @@ import { StudioGalleryEdit } from './resources/studio-gallery/StudioGalleryEdit'
 import { StudioRequestList } from './resources/studio-requests/StudioRequestList';
 import { StudioRequestShow } from './resources/studio-requests/StudioRequestShow';
 import { RolesMatrix } from './resources/roles/RolesMatrix';
+import { PartnerList } from './resources/partners/PartnerList';
+import { PartnerCreate } from './resources/partners/PartnerCreate';
+import { PartnerEdit } from './resources/partners/PartnerEdit';
+import GroupsIcon from '@mui/icons-material/Groups';
 import { can } from './permissions';
 import { PaymentAccountList } from './resources/payment-accounts/PaymentAccountList';
 import { PaymentAccountCreate } from './resources/payment-accounts/PaymentAccountCreate';
@@ -374,6 +378,14 @@ export const App = () => (
           icon={SavingsIcon}
           list={TreasuryView}
           options={{ label: 'Trésorerie' }}
+        />
+        <Resource
+          name="partners"
+          icon={GroupsIcon}
+          list={PartnerList}
+          create={can(permissions, 'finance', 'create') ? PartnerCreate : undefined}
+          edit={can(permissions, 'finance', 'create') ? PartnerEdit : undefined}
+          options={{ label: 'Associés' }}
         />
         <CustomRoutes>
           <Route path="/change-password" element={<ChangePasswordPage />} />
