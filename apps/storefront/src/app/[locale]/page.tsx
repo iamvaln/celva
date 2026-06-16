@@ -219,15 +219,14 @@ export default async function HomePage({
                   href={{ pathname: '/collections/[slug]', params: { slug: c.slug } }}
                   className="group block text-foreground"
                 >
-                  <div className="aspect-product-portrait overflow-hidden bg-beige">
+                  <div className="relative aspect-product-portrait overflow-hidden bg-beige">
                     {c.imageUrl && (
                       <Image
                         src={c.imageUrl}
                         alt={pickLocalized(c.name, locale)}
-                        width={800}
-                        height={1067}
+                        fill
                         sizes="(max-width: 1024px) 100vw, 33vw"
-                        className="h-full w-full object-cover transition-transform duration-image ease-celva group-hover:scale-[1.015]"
+                        className="object-cover transition-transform duration-image ease-celva group-hover:scale-[1.015]"
                       />
                     )}
                   </div>
@@ -296,15 +295,14 @@ export default async function HomePage({
                   href={{ pathname: '/journal/[slug]', params: { slug: a.slug } }}
                   className="group block text-foreground"
                 >
-                  <div className="mb-5 aspect-[4/5] overflow-hidden bg-beige">
+                  <div className="relative mb-5 aspect-[4/5] overflow-hidden bg-beige">
                     {a.coverImage && (
                       <Image
                         src={a.coverImage}
                         alt={pickLocalized(a.title, locale)}
-                        width={800}
-                        height={1000}
+                        fill
                         sizes="(max-width: 1024px) 100vw, 33vw"
-                        className="h-full w-full object-cover transition-transform duration-image ease-celva group-hover:scale-[1.015]"
+                        className="object-cover transition-transform duration-image ease-celva group-hover:scale-[1.015]"
                       />
                     )}
                   </div>
