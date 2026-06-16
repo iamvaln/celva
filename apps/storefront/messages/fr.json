@@ -71,35 +71,59 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "Collection courante",
-      "title": "L'artisanat,\nporté avec calme.",
-      "subtitle": "Pièces couture pensées à Douala, taillées une à une, livrées au Cameroun et au-delà.",
+      "eyebrow": "Collection Printemps · Vol. 04",
+      "title_a": "Tissé pour",
+      "title_em": "être vu.",
+      "lede": "Toghu tissé à la main, boubous de satin, franges nouées une à une. Des pièces qui portent haut les couleurs — taillées et finies à l'atelier rue Foch, Douala.",
       "cta_primary": "Découvrir la collection",
-      "cta_secondary": "Notre processus"
+      "cta_secondary": "Le sur-mesure",
+      "meta_season_label": "Saison",
+      "meta_season_value": "PE 26",
+      "meta_atelier_label": "Atelier",
+      "meta_atelier_value": "Douala",
+      "meta_materials_label": "Matières",
+      "meta_materials_value": "Toghu · Satin · Wax"
     },
     "featured": {
       "eyebrow": "Sélection",
-      "title": "Pièces phares",
-      "subtitle": "Quelques pièces de la saison à découvrir.",
+      "title": "Nos pièces phares",
       "cta": "Voir toute la boutique",
       "placeholder": "Sélection à venir"
     },
     "studio": {
-      "eyebrow": "Sur-mesure",
-      "title": "Créez votre pièce",
-      "body": "Le studio Celva ouvre bientôt : choisissez le tissu, la coupe, les détails. Une pièce unique, pour vous.",
-      "cta": "Je m'inscris à la liste d'attente"
+      "eyebrow": "Studio · Sur-mesure",
+      "title_a": "Faire venir",
+      "title_em": "la pièce qui manque.",
+      "body": "Nos couturières prennent vos mesures à distance — par WhatsApp ou à l'atelier rue Foch — et exécutent en quatre à six semaines. Coton, lin et soie au mètre, choix des finitions, ourlets sur cintre.",
+      "step_1": "Brief par appel ou en boutique",
+      "step_2": "Mesures & choix matière",
+      "step_3": "Patron, prototype, ajustements",
+      "step_4": "Livraison sous 4–6 semaines",
+      "cta": "Prendre rendez-vous"
     },
-    "collections": {
-      "eyebrow": "Univers",
-      "title": "Collections",
-      "soiree": "Soirées chic",
-      "fete": "Fêtes",
-      "bureau": "Bureau"
+    "collections_section": {
+      "eyebrow": "Collections",
+      "title_a": "Trois récits",
+      "title_em": "de la saison.",
+      "cta": "Voir la collection"
+    },
+    "testimonials": {
+      "eyebrow": "Lettres reçues",
+      "quote": "Le boubou arrive plié dans un calicot, étiquette manuscrite. On comprend tout de suite que ce n'est pas une marque, c'est un atelier.",
+      "name": "Awa N.",
+      "city": "Yaoundé · Cliente depuis 2024"
+    },
+    "journal": {
+      "eyebrow": "Journal",
+      "title": "Notes d'atelier",
+      "cta": "Tous les articles"
     },
     "newsletter": {
+      "eyebrow": "Lettre du studio",
+      "title_a": "Rejoignez",
+      "title_em": "l'univers Celva.",
+      "body": "Une lettre par mois, jamais plus. Coulisses d'atelier, nouvelles collections en avant-première et −10 % sur votre première commande.",
       "title": "Restez avec nous",
-      "body": "Rejoignez la liste pour les drops, l'atelier, et un code -10% sur votre première commande.",
       "email_label": "Adresse email",
       "email_placeholder": "vous@exemple.com",
       "submit": "Je m'inscris",
