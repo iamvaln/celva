@@ -406,6 +406,83 @@ export type SizeGuide = {
   category?: { id: string; slug: string; name: { fr: string; en: string } };
 };
 
+export type StudioModel = {
+  id: string;
+  slug: string;
+  name: { fr: string; en: string };
+  shortDescription?: { fr?: string; en?: string } | null;
+  material?: { fr?: string; en?: string } | null;
+  basePrice: string | number;
+  delayLabel: { fr: string; en: string };
+  coverImage: string | null;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  fabrics?: StudioFabric[];
+  galleryItems?: StudioGalleryItem[];
+};
+
+export type StudioFabric = {
+  id: string;
+  modelId: string;
+  model?: { id: string; slug: string; name: { fr: string; en: string } };
+  name: { fr: string; en: string };
+  swatchImage: string | null;
+  photoImage: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type StudioGalleryItem = {
+  id: string;
+  modelId: string;
+  model?: { id: string; slug: string; name: { fr: string; en: string } };
+  imageKey: string;
+  caption?: { fr?: string; en?: string } | null;
+  isTall: boolean;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+};
+
+export type StudioRequestType = 'ORDER' | 'APPOINTMENT';
+export type StudioRequestStatus =
+  | 'PENDING'
+  | 'CONTACTED'
+  | 'CONFIRMED'
+  | 'COMPLETED'
+  | 'REJECTED';
+export type StudioRequest = {
+  id: string;
+  type: StudioRequestType;
+  status: StudioRequestStatus;
+  customerName: string;
+  customerEmail: string | null;
+  customerPhone: string;
+  customerCity: string | null;
+  gender: 'FEMME' | 'HOMME' | null;
+  skinToneIndex: number | null;
+  silhouetteSize: string | null;
+  silhouetteHeight: number | null;
+  modelId: string | null;
+  model?: { id: string; slug: string; name: { fr: string; en: string }; coverImage: string | null };
+  fabricId: string | null;
+  fabric?: { id: string; name: { fr: string; en: string }; swatchImage: string | null; photoImage: string | null };
+  sizeRef: string | null;
+  measurementMode: 'ATELIER' | 'WHATSAPP' | null;
+  appointmentMode: 'ATELIER' | 'VISIO' | null;
+  appointmentDate: string | null;
+  appointmentSlot: string | null;
+  notes: string | null;
+  internalNotes: string | null;
+  appSource: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type NewsletterSubscriber = {
   id: string;
   email: string;

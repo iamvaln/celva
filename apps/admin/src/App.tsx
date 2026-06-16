@@ -109,6 +109,17 @@ import { SizeGuideList } from './resources/size-guides/SizeGuideList';
 import { SizeGuideCreate } from './resources/size-guides/SizeGuideCreate';
 import { SizeGuideEdit } from './resources/size-guides/SizeGuideEdit';
 import { AuditLogList } from './resources/audit-logs/AuditLogList';
+import { StudioModelList } from './resources/studio-models/StudioModelList';
+import { StudioModelCreate } from './resources/studio-models/StudioModelCreate';
+import { StudioModelEdit } from './resources/studio-models/StudioModelEdit';
+import { StudioFabricList } from './resources/studio-fabrics/StudioFabricList';
+import { StudioFabricCreate } from './resources/studio-fabrics/StudioFabricCreate';
+import { StudioFabricEdit } from './resources/studio-fabrics/StudioFabricEdit';
+import { StudioGalleryList } from './resources/studio-gallery/StudioGalleryList';
+import { StudioGalleryCreate } from './resources/studio-gallery/StudioGalleryCreate';
+import { StudioGalleryEdit } from './resources/studio-gallery/StudioGalleryEdit';
+import { StudioRequestList } from './resources/studio-requests/StudioRequestList';
+import { StudioRequestShow } from './resources/studio-requests/StudioRequestShow';
 import { RolesMatrix } from './resources/roles/RolesMatrix';
 import { can } from './permissions';
 import { PaymentAccountList } from './resources/payment-accounts/PaymentAccountList';
@@ -325,6 +336,29 @@ export const App = () => (
           icon={HistoryIcon}
           list={AuditLogList}
           options={{ label: "Journal d'audit" }}
+        />
+        <Resource
+          name="studio-models"
+          list={StudioModelList}
+          create={can(permissions, 'catalog', 'edit') ? StudioModelCreate : undefined}
+          edit={can(permissions, 'catalog', 'edit') ? StudioModelEdit : undefined}
+        />
+        <Resource
+          name="studio-fabrics"
+          list={StudioFabricList}
+          create={can(permissions, 'catalog', 'edit') ? StudioFabricCreate : undefined}
+          edit={can(permissions, 'catalog', 'edit') ? StudioFabricEdit : undefined}
+        />
+        <Resource
+          name="studio-gallery"
+          list={StudioGalleryList}
+          create={can(permissions, 'catalog', 'edit') ? StudioGalleryCreate : undefined}
+          edit={can(permissions, 'catalog', 'edit') ? StudioGalleryEdit : undefined}
+        />
+        <Resource
+          name="studio-requests"
+          list={StudioRequestList}
+          show={StudioRequestShow}
         />
         <Resource name="roles" icon={SecurityIcon} list={RolesMatrix} options={{ label: 'Rôles' }} />
         <Resource

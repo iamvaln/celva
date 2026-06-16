@@ -28,6 +28,7 @@ const celvaFr = {
     dashboard: 'Tableau de bord',
     sales: 'Ventes',
     catalog: 'Catalogue',
+    studio: 'Studio',
     stock: 'Production & Stock',
     commercial: 'Commercial',
     finance: 'Finance',
@@ -653,6 +654,82 @@ const celvaFr = {
         appSource: 'Source',
       },
     },
+    'studio-models': {
+      name: 'Modèle Studio |||| Modèles Studio',
+      fields: {
+        slug: 'Slug',
+        name: 'Nom (FR / EN)',
+        shortDescription: 'Description courte (FR / EN)',
+        material: 'Matière (FR / EN)',
+        basePrice: 'Prix indicatif (XAF)',
+        delayLabel: 'Délai (FR / EN)',
+        coverImage: 'Image principale',
+        sortOrder: 'Ordre',
+        isActive: 'Actif',
+        createdAt: 'Créé le',
+      },
+      helpers: {
+        slug_optional: 'Optionnel — généré depuis le nom FR si vide.',
+        cover_image: 'Image principale du modèle (3:4). Recommandé : 900×1200.',
+      },
+      errors: {
+        invalid_slug: 'Slug invalide (lettres minuscules, chiffres, tirets).',
+      },
+    },
+    'studio-fabrics': {
+      name: 'Tissu Studio |||| Tissus Studio',
+      fields: {
+        modelId: 'Modèle',
+        model: 'Modèle',
+        name: 'Nom (FR / EN)',
+        swatchImage: 'Échantillon (swatch)',
+        photoImage: 'Photo portée',
+        sortOrder: 'Ordre',
+        isActive: 'Actif',
+      },
+      helpers: {
+        swatch_image: 'Petit carré du motif (1:1).',
+        photo_image: 'Photo du modèle dans ce tissu — sert de « rendu » V1.',
+      },
+    },
+    'studio-gallery': {
+      name: 'Galerie Studio |||| Galerie Studio',
+      fields: {
+        modelId: 'Modèle',
+        model: 'Modèle',
+        imageKey: 'Image',
+        caption: 'Légende (FR / EN)',
+        isTall: 'Format vertical (×2)',
+        sortOrder: 'Ordre',
+        isActive: 'Actif',
+      },
+      helpers: {
+        image: 'Photo « déjà portée » (3:4).',
+        isTall: 'Tuile haute (3:5) dans la grille — sinon (3:4).',
+      },
+    },
+    'studio-requests': {
+      name: 'Demande Studio |||| Demandes Studio',
+      fields: {
+        type: 'Type',
+        status: 'Statut',
+        customer: 'Cliente',
+        model: 'Modèle',
+        fabric: 'Tissu',
+        createdAt: 'Reçue le',
+      },
+      actions: {
+        transition: 'Avancer le statut',
+      },
+      dialogs: {
+        current: 'Statut actuel',
+        pick_next: 'Choisir le prochain statut…',
+        note: 'Note interne (optionnel)',
+      },
+      notifications: {
+        transitioned: 'Statut mis à jour.',
+      },
+    },
     consignments: {
       name: 'Consignation |||| Consignations',
       fields: {
@@ -827,6 +904,7 @@ const celvaEn = {
     dashboard: 'Dashboard',
     sales: 'Sales',
     catalog: 'Catalog',
+    studio: 'Studio',
     stock: 'Production & Stock',
     commercial: 'Commercial',
     finance: 'Finance',
@@ -1417,6 +1495,82 @@ const celvaEn = {
         entity: 'Entity',
         entityId: 'Entity id',
         appSource: 'Source',
+      },
+    },
+    'studio-models': {
+      name: 'Studio model |||| Studio models',
+      fields: {
+        slug: 'Slug',
+        name: 'Name (FR / EN)',
+        shortDescription: 'Short description (FR / EN)',
+        material: 'Material (FR / EN)',
+        basePrice: 'Indicative price (XAF)',
+        delayLabel: 'Lead time (FR / EN)',
+        coverImage: 'Cover image',
+        sortOrder: 'Order',
+        isActive: 'Active',
+        createdAt: 'Created at',
+      },
+      helpers: {
+        slug_optional: 'Optional — generated from FR name if blank.',
+        cover_image: 'Main image (3:4). Recommended: 900×1200.',
+      },
+      errors: {
+        invalid_slug: 'Invalid slug (lowercase letters, digits, dashes).',
+      },
+    },
+    'studio-fabrics': {
+      name: 'Studio fabric |||| Studio fabrics',
+      fields: {
+        modelId: 'Model',
+        model: 'Model',
+        name: 'Name (FR / EN)',
+        swatchImage: 'Swatch',
+        photoImage: 'Worn photo',
+        sortOrder: 'Order',
+        isActive: 'Active',
+      },
+      helpers: {
+        swatch_image: 'Small pattern tile (1:1).',
+        photo_image: 'Photo of the model wearing this fabric — V1 "render".',
+      },
+    },
+    'studio-gallery': {
+      name: 'Studio gallery item |||| Studio gallery',
+      fields: {
+        modelId: 'Model',
+        model: 'Model',
+        imageKey: 'Image',
+        caption: 'Caption (FR / EN)',
+        isTall: 'Tall tile (×2)',
+        sortOrder: 'Order',
+        isActive: 'Active',
+      },
+      helpers: {
+        image: '"Already worn" photo (3:4).',
+        isTall: 'Tall tile (3:5) in the grid — default is (3:4).',
+      },
+    },
+    'studio-requests': {
+      name: 'Studio request |||| Studio requests',
+      fields: {
+        type: 'Type',
+        status: 'Status',
+        customer: 'Customer',
+        model: 'Model',
+        fabric: 'Fabric',
+        createdAt: 'Received at',
+      },
+      actions: {
+        transition: 'Advance status',
+      },
+      dialogs: {
+        current: 'Current status',
+        pick_next: 'Pick next status…',
+        note: 'Internal note (optional)',
+      },
+      notifications: {
+        transitioned: 'Status updated.',
       },
     },
     consignments: {
