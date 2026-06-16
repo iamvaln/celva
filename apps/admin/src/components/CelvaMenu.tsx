@@ -141,6 +141,7 @@ export const CelvaMenu = () => {
         <MenuGroup labelKey="menu.finance" icon={<NavFinance />}>
           <Menu.ResourceItem name="transactions" />
           <Menu.ResourceItem name="treasury" />
+          <Menu.ResourceItem name="partners" />
           <Menu.ResourceItem name="finance" />
         </MenuGroup>
       )}
