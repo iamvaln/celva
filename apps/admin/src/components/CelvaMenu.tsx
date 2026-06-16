@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import {
   NavDashboard,
   NavSales,
@@ -97,6 +98,17 @@ export const CelvaMenu = () => {
           <Menu.ResourceItem name="variants" />
           <Menu.ResourceItem name="attributes" />
           <Menu.ResourceItem name="attribute-values" />
+        </MenuGroup>
+      )}
+
+      {/* STUDIO sur-mesure — a separate group (it has its own request workflow
+          and isn't part of the regular catalogue). Gated by `catalog`. */}
+      {catalog && (
+        <MenuGroup labelKey="menu.studio" icon={<DesignServicesIcon />}>
+          <Menu.ResourceItem name="studio-models" />
+          <Menu.ResourceItem name="studio-fabrics" />
+          <Menu.ResourceItem name="studio-gallery" />
+          <Menu.ResourceItem name="studio-requests" />
         </MenuGroup>
       )}
 

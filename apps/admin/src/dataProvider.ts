@@ -50,6 +50,10 @@ const PAGINATED_RESOURCES = new Set<string>([
   'newsletter',
   'size-guides',
   'audit-logs',
+  'studio-models',
+  'studio-fabrics',
+  'studio-gallery',
+  'studio-requests',
 ]);
 
 /**
@@ -72,17 +76,39 @@ const ADMIN_PATH_RESOURCES = new Set<string>([
   'newsletter',
   'size-guides',
   'audit-logs',
+  // studio-models has BOTH a public list (/studio/models) and an admin list
+  // (/studio/models/admin). Admin path returns inactive rows too.
+  'studio-models',
+  'studio-fabrics',
+  'studio-gallery',
+  'studio-requests',
 ]);
+
+/**
+ * Resources whose API path differs from their React-Admin name. The admin
+ * uses `studio-models` as the resource name (dashes are RA-friendly URLs);
+ * the API mounts the controller at `/studio/models` (slashes match the
+ * namespace convention). Map here once.
+ */
+const RESOURCE_PATH_OVERRIDES: Record<string, string> = {
+  'studio-models': 'studio/models',
+  'studio-fabrics': 'studio/fabrics',
+  'studio-gallery': 'studio/gallery',
+  'studio-requests': 'studio/requests',
+};
+
+const apiPath = (resource: string): string =>
+  RESOURCE_PATH_OVERRIDES[resource] ?? resource;
 
 const resourceListPath = (resource: string): string =>
   ADMIN_PATH_RESOURCES.has(resource)
-    ? `${API_BASE}/${resource}/admin`
-    : `${API_BASE}/${resource}`;
+    ? `${API_BASE}/${apiPath(resource)}/admin`
+    : `${API_BASE}/${apiPath(resource)}`;
 
 const resolvePath = (resource: string, id: string | number): string => {
   const base = ADMIN_PATH_RESOURCES.has(resource)
-    ? `${API_BASE}/${resource}/admin`
-    : `${API_BASE}/${resource}`;
+    ? `${API_BASE}/${apiPath(resource)}/admin`
+    : `${API_BASE}/${apiPath(resource)}`;
   return `${base}/${encodeURIComponent(String(id))}`;
 };
 
@@ -161,7 +187,7 @@ export const dataProvider: DataProvider = {
     resource: string,
     { data }: CreateParams,
   ): Promise<CreateResult<ResultRecordType>> {
-    const { body } = await fetchJson<Record<string, unknown>>(`${API_BASE}/${resource}`, {
+    const { body } = await fetchJson<Record<string, unknown>>(`${API_BASE}/${apiPath(resource)}`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
