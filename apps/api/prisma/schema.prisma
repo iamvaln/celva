@@ -1127,3 +1127,126 @@ model AuditLog {
   @@index([appSource])
   @@map("audit_logs")
 }
+
+// ─────────────────────────────────────────────
+// STUDIO SUR-MESURE
+// ─────────────────────────────────────────────
+
+enum StudioRequestType {
+  ORDER
+  APPOINTMENT
+}
+
+enum StudioRequestStatus {
+  PENDING
+  CONTACTED
+  CONFIRMED
+  COMPLETED
+  REJECTED
+}
+
+enum StudioOrderMeasureMode {
+  ATELIER
+  WHATSAPP
+}
+
+enum StudioAppointmentMode {
+  ATELIER
+  VISIO
+}
+
+enum StudioGender {
+  FEMME
+  HOMME
+}
+
+model StudioModel {
+  id               String   @id @default(uuid())
+  slug             String   @unique
+  name             Json
+  shortDescription Json?
+  material         Json?
+  basePrice        Decimal  @db.Decimal(10, 2)
+  delayLabel       Json
+  coverImage       String?
+  isActive         Boolean  @default(true)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  fabrics      StudioFabric[]
+  galleryItems StudioGalleryItem[]
+  requests     StudioRequest[]
+
+  @@map("studio_models")
+}
+
+model StudioFabric {
+  id          String   @id @default(uuid())
+  modelId     String
+  model       StudioModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  name        Json
+  swatchImage String?
+  photoImage  String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  requests StudioRequest[]
+
+  @@index([modelId, sortOrder])
+  @@map("studio_fabrics")
+}
+
+model StudioGalleryItem {
+  id        String      @id @default(uuid())
+  modelId   String
+  model     StudioModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  imageKey  String
+  caption   Json?
+  isTall    Boolean     @default(false)
+  sortOrder Int         @default(0)
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+
+  @@map("studio_gallery_items")
+}
+
+model StudioRequest {
+  id     String              @id @default(uuid())
+  type   StudioRequestType
+  status StudioRequestStatus @default(PENDING)
+
+  customerName  String
+  customerEmail String?
+  customerPhone String
+  customerCity  String?
+
+  gender           StudioGender?
+  skinToneIndex    Int?
+  silhouetteSize   String?
+  silhouetteHeight Int?
+
+  modelId  String?
+  model    StudioModel?  @relation(fields: [modelId], references: [id])
+  fabricId String?
+  fabric   StudioFabric? @relation(fields: [fabricId], references: [id])
+
+  sizeRef         String?
+  measurementMode StudioOrderMeasureMode?
+
+  appointmentMode StudioAppointmentMode?
+  appointmentDate DateTime?
+  appointmentSlot String?
+
+  notes         String?
+  internalNotes String?
+  appSource     AppSource
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([status, createdAt])
+  @@index([type, status])
+  @@map("studio_requests")
+}
