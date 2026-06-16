@@ -125,7 +125,7 @@ export default async function HomePage({
             <p className="eyebrow mb-2">{t('studio.eyebrow')}</p>
             <h2 className="mb-4 font-display text-h2">{t('studio.title')}</h2>
             <p className="mb-6 max-w-prose font-body text-lead text-foreground">{t('studio.body')}</p>
-            <Link href="/contact" className="btn btn-primary">
+            <Link href="/studio" className="btn btn-primary">
               {t('studio.cta')}
             </Link>
           </div>

@@ -42,6 +42,7 @@ export const routing = defineRouting({
       fr: '/confirmer-changement-email',
       en: '/confirm-email-change',
     },
+    '/studio': { fr: '/studio', en: '/studio' },
     '/journal': { fr: '/journal', en: '/journal' },
     '/journal/[slug]': { fr: '/journal/[slug]', en: '/journal/[slug]' },
     '/size-guides': { fr: '/guides-tailles', en: '/size-guides' },

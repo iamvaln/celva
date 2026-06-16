@@ -32,7 +32,7 @@ export const Header = () => {
             <ul className="hidden list-none gap-9 md:flex">
               {[
                 { href: '/shop' as const, label: t('shop') },
-                { href: '/about' as const, label: t('studio') },
+                { href: '/studio' as const, label: t('studio') },
                 { href: '/journal' as const, label: t('journal') },
               ].map((item) => (
                 <li key={item.href}>
