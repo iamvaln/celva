@@ -5,14 +5,36 @@ import {
   TitlePortal,
   ToggleThemeButton,
   useRedirect,
+  useTranslate,
   type LayoutProps,
 } from 'react-admin';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import { CelvaMenu } from './CelvaMenu';
 import { CelvaMonogram } from './CelvaMonogram';
 import { CelvaCommandPalette } from './CelvaCommandPalette';
 import { ForcePasswordChangeGuard } from './ForcePasswordChangeGuard';
+import { STOREFRONT_URL } from '../config';
+
+// Quick link to the public storefront (opens in a new tab).
+const StorefrontButton = () => {
+  const t = useTranslate();
+  return (
+    <Tooltip title={t('ui.shell.view_store')}>
+      <IconButton
+        color="inherit"
+        size="small"
+        component="a"
+        href={STOREFRONT_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <StorefrontIcon fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  );
+};
 
 // Brand mark + wordmark, shown at the head of the bar (design brand corner).
 const Brand = () => (
@@ -70,6 +92,7 @@ const CelvaAppBar = () => (
     }}
     toolbar={
       <>
+        <StorefrontButton />
         <NotificationsButton />
         <LocalesMenuButton />
         <ToggleThemeButton />

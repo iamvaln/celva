@@ -664,6 +664,9 @@ export const uiFr = {
     desc_sales_rep: 'Crée et suit ses propres commandes et opérations commerciales.',
     desc_deliverer: 'Gère ses livraisons et encaisse les paiements sur le terrain.',
   },
+  shell: {
+    view_store: 'Voir la boutique',
+  },
   cmdk: {
     placeholder: 'Rechercher un écran…',
     no_results: 'Aucun résultat pour « %{query} »',
@@ -1440,6 +1443,9 @@ export const uiEn = {
       'Customer support: views orders and deliveries, resends invoices, edits its cases.',
     desc_sales_rep: 'Creates and tracks its own orders and sales operations.',
     desc_deliverer: 'Handles its deliveries and collects payments in the field.',
+  },
+  shell: {
+    view_store: 'View store',
   },
   cmdk: {
     placeholder: 'Search a screen…',
