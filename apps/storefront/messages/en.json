@@ -71,35 +71,59 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "Current collection",
-      "title": "Craft,\nworn calmly.",
-      "subtitle": "Couture pieces designed in Douala, cut one at a time, shipped to Cameroon and beyond.",
+      "eyebrow": "Spring Collection · Vol. 04",
+      "title_a": "Woven to",
+      "title_em": "be seen.",
+      "lede": "Hand-woven toghu, satin boubous, fringes knotted one by one. Pieces that wear their colours proudly — cut and finished at the atelier rue Foch, Douala.",
       "cta_primary": "Discover the collection",
-      "cta_secondary": "Our process"
+      "cta_secondary": "Made-to-measure",
+      "meta_season_label": "Season",
+      "meta_season_value": "SS 26",
+      "meta_atelier_label": "Atelier",
+      "meta_atelier_value": "Douala",
+      "meta_materials_label": "Materials",
+      "meta_materials_value": "Toghu · Satin · Wax"
     },
     "featured": {
       "eyebrow": "Selection",
-      "title": "Signature pieces",
-      "subtitle": "A few highlights from the current season.",
+      "title": "Our signature pieces",
       "cta": "Browse the shop",
       "placeholder": "Selection coming soon"
     },
     "studio": {
-      "eyebrow": "Made-to-measure",
-      "title": "Make your own",
-      "body": "The Celva studio opens soon: choose the fabric, the cut, the details. One piece, made for you.",
-      "cta": "Join the waitlist"
+      "eyebrow": "Studio · Made-to-measure",
+      "title_a": "Bring in",
+      "title_em": "the piece that's missing.",
+      "body": "Our seamstresses take your measurements remotely — via WhatsApp or at the atelier rue Foch — and execute in four to six weeks. Cotton, linen and silk by the metre, choice of finishes, hand-hemmed.",
+      "step_1": "Brief by call or in store",
+      "step_2": "Measurements & fabric choice",
+      "step_3": "Pattern, prototype, fittings",
+      "step_4": "Delivery in 4–6 weeks",
+      "cta": "Book an appointment"
     },
-    "collections": {
-      "eyebrow": "Worlds",
-      "title": "Collections",
-      "soiree": "Evening wear",
-      "fete": "Festive",
-      "bureau": "Workwear"
+    "collections_section": {
+      "eyebrow": "Collections",
+      "title_a": "Three stories",
+      "title_em": "of the season.",
+      "cta": "View the collection"
+    },
+    "testimonials": {
+      "eyebrow": "Letters received",
+      "quote": "The boubou arrives folded in cotton calico, with a handwritten label. You understand right away — this isn't a brand, it's an atelier.",
+      "name": "Awa N.",
+      "city": "Yaoundé · Customer since 2024"
+    },
+    "journal": {
+      "eyebrow": "Journal",
+      "title": "Atelier notes",
+      "cta": "All articles"
     },
     "newsletter": {
+      "eyebrow": "Letter from the studio",
+      "title_a": "Join",
+      "title_em": "the Celva world.",
+      "body": "One letter a month, no more. Atelier insights, new collections in preview and −10% off your first order.",
       "title": "Stay with us",
-      "body": "Join the list for drops, studio updates, and a 10% off code on your first order.",
       "email_label": "Email address",
       "email_placeholder": "you@example.com",
       "submit": "Subscribe",
