@@ -10,10 +10,12 @@ const displayStack = '"Bodoni Moda", "Didot", "Times New Roman", serif';
 // light + dark since it's a fixed brand element.
 const SIDEBAR_BG = celvaColors.olive.dark; // #3F422D
 const SIDEBAR_FG = celvaColors.cream;
-const SIDEBAR_MUTED = 'rgba(250, 247, 242, 0.62)';
-const SIDEBAR_HOVER = 'rgba(250, 247, 242, 0.08)';
+const SIDEBAR_ITEM = 'rgba(250, 247, 242, 0.85)'; // resource items — clearly readable
+const SIDEBAR_HEAD = 'rgba(250, 247, 242, 0.64)'; // group headers — subtle section labels
+const SIDEBAR_ICON = 'rgba(250, 247, 242, 0.72)';
+const SIDEBAR_HOVER = 'rgba(250, 247, 242, 0.1)';
 const SIDEBAR_ACTIVE = celvaColors.terracotta.light; // #C4836B — pops on olive
-const SIDEBAR_ACTIVE_BG = 'rgba(196, 131, 107, 0.16)';
+const SIDEBAR_ACTIVE_BG = 'rgba(196, 131, 107, 0.18)';
 
 const oliveSidebar = {
   styleOverrides: {
@@ -21,14 +23,17 @@ const oliveSidebar = {
       backgroundColor: SIDEBAR_BG,
       borderRight: 'none',
       '& .RaSidebar-fixed': { backgroundColor: SIDEBAR_BG },
-      '& .MuiSvgIcon-root': { color: SIDEBAR_MUTED },
-      '& .MuiListItemButton-root, & .RaMenuItemLink-root': { color: SIDEBAR_MUTED },
       '& .MuiTypography-root': { color: 'inherit' },
-      '& .MuiListItemButton-root:hover, & .RaMenuItemLink-root:hover': {
+      '& .MuiSvgIcon-root': { color: SIDEBAR_ICON },
+      // resource links (Commandes, Livraisons…) — readable
+      '& .RaMenuItemLink-root': { color: SIDEBAR_ITEM },
+      // group headers (VENTES, CATALOGUE…) — intentionally quieter
+      '& .MuiListItemButton-root': { color: SIDEBAR_HEAD },
+      '& .RaMenuItemLink-root:hover, & .MuiListItemButton-root:hover': {
         backgroundColor: SIDEBAR_HOVER,
         color: SIDEBAR_FG,
       },
-      '& .MuiListItemButton-root:hover .MuiSvgIcon-root, & .RaMenuItemLink-root:hover .MuiSvgIcon-root':
+      '& .RaMenuItemLink-root:hover .MuiSvgIcon-root, & .MuiListItemButton-root:hover .MuiSvgIcon-root':
         { color: SIDEBAR_FG },
       '& .RaMenuItemLink-active': {
         color: SIDEBAR_ACTIVE,
