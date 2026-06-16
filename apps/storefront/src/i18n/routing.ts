@@ -8,6 +8,7 @@ export const routing = defineRouting({
     '/': '/',
     '/shop': { fr: '/boutique', en: '/shop' },
     '/shop/[slug]': { fr: '/boutique/[slug]', en: '/shop/[slug]' },
+    '/collections': { fr: '/collections', en: '/collections' },
     '/collections/[slug]': { fr: '/collections/[slug]', en: '/collections/[slug]' },
     '/cart': { fr: '/panier', en: '/cart' },
     '/wishlist': { fr: '/favoris', en: '/wishlist' },
