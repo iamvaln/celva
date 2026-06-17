@@ -119,6 +119,43 @@ export class AuthService {
     return this.issueTokens(user.id, user.email, user.role, meta);
   }
 
+  /**
+   * Guest checkout. Find an existing account by email, or create a
+   * passwordless one so a shopper can buy without signing up. "Passwordless"
+   * = a random, unguessable bcrypt hash that no `login` attempt can ever
+   * match; to claim the account later the user goes through password reset
+   * (which sets a real hash). Returns just enough for the order to attach.
+   * Never overwrites an existing account's data — its name/phone stay as-is.
+   */
+  async findOrCreatePasswordlessUser(input: {
+    email: string;
+    name: string;
+    phone?: string;
+    locale?: string;
+  }): Promise<{ id: string; email: string; name: string; isNew: boolean }> {
+    const existing = await this.prisma.user.findUnique({ where: { email: input.email } });
+    if (existing) {
+      if (!existing.isActive) {
+        throw new ForbiddenException('errors.account_disabled');
+      }
+      return { id: existing.id, email: existing.email, name: existing.name, isNew: false };
+    }
+    // Random secret → unguessable; passwordless until the user resets it.
+    const passwordHash = await bcrypt.hash(`${uuid()}.${uuid()}`, BCRYPT_ROUNDS);
+    const user = await this.prisma.user.create({
+      data: {
+        email: input.email,
+        name: input.name,
+        phone: input.phone,
+        passwordHash,
+        role: 'CLIENT',
+        locale: normalizeLocale(input.locale),
+        cart: { create: {} },
+      },
+    });
+    return { id: user.id, email: user.email, name: user.name, isNew: true };
+  }
+
   async login(dto: LoginDto, meta: SessionMeta = {}): Promise<AuthResult> {
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (!user) {
