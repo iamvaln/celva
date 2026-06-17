@@ -59,6 +59,18 @@ const ALLOWED_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
 
 const ORDER_NUMBER_PREFIX = 'CLV';
 
+/**
+ * A normalized order line — same shape whether it came from a server-side
+ * cart (authenticated checkout) or explicit items (guest checkout). The
+ * variant carries its product so pricing/stock/active checks need no extra
+ * query.
+ */
+type OrderLine = {
+  variantId: string;
+  quantity: number;
+  variant: Prisma.ProductVariantGetPayload<{ include: { product: true } }>;
+};
+
 @Injectable()
 export class OrdersService {
   private readonly logger = new Logger(OrdersService.name);
@@ -148,8 +160,63 @@ export class OrdersService {
       throw new BadRequestException('errors.cart_empty');
     }
 
+    const lines: OrderLine[] = cart.items.map((it) => ({
+      variantId: it.variantId,
+      quantity: it.quantity,
+      variant: it.variant,
+    }));
+    return this.placeOrder(userId, lines, dto, cart.id);
+  }
+
+  /**
+   * Guest checkout path (spec follow-up). The cart lives client-side
+   * (localStorage) so the order is built from explicit line items instead of
+   * a server cart. The caller (public guest endpoint) has already
+   * find-or-created the passwordless user this order is attached to.
+   * Duplicate variantIds are merged; every variant is loaded with its product
+   * so the shared placeOrder() validation/pricing runs unchanged. No server
+   * cart is cleared (there is none).
+   */
+  async createFromItems(
+    userId: string,
+    items: { variantId: string; quantity: number }[],
+    dto: CreateOrderDto,
+  ) {
+    const merged = new Map<string, number>();
+    for (const it of items) {
+      merged.set(it.variantId, (merged.get(it.variantId) ?? 0) + it.quantity);
+    }
+    if (merged.size === 0) {
+      throw new BadRequestException('errors.cart_empty');
+    }
+
+    const variants = await this.prisma.productVariant.findMany({
+      where: { id: { in: [...merged.keys()] } },
+      include: { product: true },
+    });
+    const byId = new Map(variants.map((v) => [v.id, v]));
+
+    const lines: OrderLine[] = [...merged.entries()].map(([variantId, quantity]) => {
+      const variant = byId.get(variantId);
+      if (!variant) throw new BadRequestException('errors.cart_variant_unavailable');
+      return { variantId, quantity, variant };
+    });
+    return this.placeOrder(userId, lines, dto, null);
+  }
+
+  /**
+   * Shared order-placement core for both checkout paths. `cartId` is the
+   * server cart to clear on success (authenticated checkout) or null (guest
+   * checkout, nothing to clear).
+   */
+  private async placeOrder(
+    userId: string,
+    lines: OrderLine[],
+    dto: CreateOrderDto,
+    cartId: string | null,
+  ) {
     // 1) Revalidate variants
-    for (const it of cart.items) {
+    for (const it of lines) {
       if (!it.variant.isActive || !it.variant.product.isActive) {
         throw new BadRequestException('errors.cart_variant_unavailable');
       }
@@ -236,7 +303,7 @@ export class OrdersService {
       true,
     );
 
-    const subtotal = cart.items.reduce(
+    const subtotal = lines.reduce(
       (sum, it) =>
         sum.add(
           (it.variant.priceOverride ?? it.variant.product.displayPrice).mul(it.quantity),
@@ -302,7 +369,7 @@ export class OrdersService {
           userId,
           promoCodeId: appliedPromoId,
           items: {
-            create: cart.items.map((it) => ({
+            create: lines.map((it) => ({
               variantId: it.variantId,
               quantity: it.quantity,
               unitPrice: it.variant.priceOverride ?? it.variant.product.displayPrice,
@@ -313,7 +380,7 @@ export class OrdersService {
       });
 
       // Stock OUT — one StockMovement per line, signed negative
-      for (const it of cart.items) {
+      for (const it of lines) {
         await this.stockMovements.apply({
           variantId: it.variantId,
           quantity: -it.quantity,
@@ -353,8 +420,11 @@ export class OrdersService {
         });
       }
 
-      // Clear cart
-      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+      // Clear the server cart when the order was sourced from one. Guest
+      // checkout passes null — its cart is client-side, nothing to clear.
+      if (cartId) {
+        await tx.cartItem.deleteMany({ where: { cartId } });
+      }
 
       return order;
     });
