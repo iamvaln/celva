@@ -294,7 +294,31 @@
     "related_heading": "Complete the look",
     "no_image": "Image coming soon",
     "not_found": "Product not found.",
-    "back_to_shop": "Back to the shop"
+    "back_to_shop": "Back to the shop",
+    "size_guide": "Size guide",
+    "out_of_stock": "Out of stock",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "add_to_cart": "Add to cart",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "wishlist_add": "Add to wishlist",
+    "wishlist_remove": "Remove from wishlist",
+    "custom_prefix": "This piece is also available",
+    "custom_link": "made to measure",
+    "perks": {
+      "delivery": "Delivery in 2–4 days to Douala and Yaoundé",
+      "returns": "Free returns within 14 days",
+      "payment": "Pay with Orange Money, MoMo, card or on delivery"
+    },
+    "accordion": {
+      "description": "Full description",
+      "description_body": "Made in our atelier on rue Foch, Douala. Each weave varies slightly — it is handwork, not a print.",
+      "care": "Composition & care",
+      "care_body": "Hand wash cold or gentle dry-clean. Dry flat in the shade. Iron inside-out on low heat. Woven colours do not run.",
+      "shipping": "Shipping & returns",
+      "shipping_body": "Delivery in 2–4 working days to Douala and Yaoundé. 5–8 days within the country. International in 10–14 days via DHL Express. Free returns within 14 days, unworn with tags."
+    }
   },
   "collection": {
     "back": "All collections",

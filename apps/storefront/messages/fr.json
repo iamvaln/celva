@@ -294,7 +294,31 @@
     "related_heading": "Complétez le look",
     "no_image": "Image bientôt disponible",
     "not_found": "Produit introuvable.",
-    "back_to_shop": "Retour à la boutique"
+    "back_to_shop": "Retour à la boutique",
+    "size_guide": "Guide des tailles",
+    "out_of_stock": "Rupture de stock",
+    "sold_out": "Rupture",
+    "unavailable": "Indisponible",
+    "add_to_cart": "Ajouter au panier",
+    "increase": "Augmenter la quantité",
+    "decrease": "Diminuer la quantité",
+    "wishlist_add": "Ajouter aux favoris",
+    "wishlist_remove": "Retirer des favoris",
+    "custom_prefix": "Cette pièce existe aussi en",
+    "custom_link": "sur-mesure",
+    "perks": {
+      "delivery": "Livraison sous 2–4 jours à Douala et Yaoundé",
+      "returns": "Retours gratuits sous 14 jours",
+      "payment": "Paiement Orange Money, MoMo, carte ou à la livraison"
+    },
+    "accordion": {
+      "description": "Description complète",
+      "description_body": "Pièce confectionnée dans notre atelier rue Foch, à Douala. Chaque tissage varie légèrement — c'est un travail à la main, pas une impression.",
+      "care": "Composition & entretien",
+      "care_body": "Lavage à la main à froid ou pressing délicat. Séchage à plat, à l'ombre. Repasser à l'envers, fer tiède. Les couleurs tissées ne se délaient pas.",
+      "shipping": "Livraison & retours",
+      "shipping_body": "Livraison sous 2–4 jours ouvrés à Douala et Yaoundé. 5–8 jours en province. International sous 10–14 jours via DHL Express. Retours gratuits sous 14 jours, pièce non portée avec étiquettes."
+    }
   },
   "collection": {
     "back": "Toutes les collections",
