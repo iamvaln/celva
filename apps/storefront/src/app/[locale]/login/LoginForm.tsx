@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
+import { getGuestCart, clearGuestCart } from '@/lib/guest-cart';
+import { mergeGuestCartAction } from '@/app/[locale]/cart/actions';
 
 const schema = z.object({
   email: z.string().email(),
@@ -43,6 +45,19 @@ export const LoginForm = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken: payload.data.accessToken }),
       });
+      // Merge any guest (localStorage) cart into the now-authenticated server
+      // cart, then clear it locally. Best-effort — never blocks the login.
+      const guestItems = getGuestCart();
+      if (guestItems.length > 0) {
+        try {
+          await mergeGuestCartAction(
+            guestItems.map((it) => ({ variantId: it.variantId, quantity: it.quantity })),
+          );
+          clearGuestCart();
+        } catch {
+          /* non-fatal — keep the local cart so nothing is lost */
+        }
+      }
       router.push('/account');
       router.refresh();
     } catch {

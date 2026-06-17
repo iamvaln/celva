@@ -2,19 +2,11 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import type { ApiVariant } from '@/lib/catalogue';
-
-// Local price formatter — mirrors lib/catalogue.formatPriceXAF without importing
-// that module (it transitively pulls server-only env into this client bundle).
-const formatPriceXAF = (value: string | number, locale: Locale): string => {
-  const n = typeof value === 'string' ? Number(value) : value;
-  if (!Number.isFinite(n)) return '';
-  return `${new Intl.NumberFormat(locale === 'fr' ? 'fr-FR' : 'en-US', {
-    maximumFractionDigits: 0,
-  }).format(n)} XAF`;
-};
+import { formatPriceXAF } from '@/lib/money';
+import { addGuestItem } from '@/lib/guest-cart';
 import { addToCartAction } from '@/app/[locale]/cart/actions';
 import {
   addToWishlistAction,
@@ -49,6 +41,12 @@ export type ProductBuyPanelProps = {
   longDescription?: string;
   /** Whether a custom-order (studio) route exists. */
   hasStudio?: boolean;
+  /** True when a session cookie is present — drives server vs guest add-to-cart. */
+  isAuthenticated: boolean;
+  /** Product slug, for the guest-cart line snapshot. */
+  productSlug: string;
+  /** Hero image URL, for the guest-cart line snapshot. */
+  imageUrl?: string;
 };
 
 /** A variant matches a selection when every selected value appears in it. */
@@ -82,8 +80,12 @@ export function ProductBuyPanel({
   sizeGuideHash,
   longDescription,
   hasStudio,
+  isAuthenticated,
+  productSlug,
+  imageUrl,
 }: ProductBuyPanelProps) {
   const t = useTranslations('product');
+  const router = useRouter();
 
   // Default selection = the values of the first in-stock variant (or first
   // variant if none in stock), so the panel opens on a buyable combination.
@@ -141,6 +143,38 @@ export function ProductBuyPanel({
     const selectedId = selection[attrId];
     const attr = attributes.find((a) => a.id === attrId);
     return attr?.values.find((v) => v.id === selectedId)?.label;
+  };
+
+  // Human-readable selection, e.g. "Taille: L · Couleur: Rouge" — stored on the
+  // guest cart line so the cart/checkout pages can show it without a server cart.
+  const optionsLabel = attributes
+    .map((a) => {
+      const label = labelFor(a.id);
+      return label ? `${a.name}: ${label}` : null;
+    })
+    .filter(Boolean)
+    .join(' · ');
+
+  const addLabel = !selectedVariant
+    ? t('unavailable')
+    : !inStock
+      ? t('sold_out')
+      : `${t('add_to_cart')} · ${formatPriceXAF(lineTotal, locale)}`;
+
+  /** Guest add-to-cart: snapshot the line into localStorage, then go to /cart. */
+  const addAsGuest = () => {
+    if (!selectedVariant || !inStock) return;
+    addGuestItem({
+      variantId: selectedVariant.id,
+      quantity: qty,
+      productSlug,
+      name,
+      unitPrice: String(unitPrice),
+      image: imageUrl,
+      options: optionsLabel || undefined,
+      maxStock,
+    });
+    router.push('/cart');
   };
 
   return (
@@ -260,24 +294,32 @@ export function ProductBuyPanel({
           </button>
         </div>
 
-        <form action={addToCartAction} className="min-w-[12rem] flex-1">
-          <input type="hidden" name="variantId" value={selectedVariant?.id ?? ''} />
-          <input type="hidden" name="quantity" value={qty} />
-          <input type="hidden" name="locale" value={locale} />
-          <input type="hidden" name="fromPath" value={fromPath} />
+        {isAuthenticated ? (
+          <form action={addToCartAction} className="min-w-[12rem] flex-1">
+            <input type="hidden" name="variantId" value={selectedVariant?.id ?? ''} />
+            <input type="hidden" name="quantity" value={qty} />
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="fromPath" value={fromPath} />
+            <button
+              type="submit"
+              disabled={!inStock}
+              aria-disabled={!inStock}
+              className="btn btn-primary btn-block h-14 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {addLabel}
+            </button>
+          </form>
+        ) : (
           <button
-            type="submit"
+            type="button"
+            onClick={addAsGuest}
             disabled={!inStock}
             aria-disabled={!inStock}
-            className="btn btn-primary btn-block h-14 disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn btn-primary btn-block h-14 min-w-[12rem] flex-1 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {!selectedVariant
-              ? t('unavailable')
-              : !inStock
-                ? t('sold_out')
-                : `${t('add_to_cart')} · ${formatPriceXAF(lineTotal, locale)}`}
+            {addLabel}
           </button>
-        </form>
+        )}
 
         {selectedVariant && (
           <form action={wished ? removeFromWishlistAction : addToWishlistAction}>

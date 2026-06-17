@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { Monogram } from './Monogram';
 import { MobileMenu } from './MobileMenu';
 import { SearchOverlay } from './SearchOverlay';
+import { CartBadge } from './cart/CartBadge';
 
 const NAV_LINKS = [
   { href: '/shop', i18n: 'shop' },
@@ -103,6 +104,7 @@ export const Header = () => {
                 <path d="M5 7h14l-1.5 12.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5L5 7z" strokeLinejoin="round" />
                 <path d="M9 7V5a3 3 0 0 1 6 0v2" strokeLinecap="round" />
               </svg>
+              <CartBadge />
             </Link>
           </div>
         </div>

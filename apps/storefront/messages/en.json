@@ -151,6 +151,9 @@
     "clear": "Empty cart",
     "go_to_cart": "View cart ({count})",
     "discount": "Discount",
+    "guest": {
+      "no_account_needed": "Buy without creating an account"
+    },
     "flash": {
       "added": "Added to your cart.",
       "add_failed": "Couldn't add this piece. Please try again.",
@@ -178,6 +181,17 @@
     "login_required": "Log in to place your order.",
     "back_to_cart": "Back to cart",
     "place_order": "Place order",
+    "guest": {
+      "subtitle": "Check out as a guest — no account required.",
+      "login_link": "Log in",
+      "contact_heading": "Your details",
+      "name": "Full name",
+      "email": "Email",
+      "email_hint": "For order updates. An account is created automatically.",
+      "phone": "Phone (optional)",
+      "placing": "Placing…",
+      "invalid_email": "Invalid email address."
+    },
     "delivery": {
       "heading": "Delivery mode",
       "home": "Home delivery",

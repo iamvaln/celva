@@ -151,6 +151,9 @@
     "clear": "Vider le panier",
     "go_to_cart": "Voir le panier ({count})",
     "discount": "Remise",
+    "guest": {
+      "no_account_needed": "Achetez sans créer de compte"
+    },
     "flash": {
       "added": "Ajouté à votre panier.",
       "add_failed": "Impossible d'ajouter cette pièce. Réessayez.",
@@ -178,6 +181,17 @@
     "login_required": "Connectez-vous pour passer votre commande.",
     "back_to_cart": "Retour au panier",
     "place_order": "Valider la commande",
+    "guest": {
+      "subtitle": "Commandez en tant qu'invité — pas de compte requis.",
+      "login_link": "Se connecter",
+      "contact_heading": "Vos coordonnées",
+      "name": "Nom complet",
+      "email": "Email",
+      "email_hint": "Pour le suivi de commande. Un compte est créé automatiquement.",
+      "phone": "Téléphone (optionnel)",
+      "placing": "Validation…",
+      "invalid_email": "Adresse email invalide."
+    },
     "delivery": {
       "heading": "Mode de livraison",
       "home": "Livraison à domicile",
