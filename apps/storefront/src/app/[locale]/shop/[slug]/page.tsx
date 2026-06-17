@@ -21,6 +21,7 @@ import {
   pickLocalized,
 } from '@/lib/catalogue';
 import { fetchWishlistVariantIds } from '@/lib/cart';
+import { getAccessToken } from '@/lib/auth-cookies';
 import { listSizeGuidesByCategory } from '@/lib/size-guides';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductBuyPanel, type BuyPanelAttribute } from '@/components/ProductBuyPanel';
@@ -112,6 +113,8 @@ export default async function ProductPage({
     flash && flash.startsWith('error:') ? flash.replace('error:', '') : null;
 
   const fromPath = `/${locale}/shop/${slug}`;
+  // Drives server-cart (logged-in) vs guest-cart (localStorage) add-to-cart.
+  const isAuthenticated = !!(await getAccessToken());
 
   const orderedAttributes = [...(attributesPage.data ?? [])].sort(
     (a, b) => a.sortOrder - b.sortOrder,
@@ -232,6 +235,9 @@ export default async function ProductPage({
             sizeGuideHash={hasSizeGuide ? `guide-${product.categoryId}` : undefined}
             longDescription={description}
             hasStudio
+            isAuthenticated={isAuthenticated}
+            productSlug={slug}
+            imageUrl={heroImage?.urls.medium ?? heroImage?.urls.large}
           />
         </div>
 
