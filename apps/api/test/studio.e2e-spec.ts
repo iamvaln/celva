@@ -19,10 +19,12 @@ describe('Studio sur-mesure (e2e)', () => {
   let mailSpy: { sends: MailMessage[]; clear: () => void };
   let adminToken = '';
   let clientToken = '';
-  let modelId = '';
-  let modelSlug = '';
-  let fabricId = '';
-  let otherFabricId = ''; // belongs to a different model — used for cross-model rejection
+  let familyId = '';
+  let familySlug = '';
+  let garmentId = '';
+  let fabricA = '';
+  let fabricB = '';
+  let inactiveFabric = '';
 
   beforeAll(async () => {
     mailSpy = {
@@ -68,48 +70,63 @@ describe('Studio sur-mesure (e2e)', () => {
       .expect(201);
     clientToken = signup.body.data.accessToken;
 
-    // Seed two models + fabrics directly via Prisma — simpler than going
-    // through the admin endpoints for fixture setup.
-    const dafani = await prisma.studioModel.create({
+    // Seed: one family with one garment + two photos + three fabrics
+    // (two active, one inactive — used to test the active-only filter).
+    const family = await prisma.studioFabricFamily.create({
       data: {
-        slug: `${SUITE_TAG}-dafani`,
-        name: { fr: 'Robe Dafani', en: 'Dafani Dress' },
-        material: { fr: 'Coton toghu', en: 'Toghu cotton' },
-        basePrice: 66000,
-        delayLabel: { fr: '4 à 6 semaines', en: '4 to 6 weeks' },
+        slug: `${SUITE_TAG}-kente`,
+        name: { fr: 'Kente', en: 'Kente' },
+        description: { fr: 'Tissage doré', en: 'Golden weave' },
         sortOrder: 0,
       },
     });
-    modelId = dafani.id;
-    modelSlug = dafani.slug;
+    familyId = family.id;
+    familySlug = family.slug;
 
-    const fabric = await prisma.studioFabric.create({
+    const garment = await prisma.studioGarment.create({
       data: {
-        modelId: dafani.id,
-        name: { fr: 'Toghu Royal', en: 'Royal Toghu' },
+        familyId: family.id,
+        name: { fr: 'Robe droite à fente V', en: 'V-slit straight dress' },
+        sortOrder: 0,
       },
     });
-    fabricId = fabric.id;
+    garmentId = garment.id;
 
-    const nani = await prisma.studioModel.create({
+    await prisma.studioModel.createMany({
+      data: [
+        { garmentId: garment.id, imageKey: 'studio/test/front.jpg', angle: 'FRONT', sortOrder: 0 },
+        { garmentId: garment.id, imageKey: 'studio/test/side.jpg', angle: 'SIDE', sortOrder: 1 },
+      ],
+    });
+
+    const f1 = await prisma.studioFabric.create({
       data: {
-        slug: `${SUITE_TAG}-nani`,
-        name: { fr: 'Boubou Nani', en: 'Nani Boubou' },
-        basePrice: 65000,
-        delayLabel: { fr: '4 à 6 semaines', en: '4 to 6 weeks' },
+        familyId: family.id,
+        name: { fr: 'Kente Magenta Or', en: 'Magenta Gold Kente' },
+        sortOrder: 0,
+      },
+    });
+    fabricA = f1.id;
+
+    const f2 = await prisma.studioFabric.create({
+      data: {
+        familyId: family.id,
+        name: { fr: 'Kente Bleu Royal', en: 'Royal Blue Kente' },
         sortOrder: 1,
       },
     });
-    const otherFabric = await prisma.studioFabric.create({
+    fabricB = f2.id;
+
+    const fInactive = await prisma.studioFabric.create({
       data: {
-        modelId: nani.id,
-        name: { fr: 'Satin Braise', en: 'Ember Satin' },
+        familyId: family.id,
+        name: { fr: 'Kente Retiré', en: 'Retired Kente' },
+        isActive: false,
+        sortOrder: 99,
       },
     });
-    otherFabricId = otherFabric.id;
+    inactiveFabric = fInactive.id;
 
-    // CONTACT_EMAIL setting is seeded by the API seed; ensure it exists for
-    // the internal-email dispatch.
     await prisma.setting.upsert({
       where: { key: 'CONTACT_EMAIL' },
       create: { key: 'CONTACT_EMAIL', value: 'stylist@celva.test', label: { fr: 'Email', en: 'Email' } },
@@ -123,46 +140,51 @@ describe('Studio sur-mesure (e2e)', () => {
   });
 
   async function cleanup(): Promise<void> {
+    // Wipe any request that references one of our family's fabrics (the
+    // M2M FK is Restrict, so leftover requests would block the family
+    // delete). Use the SUITE_TAG suffix on customerPhone as a fallback in
+    // case a row was created before the photo-only test path.
     await prisma.studioRequest.deleteMany({
-      where: { customerPhone: { contains: SUITE_TAG } },
+      where: {
+        OR: [
+          { customerPhone: { contains: SUITE_TAG.slice(-6) } },
+          {
+            selectedFabrics: {
+              some: { fabric: { family: { slug: { startsWith: SUITE_TAG } } } },
+            },
+          },
+        ],
+      },
     });
-    await prisma.studioGalleryItem.deleteMany({
-      where: { model: { slug: { startsWith: SUITE_TAG } } },
+    // Cascade from family drops garments → photos → fabrics.
+    await prisma.studioFabricFamily.deleteMany({
+      where: { slug: { startsWith: SUITE_TAG } },
     });
-    await prisma.studioFabric.deleteMany({
-      where: { model: { slug: { startsWith: SUITE_TAG } } },
-    });
-    await prisma.studioModel.deleteMany({ where: { slug: { startsWith: SUITE_TAG } } });
     await prisma.user.deleteMany({ where: { email: CLIENT_EMAIL } });
   }
 
-  // The customer phone embeds SUITE_TAG so cleanup can scope deletions.
-  const phoneFor = (n: number): string => `+237600${SUITE_TAG.slice(-6)}${String(n).padStart(2, '0')}`.slice(0, 13);
+  // Customer phone embeds SUITE_TAG so cleanup can scope deletions.
+  const phoneFor = (n: number): string =>
+    `+237600${SUITE_TAG.slice(-6)}${String(n).padStart(2, '0')}`.slice(0, 13);
 
   describe('Public — POST /studio/requests', () => {
-    it('creates an ORDER request and fires 2 mails', async () => {
+    it('books an appointment with a multi-fabric selection', async () => {
       mailSpy.clear();
       const res = await request(server)
         .post('/api/v1/studio/requests')
         .set('X-App-Source', 'WEB_STORE')
         .send({
-          type: 'ORDER',
           customerName: 'Amara N.',
           customerPhone: '+237600000001',
-          customerEmail: `order-${SUITE_TAG}@celva.test`,
-          modelId,
-          fabricId,
-          sizeRef: 'M / 38',
-          measurementMode: 'WHATSAPP',
-          gender: 'FEMME',
-          skinToneIndex: 4,
-          silhouetteSize: 'M',
-          silhouetteHeight: 168,
+          customerEmail: `pick-${SUITE_TAG}@celva.test`,
+          appointmentMode: 'ATELIER',
+          appointmentDate: '2026-07-01',
+          appointmentSlot: '14:00',
+          selectedFabricIds: [fabricA, fabricB],
         })
         .expect(201);
       expect(res.body.data.id).toBeTruthy();
 
-      // Wait briefly for the fire-and-forget dispatch.
       await new Promise((r) => setTimeout(r, 120));
       const customerMail = mailSpy.sends.find((m) => m.tag === 'studio_request_received');
       const internalMail = mailSpy.sends.find((m) => m.tag === 'studio_request_internal');
@@ -172,78 +194,70 @@ describe('Studio sur-mesure (e2e)', () => {
 
       const row = await prisma.studioRequest.findUniqueOrThrow({
         where: { id: res.body.data.id },
+        include: { selectedFabrics: true },
       });
-      expect(row.type).toBe('ORDER');
+      expect(row.type).toBe('APPOINTMENT');
       expect(row.appSource).toBe('WEB_STORE');
-      expect(row.modelId).toBe(modelId);
-      expect(row.fabricId).toBe(fabricId);
-      expect(row.sizeRef).toBe('M / 38');
-      // For cleanup scoping
+      expect(row.appointmentSlot).toBe('14:00');
+      expect(row.selectedFabrics).toHaveLength(2);
+      expect(row.selectedFabrics.map((s) => s.fabricId).sort()).toEqual(
+        [fabricA, fabricB].sort(),
+      );
+
       await prisma.studioRequest.update({
         where: { id: row.id },
         data: { customerPhone: phoneFor(1) },
       });
     });
 
-    it('creates an APPOINTMENT request', async () => {
-      mailSpy.clear();
+    it('books an appointment with no preselection', async () => {
       const res = await request(server)
         .post('/api/v1/studio/requests')
         .set('X-App-Source', 'WEB_STORE')
         .send({
-          type: 'APPOINTMENT',
           customerName: 'Léa',
           customerPhone: '+237600000002',
-          appointmentMode: 'ATELIER',
-          appointmentDate: '2026-07-01',
-          appointmentSlot: '14:00',
+          appointmentMode: 'VISIO',
+          appointmentDate: '2026-07-05',
+          appointmentSlot: '10:00',
         })
         .expect(201);
-      expect(res.body.data.id).toBeTruthy();
+
+      const row = await prisma.studioRequest.findUniqueOrThrow({
+        where: { id: res.body.data.id },
+        include: { selectedFabrics: true },
+      });
+      expect(row.selectedFabrics).toHaveLength(0);
 
       await prisma.studioRequest.update({
-        where: { id: res.body.data.id },
+        where: { id: row.id },
         data: { customerPhone: phoneFor(2) },
       });
     });
 
-    it('rejects ORDER without modelId/fabricId/sizeRef/measurementMode (400)', async () => {
+    it('rejects an inactive fabric in the selection (400)', async () => {
       await request(server)
         .post('/api/v1/studio/requests')
         .set('X-App-Source', 'WEB_STORE')
         .send({
-          type: 'ORDER',
-          customerName: 'Missing',
+          customerName: 'Inactive',
           customerPhone: '+237600000003',
+          appointmentMode: 'ATELIER',
+          appointmentDate: '2026-07-01',
+          appointmentSlot: '10:00',
+          selectedFabricIds: [fabricA, inactiveFabric],
         })
         .expect(400);
     });
 
-    it('rejects APPOINTMENT without date/slot (400)', async () => {
+    it('rejects missing appointment fields (400)', async () => {
       await request(server)
         .post('/api/v1/studio/requests')
         .set('X-App-Source', 'WEB_STORE')
         .send({
-          type: 'APPOINTMENT',
           customerName: 'Missing',
           customerPhone: '+237600000004',
-          appointmentMode: 'VISIO',
-        })
-        .expect(400);
-    });
-
-    it('rejects ORDER when fabric belongs to a different model (400)', async () => {
-      await request(server)
-        .post('/api/v1/studio/requests')
-        .set('X-App-Source', 'WEB_STORE')
-        .send({
-          type: 'ORDER',
-          customerName: 'Mismatch',
-          customerPhone: '+237600000005',
-          modelId,
-          fabricId: otherFabricId,
-          sizeRef: 'M / 38',
-          measurementMode: 'ATELIER',
+          appointmentMode: 'ATELIER',
         })
         .expect(400);
     });
@@ -252,7 +266,6 @@ describe('Studio sur-mesure (e2e)', () => {
       await request(server)
         .post('/api/v1/studio/requests')
         .send({
-          type: 'APPOINTMENT',
           customerName: 'BadPhone',
           customerPhone: '1234',
           appointmentMode: 'ATELIER',
@@ -263,25 +276,30 @@ describe('Studio sur-mesure (e2e)', () => {
     });
   });
 
-  describe('Public — GET /studio/models', () => {
-    it('returns active models with fabrics + galleryItems', async () => {
-      const res = await request(server).get('/api/v1/studio/models').expect(200);
+  describe('Public — GET /studio/families', () => {
+    it('returns active families with garments + photos + fabrics, inactive fabrics excluded', async () => {
+      const res = await request(server).get('/api/v1/studio/families').expect(200);
       const rows = res.body.data.data as Array<{
         id: string;
         slug: string;
-        fabrics: unknown[];
-        galleryItems: unknown[];
+        fabrics: Array<{ id: string; isActive: boolean }>;
+        garments: Array<{ id: string; photos: Array<{ id: string }> }>;
       }>;
-      const dafani = rows.find((r) => r.id === modelId);
-      expect(dafani).toBeDefined();
-      expect(dafani?.fabrics.length).toBeGreaterThanOrEqual(1);
+      const kente = rows.find((r) => r.id === familyId);
+      expect(kente).toBeDefined();
+      expect(kente?.garments.length).toBe(1);
+      expect(kente?.garments[0]?.photos.length).toBe(2);
+      // Two active fabrics, the inactive one excluded.
+      expect(kente?.fabrics.length).toBe(2);
+      expect(kente?.fabrics.some((f) => f.id === inactiveFabric)).toBe(false);
     });
 
-    it('GET by-slug returns the model', async () => {
+    it('GET by-slug returns the family hydrated', async () => {
       const res = await request(server)
-        .get(`/api/v1/studio/models/by-slug/${modelSlug}`)
+        .get(`/api/v1/studio/families/by-slug/${familySlug}`)
         .expect(200);
-      expect(res.body.data.id).toBe(modelId);
+      expect(res.body.data.id).toBe(familyId);
+      expect(res.body.data.garments).toHaveLength(1);
     });
   });
 
@@ -289,17 +307,18 @@ describe('Studio sur-mesure (e2e)', () => {
     let pendingId = '';
 
     beforeAll(async () => {
-      // Seed a fresh PENDING request for the transition flow.
       const row = await prisma.studioRequest.create({
         data: {
-          type: 'ORDER',
+          type: 'APPOINTMENT',
           customerName: 'Transition',
           customerPhone: phoneFor(9),
-          modelId,
-          fabricId,
-          sizeRef: 'L / 40',
-          measurementMode: 'ATELIER',
+          appointmentMode: 'ATELIER',
+          appointmentDate: new Date('2026-07-10'),
+          appointmentSlot: '11:30',
           appSource: 'WEB_STORE',
+          selectedFabrics: {
+            create: [{ fabricId: fabricA, sortOrder: 0 }],
+          },
         },
       });
       pendingId = row.id;
@@ -316,13 +335,20 @@ describe('Studio sur-mesure (e2e)', () => {
         .expect(403);
     });
 
-    it('admin lists with status filter', async () => {
+    it('admin lists includes selected fabrics with family', async () => {
       const res = await request(server)
         .get('/api/v1/studio/requests/admin')
         .query({ status: 'PENDING', search: SUITE_TAG.slice(-6) })
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200);
-      expect(Array.isArray(res.body.data.data)).toBe(true);
+      const rows = res.body.data.data as Array<{
+        id: string;
+        selectedFabrics: Array<{ fabric: { family: { id: string } } }>;
+      }>;
+      const target = rows.find((r) => r.id === pendingId);
+      expect(target).toBeDefined();
+      expect(target?.selectedFabrics).toHaveLength(1);
+      expect(target?.selectedFabrics[0]?.fabric.family.id).toBe(familyId);
     });
 
     it('walks the lifecycle PENDING → CONTACTED → CONFIRMED → COMPLETED', async () => {
@@ -345,6 +371,28 @@ describe('Studio sur-mesure (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .send({ status: 'CONTACTED' })
         .expect(400);
+    });
+  });
+
+  describe('Admin — /studio/families/admin', () => {
+    it('admin can list families including inactive ones', async () => {
+      const res = await request(server)
+        .get('/api/v1/studio/families/admin')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
+      expect(Array.isArray(res.body.data.data)).toBe(true);
+    });
+  });
+
+  describe('Admin — /studio/garments/admin', () => {
+    it('admin can list garments filtered by familyId', async () => {
+      const res = await request(server)
+        .get('/api/v1/studio/garments/admin')
+        .query({ familyId })
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
+      const rows = res.body.data.data as Array<{ id: string }>;
+      expect(rows.some((r) => r.id === garmentId)).toBe(true);
     });
   });
 });

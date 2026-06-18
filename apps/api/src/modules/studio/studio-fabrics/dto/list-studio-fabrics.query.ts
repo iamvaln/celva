@@ -20,10 +20,10 @@ export class ListStudioFabricsQuery {
   @Max(200)
   pageSize?: number = 50;
 
-  @ApiPropertyOptional({ description: 'Filter by parent model id.' })
+  @ApiPropertyOptional({ description: 'Filter by parent family id.' })
   @IsOptional()
   @IsUUID()
-  modelId?: string;
+  familyId?: string;
 
   @ApiPropertyOptional({ description: 'String "true"/"false".' })
   @IsOptional()

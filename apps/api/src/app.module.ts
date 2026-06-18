@@ -51,9 +51,10 @@ import { ProductionOrdersModule } from './modules/production-orders/production-o
 import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { SizeGuidesModule } from './modules/size-guides/size-guides.module';
 import { PackagingModule } from './modules/packaging/packaging.module';
+import { StudioFamiliesModule } from './modules/studio/studio-families/studio-families.module';
+import { StudioGarmentsModule } from './modules/studio/studio-garments/studio-garments.module';
 import { StudioModelsModule } from './modules/studio/studio-models/studio-models.module';
 import { StudioFabricsModule } from './modules/studio/studio-fabrics/studio-fabrics.module';
-import { StudioGalleryModule } from './modules/studio/studio-gallery/studio-gallery.module';
 import { StudioRequestsModule } from './modules/studio/studio-requests/studio-requests.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -163,9 +164,10 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     NewsletterModule,
     SizeGuidesModule,
     PackagingModule,
+    StudioFamiliesModule,
+    StudioGarmentsModule,
     StudioModelsModule,
     StudioFabricsModule,
-    StudioGalleryModule,
     StudioRequestsModule,
   ],
   providers: [

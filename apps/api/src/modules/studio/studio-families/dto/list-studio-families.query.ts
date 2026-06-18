@@ -1,10 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
+import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 const SORTABLE = ['sortOrder', 'createdAt', 'updatedAt'] as const;
 
-export class ListStudioModelsQuery {
+export class ListStudioFamiliesQuery {
   @ApiPropertyOptional({ default: 1, minimum: 1 })
   @IsOptional()
   @Type(() => Number)
@@ -19,11 +19,6 @@ export class ListStudioModelsQuery {
   @Min(1)
   @Max(200)
   pageSize?: number = 50;
-
-  @ApiPropertyOptional({ description: 'Filter by parent garment id.' })
-  @IsOptional()
-  @IsUUID()
-  garmentId?: string;
 
   @ApiPropertyOptional({ description: 'String "true"/"false".' })
   @IsOptional()

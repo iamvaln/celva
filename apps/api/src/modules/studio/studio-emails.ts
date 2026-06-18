@@ -11,23 +11,27 @@ const buildBilingualBody = (sections: { fr: string; en: string }): string =>
   `${sections.fr}\n\n— · —\n\n${sections.en}`;
 
 export type StudioRequestEmailContext = {
-  type: 'ORDER' | 'APPOINTMENT';
   customerName: string;
   customerEmail?: string | null;
   customerPhone: string;
-  modelName?: string | null;
-  fabricName?: string | null;
-  sizeRef?: string | null;
   appointmentDate?: string | null;
   appointmentSlot?: string | null;
   appointmentMode?: 'ATELIER' | 'VISIO' | null;
+  /** Pre-formatted "Family · Fabric" labels (in the customer's locale). */
+  fabricLabels?: string[] | null;
   notes?: string | null;
 };
 
 const apptModeLabel = {
-  fr: { ATELIER: 'à l\'atelier (rue Foch, Douala)', VISIO: 'en visio WhatsApp' },
+  fr: { ATELIER: "à l'atelier (rue Foch, Douala)", VISIO: 'en visio WhatsApp' },
   en: { ATELIER: 'at the studio (rue Foch, Douala)', VISIO: 'over WhatsApp video' },
 } as const;
+
+const formatFabricList = (labels: string[] | null | undefined): string => {
+  const cleaned = (labels ?? []).filter((l): l is string => Boolean(l && l.trim()));
+  if (cleaned.length === 0) return '—';
+  return cleaned.map((l) => `  • ${l}`).join('\n');
+};
 
 /** Sent to the customer after they submit. */
 export const buildStudioRequestCustomerEmail = (
@@ -35,74 +39,44 @@ export const buildStudioRequestCustomerEmail = (
 ): MailMessage | null => {
   if (!ctx.customerEmail) return null;
 
-  const piece = [ctx.modelName, ctx.fabricName].filter(Boolean).join(' · ') || '—';
+  const fabrics = formatFabricList(ctx.fabricLabels);
 
-  const fr =
-    ctx.type === 'ORDER'
-      ? [
-          `Bonjour ${ctx.customerName},`,
-          '',
-          `Votre demande sur-mesure est bien reçue. Pièce envisagée : ${piece}.`,
-          ctx.sizeRef ? `Taille de référence : ${ctx.sizeRef}.` : '',
-          '',
-          'La styliste vous rappelle sous 24 h pour confirmer, organiser la prise de mesures et lancer la confection.',
-          '',
-          'L\'équipe Celva',
-        ]
-          .filter(Boolean)
-          .join('\n')
-      : [
-          `Bonjour ${ctx.customerName},`,
-          '',
-          'Votre rendez-vous est enregistré.',
-          ctx.appointmentDate ? `Date : ${ctx.appointmentDate}.` : '',
-          ctx.appointmentSlot ? `Créneau : ${ctx.appointmentSlot}.` : '',
-          ctx.appointmentMode ? `Format : ${apptModeLabel.fr[ctx.appointmentMode]}.` : '',
-          piece !== '—' ? `Pièce envisagée : ${piece}.` : '',
-          '',
-          'La styliste vous confirme par WhatsApp.',
-          '',
-          'L\'équipe Celva',
-        ]
-          .filter(Boolean)
-          .join('\n');
+  const fr = [
+    `Bonjour ${ctx.customerName},`,
+    '',
+    'Votre rendez-vous est enregistré.',
+    ctx.appointmentDate ? `Date : ${ctx.appointmentDate}.` : '',
+    ctx.appointmentSlot ? `Créneau : ${ctx.appointmentSlot}.` : '',
+    ctx.appointmentMode ? `Format : ${apptModeLabel.fr[ctx.appointmentMode]}.` : '',
+    fabrics !== '—' ? `Tissus retenus :\n${fabrics}` : '',
+    '',
+    'La styliste vous confirme par WhatsApp.',
+    '',
+    "L'équipe Celva",
+  ]
+    .filter(Boolean)
+    .join('\n');
 
-  const en =
-    ctx.type === 'ORDER'
-      ? [
-          `Hi ${ctx.customerName},`,
-          '',
-          `Your made-to-measure request was received. Considered piece: ${piece}.`,
-          ctx.sizeRef ? `Reference size: ${ctx.sizeRef}.` : '',
-          '',
-          'The stylist will call you back within 24 h to confirm, schedule measurements and start the make.',
-          '',
-          'The Celva team',
-        ]
-          .filter(Boolean)
-          .join('\n')
-      : [
-          `Hi ${ctx.customerName},`,
-          '',
-          'Your appointment is booked.',
-          ctx.appointmentDate ? `Date: ${ctx.appointmentDate}.` : '',
-          ctx.appointmentSlot ? `Slot: ${ctx.appointmentSlot}.` : '',
-          ctx.appointmentMode ? `Format: ${apptModeLabel.en[ctx.appointmentMode]}.` : '',
-          piece !== '—' ? `Considered piece: ${piece}.` : '',
-          '',
-          'The stylist will confirm by WhatsApp.',
-          '',
-          'The Celva team',
-        ]
-          .filter(Boolean)
-          .join('\n');
+  const en = [
+    `Hi ${ctx.customerName},`,
+    '',
+    'Your appointment is booked.',
+    ctx.appointmentDate ? `Date: ${ctx.appointmentDate}.` : '',
+    ctx.appointmentSlot ? `Slot: ${ctx.appointmentSlot}.` : '',
+    ctx.appointmentMode ? `Format: ${apptModeLabel.en[ctx.appointmentMode]}.` : '',
+    fabrics !== '—' ? `Selected fabrics:\n${fabrics}` : '',
+    '',
+    'The stylist will confirm by WhatsApp.',
+    '',
+    'The Celva team',
+  ]
+    .filter(Boolean)
+    .join('\n');
 
   return {
     to: ctx.customerEmail,
     subject:
-      ctx.type === 'ORDER'
-        ? 'Celva Studio · Demande sur-mesure reçue / Made-to-measure request received'
-        : 'Celva Studio · Rendez-vous enregistré / Appointment booked',
+      'Celva Studio · Rendez-vous enregistré / Appointment booked',
     tag: 'studio_request_received',
     text: buildBilingualBody({ fr, en }),
   };
@@ -112,26 +86,24 @@ export const buildStudioRequestCustomerEmail = (
 export const buildStudioRequestInternalEmail = (
   ctx: StudioRequestEmailContext & { to: string; requestId: string },
 ): MailMessage => {
-  const heading = ctx.type === 'ORDER' ? 'Nouvelle demande sur-mesure' : 'Nouveau rendez-vous';
-  const piece = [ctx.modelName, ctx.fabricName].filter(Boolean).join(' · ') || '—';
+  const fabrics = formatFabricList(ctx.fabricLabels);
 
   const lines = [
-    heading,
+    'Nouveau rendez-vous studio',
     `ID: ${ctx.requestId}`,
     `Client : ${ctx.customerName}`,
     `Téléphone : ${ctx.customerPhone}`,
     ctx.customerEmail ? `Email : ${ctx.customerEmail}` : '',
-    `Pièce : ${piece}`,
-    ctx.sizeRef ? `Taille : ${ctx.sizeRef}` : '',
     ctx.appointmentDate ? `Date RDV : ${ctx.appointmentDate}` : '',
     ctx.appointmentSlot ? `Créneau : ${ctx.appointmentSlot}` : '',
     ctx.appointmentMode ? `Mode : ${ctx.appointmentMode}` : '',
+    fabrics !== '—' ? `Tissus retenus :\n${fabrics}` : 'Aucun tissu présélectionné.',
     ctx.notes ? `Notes : ${ctx.notes}` : '',
   ].filter(Boolean);
 
   return {
     to: ctx.to,
-    subject: `[Studio] ${heading} — ${ctx.customerName}`,
+    subject: `[Studio] Nouveau rendez-vous — ${ctx.customerName}`,
     tag: 'studio_request_internal',
     text: lines.join('\n'),
   };

@@ -1,73 +1,54 @@
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsEnum,
   IsInt,
-  IsNumber,
   IsOptional,
   IsString,
-  Matches,
+  IsUUID,
   MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  BilingualLongTextDto,
-  BilingualTextDto,
-} from '../../../../common/dto/bilingual-text.dto';
+import { BilingualLongTextDto } from '../../../../common/dto/bilingual-text.dto';
+
+export enum StudioModelAngleDto {
+  FRONT = 'FRONT',
+  SIDE = 'SIDE',
+  BACK = 'BACK',
+  DETAIL = 'DETAIL',
+}
 
 export class CreateStudioModelDto {
-  @ApiPropertyOptional({
-    description: 'URL-safe slug. Auto-generated from name.fr if omitted.',
-    example: 'dafani',
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(80)
-  @Matches(/^[a-z0-9-]+$/, { message: 'errors.invalid_slug' })
-  slug?: string;
+  @ApiProperty({ description: 'Parent garment id.' })
+  @IsUUID()
+  garmentId!: string;
 
-  @ApiProperty({ type: BilingualTextDto })
-  @ValidateNested()
-  @Type(() => BilingualTextDto)
-  name!: BilingualTextDto;
-
-  @ApiPropertyOptional({ type: BilingualLongTextDto })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => BilingualLongTextDto)
-  shortDescription?: BilingualLongTextDto;
-
-  @ApiPropertyOptional({ type: BilingualLongTextDto })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => BilingualLongTextDto)
-  material?: BilingualLongTextDto;
-
-  @ApiProperty({ example: 66000 })
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0)
-  basePrice!: number;
-
-  @ApiProperty({ type: BilingualTextDto, description: 'Délai de confection, ex. "4 à 6 semaines"' })
-  @ValidateNested()
-  @Type(() => BilingualTextDto)
-  delayLabel!: BilingualTextDto;
-
-  @ApiPropertyOptional({ description: 'Image URL (returned by POST /uploads/image).' })
-  @IsOptional()
+  @ApiProperty({ description: 'R2 key or full URL of the photo.' })
   @IsString()
   @MaxLength(500)
-  coverImage?: string;
+  imageKey!: string;
 
-  @ApiPropertyOptional({ default: true })
+  @ApiPropertyOptional({ type: BilingualLongTextDto, description: 'Optional caption (FR/EN).' })
   @IsOptional()
-  @IsBoolean()
-  isActive?: boolean;
+  @ValidateNested()
+  @Type(() => BilingualLongTextDto)
+  caption?: BilingualLongTextDto;
+
+  @ApiPropertyOptional({ enum: StudioModelAngleDto })
+  @IsOptional()
+  @IsEnum(StudioModelAngleDto)
+  angle?: StudioModelAngleDto;
 
   @ApiPropertyOptional({ default: 0 })
   @IsOptional()
   @IsInt()
   @Min(0)
   sortOrder?: number;
+
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }

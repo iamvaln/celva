@@ -1168,72 +1168,93 @@ enum StudioRequestStatus {
   REJECTED
 }
 
-enum StudioOrderMeasureMode {
-  ATELIER
-  WHATSAPP
-}
-
 enum StudioAppointmentMode {
   ATELIER
   VISIO
 }
 
-enum StudioGender {
-  FEMME
-  HOMME
+enum StudioModelAngle {
+  FRONT
+  SIDE
+  BACK
+  DETAIL
 }
 
-model StudioModel {
-  id               String   @id @default(uuid())
-  slug             String   @unique
-  name             Json
-  shortDescription Json?
-  material         Json?
-  basePrice        Decimal  @db.Decimal(10, 2)
-  delayLabel       Json
-  coverImage       String?
-  isActive         Boolean  @default(true)
-  sortOrder        Int      @default(0)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  fabrics      StudioFabric[]
-  galleryItems StudioGalleryItem[]
-  requests     StudioRequest[]
-
-  @@map("studio_models")
-}
-
-model StudioFabric {
+// Top-level grouping shown on /studio. One section per family on the
+// storefront (cover + description + garments carousel + fabrics grid).
+model StudioFabricFamily {
   id          String   @id @default(uuid())
-  modelId     String
-  model       StudioModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  slug        String   @unique
   name        Json
-  swatchImage String?
-  photoImage  String?
-  sortOrder   Int      @default(0)
+  description Json?
+  coverImage  String?
   isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  requests StudioRequest[]
+  fabrics  StudioFabric[]
+  garments StudioGarment[]
 
-  @@index([modelId, sortOrder])
+  @@map("studio_fabric_families")
+}
+
+// One pattern inside a family (Kente Magenta Or, Toghu Royal, …). This is
+// what the client multi-picks before booking a rendez-vous.
+model StudioFabric {
+  id          String             @id @default(uuid())
+  familyId    String
+  family      StudioFabricFamily @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  name        Json
+  swatchImage String?
+  photoImage  String?
+  sortOrder   Int                @default(0)
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  requestSelections StudioRequestFabric[]
+
+  @@index([familyId, sortOrder])
   @@map("studio_fabrics")
 }
 
-model StudioGalleryItem {
-  id        String      @id @default(uuid())
-  modelId   String
-  model     StudioModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+// A garment already cut/sewn in this family — the customer sees its
+// photos as inspiration but does NOT pick it. Each garment has 1+ photo
+// rows (StudioModel) for different angles or clients.
+model StudioGarment {
+  id          String             @id @default(uuid())
+  familyId    String
+  family      StudioFabricFamily @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  name        Json
+  description Json?
+  sortOrder   Int                @default(0)
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  photos StudioModel[]
+
+  @@index([familyId, sortOrder])
+  @@map("studio_garments")
+}
+
+// One photo of a garment — different angles or different clients wearing
+// the same garment all live here.
+model StudioModel {
+  id        String            @id @default(uuid())
+  garmentId String
+  garment   StudioGarment     @relation(fields: [garmentId], references: [id], onDelete: Cascade)
   imageKey  String
   caption   Json?
-  isTall    Boolean     @default(false)
-  sortOrder Int         @default(0)
-  isActive  Boolean     @default(true)
-  createdAt DateTime    @default(now())
+  angle     StudioModelAngle?
+  sortOrder Int               @default(0)
+  isActive  Boolean           @default(true)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 
-  @@map("studio_gallery_items")
+  @@index([garmentId, sortOrder])
+  @@map("studio_models")
 }
 
 model StudioRequest {
@@ -1246,19 +1267,6 @@ model StudioRequest {
   customerPhone String
   customerCity  String?
 
-  gender           StudioGender?
-  skinToneIndex    Int?
-  silhouetteSize   String?
-  silhouetteHeight Int?
-
-  modelId  String?
-  model    StudioModel?  @relation(fields: [modelId], references: [id])
-  fabricId String?
-  fabric   StudioFabric? @relation(fields: [fabricId], references: [id])
-
-  sizeRef         String?
-  measurementMode StudioOrderMeasureMode?
-
   appointmentMode StudioAppointmentMode?
   appointmentDate DateTime?
   appointmentSlot String?
@@ -1269,7 +1277,22 @@ model StudioRequest {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  selectedFabrics StudioRequestFabric[]
+
   @@index([status, createdAt])
   @@index([type, status])
   @@map("studio_requests")
+}
+
+model StudioRequestFabric {
+  requestId String
+  fabricId  String
+  sortOrder Int    @default(0)
+
+  request StudioRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  fabric  StudioFabric  @relation(fields: [fabricId], references: [id], onDelete: Restrict)
+
+  @@id([requestId, fabricId])
+  @@index([fabricId])
+  @@map("studio_request_fabrics")
 }
