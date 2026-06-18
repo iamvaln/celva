@@ -2,9 +2,9 @@ import { Type } from 'class-transformer';
 import { IsIn, IsInt, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-const SORTABLE = ['sortOrder', 'createdAt'] as const;
+const SORTABLE = ['sortOrder', 'createdAt', 'updatedAt'] as const;
 
-export class ListStudioGalleryQuery {
+export class ListStudioGarmentsQuery {
   @ApiPropertyOptional({ default: 1, minimum: 1 })
   @IsOptional()
   @Type(() => Number)
@@ -20,10 +20,10 @@ export class ListStudioGalleryQuery {
   @Max(200)
   pageSize?: number = 50;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Filter by parent family id.' })
   @IsOptional()
   @IsUUID()
-  modelId?: string;
+  familyId?: string;
 
   @ApiPropertyOptional({ description: 'String "true"/"false".' })
   @IsOptional()

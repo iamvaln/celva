@@ -1,43 +1,20 @@
-import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  ArrayUnique,
+  IsArray,
   IsDateString,
   IsEmail,
   IsEnum,
   IsIn,
-  IsInt,
   IsOptional,
   IsString,
   IsUUID,
   Matches,
-  Max,
   MaxLength,
-  Min,
   MinLength,
-  ValidateIf,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  PHONE_CAMEROON_PATTERN,
-  STUDIO_APPT_SLOTS,
-  STUDIO_HEIGHT_RANGE,
-  STUDIO_SIZES,
-  STUDIO_SIZE_REFS,
-} from '@celva/shared';
-
-export enum StudioRequestTypeDto {
-  ORDER = 'ORDER',
-  APPOINTMENT = 'APPOINTMENT',
-}
-
-export enum StudioGenderDto {
-  FEMME = 'FEMME',
-  HOMME = 'HOMME',
-}
-
-export enum StudioMeasureModeDto {
-  ATELIER = 'ATELIER',
-  WHATSAPP = 'WHATSAPP',
-}
+import { PHONE_CAMEROON_PATTERN, STUDIO_APPT_SLOTS } from '@celva/shared';
 
 export enum StudioAppointmentModeDto {
   ATELIER = 'ATELIER',
@@ -46,12 +23,13 @@ export enum StudioAppointmentModeDto {
 
 const phonePattern = new RegExp(PHONE_CAMEROON_PATTERN);
 
+/**
+ * Storefront-facing studio request — a rendez-vous booking with an
+ * optional multi-select of fabrics the customer is curious about.
+ * Garments are inspiration only and are not picked here.
+ */
 export class CreateStudioRequestDto {
-  @ApiProperty({ enum: StudioRequestTypeDto })
-  @IsEnum(StudioRequestTypeDto)
-  type!: StudioRequestTypeDto;
-
-  // ── Coordonnées (always required) ─────────────────────────────────
+  // ── Coordonnées ───────────────────────────────────────────────────
   @ApiProperty({ example: 'Amara N.' })
   @IsString()
   @MinLength(2)
@@ -75,78 +53,30 @@ export class CreateStudioRequestDto {
   @MaxLength(120)
   customerCity?: string;
 
-  // ── Silhouette persona (captured for both flows) ──────────────────
-  @ApiPropertyOptional({ enum: StudioGenderDto })
-  @IsOptional()
-  @IsEnum(StudioGenderDto)
-  gender?: StudioGenderDto;
+  // ── Appointment ───────────────────────────────────────────────────
+  @ApiProperty({ enum: StudioAppointmentModeDto })
+  @IsEnum(StudioAppointmentModeDto)
+  appointmentMode!: StudioAppointmentModeDto;
 
-  @ApiPropertyOptional({ minimum: 0, maximum: 7, description: 'Index in STUDIO_TEINTS' })
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(0)
-  @Max(7)
-  skinToneIndex?: number;
+  @ApiProperty({ description: 'ISO date string (YYYY-MM-DD).' })
+  @IsDateString()
+  appointmentDate!: string;
 
-  @ApiPropertyOptional({ enum: STUDIO_SIZES })
-  @IsOptional()
-  @IsIn(STUDIO_SIZES as unknown as string[])
-  silhouetteSize?: string;
+  @ApiProperty({ enum: STUDIO_APPT_SLOTS })
+  @IsIn(STUDIO_APPT_SLOTS as unknown as string[])
+  appointmentSlot!: string;
 
+  // ── Fabric selection (optional, multi) ────────────────────────────
   @ApiPropertyOptional({
-    minimum: STUDIO_HEIGHT_RANGE.min,
-    maximum: STUDIO_HEIGHT_RANGE.max,
-    description: 'cm',
+    description: 'Fabric ids the customer expressed interest in. Empty array means no preselection.',
+    type: [String],
   })
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(STUDIO_HEIGHT_RANGE.min)
-  @Max(STUDIO_HEIGHT_RANGE.max)
-  silhouetteHeight?: number;
-
-  // ── Composition ───────────────────────────────────────────────────
-  // ORDER → modelId + fabricId required ; APPOINTMENT → optional.
-  // Note: `@IsOptional()` would short-circuit `@ValidateIf` (returns true on
-  // undefined and skips every other decorator), so we drop it on the
-  // conditionally-required fields. `@ValidateIf` is the only gate.
-  @ApiPropertyOptional()
-  @ValidateIf((o: CreateStudioRequestDto) => o.type === StudioRequestTypeDto.ORDER)
-  @IsUUID()
-  modelId?: string;
-
-  @ApiPropertyOptional()
-  @ValidateIf((o: CreateStudioRequestDto) => o.type === StudioRequestTypeDto.ORDER)
-  @IsUUID()
-  fabricId?: string;
-
-  // ── ORDER only ────────────────────────────────────────────────────
-  @ApiPropertyOptional({ enum: STUDIO_SIZE_REFS })
-  @ValidateIf((o: CreateStudioRequestDto) => o.type === StudioRequestTypeDto.ORDER)
-  @IsIn(STUDIO_SIZE_REFS as unknown as string[])
-  sizeRef?: string;
-
-  @ApiPropertyOptional({ enum: StudioMeasureModeDto })
-  @ValidateIf((o: CreateStudioRequestDto) => o.type === StudioRequestTypeDto.ORDER)
-  @IsEnum(StudioMeasureModeDto)
-  measurementMode?: StudioMeasureModeDto;
-
-  // ── APPOINTMENT only ──────────────────────────────────────────────
-  @ApiPropertyOptional({ enum: StudioAppointmentModeDto })
-  @ValidateIf((o: CreateStudioRequestDto) => o.type === StudioRequestTypeDto.APPOINTMENT)
-  @IsEnum(StudioAppointmentModeDto)
-  appointmentMode?: StudioAppointmentModeDto;
-
-  @ApiPropertyOptional({ description: 'ISO date string (YYYY-MM-DD).' })
-  @ValidateIf((o: CreateStudioRequestDto) => o.type === StudioRequestTypeDto.APPOINTMENT)
-  @IsDateString()
-  appointmentDate?: string;
-
-  @ApiPropertyOptional({ enum: STUDIO_APPT_SLOTS })
-  @ValidateIf((o: CreateStudioRequestDto) => o.type === StudioRequestTypeDto.APPOINTMENT)
-  @IsIn(STUDIO_APPT_SLOTS as unknown as string[])
-  appointmentSlot?: string;
+  @IsArray()
+  @ArrayMaxSize(50)
+  @ArrayUnique()
+  @IsUUID('all', { each: true })
+  selectedFabricIds?: string[];
 
   // ── Open text ─────────────────────────────────────────────────────
   @ApiPropertyOptional()

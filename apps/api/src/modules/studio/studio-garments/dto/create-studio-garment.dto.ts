@@ -3,16 +3,17 @@ import {
   IsBoolean,
   IsInt,
   IsOptional,
-  IsString,
   IsUUID,
-  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { BilingualTextDto } from '../../../../common/dto/bilingual-text.dto';
+import {
+  BilingualLongTextDto,
+  BilingualTextDto,
+} from '../../../../common/dto/bilingual-text.dto';
 
-export class CreateStudioFabricDto {
+export class CreateStudioGarmentDto {
   @ApiProperty({ description: 'Parent fabric family id.' })
   @IsUUID()
   familyId!: string;
@@ -22,17 +23,11 @@ export class CreateStudioFabricDto {
   @Type(() => BilingualTextDto)
   name!: BilingualTextDto;
 
-  @ApiPropertyOptional({ description: 'Swatch image URL (palette tile).' })
+  @ApiPropertyOptional({ type: BilingualLongTextDto })
   @IsOptional()
-  @IsString()
-  @MaxLength(500)
-  swatchImage?: string;
-
-  @ApiPropertyOptional({ description: 'Full-frame photo of the fabric.' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(500)
-  photoImage?: string;
+  @ValidateNested()
+  @Type(() => BilingualLongTextDto)
+  description?: BilingualLongTextDto;
 
   @ApiPropertyOptional({ default: 0 })
   @IsOptional()

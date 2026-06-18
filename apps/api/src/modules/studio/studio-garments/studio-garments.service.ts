@@ -1,23 +1,26 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, type StudioFabric } from '@prisma/client';
+import { Prisma, type StudioGarment } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateStudioFabricDto } from './dto/create-studio-fabric.dto';
-import { UpdateStudioFabricDto } from './dto/update-studio-fabric.dto';
-import { ListStudioFabricsQuery } from './dto/list-studio-fabrics.query';
+import { CreateStudioGarmentDto } from './dto/create-studio-garment.dto';
+import { UpdateStudioGarmentDto } from './dto/update-studio-garment.dto';
+import { ListStudioGarmentsQuery } from './dto/list-studio-garments.query';
 
 const ADMIN_INCLUDE = {
   family: { select: { id: true, slug: true, name: true } },
+  photos: {
+    orderBy: { sortOrder: 'asc' as const },
+  },
 } as const;
 
 @Injectable()
-export class StudioFabricsService {
+export class StudioGarmentsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async listForAdmin(query: ListStudioFabricsQuery) {
+  async listForAdmin(query: ListStudioGarmentsQuery) {
     const page = query.page ?? 1;
     const pageSize = query.pageSize ?? 50;
 
-    const where: Prisma.StudioFabricWhereInput = {
+    const where: Prisma.StudioGarmentWhereInput = {
       ...(query.familyId ? { familyId: query.familyId } : {}),
       ...(query.isActive !== undefined ? { isActive: query.isActive === 'true' } : {}),
     };
@@ -26,21 +29,21 @@ export class StudioFabricsService {
     const sortDir = query.sortDir ?? 'asc';
 
     const [data, total] = await this.prisma.$transaction([
-      this.prisma.studioFabric.findMany({
+      this.prisma.studioGarment.findMany({
         where,
         include: ADMIN_INCLUDE,
         orderBy: [{ [sortBy]: sortDir }, { id: 'asc' }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
-      this.prisma.studioFabric.count({ where }),
+      this.prisma.studioGarment.count({ where }),
     ]);
 
     return { data, total, page, pageSize };
   }
 
   async findByIdForAdmin(id: string) {
-    const row = await this.prisma.studioFabric.findUnique({
+    const row = await this.prisma.studioGarment.findUnique({
       where: { id },
       include: ADMIN_INCLUDE,
     });
@@ -48,45 +51,47 @@ export class StudioFabricsService {
     return row;
   }
 
-  async create(dto: CreateStudioFabricDto): Promise<StudioFabric> {
+  async create(dto: CreateStudioGarmentDto): Promise<StudioGarment> {
     await this.assertFamilyExists(dto.familyId);
-    return this.prisma.studioFabric.create({
+    return this.prisma.studioGarment.create({
       data: {
         familyId: dto.familyId,
         name: dto.name as unknown as Prisma.InputJsonValue,
-        swatchImage: dto.swatchImage ?? null,
-        photoImage: dto.photoImage ?? null,
+        description: dto.description
+          ? (dto.description as unknown as Prisma.InputJsonValue)
+          : Prisma.JsonNull,
         sortOrder: dto.sortOrder ?? 0,
         isActive: dto.isActive ?? true,
       },
     });
   }
 
-  async update(id: string, dto: UpdateStudioFabricDto): Promise<StudioFabric> {
-    const existing = await this.prisma.studioFabric.findUnique({ where: { id } });
+  async update(id: string, dto: UpdateStudioGarmentDto): Promise<StudioGarment> {
+    const existing = await this.prisma.studioGarment.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('errors.not_found');
 
     if (dto.familyId !== undefined && dto.familyId !== existing.familyId) {
       await this.assertFamilyExists(dto.familyId);
     }
 
-    const data: Prisma.StudioFabricUpdateInput = {};
+    const data: Prisma.StudioGarmentUpdateInput = {};
     if (dto.familyId !== undefined) {
       data.family = { connect: { id: dto.familyId } };
     }
     if (dto.name !== undefined) data.name = dto.name as unknown as Prisma.InputJsonValue;
-    if (dto.swatchImage !== undefined) data.swatchImage = dto.swatchImage || null;
-    if (dto.photoImage !== undefined) data.photoImage = dto.photoImage || null;
+    if (dto.description !== undefined) {
+      data.description = dto.description as unknown as Prisma.InputJsonValue;
+    }
     if (dto.sortOrder !== undefined) data.sortOrder = dto.sortOrder;
     if (dto.isActive !== undefined) data.isActive = dto.isActive;
 
-    return this.prisma.studioFabric.update({ where: { id }, data });
+    return this.prisma.studioGarment.update({ where: { id }, data });
   }
 
   async remove(id: string): Promise<void> {
-    const existing = await this.prisma.studioFabric.findUnique({ where: { id } });
+    const existing = await this.prisma.studioGarment.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('errors.not_found');
-    await this.prisma.studioFabric.delete({ where: { id } });
+    await this.prisma.studioGarment.delete({ where: { id } });
   }
 
   private async assertFamilyExists(familyId: string): Promise<void> {

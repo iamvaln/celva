@@ -7,13 +7,11 @@ import {
 import {
   Prisma,
   type StudioAppointmentMode,
-  type StudioGender,
-  type StudioOrderMeasureMode,
   type StudioRequest,
   type StudioRequestStatus,
   type StudioRequestType,
 } from '@prisma/client';
-import { APP_SOURCE, type AppSource, SETTING_KEYS } from '@celva/shared';
+import { type AppSource, SETTING_KEYS } from '@celva/shared';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MailService } from '../../mail/mail.service';
 import {
@@ -25,8 +23,20 @@ import { ListStudioRequestsQuery } from './dto/list-studio-requests.query';
 import { StudioTransitionStatusDto } from './dto/transition-studio-request.dto';
 
 const ADMIN_INCLUDE = {
-  model: { select: { id: true, slug: true, name: true, coverImage: true } },
-  fabric: { select: { id: true, name: true, swatchImage: true, photoImage: true } },
+  selectedFabrics: {
+    include: {
+      fabric: {
+        select: {
+          id: true,
+          name: true,
+          swatchImage: true,
+          photoImage: true,
+          family: { select: { id: true, slug: true, name: true } },
+        },
+      },
+    },
+    orderBy: { sortOrder: 'asc' as const },
+  },
 } as const;
 
 /** Allowed forward transitions. REJECTED is a side-jump from any non-terminal state. */
@@ -53,58 +63,37 @@ export class StudioRequestsService {
     dto: CreateStudioRequestDto,
     appSource: AppSource,
   ): Promise<{ id: string }> {
-    // Confirm referenced model/fabric exist when provided.
-    if (dto.modelId) {
-      const model = await this.prisma.studioModel.findUnique({
-        where: { id: dto.modelId },
-        select: { id: true, isActive: true },
+    const fabricIds = dto.selectedFabricIds ?? [];
+    if (fabricIds.length > 0) {
+      const active = await this.prisma.studioFabric.count({
+        where: { id: { in: fabricIds }, isActive: true },
       });
-      if (!model || !model.isActive) {
-        throw new BadRequestException('errors.not_found');
-      }
-    }
-    if (dto.fabricId) {
-      const fabric = await this.prisma.studioFabric.findUnique({
-        where: { id: dto.fabricId },
-        select: { id: true, modelId: true, isActive: true },
-      });
-      if (!fabric || !fabric.isActive) {
-        throw new BadRequestException('errors.not_found');
-      }
-      if (dto.modelId && fabric.modelId !== dto.modelId) {
-        // Fabric doesn't belong to the chosen model.
+      if (active !== fabricIds.length) {
         throw new BadRequestException('errors.not_found');
       }
     }
 
     const created = await this.prisma.studioRequest.create({
       data: {
-        type: dto.type as StudioRequestType,
+        type: 'APPOINTMENT' satisfies StudioRequestType,
         customerName: dto.customerName.trim(),
         customerEmail: dto.customerEmail?.trim().toLowerCase() ?? null,
         customerPhone: dto.customerPhone.trim(),
         customerCity: dto.customerCity?.trim() ?? null,
-        gender: dto.gender ? (dto.gender as StudioGender) : null,
-        skinToneIndex: dto.skinToneIndex ?? null,
-        silhouetteSize: dto.silhouetteSize ?? null,
-        silhouetteHeight: dto.silhouetteHeight ?? null,
-        modelId: dto.modelId ?? null,
-        fabricId: dto.fabricId ?? null,
-        sizeRef: dto.sizeRef ?? null,
-        measurementMode: dto.measurementMode
-          ? (dto.measurementMode as StudioOrderMeasureMode)
-          : null,
-        appointmentMode: dto.appointmentMode
-          ? (dto.appointmentMode as StudioAppointmentMode)
-          : null,
-        appointmentDate: dto.appointmentDate ? new Date(dto.appointmentDate) : null,
-        appointmentSlot: dto.appointmentSlot ?? null,
+        appointmentMode: dto.appointmentMode as StudioAppointmentMode,
+        appointmentDate: new Date(dto.appointmentDate),
+        appointmentSlot: dto.appointmentSlot,
         notes: dto.notes ?? null,
         appSource,
+        selectedFabrics: {
+          create: fabricIds.map((fabricId, idx) => ({
+            fabricId,
+            sortOrder: idx,
+          })),
+        },
       },
     });
 
-    // Fire-and-forget emails. Failure mustn't block the response.
     void this.dispatchEmails(created.id).catch((err: unknown) => {
       this.logger.error(`Studio email dispatch failed: ${(err as Error).message}`);
     });
@@ -200,28 +189,37 @@ export class StudioRequestsService {
     const row = await this.prisma.studioRequest.findUnique({
       where: { id: requestId },
       include: {
-        model: { select: { name: true } },
-        fabric: { select: { name: true } },
+        selectedFabrics: {
+          include: {
+            fabric: {
+              select: {
+                name: true,
+                family: { select: { name: true } },
+              },
+            },
+          },
+          orderBy: { sortOrder: 'asc' },
+        },
       },
     });
     if (!row) return;
 
-    const modelName = pickFr(row.model?.name);
-    const fabricName = pickFr(row.fabric?.name);
+    const fabricLabels = row.selectedFabrics.map((sel) => {
+      const fabricName = pickFr(sel.fabric.name);
+      const familyName = pickFr(sel.fabric.family.name);
+      return familyName ? `${familyName} · ${fabricName ?? ''}`.trim() : (fabricName ?? '');
+    });
 
     const customer = buildStudioRequestCustomerEmail({
-      type: row.type,
       customerName: row.customerName,
       customerEmail: row.customerEmail,
       customerPhone: row.customerPhone,
-      modelName,
-      fabricName,
-      sizeRef: row.sizeRef,
       appointmentDate: row.appointmentDate
         ? row.appointmentDate.toISOString().slice(0, 10)
         : null,
       appointmentSlot: row.appointmentSlot,
       appointmentMode: row.appointmentMode,
+      fabricLabels,
       notes: row.notes,
     });
     if (customer) void this.mail.send(customer).catch(() => undefined);
@@ -231,18 +229,15 @@ export class StudioRequestsService {
       const internal = buildStudioRequestInternalEmail({
         to: contactEmail,
         requestId: row.id,
-        type: row.type,
         customerName: row.customerName,
         customerEmail: row.customerEmail,
         customerPhone: row.customerPhone,
-        modelName,
-        fabricName,
-        sizeRef: row.sizeRef,
         appointmentDate: row.appointmentDate
           ? row.appointmentDate.toISOString().slice(0, 10)
           : null,
         appointmentSlot: row.appointmentSlot,
         appointmentMode: row.appointmentMode,
+        fabricLabels,
         notes: row.notes,
       });
       void this.mail.send(internal).catch(() => undefined);
@@ -257,7 +252,6 @@ export class StudioRequestsService {
   }
 }
 
-// Local helper: pull the FR side of a bilingual Json field for email copy.
 function pickFr(json: unknown): string | null {
   if (!json || typeof json !== 'object') return null;
   const obj = json as Record<string, unknown>;
@@ -268,6 +262,3 @@ function pickFr(json: unknown): string | null {
       ? (obj.en as string)
       : null;
 }
-
-// Keep an unused import alive for clarity (AppSource is used at the call site).
-void APP_SOURCE;

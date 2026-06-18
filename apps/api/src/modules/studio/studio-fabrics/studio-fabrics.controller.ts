@@ -21,8 +21,8 @@ import { UpdateStudioFabricDto } from './dto/update-studio-fabric.dto';
 import { ListStudioFabricsQuery } from './dto/list-studio-fabrics.query';
 
 /**
- * Fabrics live under each StudioModel. Admin-only — the public configurator
- * reads fabrics through the eager-loaded relation on /studio/models.
+ * Fabrics live under each fabric family. Admin-only — the public storefront
+ * reads fabrics through the eager-loaded relation on /studio/families.
  */
 @ApiTags('studio-fabrics')
 @ApiBearerAuth('access-token')
@@ -32,7 +32,7 @@ export class StudioFabricsController {
   constructor(private readonly fabrics: StudioFabricsService) {}
 
   @Get('admin')
-  @ApiOperation({ summary: 'List Studio fabrics (admin). Filter by modelId.' })
+  @ApiOperation({ summary: 'List Studio fabrics (admin). Filter by familyId.' })
   listAdmin(@Query() query: ListStudioFabricsQuery) {
     return this.fabrics.listForAdmin(query);
   }
