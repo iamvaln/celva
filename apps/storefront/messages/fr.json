@@ -580,120 +580,77 @@
   "studio": {
     "intro": {
       "eyebrow": "Le Studio · Atelier rue Foch, Douala",
-      "title_a": "Composez votre pièce,",
-      "title_em": "tissée pour vous.",
-      "lede": "Réglez une silhouette, choisissez une coupe et un motif : le rendu se compose en direct. Rien n'est fait à l'avance — chaque pièce est tissée et cousue à vos mesures."
+      "title_a": "Choisissez le tissu,",
+      "title_em": "le reste suit.",
+      "lede": "Parcourez nos familles de tissus, regardez les pièces déjà cousues, et notez ce qui vous parle. La styliste vous reçoit en rendez-vous pour transformer vos coups de cœur en pièce sur-mesure."
     },
-    "configurator": {
-      "guide": "À gauche, la silhouette & la coupe · au centre, le rendu · à droite, le motif.",
-      "col_silhouette": "La silhouette",
-      "col_coupe": "La coupe",
-      "col_motif": "Le motif",
-      "field_genre": "Genre",
-      "field_teint": "Teint de peau",
-      "field_size": "Taille",
-      "field_height": "Hauteur",
-      "gender_femme": "Femme",
-      "gender_homme": "Homme",
-      "height_unit": "cm",
-      "fabrics_hint": "Motifs proposés pour cette coupe. Autre tissu ou coloris ? La styliste compose avec vous sur mesure.",
-      "render_badge": "Rendu généré · exemple",
-      "render_generating": "Génération du rendu…",
-      "fiche": {
-        "coupe": "Coupe",
-        "motif": "Motif",
-        "estimation": "Estimation",
-        "delai": "Délai",
-        "note": "Rendu indicatif : la pièce est coupée et cousue à vos mesures après confirmation. Le motif est tissé / teint à la commande, jamais en stock.",
-        "empty_model": "Choisissez une coupe pour démarrer.",
-        "empty_fabric": "Sélectionnez un motif pour voir le rendu."
-      },
-      "empty_models": "Aucun modèle disponible pour l'instant. La styliste prépare la première collection — revenez bientôt."
+    "browse": {
+      "empty_families": "Aucune famille de tissu disponible pour l'instant. La styliste prépare la première collection — revenez bientôt.",
+      "family_eyebrow": "Famille de tissu",
+      "garments_label": "Pièces déjà cousues",
+      "fabrics_label": "Tissus disponibles"
     },
-    "finalize": {
-      "heading": "Finalisez votre demande",
-      "tab_order": "Passer commande",
-      "tab_appt": "Prendre rendez-vous"
+    "cta": {
+      "empty": "Aucun tissu sélectionné",
+      "count": "{count, plural, one {1 tissu sélectionné} other {# tissus sélectionnés}}",
+      "book_empty": "Prendre rendez-vous",
+      "book_with_selection": "Réserver mon rendez-vous"
     },
-    "form": {
-      "order": {
-        "intro": "Laissez vos coordonnées : nous confirmons votre composition, tissons le motif à la commande et organisons la prise de mesures sous 24 h.",
+    "rdv": {
+      "eyebrow": "Rendez-vous",
+      "title": "Réserver un rendez-vous",
+      "lede": "Indiquez vos coordonnées et un créneau. La styliste vous confirme par WhatsApp dans les 24 h et prépare votre rendez-vous autour des tissus que vous avez retenus.",
+      "selection_label": "Vos tissus retenus",
+      "fields": {
         "name": "Nom complet",
-        "name_ph": "Votre nom",
         "phone": "WhatsApp / Téléphone",
-        "phone_ph": "+237 6 …",
         "email": "Email",
-        "email_ph": "vous@exemple.cm",
-        "email_optional": "(facultatif)",
-        "city": "Ville",
-        "city_ph": "Douala",
-        "size": "Taille de référence",
-        "size_default": "Je connais ma taille",
-        "measure": "Prise de mesures",
-        "measure_atelier": "À l'atelier, rue Foch",
-        "measure_whatsapp": "Par WhatsApp (vidéo guidée)",
-        "notes": "Précisions",
-        "notes_optional": "(facultatif)",
-        "notes_ph": "Longueur, manches, occasion, échéance…",
-        "submit": "Envoyer ma demande sur-mesure"
-      },
-      "appt": {
-        "intro": "Réservez un créneau avec notre styliste pour choisir tissu et coupe ensemble, et prendre vos mesures.",
-        "where": "Où ?",
-        "atelier": "À l'atelier",
-        "atelier_sub": "Rue Foch, Douala · café offert",
-        "atelier_dur": "45 min",
-        "visio": "En visio WhatsApp",
-        "visio_sub": "Depuis chez vous, où que vous soyez",
-        "visio_dur": "30 min",
-        "when": "Quel jour ?",
+        "mode": "Format",
         "date": "Date souhaitée",
         "slot": "Créneau",
-        "name": "Nom complet",
-        "phone": "WhatsApp / Téléphone",
-        "submit": "Réserver le rendez-vous"
+        "notes": "Précisions"
       },
-      "error_generic": "Une erreur est survenue. Réessayez ou contactez-nous sur WhatsApp."
-    },
-    "success": {
-      "order_title": "Demande envoyée",
-      "order_body": "Merci {name} ! Votre {model} en {fabric}, taille {size}, est notée. Nous tissons le motif à la commande et organisons vos mesures sous 24 h.",
-      "appt_title": "Rendez-vous réservé",
-      "appt_body": "C'est noté — {mode}, le {date} à {slot}. Nous préparons votre {model} en {fabric} pour l'essai. Confirmation par WhatsApp.",
-      "back": "Composer une autre pièce"
+      "mode": {
+        "atelier": "À l'atelier, rue Foch",
+        "visio": "Visio WhatsApp"
+      },
+      "notes_placeholder": "Occasion, échéance, idées de coupes, autre tissu en tête…",
+      "submit": "Réserver mon rendez-vous",
+      "submitting": "Envoi…",
+      "errors": {
+        "required": "Champ requis",
+        "phone": "Numéro Cameroun attendu (+237 …)",
+        "email": "Email invalide",
+        "submit": "L'envoi a échoué. Réessayez ou contactez-nous par WhatsApp."
+      },
+      "success_eyebrow": "Merci",
+      "success_title": "Votre rendez-vous est enregistré.",
+      "success_body": "La styliste vous confirme par WhatsApp dans les 24 h."
     },
     "process": {
       "eyebrow": "Comment ça marche",
-      "title_a": "Du choix à la ",
-      "title_em": "livraison.",
-      "note": "Le sur-mesure Celva en quatre temps — de la composition à l'essayage final.",
-      "step_1_t": "Composition",
-      "step_1_b": "Réglez la silhouette, choisissez la coupe et le motif — le rendu se compose en direct, sous vos yeux.",
-      "step_2_t": "Vos mesures",
-      "step_2_b": "À l'atelier, ou par WhatsApp avec une vidéo guidée. Quinze minutes, une seule fois.",
-      "step_3_t": "Confection",
-      "step_3_b": "Le motif est tissé ou teint à la commande, puis coupé et cousu rue Foch. Quatre à six semaines.",
-      "step_4_t": "Essayage & livraison",
-      "step_4_b": "Un essayage final, les retouches offertes, puis livraison ou retrait à l'atelier."
-    },
-    "gallery": {
-      "eyebrow": "Déjà portées",
-      "title_a": "Quelques pièces",
-      "title_em": "sorties de l'atelier.",
-      "note": "Chacune part d'une coupe Celva. Cliquez sur « Composer » pour ouvrir le configurateur dessus.",
-      "compose_cta": "Composer",
-      "empty": "La galerie se remplit au fil des pièces sorties de l'atelier."
+      "title_a": "De vos coups de cœur",
+      "title_em": "à la pièce finie.",
+      "note": "Quatre étapes simples, du choix du tissu à la livraison.",
+      "step_1_t": "Vous repérez les tissus",
+      "step_1_b": "Parcourez les familles, ajoutez les tissus qui vous parlent à votre sélection.",
+      "step_2_t": "Vous prenez rendez-vous",
+      "step_2_b": "En atelier rue Foch ou en visio WhatsApp. La styliste prépare votre rendez-vous autour de vos tissus.",
+      "step_3_t": "On dessine la pièce ensemble",
+      "step_3_b": "Coupe, mesures, finitions. La styliste vous conseille selon votre morphologie et l’usage prévu.",
+      "step_4_t": "Confection sous 4 à 7 semaines",
+      "step_4_b": "Tissée, coupée et finie main à l’atelier. Livrée pliée dans son calicot, avec étiquette manuscrite."
     },
     "stylist": {
-      "eyebrow": "Une question avant de commander ?",
-      "title": "Parlez à notre styliste.",
-      "lead": "Aïcha vous guide sur le choix du tissu, la coupe et les mesures. Du mardi au samedi, de 10 h à 19 h.",
+      "eyebrow": "Parler à la styliste",
+      "title": "Une question avant de venir ?",
+      "lead": "WhatsApp est le moyen le plus rapide. Envoyez une photo, une référence ou une question — la styliste répond dans la journée.",
       "whatsapp": "Écrire sur WhatsApp",
-      "compose": "Composer ma pièce",
-      "fact_weeks_n": "4–6",
-      "fact_weeks_l": "semaines de confection",
-      "fact_alter_n": "∞",
-      "fact_alter_l": "retouches offertes à vie"
+      "book_cta": "Aller au rendez-vous",
+      "fact_weeks_n": "4–7 sem.",
+      "fact_weeks_l": "Délai de confection",
+      "fact_alter_n": "Inclus",
+      "fact_alter_l": "Ajustements après livraison"
     }
   },
   "journal": {

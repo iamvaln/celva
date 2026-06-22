@@ -579,121 +579,78 @@
   },
   "studio": {
     "intro": {
-      "eyebrow": "The Studio · Rue Foch atelier, Douala",
-      "title_a": "Compose your piece,",
-      "title_em": "woven for you.",
-      "lede": "Pick a silhouette, a cut and a pattern: the render composes live. Nothing is made ahead — each piece is woven and stitched to your measurements."
+      "eyebrow": "The Studio · Atelier rue Foch, Douala",
+      "title_a": "Pick the fabric,",
+      "title_em": "the rest follows.",
+      "lede": "Browse our fabric families, look at pieces already cut, and note what speaks to you. The stylist sees you by appointment to turn your picks into a made-to-measure piece."
     },
-    "configurator": {
-      "guide": "Left: silhouette & cut · centre: the render · right: the pattern.",
-      "col_silhouette": "The silhouette",
-      "col_coupe": "The cut",
-      "col_motif": "The pattern",
-      "field_genre": "Gender",
-      "field_teint": "Skin tone",
-      "field_size": "Size",
-      "field_height": "Height",
-      "gender_femme": "Woman",
-      "gender_homme": "Man",
-      "height_unit": "cm",
-      "fabrics_hint": "Patterns proposed for this cut. Different fabric or colour? The stylist will compose with you.",
-      "render_badge": "Generated render · example",
-      "render_generating": "Generating the render…",
-      "fiche": {
-        "coupe": "Cut",
-        "motif": "Pattern",
-        "estimation": "Estimate",
-        "delai": "Lead time",
-        "note": "Indicative render: the piece is cut and stitched to your measurements after confirmation. The pattern is woven / dyed to order, never from stock.",
-        "empty_model": "Pick a cut to start.",
-        "empty_fabric": "Pick a pattern to see the render."
-      },
-      "empty_models": "No models available yet. The stylist is preparing the first collection — check back soon."
+    "browse": {
+      "empty_families": "No fabric families available yet. The stylist is preparing the first collection — check back soon.",
+      "family_eyebrow": "Fabric family",
+      "garments_label": "Pieces already cut",
+      "fabrics_label": "Available fabrics"
     },
-    "finalize": {
-      "heading": "Finalise your request",
-      "tab_order": "Place order",
-      "tab_appt": "Book appointment"
+    "cta": {
+      "empty": "No fabric selected",
+      "count": "{count, plural, one {1 fabric selected} other {# fabrics selected}}",
+      "book_empty": "Book an appointment",
+      "book_with_selection": "Book my appointment"
     },
-    "form": {
-      "order": {
-        "intro": "Leave your details: we confirm your composition, weave the pattern to order and arrange measurements within 24 h.",
+    "rdv": {
+      "eyebrow": "Appointment",
+      "title": "Book an appointment",
+      "lede": "Drop your details and a time slot. The stylist confirms by WhatsApp within 24 hours and prepares your visit around the fabrics you picked.",
+      "selection_label": "Your selected fabrics",
+      "fields": {
         "name": "Full name",
-        "name_ph": "Your name",
         "phone": "WhatsApp / Phone",
-        "phone_ph": "+237 6 …",
         "email": "Email",
-        "email_ph": "you@example.com",
-        "email_optional": "(optional)",
-        "city": "City",
-        "city_ph": "Douala",
-        "size": "Reference size",
-        "size_default": "I know my size",
-        "measure": "Measurements",
-        "measure_atelier": "At the atelier, rue Foch",
-        "measure_whatsapp": "Over WhatsApp (guided video)",
-        "notes": "Notes",
-        "notes_optional": "(optional)",
-        "notes_ph": "Length, sleeves, occasion, deadline…",
-        "submit": "Send my made-to-measure request"
-      },
-      "appt": {
-        "intro": "Book a slot with our stylist to pick fabric and cut together, and take your measurements.",
-        "where": "Where?",
-        "atelier": "At the atelier",
-        "atelier_sub": "Rue Foch, Douala · coffee included",
-        "atelier_dur": "45 min",
-        "visio": "Over WhatsApp video",
-        "visio_sub": "From wherever you are",
-        "visio_dur": "30 min",
-        "when": "Which day?",
+        "mode": "Format",
         "date": "Preferred date",
         "slot": "Time slot",
-        "name": "Full name",
-        "phone": "WhatsApp / Phone",
-        "submit": "Book the appointment"
+        "notes": "Notes"
       },
-      "error_generic": "Something went wrong. Try again or message us on WhatsApp."
-    },
-    "success": {
-      "order_title": "Request sent",
-      "order_body": "Thank you {name}! Your {model} in {fabric}, size {size}, is noted. We're weaving the pattern to order and arranging your measurements within 24 h.",
-      "appt_title": "Appointment booked",
-      "appt_body": "Noted — {mode}, on {date} at {slot}. We're preparing your {model} in {fabric} for the fitting. Confirmation by WhatsApp.",
-      "back": "Compose another piece"
+      "mode": {
+        "atelier": "At the atelier, rue Foch",
+        "visio": "WhatsApp video"
+      },
+      "notes_placeholder": "Occasion, deadline, cut ideas, other fabric in mind…",
+      "submit": "Book my appointment",
+      "submitting": "Sending…",
+      "errors": {
+        "required": "Required field",
+        "phone": "Cameroon number expected (+237 …)",
+        "email": "Invalid email",
+        "submit": "Sending failed. Retry or reach us on WhatsApp."
+      },
+      "success_eyebrow": "Thank you",
+      "success_title": "Your appointment is booked.",
+      "success_body": "The stylist confirms by WhatsApp within 24 hours."
     },
     "process": {
       "eyebrow": "How it works",
-      "title_a": "From choice to ",
-      "title_em": "delivery.",
-      "note": "Celva made-to-measure in four steps — from composition to final fitting.",
-      "step_1_t": "Composition",
-      "step_1_b": "Pick the silhouette, the cut and the pattern — the render composes live, in front of you.",
-      "step_2_t": "Your measurements",
-      "step_2_b": "At the atelier, or over WhatsApp with a guided video. Fifteen minutes, once.",
-      "step_3_t": "Make",
-      "step_3_b": "The pattern is woven or dyed to order, then cut and stitched on rue Foch. Four to six weeks.",
-      "step_4_t": "Fitting & delivery",
-      "step_4_b": "A final fitting, alterations on the house, then delivery or pickup at the atelier."
-    },
-    "gallery": {
-      "eyebrow": "Already worn",
-      "title_a": "A few pieces",
-      "title_em": "out of the atelier.",
-      "note": "Each one starts from a Celva cut. Click \"Compose\" to open the configurator on it.",
-      "compose_cta": "Compose",
-      "empty": "The gallery fills as pieces leave the atelier."
+      "title_a": "From your picks",
+      "title_em": "to the finished piece.",
+      "note": "Four simple steps, from fabric pick to delivery.",
+      "step_1_t": "You pick fabrics",
+      "step_1_b": "Browse families, add the fabrics that speak to you to your selection.",
+      "step_2_t": "You book an appointment",
+      "step_2_b": "At the atelier rue Foch or over WhatsApp video. The stylist prepares your visit around your fabrics.",
+      "step_3_t": "We draw the piece together",
+      "step_3_b": "Cut, measurements, finishes. The stylist advises based on your shape and the occasion.",
+      "step_4_t": "Made in 4 to 7 weeks",
+      "step_4_b": "Woven, cut and hand-finished at the atelier. Delivered folded in calico with a hand-written label."
     },
     "stylist": {
-      "eyebrow": "A question before ordering?",
-      "title": "Talk to our stylist.",
-      "lead": "Aïcha guides you on fabric, cut and measurements. Tuesday to Saturday, 10 a.m. to 7 p.m.",
+      "eyebrow": "Talk to the stylist",
+      "title": "A question before you visit?",
+      "lead": "WhatsApp is fastest. Send a photo, a reference, or a question — the stylist replies the same day.",
       "whatsapp": "Message on WhatsApp",
-      "compose": "Compose my piece",
-      "fact_weeks_n": "4–6",
-      "fact_weeks_l": "weeks of make",
-      "fact_alter_n": "∞",
-      "fact_alter_l": "free alterations for life"
+      "book_cta": "Go to the appointment form",
+      "fact_weeks_n": "4–7 wk",
+      "fact_weeks_l": "Make time",
+      "fact_alter_n": "Included",
+      "fact_alter_l": "Post-delivery adjustments"
     }
   },
   "journal": {

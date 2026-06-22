@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
-import { listStudioModels } from '@/lib/studio';
+import { listStudioFamilies } from '@/lib/studio';
 import { getPublicSettings, buildWhatsAppHref } from '@/lib/public-settings';
-import { StudioConfigurator } from '@/components/studio/StudioConfigurator';
-import { StudioGallery } from '@/components/studio/StudioGallery';
+import { StudioBrowse } from '@/components/studio/StudioBrowse';
 import styles from './studio.module.css';
 
 type Params = { locale: Locale };
@@ -31,9 +30,10 @@ export default async function StudioPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'studio' });
 
-  // Single fetch hydrates models + fabrics + galleryItems. Degrades to []
-  // if the API is down — the configurator renders its empty state then.
-  const models = await listStudioModels(locale).catch(() => []);
+  // One round-trip hydrates families + fabrics + garments + photos.
+  // Degrades to [] if the API is down — StudioBrowse renders the empty
+  // state then.
+  const families = await listStudioFamilies(locale).catch(() => []);
   const settings = await getPublicSettings(locale);
   const whatsappHref = settings.contactWhatsapp
     ? buildWhatsAppHref(settings.contactWhatsapp)
@@ -41,7 +41,6 @@ export default async function StudioPage({
 
   return (
     <div className={styles.studioRoot}>
-      {/* INTRO */}
       <section className={styles.intro}>
         <div className={`${styles.container} ${styles.introInner}`}>
           <div className={styles.introHead}>
@@ -56,10 +55,8 @@ export default async function StudioPage({
         </div>
       </section>
 
-      {/* CONFIGURATOR */}
-      <StudioConfigurator models={models} locale={locale} />
+      <StudioBrowse families={families} locale={locale} />
 
-      {/* PROCESS */}
       <section className={`${styles.section} ${styles.sectionAlt}`}>
         <div className={styles.container}>
           <header className={styles.sectionHead}>
@@ -84,10 +81,6 @@ export default async function StudioPage({
         </div>
       </section>
 
-      {/* GALLERY — "Déjà portées" */}
-      <StudioGallery models={models} locale={locale} />
-
-      {/* STYLIST BAND */}
       <section className={`${styles.section} ${styles.sectionAlt} ${styles.sectionTight}`}>
         <div className={`${styles.container} ${styles.stylistGrid}`}>
           <div className={styles.stylistCopy}>
@@ -105,8 +98,8 @@ export default async function StudioPage({
                   {t('stylist.whatsapp')}
                 </a>
               )}
-              <a href="#composer" className={styles.btnSecondary}>
-                {t('stylist.compose')}
+              <a href="#book" className={styles.btnSecondary}>
+                {t('stylist.book_cta')}
               </a>
             </div>
           </div>
