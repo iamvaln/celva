@@ -136,7 +136,11 @@ export default async function ProductPage({
       id: attribute.id,
       name: pickLocalized(attribute.name, locale),
       isSize: SIZE_RE.test(`${attribute.name.fr} ${attribute.name.en}`),
-      values: values.map((v) => ({ id: v.id, label: pickLocalized(v.value, locale) })),
+      values: values.map((v) => ({
+        id: v.id,
+        label: pickLocalized(v.value, locale),
+        colorHex: v.colorHex ?? null,
+      })),
     }),
   );
 

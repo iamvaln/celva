@@ -59,6 +59,7 @@ export class ProductAttributeValuesService {
           value: dto.value as unknown as Prisma.InputJsonValue,
           sortOrder,
           attributeId: dto.attributeId,
+          colorHex: dto.colorHex ?? null,
         },
       });
     } catch (err) {
@@ -76,6 +77,7 @@ export class ProductAttributeValuesService {
     if (dto.sortOrder !== undefined && dto.sortOrder !== current.sortOrder) {
       data.sortOrder = dto.sortOrder;
     }
+    if (dto.colorHex !== undefined) data.colorHex = dto.colorHex;
 
     try {
       return await this.prisma.productAttributeValue.update({ where: { id }, data });

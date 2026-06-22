@@ -126,6 +126,7 @@ export type ProductAttributeValue = {
   value: { fr: string; en: string };
   sortOrder: number;
   attributeId: string;
+  colorHex?: string | null;
 };
 
 export type ProductVariant = {

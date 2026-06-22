@@ -18,7 +18,7 @@ export type BuyPanelAttribute = {
   name: string;
   /** Looks size-like (e.g. "Taille" / "Size") — gets the size-guide link. */
   isSize: boolean;
-  values: Array<{ id: string; label: string }>;
+  values: Array<{ id: string; label: string; colorHex?: string | null }>;
 };
 
 export type ProductBuyPanelProps = {
@@ -231,16 +231,27 @@ export function ProductBuyPanel({
                         : 'cursor-not-allowed border-border text-foreground-muted line-through',
                   ].join(' ')}
                 >
-                  {!attr.isSize && (
+                  {val.colorHex ? (
                     <span
                       aria-hidden
                       className={[
-                        'inline-block h-2.5 w-2.5 rounded-full border',
-                        selected
-                          ? 'border-background/40 bg-background'
-                          : 'border-border bg-foreground-muted/40',
+                        'inline-block h-4 w-4 rounded-full border',
+                        selected ? 'border-background/60' : 'border-border',
                       ].join(' ')}
+                      style={{ backgroundColor: val.colorHex }}
                     />
+                  ) : (
+                    !attr.isSize && (
+                      <span
+                        aria-hidden
+                        className={[
+                          'inline-block h-2.5 w-2.5 rounded-full border',
+                          selected
+                            ? 'border-background/40 bg-background'
+                            : 'border-border bg-foreground-muted/40',
+                        ].join(' ')}
+                      />
+                    )
                   )}
                   {val.label}
                 </button>

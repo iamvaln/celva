@@ -12,6 +12,7 @@
   "insufficient_stock": "Stock insuffisant.",
   "invalid_promo_code": "Code promo invalide ou expiré.",
   "invalid_email": "Adresse email invalide.",
+  "invalid_color_hex": "Couleur invalide (format attendu : #RRGGBB).",
   "password_too_short": "Le mot de passe doit contenir au moins 8 caractères.",
   "invalid_phone": "Numéro de téléphone camerounais invalide (format attendu : +2376XXXXXXXX ou +2372XXXXXXXX).",
   "email_already_used": "Cette adresse email est déjà utilisée.",

@@ -7,6 +7,7 @@ import {
   required,
   useTranslate,
 } from 'react-admin';
+import { ColorInput } from './ColorInput';
 
 export const AttributeValueEdit = () => {
   const translate = useTranslate();
@@ -26,6 +27,10 @@ export const AttributeValueEdit = () => {
           fullWidth
         />
         <NumberInput source="sortOrder" validate={[minValue(0)]} />
+        <ColorInput
+          source="colorHex"
+          label={translate('resources.attribute-values.fields.color_hex')}
+        />
       </SimpleForm>
     </Edit>
   );

@@ -62,6 +62,8 @@ export type ApiAttributeValue = {
   attributeId: string;
   value: { fr: string; en: string };
   sortOrder: number;
+  /** Hex swatch (#RRGGBB) for colour values; null for non-colour values. */
+  colorHex?: string | null;
 };
 
 export type ApiRelatedProduct = {
