@@ -50,9 +50,10 @@ const PAGINATED_RESOURCES = new Set<string>([
   'newsletter',
   'size-guides',
   'audit-logs',
+  'studio-families',
+  'studio-garments',
   'studio-models',
   'studio-fabrics',
-  'studio-gallery',
   'studio-requests',
 ]);
 
@@ -76,11 +77,12 @@ const ADMIN_PATH_RESOURCES = new Set<string>([
   'newsletter',
   'size-guides',
   'audit-logs',
-  // studio-models has BOTH a public list (/studio/models) and an admin list
-  // (/studio/models/admin). Admin path returns inactive rows too.
+  // Studio resources have BOTH public (/studio/...) and admin
+  // (/studio/.../admin) routes — admin path returns inactive rows too.
+  'studio-families',
+  'studio-garments',
   'studio-models',
   'studio-fabrics',
-  'studio-gallery',
   'studio-requests',
 ]);
 
@@ -91,9 +93,10 @@ const ADMIN_PATH_RESOURCES = new Set<string>([
  * namespace convention). Map here once.
  */
 const RESOURCE_PATH_OVERRIDES: Record<string, string> = {
+  'studio-families': 'studio/families',
+  'studio-garments': 'studio/garments',
   'studio-models': 'studio/models',
   'studio-fabrics': 'studio/fabrics',
-  'studio-gallery': 'studio/gallery',
   'studio-requests': 'studio/requests',
 };
 

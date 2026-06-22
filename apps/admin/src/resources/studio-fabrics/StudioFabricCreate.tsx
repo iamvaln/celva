@@ -13,7 +13,7 @@ import { ImageDropInput } from '../../components/ImageDropInput';
 export const StudioFabricCreate = () => (
   <Create redirect="list">
     <SimpleForm>
-      <ReferenceInput source="modelId" reference="studio-models">
+      <ReferenceInput source="familyId" reference="studio-families">
         <AutocompleteInput
           optionText={(record) => record?.name?.fr ?? record?.slug ?? '—'}
           validate={[required()]}

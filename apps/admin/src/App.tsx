@@ -109,15 +109,19 @@ import { SizeGuideList } from './resources/size-guides/SizeGuideList';
 import { SizeGuideCreate } from './resources/size-guides/SizeGuideCreate';
 import { SizeGuideEdit } from './resources/size-guides/SizeGuideEdit';
 import { AuditLogList } from './resources/audit-logs/AuditLogList';
+import { StudioFamilyList } from './resources/studio-families/StudioFamilyList';
+import { StudioFamilyCreate } from './resources/studio-families/StudioFamilyCreate';
+import { StudioFamilyEdit } from './resources/studio-families/StudioFamilyEdit';
+import { StudioGarmentList } from './resources/studio-garments/StudioGarmentList';
+import { StudioGarmentCreate } from './resources/studio-garments/StudioGarmentCreate';
+import { StudioGarmentEdit } from './resources/studio-garments/StudioGarmentEdit';
+import { StudioGarmentShow } from './resources/studio-garments/StudioGarmentShow';
 import { StudioModelList } from './resources/studio-models/StudioModelList';
 import { StudioModelCreate } from './resources/studio-models/StudioModelCreate';
 import { StudioModelEdit } from './resources/studio-models/StudioModelEdit';
 import { StudioFabricList } from './resources/studio-fabrics/StudioFabricList';
 import { StudioFabricCreate } from './resources/studio-fabrics/StudioFabricCreate';
 import { StudioFabricEdit } from './resources/studio-fabrics/StudioFabricEdit';
-import { StudioGalleryList } from './resources/studio-gallery/StudioGalleryList';
-import { StudioGalleryCreate } from './resources/studio-gallery/StudioGalleryCreate';
-import { StudioGalleryEdit } from './resources/studio-gallery/StudioGalleryEdit';
 import { StudioRequestList } from './resources/studio-requests/StudioRequestList';
 import { StudioRequestShow } from './resources/studio-requests/StudioRequestShow';
 import { RolesMatrix } from './resources/roles/RolesMatrix';
@@ -342,10 +346,17 @@ export const App = () => (
           options={{ label: "Journal d'audit" }}
         />
         <Resource
-          name="studio-models"
-          list={StudioModelList}
-          create={can(permissions, 'catalog', 'edit') ? StudioModelCreate : undefined}
-          edit={can(permissions, 'catalog', 'edit') ? StudioModelEdit : undefined}
+          name="studio-families"
+          list={StudioFamilyList}
+          create={can(permissions, 'catalog', 'edit') ? StudioFamilyCreate : undefined}
+          edit={can(permissions, 'catalog', 'edit') ? StudioFamilyEdit : undefined}
+        />
+        <Resource
+          name="studio-garments"
+          list={StudioGarmentList}
+          show={StudioGarmentShow}
+          create={can(permissions, 'catalog', 'edit') ? StudioGarmentCreate : undefined}
+          edit={can(permissions, 'catalog', 'edit') ? StudioGarmentEdit : undefined}
         />
         <Resource
           name="studio-fabrics"
@@ -354,10 +365,10 @@ export const App = () => (
           edit={can(permissions, 'catalog', 'edit') ? StudioFabricEdit : undefined}
         />
         <Resource
-          name="studio-gallery"
-          list={StudioGalleryList}
-          create={can(permissions, 'catalog', 'edit') ? StudioGalleryCreate : undefined}
-          edit={can(permissions, 'catalog', 'edit') ? StudioGalleryEdit : undefined}
+          name="studio-models"
+          list={StudioModelList}
+          create={can(permissions, 'catalog', 'edit') ? StudioModelCreate : undefined}
+          edit={can(permissions, 'catalog', 'edit') ? StudioModelEdit : undefined}
         />
         <Resource
           name="studio-requests"

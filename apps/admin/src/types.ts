@@ -406,28 +406,29 @@ export type SizeGuide = {
   category?: { id: string; slug: string; name: { fr: string; en: string } };
 };
 
-export type StudioModel = {
+export type StudioBilingual = { fr: string; en: string };
+
+export type StudioModelAngle = 'FRONT' | 'SIDE' | 'BACK' | 'DETAIL';
+
+export type StudioFabricFamily = {
   id: string;
   slug: string;
-  name: { fr: string; en: string };
-  shortDescription?: { fr?: string; en?: string } | null;
-  material?: { fr?: string; en?: string } | null;
-  basePrice: string | number;
-  delayLabel: { fr: string; en: string };
+  name: StudioBilingual;
+  description?: { fr?: string; en?: string } | null;
   coverImage: string | null;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
   updatedAt: string;
   fabrics?: StudioFabric[];
-  galleryItems?: StudioGalleryItem[];
+  garments?: StudioGarment[];
 };
 
 export type StudioFabric = {
   id: string;
-  modelId: string;
-  model?: { id: string; slug: string; name: { fr: string; en: string } };
-  name: { fr: string; en: string };
+  familyId: string;
+  family?: { id: string; slug: string; name: StudioBilingual };
+  name: StudioBilingual;
   swatchImage: string | null;
   photoImage: string | null;
   sortOrder: number;
@@ -436,16 +437,31 @@ export type StudioFabric = {
   updatedAt: string;
 };
 
-export type StudioGalleryItem = {
+export type StudioGarment = {
   id: string;
-  modelId: string;
-  model?: { id: string; slug: string; name: { fr: string; en: string } };
-  imageKey: string;
-  caption?: { fr?: string; en?: string } | null;
-  isTall: boolean;
+  familyId: string;
+  family?: { id: string; slug: string; name: StudioBilingual };
+  name: StudioBilingual;
+  description?: { fr?: string; en?: string } | null;
   sortOrder: number;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
+  photos?: StudioModel[];
+};
+
+// StudioModel is now a single photo of a garment (V2 schema).
+export type StudioModel = {
+  id: string;
+  garmentId: string;
+  garment?: { id: string; name: StudioBilingual; family?: { id: string; slug: string; name: StudioBilingual } };
+  imageKey: string;
+  caption?: { fr?: string; en?: string } | null;
+  angle: StudioModelAngle | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type StudioRequestType = 'ORDER' | 'APPOINTMENT';
@@ -455,6 +471,19 @@ export type StudioRequestStatus =
   | 'CONFIRMED'
   | 'COMPLETED'
   | 'REJECTED';
+
+export type StudioRequestFabricSelection = {
+  fabricId: string;
+  sortOrder: number;
+  fabric: {
+    id: string;
+    name: StudioBilingual;
+    swatchImage: string | null;
+    photoImage: string | null;
+    family: { id: string; slug: string; name: StudioBilingual };
+  };
+};
+
 export type StudioRequest = {
   id: string;
   type: StudioRequestType;
@@ -463,16 +492,6 @@ export type StudioRequest = {
   customerEmail: string | null;
   customerPhone: string;
   customerCity: string | null;
-  gender: 'FEMME' | 'HOMME' | null;
-  skinToneIndex: number | null;
-  silhouetteSize: string | null;
-  silhouetteHeight: number | null;
-  modelId: string | null;
-  model?: { id: string; slug: string; name: { fr: string; en: string }; coverImage: string | null };
-  fabricId: string | null;
-  fabric?: { id: string; name: { fr: string; en: string }; swatchImage: string | null; photoImage: string | null };
-  sizeRef: string | null;
-  measurementMode: 'ATELIER' | 'WHATSAPP' | null;
   appointmentMode: 'ATELIER' | 'VISIO' | null;
   appointmentDate: string | null;
   appointmentSlot: string | null;
@@ -481,6 +500,7 @@ export type StudioRequest = {
   appSource: string;
   createdAt: string;
   updatedAt: string;
+  selectedFabrics: StudioRequestFabricSelection[];
 };
 
 export type NewsletterSubscriber = {

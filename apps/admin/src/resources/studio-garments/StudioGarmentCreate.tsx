@@ -1,17 +1,16 @@
 import {
   AutocompleteInput,
   BooleanInput,
-  Edit,
+  Create,
   NumberInput,
   ReferenceInput,
   SimpleForm,
   TextInput,
   required,
 } from 'react-admin';
-import { ImageDropInput } from '../../components/ImageDropInput';
 
-export const StudioFabricEdit = () => (
-  <Edit redirect="list" mutationMode="pessimistic">
+export const StudioGarmentCreate = () => (
+  <Create redirect="list">
     <SimpleForm>
       <ReferenceInput source="familyId" reference="studio-families">
         <AutocompleteInput
@@ -21,10 +20,10 @@ export const StudioFabricEdit = () => (
       </ReferenceInput>
       <TextInput source="name.fr" validate={[required()]} fullWidth />
       <TextInput source="name.en" validate={[required()]} fullWidth />
-      <ImageDropInput source="swatchImage" aspectRatio={1} helperText="resources.studio-fabrics.helpers.swatch_image" />
-      <ImageDropInput source="photoImage" aspectRatio={3 / 4} helperText="resources.studio-fabrics.helpers.photo_image" />
-      <NumberInput source="sortOrder" min={0} />
-      <BooleanInput source="isActive" />
+      <TextInput source="description.fr" multiline minRows={2} fullWidth />
+      <TextInput source="description.en" multiline minRows={2} fullWidth />
+      <NumberInput source="sortOrder" min={0} defaultValue={0} />
+      <BooleanInput source="isActive" defaultValue={true} />
     </SimpleForm>
-  </Edit>
+  </Create>
 );

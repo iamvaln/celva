@@ -7,7 +7,7 @@ import {
   SelectInput,
 } from 'react-admin';
 import { Chip } from '@mui/material';
-import type { StudioRequest, StudioRequestStatus, StudioRequestType } from '../../types';
+import type { StudioRequest, StudioRequestStatus } from '../../types';
 
 const STATUS_COLOR: Record<StudioRequestStatus, 'default' | 'info' | 'success' | 'warning' | 'error'> = {
   PENDING: 'warning',
@@ -15,11 +15,6 @@ const STATUS_COLOR: Record<StudioRequestStatus, 'default' | 'info' | 'success' |
   CONFIRMED: 'info',
   COMPLETED: 'success',
   REJECTED: 'error',
-};
-
-const TYPE_COLOR: Record<StudioRequestType, 'default' | 'info' | 'secondary'> = {
-  ORDER: 'secondary',
-  APPOINTMENT: 'info',
 };
 
 const filters = [
@@ -35,14 +30,6 @@ const filters = [
       { id: 'REJECTED', name: 'REJECTED' },
     ]}
   />,
-  <SelectInput
-    key="type"
-    source="type"
-    choices={[
-      { id: 'ORDER', name: 'ORDER' },
-      { id: 'APPOINTMENT', name: 'APPOINTMENT' },
-    ]}
-  />,
 ];
 
 export const StudioRequestList = () => (
@@ -54,12 +41,6 @@ export const StudioRequestList = () => (
   >
     <Datagrid rowClick="show" bulkActionButtons={false}>
       <DateField source="createdAt" showTime />
-      <FunctionField<StudioRequest>
-        label="resources.studio-requests.fields.type"
-        render={(record) => (
-          <Chip label={record.type} size="small" color={TYPE_COLOR[record.type]} variant="outlined" />
-        )}
-      />
       <FunctionField<StudioRequest>
         label="resources.studio-requests.fields.status"
         render={(record) => (
@@ -73,12 +54,16 @@ export const StudioRequestList = () => (
         }
       />
       <FunctionField<StudioRequest>
-        label="resources.studio-requests.fields.model"
-        render={(record) => record.model?.name?.fr ?? '—'}
+        label="resources.studio-requests.fields.appointment"
+        render={(record) =>
+          record.appointmentDate
+            ? `${new Date(record.appointmentDate).toLocaleDateString('fr-FR')} · ${record.appointmentSlot ?? ''}`
+            : '—'
+        }
       />
       <FunctionField<StudioRequest>
-        label="resources.studio-requests.fields.fabric"
-        render={(record) => record.fabric?.name?.fr ?? '—'}
+        label="resources.studio-requests.fields.fabrics_count"
+        render={(record) => record.selectedFabrics?.length ?? 0}
       />
     </Datagrid>
   </List>

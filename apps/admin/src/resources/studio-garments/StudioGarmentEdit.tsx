@@ -8,21 +8,20 @@ import {
   TextInput,
   required,
 } from 'react-admin';
-import { ImageDropInput } from '../../components/ImageDropInput';
 
-export const StudioGalleryEdit = () => (
+export const StudioGarmentEdit = () => (
   <Edit redirect="list" mutationMode="pessimistic">
     <SimpleForm>
-      <ReferenceInput source="modelId" reference="studio-models">
+      <ReferenceInput source="familyId" reference="studio-families">
         <AutocompleteInput
           optionText={(record) => record?.name?.fr ?? record?.slug ?? '—'}
           validate={[required()]}
         />
       </ReferenceInput>
-      <ImageDropInput source="imageKey" aspectRatio={3 / 4} />
-      <TextInput source="caption.fr" fullWidth />
-      <TextInput source="caption.en" fullWidth />
-      <BooleanInput source="isTall" helperText="resources.studio-gallery.helpers.isTall" />
+      <TextInput source="name.fr" validate={[required()]} fullWidth />
+      <TextInput source="name.en" validate={[required()]} fullWidth />
+      <TextInput source="description.fr" multiline minRows={2} fullWidth />
+      <TextInput source="description.en" multiline minRows={2} fullWidth />
       <NumberInput source="sortOrder" min={0} />
       <BooleanInput source="isActive" />
     </SimpleForm>

@@ -1,19 +1,28 @@
 import {
   BooleanField,
   Datagrid,
-  DateField,
   FunctionField,
   List,
   NumberField,
-  SearchInput,
+  ReferenceField,
+  ReferenceInput,
   SelectInput,
-  TextField,
 } from 'react-admin';
 import { Box } from '@mui/material';
 import type { StudioModel } from '../../types';
 
 const filters = [
-  <SearchInput key="search" source="search" alwaysOn />,
+  <ReferenceInput
+    key="garmentId"
+    source="garmentId"
+    reference="studio-garments"
+    alwaysOn
+  >
+    <SelectInput
+      optionText={(record) => record?.name?.fr ?? '—'}
+      label="resources.studio-models.fields.garment"
+    />
+  </ReferenceInput>,
   <SelectInput
     key="isActive"
     source="isActive"
@@ -37,25 +46,25 @@ const Thumb = ({ src }: { src: string | null }) =>
   );
 
 export const StudioModelList = () => (
-  <List
-    filters={filters}
-    sort={{ field: 'sortOrder', order: 'ASC' }}
-    perPage={25}
-  >
+  <List filters={filters} sort={{ field: 'sortOrder', order: 'ASC' }} perPage={50}>
     <Datagrid rowClick="edit" bulkActionButtons={false}>
       <FunctionField<StudioModel>
         label=""
-        render={(record) => <Thumb src={record.coverImage} />}
+        render={(record) => <Thumb src={record.imageKey} />}
       />
-      <TextField source="slug" />
+      <ReferenceField source="garmentId" reference="studio-garments" link={false}>
+        <FunctionField render={(record) => record?.name?.fr ?? '—'} />
+      </ReferenceField>
       <FunctionField<StudioModel>
-        source="name"
-        render={(record) => record.name?.fr ?? record.slug}
+        source="caption"
+        render={(record) => record.caption?.fr ?? '—'}
       />
-      <NumberField source="basePrice" />
-      <BooleanField source="isActive" />
+      <FunctionField<StudioModel>
+        source="angle"
+        render={(record) => record.angle ?? '—'}
+      />
       <NumberField source="sortOrder" />
-      <DateField source="createdAt" />
+      <BooleanField source="isActive" />
     </Datagrid>
   </List>
 );

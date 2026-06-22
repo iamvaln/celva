@@ -6,12 +6,13 @@ import {
   NumberField,
   ReferenceField,
   ReferenceInput,
+  SearchInput,
   SelectInput,
 } from 'react-admin';
-import { Box } from '@mui/material';
-import type { StudioFabric } from '../../types';
+import type { StudioGarment } from '../../types';
 
 const filters = [
+  <SearchInput key="search" source="search" alwaysOn />,
   <ReferenceInput
     key="familyId"
     source="familyId"
@@ -20,7 +21,7 @@ const filters = [
   >
     <SelectInput
       optionText={(record) => record?.name?.fr ?? record?.slug ?? '—'}
-      label="resources.studio-fabrics.fields.family"
+      label="resources.studio-garments.fields.family"
     />
   </ReferenceInput>,
   <SelectInput
@@ -33,40 +34,20 @@ const filters = [
   />,
 ];
 
-const Thumb = ({ src, square }: { src: string | null; square?: boolean }) =>
-  src ? (
-    <Box
-      component="img"
-      src={src}
-      alt=""
-      sx={{
-        width: square ? 48 : 48,
-        height: square ? 48 : 64,
-        objectFit: 'cover',
-      }}
-    />
-  ) : (
-    <Box sx={{ width: 48, height: square ? 48 : 64, bgcolor: 'action.hover' }} />
-  );
-
-export const StudioFabricList = () => (
+export const StudioGarmentList = () => (
   <List filters={filters} sort={{ field: 'sortOrder', order: 'ASC' }} perPage={50}>
     <Datagrid rowClick="edit" bulkActionButtons={false}>
-      <FunctionField<StudioFabric>
-        label="Swatch"
-        render={(record) => <Thumb src={record.swatchImage} square />}
-      />
-      <FunctionField<StudioFabric>
-        label="Photo"
-        render={(record) => <Thumb src={record.photoImage} />}
-      />
-      <FunctionField<StudioFabric>
+      <FunctionField<StudioGarment>
         source="name"
         render={(record) => record.name?.fr ?? '—'}
       />
       <ReferenceField source="familyId" reference="studio-families" link={false}>
         <FunctionField render={(record) => record?.name?.fr ?? record?.slug ?? '—'} />
       </ReferenceField>
+      <FunctionField<StudioGarment>
+        label="resources.studio-garments.fields.photos_count"
+        render={(record) => record.photos?.length ?? 0}
+      />
       <NumberField source="sortOrder" />
       <BooleanField source="isActive" />
     </Datagrid>

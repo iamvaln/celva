@@ -105,9 +105,10 @@ export const CelvaMenu = () => {
           and isn't part of the regular catalogue). Gated by `catalog`. */}
       {catalog && (
         <MenuGroup labelKey="menu.studio" icon={<DesignServicesIcon />}>
-          <Menu.ResourceItem name="studio-models" />
+          <Menu.ResourceItem name="studio-families" />
+          <Menu.ResourceItem name="studio-garments" />
           <Menu.ResourceItem name="studio-fabrics" />
-          <Menu.ResourceItem name="studio-gallery" />
+          <Menu.ResourceItem name="studio-models" />
           <Menu.ResourceItem name="studio-requests" />
         </MenuGroup>
       )}
