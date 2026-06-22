@@ -430,6 +430,9 @@ model ProductAttributeValue {
   id        String @id @default(uuid())
   value     Json
   sortOrder Int    @default(0)
+  // Hex swatch (#RRGGBB) for colour attribute values — rendered as a colour
+  // dot on the storefront product page. Null for non-colour values.
+  colorHex  String?
 
   attributeId String
   attribute   ProductAttribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)

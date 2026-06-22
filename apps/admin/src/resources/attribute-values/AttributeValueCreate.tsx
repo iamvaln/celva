@@ -10,6 +10,7 @@ import {
   useTranslate,
 } from 'react-admin';
 import type { ProductAttribute } from '../../types';
+import { ColorInput } from './ColorInput';
 
 export const AttributeValueCreate = () => {
   const translate = useTranslate();
@@ -40,6 +41,10 @@ export const AttributeValueCreate = () => {
           source="sortOrder"
           helperText="resources.attribute-values.helpers.sort_order_optional"
           validate={[minValue(0)]}
+        />
+        <ColorInput
+          source="colorHex"
+          label={translate('resources.attribute-values.fields.color_hex')}
         />
       </SimpleForm>
     </Create>

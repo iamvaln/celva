@@ -215,6 +215,51 @@ describe('ProductAttributes + Values (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(204);
     });
+
+    it('POST /attribute-values accepts a valid colorHex', async () => {
+      const res = await request(server)
+        .post('/api/v1/attribute-values')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          value: { fr: 'Terracotta', en: 'Terracotta' },
+          attributeId: attrId,
+          colorHex: '#C4836B',
+        })
+        .expect(201);
+      expect(res.body.data.colorHex).toBe('#C4836B');
+    });
+
+    it('POST /attribute-values rejects an invalid colorHex (400)', async () => {
+      await request(server)
+        .post('/api/v1/attribute-values')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          value: { fr: 'Mauvais', en: 'Bad' },
+          attributeId: attrId,
+          colorHex: 'not-a-hex',
+        })
+        .expect(400);
+    });
+
+    it('PATCH /attribute-values/:id clears colorHex when set to ""', async () => {
+      const created = await request(server)
+        .post('/api/v1/attribute-values')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          value: { fr: 'Olive', en: 'Olive' },
+          attributeId: attrId,
+          colorHex: '#595D40',
+        })
+        .expect(201);
+      const id = created.body.data.id;
+
+      const cleared = await request(server)
+        .patch(`/api/v1/attribute-values/${id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ colorHex: '' })
+        .expect(200);
+      expect(cleared.body.data.colorHex).toBeNull();
+    });
   });
 
   describe('Cascade behaviour', () => {

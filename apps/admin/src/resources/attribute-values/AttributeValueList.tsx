@@ -41,6 +41,27 @@ export const AttributeValueList = () => (
           `${record.value.fr ?? ''} / ${record.value.en ?? ''}`.replace(/^ \/ | \/ $/g, '')
         }
       />
+      <FunctionField
+        label="resources.attribute-values.fields.color_hex"
+        render={(record: ProductAttributeValue) =>
+          record.colorHex ? (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span
+                style={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: '50%',
+                  backgroundColor: record.colorHex,
+                  border: '1px solid rgba(0,0,0,0.2)',
+                }}
+              />
+              {record.colorHex}
+            </span>
+          ) : (
+            '—'
+          )
+        }
+      />
       <NumberField source="sortOrder" />
     </Datagrid>
   </List>

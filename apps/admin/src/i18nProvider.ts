@@ -165,9 +165,12 @@ const celvaFr = {
         value_en: 'Value (EN)',
         attributeId: 'Attribut',
         sortOrder: 'Ordre',
+        color_hex: 'Couleur (pastille)',
       },
       helpers: {
         sort_order_optional: 'Optionnel — attribué automatiquement si vide.',
+        color_hex: 'Pour les attributs couleur uniquement. Format #RRGGBB.',
+        color_hex_invalid: 'Couleur invalide (format attendu : #RRGGBB).',
       },
     },
     variants: {
@@ -1050,9 +1053,12 @@ const celvaEn = {
         value_en: 'Value (EN)',
         attributeId: 'Attribute',
         sortOrder: 'Order',
+        color_hex: 'Colour (swatch)',
       },
       helpers: {
         sort_order_optional: 'Optional — auto-assigned if blank.',
+        color_hex: 'For colour attributes only. Format #RRGGBB.',
+        color_hex_invalid: 'Invalid colour (expected format: #RRGGBB).',
       },
     },
     variants: {
