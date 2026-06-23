@@ -7,115 +7,101 @@ Tout passe par **GitHub Actions** (déclenché au push), avec un modèle deux-br
 |-----|-----------|------|---------|
 | Storefront (Next.js 15) | **Vercel** | `celva.store` | `preprod.celva.store` |
 | Admin (Vite/React) | **Cloudflare Pages** | `admin.celva.store` | `preprod.admin.celva.store` |
-| API (NestJS + Prisma) | **Railway** (Docker) | `api.celva.store` | `preprod.api.celva.store` |
-| Postgres 16 | **Railway** (managé) | — | — |
+| API (NestJS + Prisma) | **VPS partagé** (Traefik + GHCR, flow Gabee) | `api.celva.store` | `preprod.api.celva.store` |
+| Postgres 16 | **VPS** (conteneur Docker, 1 par env) | — | — |
 
-**Modèle de branches** (le merge déclenche le deploy, pas de deploy manuel) :
-- `develop` → **preprod**
-- `main` → **production** (uniquement via PR de release depuis `develop`)
+**Modèles de deploy** :
+- **API** → build image → GHCR → SSH `compose up -d` (flow gabee), 2 stacks sur le VPS :
+  push `develop` → **preprod** (`celva-api:develop`), push tag `v*` → **prod** (`celva-api:vX`).
+- **Storefront / Admin** → *branch-driven* : `develop` → preprod, `main` → production.
 
-Les workflows sont *path-filtered* : un push qui ne touche que `apps/storefront/**` ne
-redéploie que le storefront. Ils sont **désactivés par défaut** : il faut mettre la
-variable repo `*_DEPLOY_ENABLED=true` **et** renseigner les secrets pour chacun.
+Les workflows storefront/admin sont *path-filtered* et **désactivés par défaut**
+(variable repo `*_DEPLOY_ENABLED=true` + secrets requis). Le deploy API n'a pas de
+gate `*_DEPLOY_ENABLED` : il se déclenche au push/tag (il suffit que les secrets
+`VPS_*` soient renseignés).
 
 ---
 
-## 0. Correctif Dockerfile API — DÉJÀ FAIT dans le repo
+## 0. Correctifs build API — DÉJÀ FAITS dans le repo
 
-Pour mémoire, deux bugs ont été corrigés (commit à pousser) :
+Quatre bugs qui cassaient le build Docker ont été corrigés (build désormais **vert**,
+vérifié `BUILD EXIT: 0` + image qui boote) :
 1. **CMD** : `dist/main.js` → `dist/src/main.js` (Nest compile `src/` → `dist/src/`).
 2. **Migrations** : ajout de [`apps/api/docker-entrypoint.sh`](../apps/api/docker-entrypoint.sh)
    qui lance `prisma migrate deploy` avant de booter le serveur.
    Le **seed n'est volontairement PAS dans le boot** (il `update` zones/settings →
-   écraserait les édits admin). Seed = étape one-shot manuelle (cf. §1.5).
+   écraserait les édits admin). Seed = étape one-shot manuelle (cf. §1).
+3. **`@celva/shared` non construit** : le Dockerfile lançait `nest build` sans builder
+   d'abord le package partagé → 98 erreurs TS. Ajout de `npm run build --workspace
+   @celva/shared` dans l'étape build.
+4. **`react` / `@types/react` non déclarés** dans `apps/api` (le module PDF facture
+   `@react-pdf/renderer` + JSX). Ça marchait en local par hoisting npm, mais pas en
+   install isolé (Docker) → 2 erreurs TS. Ajoutés aux deps d'`apps/api`.
 
 ### Vérifier le build Docker (optionnel mais recommandé)
 Docker Desktop lancé, depuis la racine du repo :
 ```bash
 docker build -f apps/api/Dockerfile -t celva-api:test .
-# Smoke test (sans DB, doit au moins démarrer jusqu'à l'attente DATABASE_URL) :
+# Smoke test (sans DB — l'image doit booter node) :
 docker run --rm -e NODE_ENV=production celva-api:test node -e "console.log('image OK')"
 ```
 
 ---
 
-## 1. API → Railway  *(à faire EN PREMIER — storefront & admin pointent dessus)*
+## 1. API → VPS partagé (Traefik + GHCR — même flow que Gabee)
 
-### 1.1 Créer les services
-Sur [railway.app](https://railway.app), projet Celva :
-- [ ] Service **`celva-api`** (prod) — déployé depuis le repo, build via `apps/api/Dockerfile`.
-- [ ] Service **`celva-api-preprod`** (preprod) — idem.
-- [ ] Ajouter un **Postgres** managé à chaque environnement (fournit `DATABASE_URL` auto).
+L'API tourne sur le **VPS partagé** comme un projet de plus : le reverse-proxy
+**Traefik** déjà en place (réseau Docker externe `web`) sert tous les projets et
+émet les certificats Let's Encrypt. Cette stack ajoute l'API + son Postgres.
 
-> Les deux services pointent sur le **même Dockerfile**, seules les variables d'env diffèrent.
-
-### 1.2 Variables d'env (TOUTES requises — aucun défaut dans le code)
-Source de vérité : [`apps/api/.env.example`](../apps/api/.env.example). À renseigner sur **chaque** service :
-
-```bash
-# Server
-NODE_ENV=production
-PORT=3001
-API_VERSION=v1
-LOG_LEVEL=info
-
-# Database — fourni automatiquement par le Postgres Railway
-DATABASE_URL=<référence Railway au Postgres du même env>
-
-# Auth — GÉNÉRER du random 32+ chars : openssl rand -base64 32
-JWT_ACCESS_SECRET=<random 32+>
-JWT_ACCESS_EXPIRATION=15m
-JWT_REFRESH_SECRET=<random 32+ différent>
-JWT_REFRESH_EXPIRATION=7d
-COOKIE_SECRET=<random 32+>
-
-# Seed admin bootstrap (sert au seed one-shot)
-SEED_ADMIN_EMAIL=admin@celva.store
-SEED_ADMIN_PASSWORD=<mot de passe fort>   # mustChangePassword=true au 1er login
-
-# URLs front (liens email + CORS)
-# PROD :
-STOREFRONT_URL=https://celva.store
-ADMIN_URL=https://admin.celva.store
-CORS_ORIGINS=https://celva.store,https://admin.celva.store,https://livraison.celva.store
-# PREPROD : remplacer par les sous-domaines preprod.*
-
-# Cloudflare R2 + Images (OBLIGATOIRE en prod, sinon fallback FS local dev/CI seulement)
-R2_ACCOUNT_ID=<...>
-R2_ACCESS_KEY_ID=<...>
-R2_SECRET_ACCESS_KEY=<...>
-R2_BUCKET_NAME=celva-media
-R2_ENDPOINT=<endpoint S3 du bucket R2>
-R2_PUBLIC_URL=https://media.celva.store
-CF_IMAGES_BASE_URL=https://celva.store/cdn-cgi/image
-
-# Email (Mailgun) — si activé
-MAILGUN_API_KEY=<...>
-MAILGUN_DOMAIN=celva.store
-MAILGUN_FROM=Celva Store <no-reply@celva.store>
-MAILGUN_REGION=us
-
-# Observabilité — si activé
-SENTRY_DSN=<...>
-SENTRY_TRACES_SAMPLE_RATE=0.1
+```
+Internet 80/443 → Traefik → api (NestJS :3001) → Postgres (réseau privé « internal »)
+                            label Host(${API_DOMAIN}), certresolver le
 ```
 
-### 1.3 Domaines (Cloudflare DNS — domaines déjà chez Cloudflare)
-- [ ] `api.celva.store` → CNAME vers le domaine Railway du service `celva-api`.
-- [ ] `preprod.api.celva.store` → CNAME vers `celva-api-preprod`.
-- [ ] Côté Railway : ajouter ces custom domains sur chaque service.
+**Flow** (même mécanique que gabee), 2 stacks sur le même VPS via
+[`deploy-api.yml`](../.github/workflows/deploy-api.yml) → build → push GHCR
+(`ghcr.io/iamvaln/celva-api`) → SSH → `compose pull` + `up -d`. Le service `migrate`
+applique `prisma migrate deploy` avant que l'API ne (re)démarre.
 
-### 1.4 Secrets + activation côté GitHub
-GitHub repo → Settings :
-- [ ] Secret **`RAILWAY_TOKEN`** (token du projet, scope prod).
-- [ ] Secret **`RAILWAY_TOKEN_PREPROD`**.
-- [ ] Variable **`API_DEPLOY_ENABLED = true`**.
+```bash
+git push origin develop          # → preprod (projet celva-preprod, celva-api:develop)
+git tag v1.0.0 && git push …     # → prod    (projet celva, celva-api:v1.0.0)
+```
+
+Procédure complète (setup VPS, env files, DNS, seed, backup) dans
+**[`deploy/DEPLOY.md`](../deploy/DEPLOY.md)**. Résumé :
+
+### 1.1 Setup VPS (one-time)
+```bash
+git clone https://github.com/iamvaln/celva.git ~/celva && cd ~/celva
+cp deploy/.env.production.example deploy/.env.production   # prod
+cp deploy/.env.preprod.example    deploy/.env.preprod      # preprod
+```
+Le proxy Traefik et le réseau `web` **existent déjà** sur le VPS (gérés depuis le repo
+gabee, `deploy/proxy/`) — on ne les recrée pas, on s'y branche via les labels.
+
+### 1.2 Variables d'env
+Source : **[`.env.production.example`](../deploy/.env.production.example)** +
+**[`.env.preprod.example`](../deploy/.env.preprod.example)** (secrets distincts par env).
+`DATABASE_URL` pointe sur le service `db` (même mot de passe que `POSTGRES_PASSWORD`).
+`TRAEFIK_ROUTER` et `API_DOMAIN` diffèrent entre les deux. Fichiers réels **git-ignorés**.
+
+### 1.3 Domaines (Cloudflare DNS)
+- [ ] `api.celva.store` + `preprod.api.celva.store` → **A** vers l'IP du VPS.
+      Traefik gère le TLS (TLS-ALPN) ; proxy Cloudflare ON ou OFF au choix.
+
+### 1.4 Secrets GitHub (auto-deploy)
+GitHub repo → Settings → Secrets :
+- [ ] **`VPS_HOST`**, **`VPS_USER`**, **`VPS_SSH_KEY`** (clé privée), `VPS_PORT`/`VPS_APP_DIR` optionnels.
+- `GITHUB_TOKEN` (login GHCR) est fourni automatiquement par Actions.
 
 ### 1.5 Seed one-shot (base fraîche uniquement)
-Les migrations tournent toutes seules au boot. Le seed se fait **une seule fois**,
-manuellement, via le shell Railway du service (ou en local pointé sur la DB prod) :
+Les migrations tournent via le service `migrate`. Le seed se fait **une seule fois** par DB
+(préciser le projet `-p`) :
 ```bash
-npm run prisma:seed     # crée l'admin, settings, zones de livraison, point retrait
+docker compose -p celva-preprod -f deploy/docker-compose.yml --env-file deploy/.env.preprod \
+  run --rm migrate npm run prisma:seed
 ```
 ⚠️ Ne PAS relancer le seed après que l'admin ait édité tarifs/réglages (il les réécrit).
 
@@ -181,13 +167,13 @@ Les 3 workflows référencent `environment: production` / `preprod`.
 
 ## 5. Premier déploiement — ordre à respecter
 
-1. [ ] **Pousser le correctif Dockerfile** (Dockerfile + docker-entrypoint.sh) sur `develop`.
-2. [ ] Une fois Railway prêt : merge/push touchant l'API vers `develop`
-       → vérifier que `celva-api-preprod` **boot + migre** (point de risque #1).
-3. [ ] Lancer le **seed one-shot** sur la DB preprod (§1.5).
-4. [ ] Push storefront + admin vers `develop` → preprod complète.
-5. [ ] **Smoke test** `preprod.celva.store` + `preprod.admin.celva.store` + `preprod.api.celva.store/health`.
-6. [ ] PR de release `develop` → `main` → déclenche la **production** (refaire seed one-shot sur la DB prod).
+1. [ ] **Pousser les correctifs build** (Dockerfile + entrypoint + deps api + `deploy/`) sur `develop`.
+2. [ ] Setup VPS (§1.1) : `git clone ~/celva`, `deploy/.env.production` rempli, DNS `api.celva.store` posé.
+3. [ ] Renseigner les secrets `VPS_*` côté GitHub.
+4. [ ] Premier démarrage : `docker compose -f deploy/docker-compose.yml --env-file deploy/.env.production up -d --build`.
+5. [ ] **Seed one-shot** sur la DB (§1.5), puis `curl https://api.celva.store/health`.
+6. [ ] Storefront + admin : push `develop`/`main` → Vercel / Cloudflare Pages.
+7. [ ] Releases API suivantes : `git tag vX.Y.Z && git push origin vX.Y.Z` → build GHCR + deploy auto.
 
 ---
 
@@ -195,10 +181,9 @@ Les 3 workflows référencent `environment: production` / `preprod`.
 
 | Type | Nom | Pour |
 |------|-----|------|
-| Variable | `API_DEPLOY_ENABLED` | active deploy API |
 | Variable | `STOREFRONT_DEPLOY_ENABLED` | active deploy storefront |
 | Variable | `ADMIN_DEPLOY_ENABLED` | active deploy admin |
-| Secret | `RAILWAY_TOKEN` / `RAILWAY_TOKEN_PREPROD` | API |
+| Secret | `VPS_HOST` / `VPS_USER` / `VPS_SSH_KEY` (+ `VPS_PORT` / `VPS_APP_DIR` opt.) | API (deploy SSH ; `GITHUB_TOKEN` auto pour GHCR) |
 | Secret | `VERCEL_TOKEN` / `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID_STOREFRONT` | storefront |
 | Secret | `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` | admin |
 | Secret | `VITE_API_URL_ADMIN` / `VITE_API_URL_ADMIN_PREPROD` | admin (URL API au build) |
@@ -208,6 +193,7 @@ Les 3 workflows référencent `environment: production` / `preprod`.
 ## 7. Référence fichiers
 
 - Workflows : [`.github/workflows/`](../.github/workflows/) — `ci.yml`, `deploy-api.yml`, `deploy-storefront.yml`, `deploy-admin.yml`
+- **VPS API stack** : [`deploy/`](../deploy/) — `docker-compose.yml` (Traefik + GHCR), `DEPLOY.md`, `.env.production.example`, `.env.preprod.example`
 - Dockerfile API : [`apps/api/Dockerfile`](../apps/api/Dockerfile)
 - Entrypoint API : [`apps/api/docker-entrypoint.sh`](../apps/api/docker-entrypoint.sh)
 - Env templates : [`apps/api/.env.example`](../apps/api/.env.example), [`apps/storefront/.env.example`](../apps/storefront/.env.example), [`apps/admin/.env.example`](../apps/admin/.env.example)

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# Multi-stage build for Celva API on Railway.
+# Multi-stage build for Celva API (Render / any Docker host).
 
 FROM node:20-alpine AS base
 WORKDIR /workspace
@@ -21,6 +21,10 @@ FROM deps AS build
 COPY packages/ ./packages/
 COPY apps/api/ ./apps/api/
 COPY tsconfig.base.json turbo.json ./
+# Build the shared workspace package first: apps/api resolves @celva/shared
+# through its compiled dist/ (see packages/shared exports), so it must exist
+# before nest build — otherwise tsc can't resolve the package's types.
+RUN npm run build --workspace @celva/shared
 WORKDIR /workspace/apps/api
 RUN npx prisma generate
 RUN npm run build

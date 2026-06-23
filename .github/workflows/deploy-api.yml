@@ -1,47 +1,90 @@
-name: Deploy · API (Railway)
+name: Deploy · API
 
+# Same flow as the gabee project (build image → GHCR → SSH `compose up -d` on the
+# shared VPS behind Traefik), extended to two environments on one box:
+#   push tag v*     → PROD     (api.celva.store,          project `celva`)
+#   push develop    → PREPROD  (preprod.api.celva.store,  project `celva-preprod`)
+#
+# The shared Traefik proxy + `web` network already run on the VPS. Postgres runs
+# in each stack; the `migrate` one-shot applies migrations before the API boots.
 on:
   push:
-    branches: [main, develop]
-    paths:
-      - 'apps/api/**'
-      - 'packages/shared/**'
-      - 'packages/typescript-config/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'turbo.json'
-      - '.github/workflows/deploy-api.yml'
+    tags: ['v*']
+    branches: [develop]
   workflow_dispatch:
 
-concurrency:
-  group: deploy-api-${{ github.ref }}
-  cancel-in-progress: false
+env:
+  REGISTRY: ghcr.io/iamvaln
+  # Opt in to Node 24 for the JS actions below ahead of the Node 20 removal on
+  # GitHub Actions runners. Lets us leave action versions pinned.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
-  deploy:
-    name: Railway · ${{ github.ref_name == 'main' && 'production' || 'preprod' }}
+  # ── Build & push the API image (NestJS + Prisma) ────────────────────────────
+  build-api:
     runs-on: ubuntu-latest
-    if: ${{ vars.API_DEPLOY_ENABLED == 'true' }}
-    environment:
-      name: ${{ github.ref_name == 'main' && 'production' || 'preprod' }}
-      url: ${{ github.ref_name == 'main' && 'https://api.celva.store' || 'https://preprod.api.celva.store' }}
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Login to GHCR
+        uses: docker/login-action@v3
         with:
-          node-version: '20'
-          cache: npm
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Image tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/celva-api
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/') }}
+            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
+      - name: Build & push api
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,scope=api,mode=max
 
-      - name: Install Railway CLI
-        run: npm install --global @railway/cli
-
-      - name: Deploy
-        # Railway service per environment: celva-api (prod) vs
-        # celva-api-preprod. Configure them in Railway as separate
-        # services pointing at the same Dockerfile but different envs.
-        run: |
-          SERVICE=$([ "${{ github.ref_name }}" = "main" ] && echo "celva-api" || echo "celva-api-preprod")
-          railway up --service "$SERVICE" --detach
+  # ── Deploy: SSH to the VPS, pull the freshly-pushed image, restart ──────────
+  deploy:
+    needs: [build-api]
+    runs-on: ubuntu-latest
+    # Tag → production environment (optional manual-approval gate); develop → preprod.
+    environment: ${{ startsWith(github.ref, 'refs/tags/') && 'production' || 'preprod' }}
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          envs: IMAGE_TAG,STACK,ENV_FILE,DEPLOY_REF,GHCR_USER,GHCR_TOKEN,APP_DIR
+          script: |
+            set -euo pipefail
+            cd "${APP_DIR:-$HOME/celva}"
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            export IMAGE_TAG   # shell env overrides IMAGE_TAG in the env file
+            git fetch --tags --prune --force origin
+            git checkout -f --detach "$DEPLOY_REF"   # exact released commit (tag) or latest origin/develop
+            docker compose -p "$STACK" -f deploy/docker-compose.yml --env-file "$ENV_FILE" pull
+            docker compose -p "$STACK" -f deploy/docker-compose.yml --env-file "$ENV_FILE" up -d
+            docker logout ghcr.io
+            docker image prune -f
         env:
-          RAILWAY_TOKEN: ${{ github.ref_name == 'main' && secrets.RAILWAY_TOKEN || secrets.RAILWAY_TOKEN_PREPROD }}
+          IMAGE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'develop' }}
+          STACK: ${{ startsWith(github.ref, 'refs/tags/') && 'celva' || 'celva-preprod' }}
+          ENV_FILE: ${{ startsWith(github.ref, 'refs/tags/') && 'deploy/.env.production' || 'deploy/.env.preprod' }}
+          DEPLOY_REF: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'origin/develop' }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP_DIR: ${{ secrets.VPS_APP_DIR }}

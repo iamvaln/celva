@@ -10,7 +10,7 @@ Monorepo for **Celva Store** — bilingual (FR/EN) e-commerce platform for Camer
 |-----|------|------|-------------|
 | Storefront | [`apps/storefront`](apps/storefront/) | Next.js 15 App Router · next-intl · Tailwind | celva.store → Vercel |
 | Admin | [`apps/admin`](apps/admin/) | React-Admin v5 · MUI 6 · Vite | admin.celva.store → Cloudflare Pages |
-| API | [`apps/api`](apps/api/) | NestJS 10 · Prisma 5 · Postgres 16 | api.celva.store → Railway |
+| API | [`apps/api`](apps/api/) | NestJS 10 · Prisma 5 · Postgres 16 | api.celva.store → VPS (Docker Compose + Caddy) |
 | Delivery (Phase 4) | `apps/delivery` | React + Vite PWA | livraison.celva.store → Cloudflare Pages |
 
 Shared code under [`packages/`](packages/):
@@ -81,15 +81,15 @@ Hotfix exception: if production has a P0 bug and `develop` is too far ahead to s
   - **build** — matrix of api / admin / storefront; storefront tolerated to fail while the static-prerender issue is open
 - **`deploy-storefront.yml`** — Vercel; `main` → production (`celva.store`), `develop` → preview env
 - **`deploy-admin.yml`** — Cloudflare Pages; `main` → production project, `develop` → preview branch
-- **`deploy-api.yml`** — Railway; `main` → `celva-api` service, `develop` → `celva-api-preprod`
+- **`deploy-api.yml`** — builds the API image → GHCR, then SSH `compose pull && up -d` on the shared VPS behind Traefik (stack in [`deploy/`](deploy/), same flow as the gabee project). Two stacks: push `develop` → preprod, tag `v*` → production
 
-The deploy workflows ship disabled. To turn them on, set the corresponding repo variable to `true` and add the matching secrets:
+The **storefront/admin** deploy workflows ship disabled — set the corresponding `*_DEPLOY_ENABLED` repo variable to `true` and add the matching secrets. The **api** workflow needs only the `VPS_*` secrets (no enable flag); `develop` ships preprod, tag `v*` ships production:
 
 | Deploy | Production secrets | Preprod secrets |
 |---|---|---|
 | storefront | `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_STOREFRONT` | same token + project (Vercel env split via flag) |
 | admin | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `VITE_API_URL_ADMIN` | + `VITE_API_URL_ADMIN_PREPROD` |
-| api | `RAILWAY_TOKEN` | + `RAILWAY_TOKEN_PREPROD` |
+| api | `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY` (+ `VPS_PORT`/`VPS_APP_DIR` opt.); tag `v*` → prod | same secrets; push `develop` → preprod (GHCR uses the auto `GITHUB_TOKEN`) |
 
 Dependabot (`.github/dependabot.yml`) opens grouped PRs weekly **into `develop`** (next, react, nestjs, mui, react-admin, prisma, types) plus monthly action updates.
 
