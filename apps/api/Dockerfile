@@ -33,7 +33,11 @@ ENV NODE_ENV=production
 COPY --from=build /workspace/apps/api/dist ./dist
 COPY --from=build /workspace/apps/api/prisma ./prisma
 COPY --from=build /workspace/apps/api/package.json ./
+COPY --from=build /workspace/apps/api/docker-entrypoint.sh ./docker-entrypoint.sh
 COPY --from=build /workspace/node_modules ./node_modules
 COPY --from=build /workspace/packages ./packages
+RUN chmod +x ./docker-entrypoint.sh
 EXPOSE 3001
-CMD ["node", "dist/main.js"]
+# Entrypoint runs `prisma migrate deploy` then boots dist/src/main.js
+# (Nest compiles src/ → dist/src/ because rootDir is the project root).
+CMD ["./docker-entrypoint.sh"]
