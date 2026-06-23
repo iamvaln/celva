@@ -14,7 +14,14 @@ COPY packages/typescript-config/package.json ./packages/typescript-config/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
 COPY packages/tailwind-config/package.json ./packages/tailwind-config/
 COPY apps/api/package.json ./apps/api/
-RUN npm install --ignore-scripts
+# --ignore-scripts keeps third-party install scripts from running, but that also
+# skips the native-addon builds for bcrypt and @sentry/profiling-node, leaving
+# their *.node binaries absent at runtime. Add a build toolchain and rebuild just
+# those two explicitly. (The toolchain stays in this stage; the runtime image is
+# a separate FROM and only copies the compiled node_modules.)
+RUN apk add --no-cache python3 make g++ \
+ && npm install --ignore-scripts \
+ && npm rebuild bcrypt @sentry/profiling-node
 
 # ---- build ----
 FROM deps AS build
@@ -32,7 +39,8 @@ RUN npm run build
 # ---- runtime ----
 FROM node:20-alpine AS runtime
 WORKDIR /app
-RUN apk add --no-cache openssl libc6-compat
+# libstdc++ is needed by the compiled native addons (bcrypt, sentry profiling).
+RUN apk add --no-cache openssl libc6-compat libstdc++
 ENV NODE_ENV=production
 COPY --from=build /workspace/apps/api/dist ./dist
 COPY --from=build /workspace/apps/api/prisma ./prisma
