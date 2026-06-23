@@ -37,7 +37,7 @@ services:
       context: ..
       dockerfile: apps/api/Dockerfile
     image: ${REGISTRY:-ghcr.io/iamvaln}/celva-api:${IMAGE_TAG:-latest}
-    env_file: .env.production
+    env_file: ${ENV_FILE:-.env.production}
     command: ['npx', 'prisma', 'migrate', 'deploy']
     restart: 'no'
     depends_on:
@@ -52,7 +52,7 @@ services:
       dockerfile: apps/api/Dockerfile
     image: ${REGISTRY:-ghcr.io/iamvaln}/celva-api:${IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file: .env.production
+    env_file: ${ENV_FILE:-.env.production}
     # Migrations are handled by the `migrate` one-shot above, so the API just
     # boots (bypasses the image's migrate-then-boot entrypoint).
     command: ['node', 'dist/src/main.js']
