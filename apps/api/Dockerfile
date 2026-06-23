@@ -44,6 +44,9 @@ RUN apk add --no-cache openssl libc6-compat libstdc++
 ENV NODE_ENV=production
 COPY --from=build /workspace/apps/api/dist ./dist
 COPY --from=build /workspace/apps/api/prisma ./prisma
+# prisma/seed.ts (run via tsx as a one-shot) imports from ../src, so the TS
+# source is needed at runtime for the seed step.
+COPY --from=build /workspace/apps/api/src ./src
 COPY --from=build /workspace/apps/api/package.json ./
 COPY --from=build /workspace/apps/api/docker-entrypoint.sh ./docker-entrypoint.sh
 COPY --from=build /workspace/node_modules ./node_modules
