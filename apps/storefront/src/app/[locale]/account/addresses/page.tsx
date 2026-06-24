@@ -34,14 +34,14 @@ export default async function AddressesPage({
   const t = await getTranslations('account.addresses_page');
 
   const accessToken = await getAccessToken();
-  if (!accessToken) redirect({ href: '/login', locale } as never);
+  if (!accessToken) redirect(`/${locale}/login`);
 
   let addresses: Address[] = [];
   try {
     addresses = await apiFetch<Address[]>('/me/addresses', { locale, accessToken });
   } catch (err) {
     if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
-      redirect({ href: '/login', locale } as never);
+      redirect(`/${locale}/login`);
     }
     throw err;
   }

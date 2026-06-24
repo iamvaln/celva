@@ -72,7 +72,7 @@ export default async function OrderDetailPage({
   const tList = await getTranslations('account.orders_page');
 
   const accessToken = await getAccessToken();
-  if (!accessToken) redirect({ href: '/login', locale } as never);
+  if (!accessToken) redirect(`/${locale}/login`);
 
   let order: Order;
   try {

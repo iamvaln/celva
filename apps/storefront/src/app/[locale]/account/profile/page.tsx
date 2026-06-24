@@ -27,14 +27,14 @@ export default async function ProfilePage({
   const t = await getTranslations('account.profile_page');
 
   const accessToken = await getAccessToken();
-  if (!accessToken) redirect({ href: '/login', locale } as never);
+  if (!accessToken) redirect(`/${locale}/login`);
 
   let profile: Profile;
   try {
     profile = await apiFetch<Profile>('/auth/me', { locale, accessToken });
   } catch (err) {
     if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
-      redirect({ href: '/login', locale } as never);
+      redirect(`/${locale}/login`);
     }
     throw err;
   }
