@@ -67,13 +67,6 @@ export type StudioRequestPayload = {
   notes?: string;
 };
 
-export const submitStudioRequest = async (
-  payload: StudioRequestPayload,
-  locale: Locale,
-): Promise<{ id: string }> => {
-  return apiFetch<{ id: string }>('/studio/requests', {
-    method: 'POST',
-    body: payload,
-    locale,
-  });
-};
+// submitStudioRequest lives in app/[locale]/studio/actions.ts as a server
+// action — the client form imports it from there, not from this module, so
+// lib/api (and its server-only API_INTERNAL_URL) never reaches the browser.

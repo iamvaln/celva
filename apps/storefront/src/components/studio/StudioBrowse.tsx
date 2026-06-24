@@ -8,11 +8,8 @@ import { z } from 'zod';
 import { useTranslations } from 'next-intl';
 import { PHONE_CAMEROON_PATTERN, STUDIO_APPT_SLOTS } from '@celva/shared';
 import type { Locale } from '@/i18n/routing';
-import {
-  type StudioFamily,
-  type StudioRequestPayload,
-  submitStudioRequest,
-} from '@/lib/studio';
+import type { StudioFamily, StudioRequestPayload } from '@/lib/studio';
+import { submitStudioRequest } from '@/app/[locale]/studio/actions';
 import styles from '@/app/[locale]/studio/studio.module.css';
 
 type Props = {
