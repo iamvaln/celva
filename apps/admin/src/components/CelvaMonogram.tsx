@@ -3,8 +3,8 @@
 export const CelvaMonogram = ({ size = 28 }: { size?: number }) => (
   <svg
     height={size}
-    width={(size * 135.1) / 178.2}
-    viewBox="159.6 190.5 135.1 178.2"
+    width={(size * 140) / 182}
+    viewBox="159 194 140 182"
     fill="currentColor"
     aria-hidden
   >

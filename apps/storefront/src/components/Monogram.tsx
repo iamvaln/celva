@@ -13,7 +13,7 @@ type MonogramProps = {
  */
 export const Monogram = ({ className, title }: MonogramProps) => (
   <svg
-    viewBox="159.6 190.5 135.1 178.2"
+    viewBox="159 194 140 182"
     aria-hidden={title ? undefined : true}
     role={title ? 'img' : undefined}
     fill="currentColor"
