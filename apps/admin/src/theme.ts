@@ -25,6 +25,10 @@ const oliveSidebar = {
       '& .RaSidebar-fixed': { backgroundColor: SIDEBAR_BG },
       '& .MuiTypography-root': { color: 'inherit' },
       '& .MuiSvgIcon-root': { color: SIDEBAR_ICON },
+      // Custom nav icons (CelvaNavIcons) are plain <svg stroke="currentColor">,
+      // not MuiSvgIcon, so they'd otherwise inherit ListItemIcon's default dark
+      // action colour (→ black). Colour the ListItemIcon itself so they match.
+      '& .MuiListItemIcon-root': { color: SIDEBAR_ICON },
       // resource links (Commandes, Livraisons…) — readable
       '& .RaMenuItemLink-root': { color: SIDEBAR_ITEM },
       // group headers (VENTES, CATALOGUE…) — intentionally quieter
@@ -33,7 +37,7 @@ const oliveSidebar = {
         backgroundColor: SIDEBAR_HOVER,
         color: SIDEBAR_FG,
       },
-      '& .RaMenuItemLink-root:hover .MuiSvgIcon-root, & .MuiListItemButton-root:hover .MuiSvgIcon-root':
+      '& .RaMenuItemLink-root:hover .MuiSvgIcon-root, & .MuiListItemButton-root:hover .MuiSvgIcon-root, & .MuiListItemButton-root:hover .MuiListItemIcon-root':
         { color: SIDEBAR_FG },
       '& .RaMenuItemLink-active': {
         color: SIDEBAR_ACTIVE,
