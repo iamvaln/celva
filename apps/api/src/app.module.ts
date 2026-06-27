@@ -175,8 +175,13 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
       provide: APP_PIPE,
       useFactory: () =>
         new ValidationPipe({
+          // `whitelist` strips properties not declared on the DTO (keeps
+          // mass-assignment protection). We intentionally do NOT
+          // `forbidNonWhitelisted`: the React-Admin client saves whole records
+          // (incl. read-only fields like productCount) and sends sortBy/sortDir
+          // on resources that don't declare them — those should be ignored, not
+          // hard-rejected with 400. Declared fields are still validated.
           whitelist: true,
-          forbidNonWhitelisted: true,
           transform: true,
           transformOptions: { enableImplicitConversion: true },
         }),

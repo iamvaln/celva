@@ -134,7 +134,10 @@ export const dataProvider: DataProvider = {
         params.set('page', String(pagination.page));
         params.set('pageSize', String(pagination.perPage));
       }
-      if (sort) {
+      // React-Admin defaults to sorting by `id` (reference dropdowns, lists with
+      // no explicit sort). The API's per-resource sort allowlists don't include
+      // `id`, so omit it and let the API apply its own default sort.
+      if (sort && sort.field && sort.field !== 'id') {
         params.set('sortBy', sort.field);
         params.set('sortDir', sort.order.toLowerCase());
       }
