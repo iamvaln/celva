@@ -147,6 +147,18 @@ async function main(): Promise<void> {
       valueIdsByAttribute.push(created);
     }
 
+    // Map colour value (fr) → id so each image can be tagged with the colour it
+    // depicts (drives the storefront colour→image switch).
+    const colorValueIdByFr = new Map<string, string>();
+    for (let i = 0; i < spec.attributes.length; i++) {
+      const nameFr = spec.attributes[i]!.name.fr.toLowerCase();
+      if (nameFr.includes('coloris') || nameFr.includes('couleur')) {
+        spec.attributes[i]!.values.forEach((val, j) => {
+          colorValueIdByFr.set(val.fr, valueIdsByAttribute[i]![j]!);
+        });
+      }
+    }
+
     // Variants + attribute-value links + initial stock via StockMovement
     for (const v of spec.variants) {
       const variant = await prisma.productVariant.create({
@@ -194,6 +206,7 @@ async function main(): Promise<void> {
           position: i,
           isPrimary: i === 0,
           productId: product.id,
+          attributeValueId: img.color ? (colorValueIdByFr.get(img.color) ?? null) : null,
         },
       });
     }

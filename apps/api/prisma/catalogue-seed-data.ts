@@ -36,6 +36,8 @@ export type ProductSpec = {
     file: string;
     altFr: string;
     altEn: string;
+    /** FR value of the colour this image depicts (matches a Coloris value). */
+    color?: string;
   }>;
 };
 
@@ -76,10 +78,10 @@ export const PRODUCTS: ProductSpec[] = [
       { sku: 'CLV-MINO-WHITE-S', pickByAttributeIndex: [2, 0], initialStock: 5 }, // Blanc × Court
     ],
     images: [
-      { file: 'mino-pink.png', altFr: 'Robe Mino — coloris rose', altEn: 'Mino dress — pink' },
-      { file: 'mino-purple-short.png', altFr: 'Robe Mino — mauve court', altEn: 'Mino dress — purple short' },
-      { file: 'mino-purple-long.png', altFr: 'Robe Mino — mauve long', altEn: 'Mino dress — purple long' },
-      { file: 'mino-white.png', altFr: 'Robe Mino — blanc', altEn: 'Mino dress — white' },
+      { file: 'mino-pink.png', altFr: 'Robe Mino — coloris rose', altEn: 'Mino dress — pink', color: 'Rose' },
+      { file: 'mino-purple-short.png', altFr: 'Robe Mino — mauve court', altEn: 'Mino dress — purple short', color: 'Mauve' },
+      { file: 'mino-purple-long.png', altFr: 'Robe Mino — mauve long', altEn: 'Mino dress — purple long', color: 'Mauve' },
+      { file: 'mino-white.png', altFr: 'Robe Mino — blanc', altEn: 'Mino dress — white', color: 'Blanc' },
     ],
   },
   {
@@ -110,9 +112,9 @@ export const PRODUCTS: ProductSpec[] = [
       { sku: 'CLV-NANI-RED', pickByAttributeIndex: [2], initialStock: 2 },
     ],
     images: [
-      { file: 'nani-black.png', altFr: 'Robe Nani — noir', altEn: 'Nani dress — black' },
-      { file: 'nani-purple.png', altFr: 'Robe Nani — mauve', altEn: 'Nani dress — purple' },
-      { file: 'nani-red.png', altFr: 'Robe Nani — rouge terracotta', altEn: 'Nani dress — terracotta red' },
+      { file: 'nani-black.png', altFr: 'Robe Nani — noir', altEn: 'Nani dress — black', color: 'Noir' },
+      { file: 'nani-purple.png', altFr: 'Robe Nani — mauve', altEn: 'Nani dress — purple', color: 'Mauve' },
+      { file: 'nani-red.png', altFr: 'Robe Nani — rouge terracotta', altEn: 'Nani dress — terracotta red', color: 'Rouge terracotta' },
     ],
   },
   {
@@ -143,10 +145,10 @@ export const PRODUCTS: ProductSpec[] = [
       { sku: 'CLV-DAFANI-GREEN-ORANGE', pickByAttributeIndex: [2], initialStock: 3 },
     ],
     images: [
-      { file: 'dafani-blue.png', altFr: 'Robe Dafani — bleu roi', altEn: 'Dafani dress — royal blue' },
-      { file: 'dafani-blue-alt.png', altFr: 'Robe Dafani — bleu roi, autre vue', altEn: 'Dafani dress — royal blue, alternate view' },
-      { file: 'dafani-purple.png', altFr: 'Robe Dafani — magenta', altEn: 'Dafani dress — magenta' },
-      { file: 'dafani-green-orange.png', altFr: 'Robe Dafani — vert et orange', altEn: 'Dafani dress — green and orange' },
+      { file: 'dafani-blue.png', altFr: 'Robe Dafani — bleu roi', altEn: 'Dafani dress — royal blue', color: 'Bleu roi' },
+      { file: 'dafani-blue-alt.png', altFr: 'Robe Dafani — bleu roi, autre vue', altEn: 'Dafani dress — royal blue, alternate view', color: 'Bleu roi' },
+      { file: 'dafani-purple.png', altFr: 'Robe Dafani — magenta', altEn: 'Dafani dress — magenta', color: 'Magenta' },
+      { file: 'dafani-green-orange.png', altFr: 'Robe Dafani — vert et orange', altEn: 'Dafani dress — green and orange', color: 'Vert & orange' },
       { file: 'celva-coll-01.png', altFr: 'Robe Dafani — vue 1', altEn: 'Dafani dress — view 1' },
       { file: 'celva-coll-02.png', altFr: 'Robe Dafani — vue 2', altEn: 'Dafani dress — view 2' },
       { file: 'celva-coll-03.png', altFr: 'Robe Dafani — vue 3', altEn: 'Dafani dress — view 3' },
@@ -178,9 +180,9 @@ export const PRODUCTS: ProductSpec[] = [
       { sku: 'CLV-ELEGANTE-GREEN', pickByAttributeIndex: [0], initialStock: 2 },
     ],
     images: [
-      { file: 'elegante-green.png', altFr: 'Robe Élégante — vert émeraude', altEn: 'Élégante dress — emerald green' },
-      { file: 'robe_elegante_01.png', altFr: 'Robe Élégante — vue 1', altEn: 'Élégante dress — view 1' },
-      { file: 'robe_elegante_02.png', altFr: 'Robe Élégante — vue 2', altEn: 'Élégante dress — view 2' },
+      { file: 'elegante-green.png', altFr: 'Robe Élégante — vert émeraude', altEn: 'Élégante dress — emerald green', color: 'Vert émeraude' },
+      { file: 'robe_elegante_01.png', altFr: 'Robe Élégante — vue 1', altEn: 'Élégante dress — view 1', color: 'Vert émeraude' },
+      { file: 'robe_elegante_02.png', altFr: 'Robe Élégante — vue 2', altEn: 'Élégante dress — view 2', color: 'Vert émeraude' },
     ],
   },
 ];

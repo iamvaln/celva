@@ -41,6 +41,14 @@ const envSchema = z.object({
 
   SENTRY_DSN: z.string().url().optional().or(z.literal('')),
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1),
+
+  // Feature-gating: when absent, the AI content-assist endpoints (/ai/*)
+  // return 503 instead of running. The app still boots without it.
+  ANTHROPIC_API_KEY: z.string().optional(),
+  // Pluggable AI: which provider serves /ai/* (default "anthropic") and which
+  // model id (default "claude-opus-4-8"). Swap models without code changes.
+  AI_PROVIDER: z.string().optional(),
+  AI_MODEL: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -438,6 +438,7 @@ model ProductAttributeValue {
   attribute   ProductAttribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
 
   variantValues VariantAttributeValue[]
+  images        ProductImage[]
 
   @@unique([attributeId, sortOrder])
   @@map("product_attribute_values")
@@ -491,6 +492,13 @@ model ProductImage {
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  // Optional colour this image depicts. Lets the storefront switch the main
+  // image when a colour attribute value is selected. SetNull on delete so
+  // removing the value just unlinks the image.
+  attributeValueId String?
+  attributeValue   ProductAttributeValue? @relation(fields: [attributeValueId], references: [id], onDelete: SetNull)
+
+  @@index([attributeValueId])
   @@map("product_images")
 }
 
@@ -1298,4 +1306,25 @@ model StudioRequestFabric {
   @@id([requestId, fabricId])
   @@index([fabricId])
   @@map("studio_request_fabrics")
+}
+
+/// Per-call AI usage log — powers the back-office AI metrics and cost tracking.
+/// `createdById` is a plain scalar (no FK) so this table stays self-contained.
+model AiUsage {
+  id           String   @id @default(uuid())
+  feature      String // e.g. "translate", "generate_description"
+  provider     String // e.g. "anthropic"
+  model        String // e.g. "claude-opus-4-8"
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  latencyMs    Int      @default(0)
+  success      Boolean  @default(true)
+  errorType    String?
+  createdById  String?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([feature])
+  @@index([model])
+  @@map("ai_usage")
 }

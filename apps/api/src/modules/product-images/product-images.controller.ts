@@ -21,6 +21,7 @@ import { AuditLog } from '../../common/interceptors/audit-log.interceptor';
 import { ProductImagesService } from './product-images.service';
 import { UploadImageDto } from './dto/upload-image.dto';
 import { ReorderImagesDto } from './dto/reorder-images.dto';
+import { SetImageColorDto } from './dto/set-image-color.dto';
 
 const MAX_FILES_PER_REQUEST = 5;
 
@@ -96,6 +97,19 @@ export class ProductImagesController {
     @Param('imageId', ParseUUIDPipe) imageId: string,
   ) {
     return this.images.setPrimary(productId, imageId);
+  }
+
+  @Patch(':imageId/color')
+  @ApiBearerAuth('access-token')
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MANAGER)
+  @ApiOperation({ summary: 'Link an image to a colour/attribute value (or clear it with null).' })
+  @AuditLog({ action: 'UPDATE', entity: 'ProductImage' })
+  setColor(
+    @Param('productId', ParseUUIDPipe) productId: string,
+    @Param('imageId', ParseUUIDPipe) imageId: string,
+    @Body() dto: SetImageColorDto,
+  ) {
+    return this.images.setColor(productId, imageId, dto.attributeValueId);
   }
 
   @Delete(':imageId')

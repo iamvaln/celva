@@ -162,6 +162,39 @@ export class ProductImagesService {
     return this.list(productId);
   }
 
+  /**
+   * Link (or unlink) an image to a colour/attribute value, so the storefront can
+   * switch the main image when that value is selected. The value must belong to
+   * the same product; passing null clears the link.
+   */
+  async setColor(
+    productId: string,
+    imageId: string,
+    attributeValueId: string | null,
+  ): Promise<ProductImageWithUrls> {
+    await this.assertProductExists(productId);
+    const image = await this.prisma.productImage.findUnique({ where: { id: imageId } });
+    if (!image || image.productId !== productId) {
+      throw new NotFoundException('errors.not_found');
+    }
+
+    if (attributeValueId) {
+      const value = await this.prisma.productAttributeValue.findUnique({
+        where: { id: attributeValueId },
+        select: { attribute: { select: { productId: true } } },
+      });
+      if (!value || value.attribute.productId !== productId) {
+        throw new BadRequestException('errors.attribute_value_not_in_product');
+      }
+    }
+
+    const updated = await this.prisma.productImage.update({
+      where: { id: imageId },
+      data: { attributeValueId },
+    });
+    return this.decorate(updated);
+  }
+
   async remove(imageId: string): Promise<void> {
     const image = await this.prisma.productImage.findUnique({ where: { id: imageId } });
     if (!image) throw new NotFoundException('errors.not_found');
