@@ -11,8 +11,6 @@ import { requireEnv } from './env';
  *          Next's rewrite forwards.
  */
 
-const SERVER_BASE = requireEnv('API_INTERNAL_URL');
-
 type Envelope<T> = { data: T; requestId?: string };
 
 export class ApiError extends Error {
@@ -36,7 +34,11 @@ export type FetchOptions = {
 };
 
 const buildUrl = (path: string, browser: boolean): string => {
-  const base = browser ? '/api' : `${SERVER_BASE}/api`;
+  // Read the server-only base lazily and ONLY on the server path. Reading it at
+  // module top-level would throw the moment this module is pulled into a client
+  // bundle (e.g. a Client Component importing pickLocalized from lib/catalogue),
+  // even though the browser path never needs it.
+  const base = browser ? '/api' : `${requireEnv('API_INTERNAL_URL')}/api`;
   const trimmed = path.startsWith('/') ? path : `/${path}`;
   return `${base}/v1${trimmed}`;
 };
