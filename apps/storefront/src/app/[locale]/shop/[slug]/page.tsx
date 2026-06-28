@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link, getPathname } from '@/i18n/navigation';
@@ -24,7 +23,8 @@ import { fetchWishlistVariantIds } from '@/lib/cart';
 import { getAccessToken } from '@/lib/auth-cookies';
 import { listSizeGuidesByCategory } from '@/lib/size-guides';
 import { ProductCard } from '@/components/ProductCard';
-import { ProductBuyPanel, type BuyPanelAttribute } from '@/components/ProductBuyPanel';
+import { ProductDetailColumns } from '@/components/ProductMedia';
+import { type BuyPanelAttribute } from '@/components/ProductBuyPanel';
 import { readAndClearCartFlash } from '../../cart/actions';
 
 type Params = { locale: Locale; slug: string };
@@ -146,7 +146,6 @@ export default async function ProductPage({
 
   const orderedImages = [...images].sort((a, b) => a.position - b.position);
   const heroImage = orderedImages.find((i) => i.isPrimary) ?? orderedImages[0] ?? null;
-  const galleryImages = orderedImages.filter((i) => i.id !== heroImage?.id);
 
   const name = pickLocalized(product.name, locale);
   const description = pickLocalized(product.description, locale);
@@ -191,59 +190,31 @@ export default async function ProductPage({
           </div>
         )}
 
-        <div className="grid gap-10 lg:grid-cols-2">
-          <div className="space-y-4">
-            <div className="relative aspect-product-portrait overflow-hidden bg-beige">
-              {heroImage ? (
-                <Image
-                  src={heroImage.urls.large}
-                  alt={pickLocalized(heroImage.altText, locale) || name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-foreground-muted">
-                  <span className="eyebrow">{t('no_image')}</span>
-                </div>
-              )}
-            </div>
-            {galleryImages.length > 0 && (
-              <div className="grid grid-cols-3 gap-3">
-                {galleryImages.map((img) => (
-                  <div key={img.id} className="relative aspect-square overflow-hidden bg-beige">
-                    <Image
-                      src={img.urls.medium}
-                      alt={pickLocalized(img.altText, locale) || name}
-                      fill
-                      sizes="(max-width: 1024px) 33vw, 16vw"
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <ProductBuyPanel
-            name={name}
-            displayPrice={product.displayPrice}
-            shortDescription={shortDescription}
-            eyebrow={categoryName ? [categoryName] : []}
-            attributes={panelAttributes}
-            variants={variantsPage.data}
-            locale={locale}
-            fromPath={fromPath}
-            wishlistVariantIds={wishlistIds}
-            sizeGuideHash={hasSizeGuide ? `guide-${product.categoryId}` : undefined}
-            longDescription={description}
-            hasStudio
-            isAuthenticated={isAuthenticated}
-            productSlug={slug}
-            imageUrl={heroImage?.urls.medium ?? heroImage?.urls.large}
-          />
-        </div>
+        <ProductDetailColumns
+          gallery={{
+            images: orderedImages,
+            productName: name,
+            locale,
+            noImageLabel: t('no_image'),
+          }}
+          buyPanel={{
+            name,
+            displayPrice: product.displayPrice,
+            shortDescription,
+            eyebrow: categoryName ? [categoryName] : [],
+            attributes: panelAttributes,
+            variants: variantsPage.data,
+            locale,
+            fromPath,
+            wishlistVariantIds: wishlistIds,
+            sizeGuideHash: hasSizeGuide ? `guide-${product.categoryId}` : undefined,
+            longDescription: description,
+            hasStudio: true,
+            isAuthenticated,
+            productSlug: slug,
+            imageUrl: heroImage?.urls.medium ?? heroImage?.urls.large,
+          }}
+        />
 
         {relatedCards.length > 0 && (
           <section className="mt-section-gap border-t border-border pt-10">
