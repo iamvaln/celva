@@ -110,6 +110,152 @@ async function main(): Promise<void> {
     console.log('  · Magasin Celva pickup point already present');
   }
 
+  // 6) Size guides (markdown content rendered with remark-gfm tables on the storefront).
+  // SizeGuide has no unique slug, so we find-or-create by categoryId (mirrors the
+  // delivery-zones findFirst pattern above).
+  const sizeGuides = [
+    {
+      categorySlug: 'robes',
+      name: { fr: 'Guide des tailles — Robes', en: 'Size guide — Dresses' },
+      content: {
+        fr: [
+          '### Comment mesurer',
+          '',
+          'Prenez vos mesures directement sur la peau, sans serrer le mètre ruban.',
+          '',
+          '- **Poitrine** : à l\'endroit le plus fort de la poitrine.',
+          '- **Taille** : au creux de la taille, au-dessus du nombril.',
+          '- **Hanches** : à l\'endroit le plus fort des hanches.',
+          '',
+          '### Tableau des tailles (cm)',
+          '',
+          '| Taille | Poitrine | Taille | Hanches |',
+          '| --- | --- | --- | --- |',
+          '| S (36-38) | 84-88 | 64-68 | 90-94 |',
+          '| M (38-40) | 88-92 | 68-72 | 94-98 |',
+          '| L (42) | 92-98 | 72-78 | 98-104 |',
+          '| XL (44) | 98-104 | 78-84 | 104-110 |',
+          '',
+          'Entre deux tailles, nous recommandons de choisir la taille supérieure pour plus d\'aisance.',
+        ].join('\n'),
+        en: [
+          '### How to measure',
+          '',
+          'Take your measurements directly against the skin, without tightening the tape.',
+          '',
+          '- **Bust**: around the fullest part of the chest.',
+          '- **Waist**: at the natural waistline, above the navel.',
+          '- **Hips**: around the fullest part of the hips.',
+          '',
+          '### Size chart (cm)',
+          '',
+          '| Size | Bust | Waist | Hips |',
+          '| --- | --- | --- | --- |',
+          '| S (36-38) | 84-88 | 64-68 | 90-94 |',
+          '| M (38-40) | 88-92 | 68-72 | 94-98 |',
+          '| L (42) | 92-98 | 72-78 | 98-104 |',
+          '| XL (44) | 98-104 | 78-84 | 104-110 |',
+          '',
+          'Between two sizes, we recommend choosing the larger one for a more comfortable fit.',
+        ].join('\n'),
+      },
+    },
+    {
+      categorySlug: 'hauts',
+      name: { fr: 'Guide des tailles — Hauts', en: 'Size guide — Tops' },
+      content: {
+        fr: [
+          '### Comment mesurer',
+          '',
+          'Pour les hauts, la mesure de la poitrine est la plus importante.',
+          '',
+          '- **Poitrine** : à l\'endroit le plus fort, mètre ruban bien horizontal.',
+          '- **Taille** : au creux de la taille.',
+          '',
+          '### Tableau des tailles (cm)',
+          '',
+          '| Taille | Poitrine | Taille |',
+          '| --- | --- | --- |',
+          '| S (36-38) | 84-88 | 64-68 |',
+          '| M (38-40) | 88-92 | 68-72 |',
+          '| L (42) | 92-98 | 72-78 |',
+          '| XL (44) | 98-104 | 78-84 |',
+        ].join('\n'),
+        en: [
+          '### How to measure',
+          '',
+          'For tops, the bust measurement matters most.',
+          '',
+          '- **Bust**: around the fullest part, keeping the tape horizontal.',
+          '- **Waist**: at the natural waistline.',
+          '',
+          '### Size chart (cm)',
+          '',
+          '| Size | Bust | Waist |',
+          '| --- | --- | --- |',
+          '| S (36-38) | 84-88 | 64-68 |',
+          '| M (38-40) | 88-92 | 68-72 |',
+          '| L (42) | 92-98 | 72-78 |',
+          '| XL (44) | 98-104 | 78-84 |',
+        ].join('\n'),
+      },
+    },
+    {
+      categorySlug: 'jupes',
+      name: { fr: 'Guide des tailles — Jupes', en: 'Size guide — Skirts' },
+      content: {
+        fr: [
+          '### Comment mesurer',
+          '',
+          'Pour les jupes, mesurez la taille et les hanches.',
+          '',
+          '- **Taille** : au creux de la taille, au-dessus du nombril.',
+          '- **Hanches** : à l\'endroit le plus fort des hanches.',
+          '',
+          '### Tableau des tailles (cm)',
+          '',
+          '| Taille | Taille | Hanches |',
+          '| --- | --- | --- |',
+          '| S (36-38) | 64-68 | 90-94 |',
+          '| M (38-40) | 68-72 | 94-98 |',
+          '| L (42) | 72-78 | 98-104 |',
+          '| XL (44) | 78-84 | 104-110 |',
+        ].join('\n'),
+        en: [
+          '### How to measure',
+          '',
+          'For skirts, measure your waist and hips.',
+          '',
+          '- **Waist**: at the natural waistline, above the navel.',
+          '- **Hips**: around the fullest part of the hips.',
+          '',
+          '### Size chart (cm)',
+          '',
+          '| Size | Waist | Hips |',
+          '| --- | --- | --- |',
+          '| S (36-38) | 64-68 | 90-94 |',
+          '| M (38-40) | 68-72 | 94-98 |',
+          '| L (42) | 72-78 | 98-104 |',
+          '| XL (44) | 78-84 | 104-110 |',
+        ].join('\n'),
+      },
+    },
+  ];
+  let sizeGuideCount = 0;
+  for (const g of sizeGuides) {
+    const category = await prisma.category.findUnique({ where: { slug: g.categorySlug } });
+    if (!category) continue;
+    const data = { name: g.name, content: g.content, categoryId: category.id };
+    const existing = await prisma.sizeGuide.findFirst({ where: { categoryId: category.id } });
+    if (existing) {
+      await prisma.sizeGuide.update({ where: { id: existing.id }, data });
+    } else {
+      await prisma.sizeGuide.create({ data });
+    }
+    sizeGuideCount += 1;
+  }
+  console.log(`  ✓ ${sizeGuideCount} size guides`);
+
   console.log('✅ Seed complete');
 }
 

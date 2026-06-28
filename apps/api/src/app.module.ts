@@ -57,6 +57,7 @@ import { StudioModelsModule } from './modules/studio/studio-models/studio-models
 import { StudioFabricsModule } from './modules/studio/studio-fabrics/studio-fabrics.module';
 import { StudioRequestsModule } from './modules/studio/studio-requests/studio-requests.module';
 import { AiModule } from './modules/ai/ai.module';
+import { ContactModule } from './modules/contact/contact.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -171,6 +172,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     StudioFabricsModule,
     StudioRequestsModule,
     AiModule,
+    ContactModule,
   ],
   providers: [
     {
