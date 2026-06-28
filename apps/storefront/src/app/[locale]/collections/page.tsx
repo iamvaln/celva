@@ -26,8 +26,16 @@ export default async function CollectionsIndexPage({
   const t = await getTranslations('collection');
   const tHome = await getTranslations('home');
 
-  const page = await listCollections(locale);
-  const collections = [...page.data].sort((a, b) => a.sortOrder - b.sortOrder);
+  // Guard the fetch like the other prerendered pages do: a build-time API
+  // hiccup (e.g. the API mid-restart) must not fail the whole build. ISR
+  // (revalidate: 60s) backfills the real data on the next request.
+  const collectionsPage = await listCollections(locale).catch(() => ({
+    data: [],
+    total: 0,
+    page: 1,
+    pageSize: 200,
+  }));
+  const collections = [...collectionsPage.data].sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
     <section className="bg-background py-section-tight">
