@@ -336,6 +336,9 @@
   },
   "collection": {
     "back": "All collections",
+    "index_title": "Collections",
+    "index_subtitle": "Our stories, piece by piece.",
+    "index_empty": "No collections yet.",
     "products_heading": "Pieces in this collection",
     "empty": "No products yet.",
     "not_found": "Collection not found."

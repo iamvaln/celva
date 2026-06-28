@@ -336,6 +336,9 @@
   },
   "collection": {
     "back": "Toutes les collections",
+    "index_title": "Collections",
+    "index_subtitle": "Nos récits, pièce par pièce.",
+    "index_empty": "Aucune collection pour le moment.",
     "products_heading": "Pièces de cette collection",
     "empty": "Aucun produit pour le moment.",
     "not_found": "Collection introuvable."
