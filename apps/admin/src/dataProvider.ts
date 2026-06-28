@@ -129,24 +129,44 @@ export const dataProvider: DataProvider = {
     { pagination, sort, filter }: GetListParams,
   ): Promise<GetListResult<RecordType>> {
     if (PAGINATED_RESOURCES.has(resource)) {
-      const params = new URLSearchParams();
-      if (pagination) {
-        params.set('page', String(pagination.page));
-        params.set('pageSize', String(pagination.perPage));
+      const buildQuery = (includeSort: boolean): string => {
+        const params = new URLSearchParams();
+        if (pagination) {
+          params.set('page', String(pagination.page));
+          params.set('pageSize', String(pagination.perPage));
+        }
+        // React-Admin defaults to sorting by `id` (reference dropdowns / lists
+        // with no explicit sort). The API's per-resource sort allowlists don't
+        // include `id`, so omit it and let the API apply its own default sort.
+        if (includeSort && sort && sort.field && sort.field !== 'id') {
+          params.set('sortBy', sort.field);
+          params.set('sortDir', sort.order.toLowerCase());
+        }
+        Object.entries(filter ?? {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === '') return;
+          params.set(key, String(value));
+        });
+        return params.toString();
+      };
+
+      const sentSort = Boolean(sort && sort.field && sort.field !== 'id');
+      let body: PaginatedResponse<Record<string, unknown>>;
+      try {
+        ({ body } = await fetchJson<PaginatedResponse<Record<string, unknown>>>(
+          `${resourceListPath(resource)}?${buildQuery(true)}`,
+        ));
+      } catch (err) {
+        // The API validates sortBy against a per-resource allowlist; an
+        // unsupported field returns 400. Retry once without the sort so the
+        // list still loads (in the API's default order) instead of erroring.
+        if (sentSort && (err as { status?: number })?.status === 400) {
+          ({ body } = await fetchJson<PaginatedResponse<Record<string, unknown>>>(
+            `${resourceListPath(resource)}?${buildQuery(false)}`,
+          ));
+        } else {
+          throw err;
+        }
       }
-      // React-Admin defaults to sorting by `id` (reference dropdowns, lists with
-      // no explicit sort). The API's per-resource sort allowlists don't include
-      // `id`, so omit it and let the API apply its own default sort.
-      if (sort && sort.field && sort.field !== 'id') {
-        params.set('sortBy', sort.field);
-        params.set('sortDir', sort.order.toLowerCase());
-      }
-      Object.entries(filter ?? {}).forEach(([key, value]) => {
-        if (value === undefined || value === null || value === '') return;
-        params.set(key, String(value));
-      });
-      const url = `${resourceListPath(resource)}?${params.toString()}`;
-      const { body } = await fetchJson<PaginatedResponse<Record<string, unknown>>>(url);
       return {
         data: body.data.map((r) => tagRecord<RecordType>(resource, r)),
         total: body.total,
