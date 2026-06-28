@@ -31,15 +31,20 @@ export default async function HomePage({
   const tShop = await getTranslations('shop');
 
   // Top 6 most recent active products. data[0] = hero, data[5] = sur-mesure
-  // section image, and data[1..4] is the featured grid (reversed so the
-  // oldest of the grid sits top-left, matching the handoff).
+  // section image. The featured grid wants 4 cards: normally data[1..4] (hero
+  // kept out), but with a small catalogue (≤4 products) we include the hero
+  // piece so the 4-up grid stays full. Reversed so the oldest sits top-left.
   const featuredPage = await listProducts(
     { pageSize: 6, sortBy: 'createdAt', sortDir: 'desc' },
     locale,
   ).catch(() => ({ data: [] as ApiProduct[], total: 0, page: 1, pageSize: 6 }));
 
   const heroProduct = featuredPage.data[0] ?? null;
-  const gridProducts = featuredPage.data.slice(1, 5).reverse();
+  const gridSource =
+    featuredPage.data.length > 4
+      ? featuredPage.data.slice(1, 5)
+      : featuredPage.data.slice(0, 4);
+  const gridProducts = gridSource.reverse();
   const surMesureProduct = featuredPage.data[5] ?? featuredPage.data[1] ?? null;
 
   let heroImage: ApiProductImage | null = null;
