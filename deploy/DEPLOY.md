@@ -130,6 +130,26 @@ docker compose -p celva         -f deploy/docker-compose.yml --env-file deploy/.
 ```
 ⚠️ Une seule fois par DB — le seed réécrit settings/zones et écraserait les édits admin.
 
+### Catalogue de démo (produits + collections testables sur le storefront)
+
+Deux étapes : les **images** vont dans R2 une fois par bucket, puis le **catalogue**
+(lignes DB) référence ces images via des clés déterministes (`seed/products/<slug>/…`).
+Le seed catalogue n'a donc **pas besoin** des fichiers images sur le VPS.
+
+```bash
+# 1) Images → R2 (une seule fois par bucket — preprod et prod partagent celva-media,
+#    donc à ne lancer qu'une fois). Depuis une machine qui a docs/images + les creds R2 :
+cd apps/api && node --env-file=.env --import tsx prisma/upload-seed-images.ts
+#    (override la source avec SEED_IMAGES_DIR=/chemin/vers/images si besoin)
+
+# 2) Catalogue (par DB) — référence les clés R2 déjà uploadées :
+docker compose -p celva-preprod -f deploy/docker-compose.yml --env-file deploy/.env.preprod \
+  run --rm migrate npm run prisma:seed:catalogue
+```
+ℹ️ Le seed catalogue est idempotent et ne touche que ses propres slugs
+(`mino`, `nani`, `dafani`, `elegante` + ses 2 collections) — les produits créés
+par l'admin ne sont jamais affectés.
+
 ## 7. Sauvegardes Postgres
 
 ```bash

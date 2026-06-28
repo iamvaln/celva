@@ -1,263 +1,56 @@
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { randomUUID } from 'node:crypto';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient, UserRole } from '@prisma/client';
+import {
+  COLLECTIONS,
+  CATEGORIES,
+  PRODUCTS,
+  SEED_CATEGORY_SLUGS,
+  SEED_COLLECTION_SLUGS,
+  SEED_SLUG_PATTERN,
+  bi,
+  collectionImageKey,
+  productImageKey,
+} from './catalogue-seed-data';
+import { isR2Configured, makeStorage } from './seed-storage';
 
 /**
- * Catalogue seed for local dev / smoke testing.
+ * Catalogue seed for local dev, CI, and preprod smoke testing.
  *
  * Idempotent — re-running wipes the seed-tagged catalogue (slugs `mino`,
- * `nani`, the three seed categories, and the two seed collections) and
- * rebuilds it from scratch. Real admin-created products are NOT touched
- * (they use different slugs).
+ * `nani`, `dafani`, `elegante`, the three seed categories, and the two seed
+ * collections) and rebuilds it from scratch. Real admin-created products are
+ * NOT touched (they use different slugs).
  *
- * Images come from <repo>/images/*.png (gitignored — supply your own).
- * Expected filenames:
- *   - mino-pink.png
- *   - mino-purple-short.png
- *   - mino-purple-long.png
- *   - mino-white.png
- *   - nani-black.png
- *   - nani-purple.png
- *   - nani-red.png
- *   - dafani-blue.png
- *   - dafani-blue-alt.png
- *   - dafani-purple.png
- *   - dafani-green-orange.png
- *   - elegante-green.png
+ * Images are NOT handled here — they live in storage (R2 in preprod/prod) at the
+ * deterministic keys from catalogue-seed-data.ts, uploaded once by
+ * `upload-seed-images.ts`. This seed only creates the DB rows that reference
+ * those keys, so it needs no image files on the box it runs on.
  *
- * Files are copied to apps/api/uploads/products/<id>/<uuid>.png (local-FS
- * storage backend) and matching ProductImage rows are created. When R2 is
- * configured later, re-upload the same originals through the admin and
- * they'll land in R2 with the same key structure.
+ * Run order per environment:
+ *   1. prisma/seed.ts              (admin, settings, base categories)
+ *   2. prisma/upload-seed-images.ts (push originals to storage)
+ *   3. prisma/seed-catalogue.ts    (this file)
  */
 
 const prisma = new PrismaClient();
 
-const REPO_ROOT = resolve(__dirname, '..', '..', '..');
-const IMAGES_DIR = resolve(REPO_ROOT, 'images');
-const UPLOAD_ROOT = resolve(__dirname, '..', 'uploads');
-
-type BilingualJson = Prisma.InputJsonValue;
-const bi = (fr: string, en: string): BilingualJson => ({ fr, en }) as Prisma.InputJsonValue;
-
-type ProductSpec = {
-  slug: string;
-  categorySlug: string;
-  name: { fr: string; en: string };
-  description: { fr: string; en: string };
-  displayPrice: number;
-  floorPrice: number;
-  costPrice: number;
-  productionType: 'INTERNAL' | 'SUBCONTRACTED' | 'PURCHASED';
-  attributes: Array<{
-    name: { fr: string; en: string };
-    values: Array<{ fr: string; en: string }>;
-  }>;
-  variants: Array<{
-    sku: string;
-    pickByAttributeIndex: number[]; // index into each attribute's values array
-    initialStock: number;
-    priceOverride?: number;
-  }>;
-  images: Array<{
-    file: string;
-    altFr: string;
-    altEn: string;
-  }>;
-};
-
-const PRODUCTS: ProductSpec[] = [
-  {
-    slug: 'mino',
-    categorySlug: 'robes',
-    name: { fr: 'Robe Mino', en: 'Mino Dress' },
-    description: {
-      fr: "La Mino épouse la silhouette en douceur. Coupe ajustée, tombé fluide, finitions main. Pensée pour les soirées chaudes de Douala.",
-      en: 'The Mino hugs the silhouette gently. Fitted cut, flowing drape, hand-finished. Made for warm Douala evenings.',
-    },
-    displayPrice: 38000,
-    floorPrice: 28000,
-    costPrice: 15000,
-    productionType: 'INTERNAL',
-    attributes: [
-      {
-        name: { fr: 'Coloris', en: 'Colour' },
-        values: [
-          { fr: 'Rose', en: 'Pink' },
-          { fr: 'Mauve', en: 'Purple' },
-          { fr: 'Blanc', en: 'White' },
-        ],
-      },
-      {
-        name: { fr: 'Longueur', en: 'Length' },
-        values: [
-          { fr: 'Court', en: 'Short' },
-          { fr: 'Long', en: 'Long' },
-        ],
-      },
-    ],
-    variants: [
-      { sku: 'CLV-MINO-PINK-S', pickByAttributeIndex: [0, 0], initialStock: 4 }, // Rose × Court
-      { sku: 'CLV-MINO-PURPLE-S', pickByAttributeIndex: [1, 0], initialStock: 3 }, // Mauve × Court
-      { sku: 'CLV-MINO-PURPLE-L', pickByAttributeIndex: [1, 1], initialStock: 2 }, // Mauve × Long
-      { sku: 'CLV-MINO-WHITE-S', pickByAttributeIndex: [2, 0], initialStock: 5 }, // Blanc × Court
-    ],
-    images: [
-      { file: 'mino-pink.png', altFr: 'Robe Mino — coloris rose', altEn: 'Mino dress — pink' },
-      { file: 'mino-purple-short.png', altFr: 'Robe Mino — mauve court', altEn: 'Mino dress — purple short' },
-      { file: 'mino-purple-long.png', altFr: 'Robe Mino — mauve long', altEn: 'Mino dress — purple long' },
-      { file: 'mino-white.png', altFr: 'Robe Mino — blanc', altEn: 'Mino dress — white' },
-    ],
-  },
-  {
-    slug: 'nani',
-    categorySlug: 'robes',
-    name: { fr: 'Robe Nani', en: 'Nani Dress' },
-    description: {
-      fr: 'Une pièce structurée, manches courtes, ligne A. Tissu opaque sélectionné pour sa tenue. Parfaite du jour au soir.',
-      en: 'A structured piece, short sleeves, A-line silhouette. Opaque fabric selected for its hold. Day-to-night versatility.',
-    },
-    displayPrice: 42000,
-    floorPrice: 32000,
-    costPrice: 17000,
-    productionType: 'INTERNAL',
-    attributes: [
-      {
-        name: { fr: 'Coloris', en: 'Colour' },
-        values: [
-          { fr: 'Noir', en: 'Black' },
-          { fr: 'Mauve', en: 'Purple' },
-          { fr: 'Rouge terracotta', en: 'Terracotta red' },
-        ],
-      },
-    ],
-    variants: [
-      { sku: 'CLV-NANI-BLACK', pickByAttributeIndex: [0], initialStock: 3 },
-      { sku: 'CLV-NANI-PURPLE', pickByAttributeIndex: [1], initialStock: 4 },
-      { sku: 'CLV-NANI-RED', pickByAttributeIndex: [2], initialStock: 2 },
-    ],
-    images: [
-      { file: 'nani-black.png', altFr: 'Robe Nani — noir', altEn: 'Nani dress — black' },
-      { file: 'nani-purple.png', altFr: 'Robe Nani — mauve', altEn: 'Nani dress — purple' },
-      { file: 'nani-red.png', altFr: 'Robe Nani — rouge terracotta', altEn: 'Nani dress — terracotta red' },
-    ],
-  },
-  {
-    slug: 'dafani',
-    categorySlug: 'robes',
-    name: { fr: 'Robe Dafani', en: 'Dafani Dress' },
-    description: {
-      fr: "La Dafani revisite le tissage traditionnel à rayures dans une coupe tunique fluide, finie par des franges. Coton tissé main, généreux et confortable, à porter avec ou sans accessoire.",
-      en: 'The Dafani reinterprets traditional striped weaving in a flowing tunic cut, finished with fringe. Hand-woven cotton, generous and comfortable, to wear with or without accessories.',
-    },
-    displayPrice: 45000,
-    floorPrice: 35000,
-    costPrice: 18000,
-    productionType: 'INTERNAL',
-    attributes: [
-      {
-        name: { fr: 'Coloris', en: 'Colour' },
-        values: [
-          { fr: 'Bleu roi', en: 'Royal blue' },
-          { fr: 'Magenta', en: 'Magenta' },
-          { fr: 'Vert & orange', en: 'Green & orange' },
-        ],
-      },
-    ],
-    variants: [
-      { sku: 'CLV-DAFANI-BLUE', pickByAttributeIndex: [0], initialStock: 4 },
-      { sku: 'CLV-DAFANI-PURPLE', pickByAttributeIndex: [1], initialStock: 3 },
-      { sku: 'CLV-DAFANI-GREEN-ORANGE', pickByAttributeIndex: [2], initialStock: 3 },
-    ],
-    images: [
-      { file: 'dafani-blue.png', altFr: 'Robe Dafani — bleu roi', altEn: 'Dafani dress — royal blue' },
-      { file: 'dafani-blue-alt.png', altFr: 'Robe Dafani — bleu roi, autre vue', altEn: 'Dafani dress — royal blue, alternate view' },
-      { file: 'dafani-purple.png', altFr: 'Robe Dafani — magenta', altEn: 'Dafani dress — magenta' },
-      { file: 'dafani-green-orange.png', altFr: 'Robe Dafani — vert et orange', altEn: 'Dafani dress — green and orange' },
-    ],
-  },
-  {
-    slug: 'elegante',
-    categorySlug: 'robes',
-    name: { fr: 'Robe Élégante', en: 'Élégante Dress' },
-    description: {
-      fr: "Coupe droite manches longues, rayures vertes profondes rehaussées de franges dorées aux poignets et à l’ourlet. Une pièce de réception, à porter pour les grandes occasions.",
-      en: 'Straight cut with long sleeves, deep green stripes accented by golden fringe at the cuffs and hem. A statement piece for formal occasions.',
-    },
-    displayPrice: 55000,
-    floorPrice: 42000,
-    costPrice: 22000,
-    productionType: 'INTERNAL',
-    attributes: [
-      {
-        name: { fr: 'Coloris', en: 'Colour' },
-        values: [{ fr: 'Vert émeraude', en: 'Emerald green' }],
-      },
-    ],
-    variants: [
-      { sku: 'CLV-ELEGANTE-GREEN', pickByAttributeIndex: [0], initialStock: 2 },
-    ],
-    images: [
-      { file: 'elegante-green.png', altFr: 'Robe Élégante — vert émeraude', altEn: 'Élégante dress — emerald green' },
-    ],
-  },
-];
-
-const CATEGORIES: Array<{ slug: string; name: { fr: string; en: string }; sortOrder: number }> = [
-  { slug: 'robes', name: { fr: 'Robes', en: 'Dresses' }, sortOrder: 0 },
-  { slug: 'tops', name: { fr: 'Tops', en: 'Tops' }, sortOrder: 1 },
-  { slug: 'accessoires', name: { fr: 'Accessoires', en: 'Accessories' }, sortOrder: 2 },
-];
-
-const COLLECTIONS: Array<{
-  slug: string;
-  name: { fr: string; en: string };
-  description: { fr: string; en: string };
-  productSlugs: string[];
-}> = [
-  {
-    slug: 'soirees-chic',
-    name: { fr: 'Soirées Chic', en: 'Evening Wear' },
-    description: {
-      fr: 'Sélection pour les nuits qui méritent une pièce qu’on retient.',
-      en: 'Picks for nights that deserve a memorable piece.',
-    },
-    productSlugs: ['mino', 'nani', 'elegante'],
-  },
-  {
-    slug: 'signature',
-    name: { fr: 'Pièces signature', en: 'Signature pieces' },
-    description: {
-      fr: 'Les essentiels qui définissent l’atelier Celva.',
-      en: 'The essentials that define the Celva atelier.',
-    },
-    productSlugs: ['mino', 'nani', 'dafani', 'elegante'],
-  },
-];
-
-const SEED_SLUG_PATTERN = ['mino', 'nani', 'dafani', 'elegante'];
-const SEED_CATEGORY_SLUGS = ['robes', 'tops', 'accessoires'];
-const SEED_COLLECTION_SLUGS = ['soirees-chic', 'signature'];
+async function variantIds(productIds: string[]): Promise<string[]> {
+  const variants = await prisma.productVariant.findMany({
+    where: { productId: { in: productIds } },
+    select: { id: true },
+  });
+  return variants.map((v) => v.id);
+}
 
 async function cleanup(): Promise<void> {
   console.log('  → Wiping previous seed data…');
   const products = await prisma.product.findMany({
     where: { slug: { in: SEED_SLUG_PATTERN } },
-    select: { id: true, slug: true },
+    select: { id: true },
   });
 
-  // Remove the local-FS image originals that belong to seeded products.
-  for (const p of products) {
-    const dir = resolve(UPLOAD_ROOT, 'products', p.id);
-    if (existsSync(dir)) {
-      await rm(dir, { recursive: true, force: true });
-    }
-  }
-
   // Order matters: relations cascade where defined, but variants link to
-  // stock movements (audit trail) — we wipe those first.
+  // stock movements (audit trail) — we wipe those first. Storage objects are
+  // left alone: they live at deterministic keys managed by upload-seed-images.
   const productIds = products.map((p) => p.id);
   if (productIds.length > 0) {
     await prisma.stockMovement.deleteMany({ where: { variantId: { in: await variantIds(productIds) } } });
@@ -277,31 +70,24 @@ async function cleanup(): Promise<void> {
   await prisma.category.deleteMany({ where: { slug: { in: SEED_CATEGORY_SLUGS } } });
 }
 
-async function variantIds(productIds: string[]): Promise<string[]> {
-  const variants = await prisma.productVariant.findMany({
-    where: { productId: { in: productIds } },
-    select: { id: true },
-  });
-  return variants.map((v) => v.id);
-}
-
-async function copyImage(file: string, productId: string, imageId: string): Promise<string> {
-  const source = resolve(IMAGES_DIR, file);
-  const ext = file.split('.').pop()!.toLowerCase();
-  const key = `products/${productId}/${imageId}.${ext}`;
-  const target = resolve(UPLOAD_ROOT, key);
-  await mkdir(dirname(target), { recursive: true });
-  const buffer = await readFile(source);
-  await writeFile(target, buffer);
-  return key;
-}
-
 async function main(): Promise<void> {
   console.log('🌱 Seeding catalogue…');
+  console.log(
+    `  → Image keys resolve against ${isR2Configured() ? 'R2' : 'local filesystem'} ` +
+      '(run upload-seed-images.ts for the same env if images 404)',
+  );
 
-  if (!existsSync(IMAGES_DIR)) {
-    throw new Error(`Images directory not found: ${IMAGES_DIR}`);
-  }
+  // Builds image URLs only (no upload). On R2 this yields media.celva.store
+  // URLs; on local FS, localhost URLs.
+  const storage = makeStorage();
+
+  // StockMovement rows need a creating user. The base seed (seed.ts) creates a
+  // SUPER_ADMIN; accept either admin role so order-of-seeding doesn't matter.
+  const seedUser = await prisma.user.findFirstOrThrow({
+    where: { role: { in: [UserRole.SUPER_ADMIN, UserRole.ADMIN] } },
+    orderBy: { createdAt: 'asc' },
+    select: { id: true },
+  });
 
   await cleanup();
 
@@ -311,15 +97,8 @@ async function main(): Promise<void> {
   for (const c of CATEGORIES) {
     const cat = await prisma.category.upsert({
       where: { slug: c.slug },
-      create: {
-        slug: c.slug,
-        name: bi(c.name.fr, c.name.en),
-        sortOrder: c.sortOrder,
-      },
-      update: {
-        name: bi(c.name.fr, c.name.en),
-        sortOrder: c.sortOrder,
-      },
+      create: { slug: c.slug, name: bi(c.name.fr, c.name.en), sortOrder: c.sortOrder },
+      update: { name: bi(c.name.fr, c.name.en), sortOrder: c.sortOrder },
     });
     categoryByslug.set(c.slug, cat);
   }
@@ -354,22 +133,14 @@ async function main(): Promise<void> {
     for (let i = 0; i < spec.attributes.length; i++) {
       const attrSpec = spec.attributes[i]!;
       const attribute = await prisma.productAttribute.create({
-        data: {
-          productId: product.id,
-          name: bi(attrSpec.name.fr, attrSpec.name.en),
-          sortOrder: i,
-        },
+        data: { productId: product.id, name: bi(attrSpec.name.fr, attrSpec.name.en), sortOrder: i },
       });
       attributeIds.push(attribute.id);
       const created: string[] = [];
       for (let j = 0; j < attrSpec.values.length; j++) {
         const v = attrSpec.values[j]!;
         const value = await prisma.productAttributeValue.create({
-          data: {
-            attributeId: attribute.id,
-            value: bi(v.fr, v.en),
-            sortOrder: j,
-          },
+          data: { attributeId: attribute.id, value: bi(v.fr, v.en), sortOrder: j },
         });
         created.push(value.id);
       }
@@ -405,22 +176,20 @@ async function main(): Promise<void> {
               quantity: v.initialStock,
               type: 'MANUAL_ADJUSTMENT',
               reason: 'Seed initial stock',
-              createdById: (await tx.user.findFirstOrThrow({ where: { role: 'ADMIN' } })).id,
+              createdById: seedUser.id,
             },
           });
         });
       }
     }
 
-    // Images: copy file to uploads/, create ProductImage row
+    // Images: create rows referencing the deterministic storage keys (uploaded
+    // separately by upload-seed-images.ts).
     for (let i = 0; i < spec.images.length; i++) {
       const img = spec.images[i]!;
-      const imageId = randomUUID();
-      const key = await copyImage(img.file, product.id, imageId);
       await prisma.productImage.create({
         data: {
-          id: imageId,
-          key,
+          key: productImageKey(spec.slug, img.file),
           altText: bi(img.altFr, img.altEn),
           position: i,
           isPrimary: i === 0,
@@ -438,6 +207,9 @@ async function main(): Promise<void> {
         slug: c.slug,
         name: bi(c.name.fr, c.name.en),
         description: bi(c.description.fr, c.description.en),
+        // Storefront renders Collection.imageUrl directly (no transform
+        // pipeline), so store the plain public URL of the uploaded key.
+        imageUrl: c.image ? storage.publicUrl(collectionImageKey(c.slug, c.image)) : undefined,
         isActive: true,
         sortOrder: COLLECTIONS.indexOf(c),
       },
@@ -446,11 +218,7 @@ async function main(): Promise<void> {
       const productId = productIdBySlug.get(c.productSlugs[i]!);
       if (!productId) continue;
       await prisma.productCollection.create({
-        data: {
-          collectionId: collection.id,
-          productId,
-          sortOrder: i,
-        },
+        data: { collectionId: collection.id, productId, sortOrder: i },
       });
     }
     console.log(`    ✓ Collection ${collection.slug} (${c.productSlugs.length} products)`);

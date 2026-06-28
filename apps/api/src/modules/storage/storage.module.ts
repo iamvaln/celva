@@ -26,8 +26,11 @@ const LOCAL_URL_DEFAULT = 'http://localhost:3001/uploads';
         const endpoint =
           config.get<string>('R2_ENDPOINT') ??
           (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : undefined);
+        // Default to the Cloudflare-proxied R2 zone — Images Transformations
+        // (/cdn-cgi/image/…) only work behind Cloudflare, and celva.store is on
+        // Vercel. Override per-env with CF_IMAGES_BASE_URL.
         const cfImagesBaseUrl =
-          config.get<string>('CF_IMAGES_BASE_URL') ?? 'https://celva.store/cdn-cgi/image';
+          config.get<string>('CF_IMAGES_BASE_URL') ?? 'https://media.celva.store/cdn-cgi/image';
 
         if (accountId && accessKey && secret && publicUrl && endpoint) {
           logger.log(

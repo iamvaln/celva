@@ -25,6 +25,7 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:seed:images": "tsx prisma/upload-seed-images.ts",
     "prisma:seed:catalogue": "tsx prisma/seed-catalogue.ts",
     "postinstall": "prisma generate || true"
   },
