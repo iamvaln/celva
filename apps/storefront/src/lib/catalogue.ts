@@ -42,6 +42,8 @@ export type ApiProductImage = {
   position: number;
   isPrimary: boolean;
   altText?: Bilingual | null;
+  /** Attribute value (colour) this image depicts, if tagged — drives colour→image. */
+  attributeValueId?: string | null;
   urls: {
     original: string;
     large: string;

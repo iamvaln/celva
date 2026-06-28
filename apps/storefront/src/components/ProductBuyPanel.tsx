@@ -47,9 +47,9 @@ export type ProductBuyPanelProps = {
   productSlug: string;
   /** Hero image URL, for the guest-cart line snapshot. */
   imageUrl?: string;
-  /** Notified on every attribute pick (name + chosen value label) — lets the
-   * page swap the gallery image when a colour is selected. */
-  onAttributeSelect?: (attributeName: string, valueLabel: string) => void;
+  /** Notified with the chosen attribute-value id on every pick — lets the page
+   * swap the gallery to the image tagged with that value (e.g. a colour). */
+  onValueSelect?: (attributeValueId: string) => void;
 };
 
 /** A variant matches a selection when every selected value appears in it. */
@@ -86,7 +86,7 @@ export function ProductBuyPanel({
   isAuthenticated,
   productSlug,
   imageUrl,
-  onAttributeSelect,
+  onValueSelect,
 }: ProductBuyPanelProps) {
   const t = useTranslations('product');
   const router = useRouter();
@@ -141,10 +141,8 @@ export function ProductBuyPanel({
   const selectValue = (attrId: string, valueId: string) => {
     setSelection((prev) => ({ ...prev, [attrId]: valueId }));
     setQuantity(1);
-    // Report the pick so the page can swap the gallery image (e.g. on colour).
-    const attr = attributes.find((a) => a.id === attrId);
-    const label = attr?.values.find((v) => v.id === valueId)?.label;
-    if (attr && label) onAttributeSelect?.(attr.name, label);
+    // Report the chosen value so the page can swap to its tagged image.
+    onValueSelect?.(valueId);
   };
 
   const labelFor = (attrId: string): string | undefined => {
