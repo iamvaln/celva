@@ -41,29 +41,27 @@ Status legend: 🔲 open · 🔄 in progress · ✅ done
 
 ## Storefront — Pages, Footer & Contact
 
-- 🔲 Help page missing → 404. Footer "Shipping & returns" AND "Care" both link to `/aide`
-      (EN `/help`); no `aide`/`help` route exists. Create a Help page (shipping/returns + care
-      content) or repoint the links.
-- 🔲 "Our story" and "Atelier" footer links BOTH point to `/about` (same page). Differentiate
-      (a dedicated atelier page) or drop the duplicate.
-- 🔲 Contact page has NO form — it only lists contact methods (phone + WhatsApp from settings).
-      Add a real contact form (name / email / message → API).
-- 🔲 WhatsApp number on contact page vs floating button: both actually read the SAME setting
-      (`settings.contactWhatsapp`), so they should match. The contact page ALSO shows
-      `settings.contactPhone` (a separate value) — likely the perceived mismatch. Verify
-      CONTACT_PHONE vs CONTACT_WHATSAPP in admin settings are both correct.
-- 🔲 Newsletter image: the newsletter block (homepage + `NewsletterForm`) has NO image in the
-      code — only eyebrow/title/body/form. Clarify what "newsletter image" should be / where it
-      lands (design expectation? admin-managed asset?).
-- 🔲 Size guide appears missing: the `/size-guides` route EXISTS but no SizeGuide data is seeded,
-      so the page is empty. Seed example size guides (and/or link them from product pages).
-- 🔲 Appointment form: it DOES exist — it's on the `/studio` page (the rdv/rendez-vous form).
-      Hard to find; improve discoverability (dedicated link/CTA or its own route).
+- ✅ Help page created at `/aide` (EN `/help`) with Shipping / Returns / Care sections (anchors
+      #livraison/#retours/#entretien) + `static.help` i18n. Footer links now resolve.
+- ✅ "Our story" → /about (kept), "Atelier" → /process (the "Notre processus" page) — no longer
+      the same page.
+- ✅ Contact form added: `ContactForm` (name/email/message) → new `POST /api/v1/contact` which
+      emails the team (CONTACT_EMAIL setting) via Mailgun.
+- 🔲 WhatsApp/phone on contact page: both WhatsApp values read the same `contactWhatsapp` setting.
+      Per user, #4 is just "set the correct phone number" → set CONTACT_PHONE in admin Settings
+      (pending the number from the user).
+- 🔲 Newsletter image: still needs a decision — no image in the code; awaiting what it should be.
+- ✅ Size guides seeded (robes/hauts/jupes, bilingual markdown w/ GFM measurement tables) so
+      `/size-guides` isn't empty.
+- ✅ Appointment discoverability: added a "Prenez rendez-vous à l'atelier" CTA on the contact page
+      linking to /studio (where the rdv form lives).
 
 ## AI Assistance
 
-- ⏸️ DEFERRED (own session, 2026-06-28): AI correction/assist to autofill FR/EN versions and
-      descriptions (translate + generate across locales). Sizable feature — API endpoint + admin UI.
+- ✅ DONE (2026-06-28): AI assist to autofill FR/EN + descriptions. /ai/translate +
+      /ai/generate-description (pluggable provider/model, default anthropic/claude-opus-4-8),
+      admin buttons on the forms, usage tracking (AiUsage) + /ai-metrics back-office page.
+      Requires ANTHROPIC_API_KEY on the env (set).
 
 ## Storefront — Product detail (colour→image)
 
