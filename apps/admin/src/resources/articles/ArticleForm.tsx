@@ -66,6 +66,53 @@ const Stroke = ({ d, size = 16 }: { d: string; size?: number }) => (
   </svg>
 );
 
+// ── Inline AI translate button (FR → EN) ────────────────────────────
+// The article fields are local state (not react-hook-form registered), so the
+// shared <AiAssistButton> doesn't apply here — this thin wrapper calls the same
+// /ai/translate endpoint and hands the result back through `onResult`.
+const AiTranslateButton = ({
+  text,
+  kind,
+  onResult,
+}: {
+  text: string;
+  kind: 'name' | 'description' | 'text';
+  onResult: (translated: string) => void;
+}) => {
+  const translate = useTranslate();
+  const notify = useNotify();
+  const [loading, setLoading] = useState(false);
+  const disabled = loading || text.trim().length === 0;
+
+  const run = async () => {
+    if (disabled) return;
+    setLoading(true);
+    try {
+      const { body } = await fetchJson<{ text: string }>(`${API_BASE}/ai/translate`, {
+        method: 'POST',
+        body: JSON.stringify({
+          text,
+          sourceLocale: 'fr',
+          targetLocale: 'en',
+          kind,
+        }),
+      });
+      onResult(body.text);
+      notify('ui.ai.translated', { type: 'success' });
+    } catch (err) {
+      notify(err instanceof Error ? err.message : translate('ui.ai.error'), { type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button type="button" className="btn btn-ghost" onClick={run} disabled={disabled}>
+      {translate(loading ? 'ui.ai.translating' : 'ui.ai.translate_to_en')}
+    </button>
+  );
+};
+
 // ── Rich text editor ────────────────────────────────────────────────
 type RichEditorProps = {
   lang: Lang;
@@ -394,6 +441,9 @@ const InnerForm = ({ mode }: { mode: 'edit' | 'create' }) => {
                   value={titleEn}
                   onChange={(e) => setTitleEn(e.target.value)}
                 />
+                <div style={{ marginTop: 8 }}>
+                  <AiTranslateButton text={titleFr} kind="name" onResult={setTitleEn} />
+                </div>
               </div>
             </div>
 
@@ -438,6 +488,9 @@ const InnerForm = ({ mode }: { mode: 'edit' | 'create' }) => {
                   value={excerptEn}
                   onChange={(e) => setExcerptEn(e.target.value)}
                 />
+                <div style={{ marginTop: 8 }}>
+                  <AiTranslateButton text={excerptFr} kind="text" onResult={setExcerptEn} />
+                </div>
               </div>
             </div>
           </div>
@@ -463,8 +516,18 @@ const InnerForm = ({ mode }: { mode: 'edit' | 'create' }) => {
                 </button>
               </div>
             </div>
-            <div className="note" style={{ padding: '6px 22px 14px' }}>
-              {translate('ui.articles_edit.content_note')}
+            <div
+              className="note"
+              style={{
+                padding: '6px 22px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 12,
+              }}
+            >
+              <span>{translate('ui.articles_edit.content_note')}</span>
+              <AiTranslateButton text={contentFr} kind="description" onResult={setContentEn} />
             </div>
             <RichEditor
               lang={lang}

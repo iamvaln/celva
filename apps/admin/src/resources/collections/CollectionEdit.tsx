@@ -13,6 +13,7 @@ import { CollectionProductsPanel } from './CollectionProductsPanel';
 import { ImageDropInput } from '../../components/ImageDropInput';
 import { SlugInput } from '../../components/SlugInput';
 import { SortOrderInput } from '../../components/SortOrderInput';
+import { AiAssistButton } from '../../components/AiAssistButton';
 
 export const CollectionEdit = () => {
   const translate = useTranslate();
@@ -30,6 +31,14 @@ export const CollectionEdit = () => {
           label={translate('resources.collections.fields.name_en')}
           validate={[required()]}
           fullWidth
+        />
+        <AiAssistButton
+          mode="translate"
+          sourceField="name.fr"
+          targetField="name.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="name"
         />
         <SlugInput
           source="slug"
@@ -53,6 +62,14 @@ export const CollectionEdit = () => {
           multiline
           minRows={2}
           fullWidth
+        />
+        <AiAssistButton
+          mode="translate"
+          sourceField="description.fr"
+          targetField="description.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="description"
         />
         <ImageDropInput source="imageUrl" aspectRatio={21 / 9} />
         <SortOrderInput validate={[minValue(0)]} />

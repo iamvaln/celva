@@ -9,6 +9,7 @@ import {
 } from 'react-admin';
 import { SlugInput } from '../../components/SlugInput';
 import { SortOrderInput } from '../../components/SortOrderInput';
+import { AiAssistButton } from '../../components/AiAssistButton';
 
 export const CategoryCreate = () => {
   const translate = useTranslate();
@@ -28,6 +29,14 @@ export const CategoryCreate = () => {
           placeholder={translate('resources.categories.placeholders.name_en')}
           validate={[required()]}
           fullWidth
+        />
+        <AiAssistButton
+          mode="translate"
+          sourceField="name.fr"
+          targetField="name.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="name"
         />
         <SlugInput
           source="slug"
@@ -51,6 +60,14 @@ export const CategoryCreate = () => {
           multiline
           minRows={2}
           fullWidth
+        />
+        <AiAssistButton
+          mode="translate"
+          sourceField="description.fr"
+          targetField="description.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="description"
         />
         <SortOrderInput defaultValue={0} validate={[minValue(0)]} />
       </SimpleForm>

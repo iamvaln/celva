@@ -21,6 +21,7 @@ import { COMMISSION_TYPE, PRODUCTION_TYPE } from '@celva/shared';
 import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
 import { SlugInput } from '../../components/SlugInput';
+import { AiAssistButton } from '../../components/AiAssistButton';
 import { ProductImagesPanel } from './ProductImagesPanel';
 import { RelatedProductsPanel } from './RelatedProductsPanel';
 
@@ -79,6 +80,14 @@ export const ProductEdit = () => {
           validate={[required()]}
           fullWidth
         />
+        <AiAssistButton
+          mode="translate"
+          sourceField="name.fr"
+          targetField="name.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="name"
+        />
         <SlugInput
           source="slug"
           from="name.fr"
@@ -92,12 +101,26 @@ export const ProductEdit = () => {
           minRows={3}
           fullWidth
         />
+        <AiAssistButton
+          mode="generate"
+          nameField="name.fr"
+          targetField="description.fr"
+          locale="fr"
+        />
         <TextInput
           source="description.en"
           label={translate('resources.products.fields.description_en')}
           multiline
           minRows={3}
           fullWidth
+        />
+        <AiAssistButton
+          mode="translate"
+          sourceField="description.fr"
+          targetField="description.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="description"
         />
         <ReferenceInput source="categoryId" reference="categories" perPage={100}>
           <SelectInput

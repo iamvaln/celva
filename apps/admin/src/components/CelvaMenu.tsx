@@ -10,6 +10,7 @@ import {
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import {
   NavDashboard,
   NavSales,
@@ -158,6 +159,7 @@ export const CelvaMenu = () => {
           {settingsDomain && <Menu.ResourceItem name="settings" />}
           {rolesDomain && <Menu.ResourceItem name="roles" />}
           {auditDomain && <Menu.ResourceItem name="audit-logs" />}
+          <Menu.Item to="/ai-metrics" primaryText="menu.ai_metrics" leftIcon={<AutoAwesomeIcon />} />
         </MenuGroup>
       )}
     </Menu>

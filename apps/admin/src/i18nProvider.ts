@@ -36,6 +36,7 @@ const celvaFr = {
     logistics: 'Logistique',
     settings: 'Paramètres',
     admin: 'Administration',
+    ai_metrics: 'Métriques IA',
   },
   dashboard: {
     greeting: 'Bonjour, %{name}',
@@ -273,6 +274,9 @@ const celvaFr = {
         make_primary: 'Définir comme image principale',
         confirm_delete: 'Supprimer cette image ?',
         empty: 'Aucune image. Ajoutez-en une pour démarrer.',
+        color: 'Couleur',
+        color_none: '— Aucune',
+        color_helper: 'Lier cette image à un coloris : elle s’affichera quand ce coloris est choisi.',
       },
       related: {
         title: 'Produits liés (cross-sell)',
@@ -962,6 +966,7 @@ const celvaEn = {
     logistics: 'Logistics',
     settings: 'Settings',
     admin: 'Administration',
+    ai_metrics: 'AI metrics',
   },
   dashboard: {
     greeting: 'Hello, %{name}',
@@ -1197,6 +1202,9 @@ const celvaEn = {
         uploaded: 'Image uploaded. WebP variants generated.',
         make_primary: 'Set as primary image',
         confirm_delete: 'Delete this image?',
+        color: 'Colour',
+        color_none: '— None',
+        color_helper: 'Link this image to a colour: it will show when that colour is selected.',
         empty: 'No images yet. Add one to get started.',
       },
     },

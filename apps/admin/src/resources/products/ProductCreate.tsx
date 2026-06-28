@@ -13,6 +13,7 @@ import {
 } from 'react-admin';
 import { COMMISSION_TYPE, PRODUCTION_TYPE } from '@celva/shared';
 import { SlugInput } from '../../components/SlugInput';
+import { AiAssistButton } from '../../components/AiAssistButton';
 
 export const ProductCreate = () => {
   const translate = useTranslate();
@@ -33,6 +34,14 @@ export const ProductCreate = () => {
           validate={[required()]}
           fullWidth
         />
+        <AiAssistButton
+          mode="translate"
+          sourceField="name.fr"
+          targetField="name.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="name"
+        />
         <SlugInput
           source="slug"
           from="name.fr"
@@ -48,6 +57,12 @@ export const ProductCreate = () => {
           minRows={3}
           fullWidth
         />
+        <AiAssistButton
+          mode="generate"
+          nameField="name.fr"
+          targetField="description.fr"
+          locale="fr"
+        />
         <TextInput
           source="description.en"
           label={translate('resources.products.fields.description_en')}
@@ -55,6 +70,14 @@ export const ProductCreate = () => {
           multiline
           minRows={3}
           fullWidth
+        />
+        <AiAssistButton
+          mode="translate"
+          sourceField="description.fr"
+          targetField="description.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="description"
         />
         <ReferenceInput source="categoryId" reference="categories" perPage={100}>
           <SelectInput
