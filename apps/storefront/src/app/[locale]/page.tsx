@@ -15,6 +15,11 @@ import { listArticles, type Article } from '@/lib/articles';
 import { ProductGrid } from '@/components/ProductGrid';
 import { NewsletterForm } from '@/components/NewsletterForm';
 
+// Editorial image for the newsletter block. Reuses an existing R2 lookbook shot;
+// swap this URL for any other catalogue/collection image.
+const NEWSLETTER_IMAGE =
+  'https://media.celva.store/seed/collections/soirees-chic/celva-coll-01.png';
+
 export default async function HomePage({
   params,
 }: {
@@ -330,6 +335,15 @@ export default async function HomePage({
       {/* Newsletter */}
       <section className="bg-background-alt py-section-gap">
         <div className="container-celva grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          <div className="relative aspect-[4/5] overflow-hidden bg-beige">
+            <Image
+              src={NEWSLETTER_IMAGE}
+              alt=""
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
+          </div>
           <div>
             <p className="eyebrow mb-3">{t('newsletter.eyebrow')}</p>
             <h2 className="mb-6 font-display text-h1 text-foreground">
@@ -339,9 +353,9 @@ export default async function HomePage({
                 {t('newsletter.title_em')}
               </em>
             </h2>
-            <p className="font-body text-lead text-foreground">{t('newsletter.body')}</p>
+            <p className="mb-8 font-body text-lead text-foreground">{t('newsletter.body')}</p>
+            <NewsletterForm />
           </div>
-          <NewsletterForm />
         </div>
       </section>
     </>
