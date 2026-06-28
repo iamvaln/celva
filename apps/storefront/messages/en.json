@@ -748,7 +748,31 @@
       "address_label": "Address",
       "address_value": "Bonapriso, Douala, Cameroon",
       "hours_label": "Hours",
-      "hours_value": "Mon-Sat, 9am-6pm (Cameroon time)"
+      "hours_value": "Mon-Sat, 9am-6pm (Cameroon time)",
+      "appointment_text": "Looking for a made-to-measure piece?",
+      "appointment_cta": "Book an atelier appointment",
+      "form": {
+        "heading": "Send us a message",
+        "name": "Your name",
+        "email": "Your email",
+        "message": "Your message",
+        "submit": "Send",
+        "sending": "Sending…",
+        "success": "Message sent — we'll reply within 48h.",
+        "error": "Sending failed. Try again or email us directly."
+      }
+    },
+    "help": {
+      "title": "Help",
+      "subtitle": "Shipping, returns and care for your Celva pieces.",
+      "shipping_title": "Shipping",
+      "shipping_p1": "We deliver to Douala (1-2 days), Yaoundé (2-3 days) and across Cameroon (3-7 days). Fees and times are calculated by your zone at checkout.",
+      "shipping_p2": "Delivery is free above a zone-dependent threshold. You can also pick up your order for free at the Celva Store in Bonapriso, Douala.",
+      "returns_title": "Returns & exchanges",
+      "returns_p1": "Returns and exchanges are accepted within 7 days, on unworn, unwashed items with their tags. Contact us via the Contact page to arrange a return. Made-to-measure (Studio) pieces cannot be returned or exchanged.",
+      "care_title": "Care",
+      "care_p1": "Most of our pieces can be hand-washed or machine-washed at 30°C, inside out, with similar colours. Avoid the tumble dryer; dry flat or on a hanger, away from direct sunlight.",
+      "care_p2": "Iron on medium heat, inside out. For delicate or embroidered fabrics, prefer dry cleaning. Careful care preserves the colours and shape of your pieces."
     },
     "terms": {
       "title": "Terms of sale",

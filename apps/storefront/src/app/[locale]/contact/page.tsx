@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { buildWhatsAppHref, getPublicSettings } from '@/lib/public-settings';
+import { Link } from '@/i18n/navigation';
+import { ContactForm } from '@/components/ContactForm';
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -32,6 +34,21 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         <Row label={t('address_label')} value={t('address_value')} />
         <Row label={t('hours_label')} value={t('hours_value')} />
       </dl>
+
+      <p className="mt-10 font-body text-base text-foreground-muted">
+        {t('appointment_text')}{' '}
+        <Link
+          href="/studio"
+          className="italic text-accent underline decoration-accent underline-offset-2 hover:text-accent-hover"
+        >
+          {t('appointment_cta')}
+        </Link>
+      </p>
+
+      <section className="mt-section-gap border-t border-border pt-10">
+        <h2 className="mb-6 font-display text-h2">{t('form.heading')}</h2>
+        <ContactForm />
+      </section>
     </article>
   );
 }

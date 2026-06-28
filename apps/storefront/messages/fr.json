@@ -748,7 +748,31 @@
       "address_label": "Adresse",
       "address_value": "Bonapriso, Douala, Cameroun",
       "hours_label": "Horaires",
-      "hours_value": "Lun-Sam, 9h-18h (heure du Cameroun)"
+      "hours_value": "Lun-Sam, 9h-18h (heure du Cameroun)",
+      "appointment_text": "Vous souhaitez une pièce sur-mesure ?",
+      "appointment_cta": "Prenez rendez-vous à l’atelier",
+      "form": {
+        "heading": "Envoyez-nous un message",
+        "name": "Votre nom",
+        "email": "Votre email",
+        "message": "Votre message",
+        "submit": "Envoyer",
+        "sending": "Envoi…",
+        "success": "Message envoyé — nous vous répondons sous 48h.",
+        "error": "Échec de l’envoi. Réessayez ou écrivez-nous directement."
+      }
+    },
+    "help": {
+      "title": "Aide",
+      "subtitle": "Livraison, retours et entretien de vos pièces Celva.",
+      "shipping_title": "Livraison",
+      "shipping_p1": "Nous livrons à Douala (1-2 jours), Yaoundé (2-3 jours) et partout au Cameroun (3-7 jours). Les frais et délais sont calculés selon votre zone au moment de la commande.",
+      "shipping_p2": "La livraison est offerte au-delà d’un certain montant selon la zone. Vous pouvez aussi retirer votre commande gratuitement au Magasin Celva à Bonapriso, Douala.",
+      "returns_title": "Retours & échanges",
+      "returns_p1": "Les retours et échanges sont possibles sous 7 jours, sur les articles non portés, non lavés et avec leurs étiquettes. Contactez-nous via la page Contact pour organiser le retour. Les pièces sur-mesure (Studio) ne sont ni reprises ni échangées.",
+      "care_title": "Entretien",
+      "care_p1": "La plupart de nos pièces se lavent à la main ou en machine à 30°C, à l’envers, avec des couleurs similaires. Évitez le sèche-linge ; séchez à plat ou sur cintre, à l’abri du soleil direct.",
+      "care_p2": "Repassez à température moyenne, à l’envers. Pour les tissus délicats ou brodés, privilégiez le nettoyage à sec. Un entretien soigneux préserve les couleurs et la tenue de vos pièces."
     },
     "terms": {
       "title": "Conditions générales de vente",

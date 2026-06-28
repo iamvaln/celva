@@ -40,7 +40,7 @@ export const Footer = () => {
       heading: t('maison'),
       links: [
         { href: '/about', label: t('links.our_story') },
-        { href: '/about', label: t('links.atelier') },
+        { href: '/process', label: t('links.atelier') },
         { href: '/studio', label: t('links.studio') },
         { href: '/journal', label: t('links.journal') },
       ],
