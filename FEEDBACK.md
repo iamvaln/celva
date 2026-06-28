@@ -29,12 +29,11 @@ Status legend: 🔲 open · 🔄 in progress · ✅ done
 
 ## Storefront — Product detail
 
-- ✅ Selecting a colour now swaps the main image (heuristic). New `ProductDetailColumns` (client)
-      owns the active image; `ProductBuyPanel` reports the picked attribute; when it's the colour
-      attribute, we match the colour label against image alt text and switch the hero. Works for
-      seeded products in FR/EN (verified on preprod: Rose→"coloris rose", etc.).
-      ⚠️ Heuristic limit: relies on the colour appearing in the image alt text — admin-created
-      products without it won't switch. Proper fix later = structured image↔colour link.
+- ✅ Selecting a colour swaps the main image — now via a STRUCTURED link (heuristic removed).
+      Added `ProductImage.attributeValueId` (+ migration), API endpoint `PATCH
+      /products/:id/images/:imageId/color`, an admin per-image colour selector in
+      ProductImagesPanel, and seed tagging. Storefront matches the selected value id exactly →
+      `ProductDetailColumns` switches the hero. Works for admin-created products too.
 - ✅ Clicking a thumbnail promotes it to the main image — `ProductGallery` (client), real buttons
       (keyboard + aria), shares active-image state with the colour selector.
 - ✅ Added a hover "loupe" (zoom) on the main product image: it scales and pans with the cursor
