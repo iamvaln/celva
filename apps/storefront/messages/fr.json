@@ -801,5 +801,11 @@
     "title": "404",
     "message": "Cette page n'existe pas — ou plus.",
     "cta": "Retour à l'accueil"
+  },
+  "error": {
+    "title": "Oups",
+    "message": "Une erreur est survenue de notre côté. Réessayez, ou revenez à l'accueil.",
+    "retry": "Réessayer",
+    "home": "Retour à l'accueil"
   }
 }

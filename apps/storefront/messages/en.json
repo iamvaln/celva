@@ -801,5 +801,11 @@
     "title": "404",
     "message": "This page doesn't exist — or no longer does.",
     "cta": "Back home"
+  },
+  "error": {
+    "title": "Oops",
+    "message": "Something went wrong on our side. Try again, or head back home.",
+    "retry": "Try again",
+    "home": "Back home"
   }
 }
