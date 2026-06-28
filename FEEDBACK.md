@@ -47,10 +47,10 @@ Status legend: 🔲 open · 🔄 in progress · ✅ done
       the same page.
 - ✅ Contact form added: `ContactForm` (name/email/message) → new `POST /api/v1/contact` which
       emails the team (CONTACT_EMAIL setting) via Mailgun.
-- 🔲 WhatsApp/phone on contact page: both WhatsApp values read the same `contactWhatsapp` setting.
-      Per user, #4 is just "set the correct phone number" → set CONTACT_PHONE in admin Settings
-      (pending the number from the user).
-- 🔲 Newsletter image: still needs a decision — no image in the code; awaiting what it should be.
+- ✅ Phone number on contact page: set CONTACT_PHONE = +237671407336 on preprod (the page reads
+      it from settings; updates on next render/revalidate).
+- ✅ Newsletter image: added an editorial image to the newsletter block (reuses an existing R2
+      lookbook image; `NEWSLETTER_IMAGE` constant in the homepage — swap for any other).
 - ✅ Size guides seeded (robes/hauts/jupes, bilingual markdown w/ GFM measurement tables) so
       `/size-guides` isn't empty.
 - ✅ Appointment discoverability: added a "Prenez rendez-vous à l'atelier" CTA on the contact page
