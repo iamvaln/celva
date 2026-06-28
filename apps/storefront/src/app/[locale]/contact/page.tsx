@@ -38,7 +38,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       <p className="mt-10 font-body text-base text-foreground-muted">
         {t('appointment_text')}{' '}
         <Link
-          href="/studio"
+          href={{ pathname: '/studio', hash: 'book' }}
           className="italic text-accent underline decoration-accent underline-offset-2 hover:text-accent-hover"
         >
           {t('appointment_cta')}

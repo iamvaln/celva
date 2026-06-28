@@ -45,14 +45,23 @@ export function StudioBrowse({ families, locale }: Props) {
   const clearSelection = () => setSelected(new Set());
 
   // Empty states + per-family rendering live in the same client tree
-  // (single context for selection state).
+  // (single context for selection state). With no catalogue yet, we still
+  // surface the appointment form so visitors can always book a rendez-vous.
   if (families.length === 0) {
     return (
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <p className={styles.guide}>{t('browse.empty_families')}</p>
-        </div>
-      </section>
+      <>
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <p className={styles.guide}>{t('browse.empty_families')}</p>
+          </div>
+        </section>
+        <RdvFormSection
+          locale={locale}
+          families={families}
+          selected={selected}
+          onClear={clearSelection}
+        />
+      </>
     );
   }
 
