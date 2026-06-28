@@ -72,7 +72,7 @@ Status legend: 🔲 open · 🔄 in progress · ✅ done
 
 ## UX / Onboarding
 
-- 🔄 Seed attributes and other meta (default data) so the admin isn't empty on first use.
+- ✅ Seed attributes and other meta (default data) so the admin isn't empty on first use.
       Reworked the catalogue seed into a decoupled two-step flow:
         • `prisma/upload-seed-images.ts` (`npm run prisma:seed:images`) pushes the originals to
           storage (R2 in preprod/prod) at deterministic keys `seed/products/<slug>/<file>`.
