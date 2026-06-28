@@ -2,13 +2,13 @@ import {
   AutocompleteInput,
   BooleanInput,
   Create,
-  NumberInput,
   ReferenceInput,
   SimpleForm,
   TextInput,
   required,
 } from 'react-admin';
 import { ImageDropInput } from '../../components/ImageDropInput';
+import { SortOrderInput } from '../../components/SortOrderInput';
 
 export const StudioFabricCreate = () => (
   <Create redirect="list">
@@ -31,7 +31,7 @@ export const StudioFabricCreate = () => (
         aspectRatio={3 / 4}
         helperText="resources.studio-fabrics.helpers.photo_image"
       />
-      <NumberInput source="sortOrder" min={0} defaultValue={0} />
+      <SortOrderInput defaultValue={0} />
       <BooleanInput source="isActive" defaultValue={true} />
     </SimpleForm>
   </Create>

@@ -1,12 +1,12 @@
 import {
   Edit,
-  NumberInput,
   SimpleForm,
   TextInput,
   minValue,
   required,
   useTranslate,
 } from 'react-admin';
+import { SortOrderInput } from '../../components/SortOrderInput';
 import { ColorInput } from './ColorInput';
 
 export const AttributeValueEdit = () => {
@@ -26,7 +26,7 @@ export const AttributeValueEdit = () => {
           validate={[required()]}
           fullWidth
         />
-        <NumberInput source="sortOrder" validate={[minValue(0)]} />
+        <SortOrderInput validate={[minValue(0)]} />
         <ColorInput
           source="colorHex"
           label={translate('resources.attribute-values.fields.color_hex')}

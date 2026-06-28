@@ -1,6 +1,5 @@
 import {
   Create,
-  NumberInput,
   ReferenceInput,
   SelectInput,
   SimpleForm,
@@ -9,6 +8,7 @@ import {
   required,
   useTranslate,
 } from 'react-admin';
+import { SortOrderInput } from '../../components/SortOrderInput';
 
 export const AttributeCreate = () => {
   const translate = useTranslate();
@@ -24,17 +24,18 @@ export const AttributeCreate = () => {
         <TextInput
           source="name.fr"
           label={translate('resources.attributes.fields.name_fr')}
+          placeholder={translate('resources.attributes.placeholders.name_fr')}
           validate={[required()]}
           fullWidth
         />
         <TextInput
           source="name.en"
           label={translate('resources.attributes.fields.name_en')}
+          placeholder={translate('resources.attributes.placeholders.name_en')}
           validate={[required()]}
           fullWidth
         />
-        <NumberInput
-          source="sortOrder"
+        <SortOrderInput
           helperText="resources.attributes.helpers.sort_order_optional"
           validate={[minValue(0)]}
         />

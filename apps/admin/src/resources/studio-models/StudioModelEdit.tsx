@@ -2,7 +2,6 @@ import {
   AutocompleteInput,
   BooleanInput,
   Edit,
-  NumberInput,
   ReferenceInput,
   SelectInput,
   SimpleForm,
@@ -10,6 +9,7 @@ import {
   required,
 } from 'react-admin';
 import { ImageDropInput } from '../../components/ImageDropInput';
+import { SortOrderInput } from '../../components/SortOrderInput';
 
 const ANGLES = ['FRONT', 'SIDE', 'BACK', 'DETAIL'] as const;
 
@@ -34,7 +34,7 @@ export const StudioModelEdit = () => (
         choices={ANGLES.map((a) => ({ id: a, name: a }))}
         emptyText="—"
       />
-      <NumberInput source="sortOrder" min={0} />
+      <SortOrderInput />
       <BooleanInput source="isActive" />
     </SimpleForm>
   </Edit>

@@ -130,6 +130,12 @@ const celvaFr = {
       helpers: {
         slug_optional: 'Optionnel — généré automatiquement depuis le nom français si vide.',
       },
+      placeholders: {
+        name_fr: 'Ex. Robes',
+        name_en: 'Ex. Dresses',
+        description_fr: 'Ex. Robes de cérémonie et du quotidien.',
+        description_en: 'Ex. Ceremony and everyday dresses.',
+      },
       errors: {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
       },
@@ -156,6 +162,10 @@ const celvaFr = {
       helpers: {
         sort_order_optional: 'Optionnel — attribué automatiquement (0, 1, 2 …) si vide.',
       },
+      placeholders: {
+        name_fr: 'Ex. Taille',
+        name_en: 'Ex. Size',
+      },
     },
     'attribute-values': {
       name: 'Valeur d’attribut |||| Valeurs d’attribut',
@@ -171,6 +181,10 @@ const celvaFr = {
         sort_order_optional: 'Optionnel — attribué automatiquement si vide.',
         color_hex: 'Pour les attributs couleur uniquement. Format #RRGGBB.',
         color_hex_invalid: 'Couleur invalide (format attendu : #RRGGBB).',
+      },
+      placeholders: {
+        value_fr: 'Ex. Rouge',
+        value_en: 'Ex. Red',
       },
     },
     variants: {
@@ -233,6 +247,14 @@ const celvaFr = {
       helpers: {
         slug_optional: 'Optionnel — généré automatiquement depuis le nom français si vide.',
         cost_price: 'Saisi manuellement pour PURCHASED. Auto-calculé pour INTERNAL / SUBCONTRACTED dès qu’un ordre de production est complété.',
+        display_price: 'Prix affiché en boutique (FCFA).',
+        floor_price: 'Prix plancher : montant minimum accepté en cas de négociation (FCFA).',
+      },
+      placeholders: {
+        name_fr: 'Ex. Robe Mino',
+        name_en: 'Ex. Mino Dress',
+        description_fr: 'Ex. Coupe ajustée, tombé fluide…',
+        description_en: 'Ex. Fitted cut, fluid drape…',
       },
       actions: {
         duplicate: 'Dupliquer',
@@ -277,6 +299,12 @@ const celvaFr = {
       },
       helpers: {
         slug_optional: 'Optionnel — généré automatiquement depuis le nom français si vide.',
+      },
+      placeholders: {
+        name_fr: 'Ex. Collection Wax 2026',
+        name_en: 'Ex. Wax Collection 2026',
+        description_fr: 'Ex. Pièces phares de la saison.',
+        description_en: 'Ex. Season highlights.',
       },
       errors: {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement).',
@@ -674,6 +702,10 @@ const celvaFr = {
         slug_optional: 'Optionnel — généré depuis le nom FR si vide.',
         cover_image: 'Bannière de famille (4:5). Affichée en tête de section sur /studio.',
       },
+      placeholders: {
+        name_fr: 'Ex. Wax',
+        name_en: 'Ex. Wax',
+      },
       errors: {
         invalid_slug: 'Slug invalide (lettres minuscules, chiffres, tirets).',
       },
@@ -890,6 +922,12 @@ const celvaFr = {
       },
     },
   },
+  shared: {
+    helpers: {
+      sort_order:
+        "Position d'affichage : les plus petits nombres apparaissent en premier. Laissez 0 pour l'ordre par défaut.",
+    },
+  },
 };
 
 const celvaEn = {
@@ -1018,6 +1056,12 @@ const celvaEn = {
       helpers: {
         slug_optional: 'Optional — auto-generated from the French name if blank.',
       },
+      placeholders: {
+        name_fr: 'e.g. Robes',
+        name_en: 'e.g. Dresses',
+        description_fr: 'e.g. Robes de cérémonie et du quotidien.',
+        description_en: 'e.g. Ceremony and everyday dresses.',
+      },
       errors: {
         invalid_slug: 'Invalid slug (lowercase letters, digits and dashes only).',
       },
@@ -1044,6 +1088,10 @@ const celvaEn = {
       helpers: {
         sort_order_optional: 'Optional — auto-assigned (0, 1, 2 …) if blank.',
       },
+      placeholders: {
+        name_fr: 'e.g. Taille',
+        name_en: 'e.g. Size',
+      },
     },
     'attribute-values': {
       name: 'Attribute value |||| Attribute values',
@@ -1059,6 +1107,10 @@ const celvaEn = {
         sort_order_optional: 'Optional — auto-assigned if blank.',
         color_hex: 'For colour attributes only. Format #RRGGBB.',
         color_hex_invalid: 'Invalid colour (expected format: #RRGGBB).',
+      },
+      placeholders: {
+        value_fr: 'e.g. Rouge',
+        value_en: 'e.g. Red',
       },
     },
     variants: {
@@ -1120,6 +1172,14 @@ const celvaEn = {
       helpers: {
         slug_optional: 'Optional — auto-generated from the French name if blank.',
         cost_price: 'Entered manually for PURCHASED. Auto-computed for INTERNAL / SUBCONTRACTED once a production order completes.',
+        display_price: 'Price shown in the storefront (FCFA).',
+        floor_price: 'Floor price: the lowest amount accepted when negotiating (FCFA).',
+      },
+      placeholders: {
+        name_fr: 'e.g. Robe Mino',
+        name_en: 'e.g. Mino Dress',
+        description_fr: 'e.g. Coupe ajustée, tombé fluide…',
+        description_en: 'e.g. Fitted cut, fluid drape…',
       },
       actions: {
         duplicate: 'Duplicate',
@@ -1142,6 +1202,12 @@ const celvaEn = {
     },
     collections: {
       name: 'Collection |||| Collections',
+      placeholders: {
+        name_fr: 'e.g. Collection Wax 2026',
+        name_en: 'e.g. Wax Collection 2026',
+        description_fr: 'e.g. Pièces phares de la saison.',
+        description_en: 'e.g. Season highlights.',
+      },
       add: 'Collection',
       search: 'Search a collection…',
       empty: 'No collections for this filter.',
@@ -1529,6 +1595,10 @@ const celvaEn = {
         slug_optional: 'Optional — generated from FR name if blank.',
         cover_image: 'Family banner (4:5). Shown at the top of the section on /studio.',
       },
+      placeholders: {
+        name_fr: 'e.g. Wax',
+        name_en: 'e.g. Wax',
+      },
       errors: {
         invalid_slug: 'Invalid slug (lowercase letters, digits, dashes).',
       },
@@ -1743,6 +1813,12 @@ const celvaEn = {
         completed: 'Production completed. Finished-good stock + cost price updated.',
         cancelled: 'Production order cancelled.',
       },
+    },
+  },
+  shared: {
+    helpers: {
+      sort_order:
+        'Display position: lower numbers appear first. Leave 0 for default order.',
     },
   },
 };

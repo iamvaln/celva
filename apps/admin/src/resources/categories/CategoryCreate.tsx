@@ -1,6 +1,5 @@
 import {
   Create,
-  NumberInput,
   SimpleForm,
   TextInput,
   minValue,
@@ -8,6 +7,8 @@ import {
   required,
   useTranslate,
 } from 'react-admin';
+import { SlugInput } from '../../components/SlugInput';
+import { SortOrderInput } from '../../components/SortOrderInput';
 
 export const CategoryCreate = () => {
   const translate = useTranslate();
@@ -17,17 +18,20 @@ export const CategoryCreate = () => {
         <TextInput
           source="name.fr"
           label={translate('resources.categories.fields.name_fr')}
+          placeholder={translate('resources.categories.placeholders.name_fr')}
           validate={[required()]}
           fullWidth
         />
         <TextInput
           source="name.en"
           label={translate('resources.categories.fields.name_en')}
+          placeholder={translate('resources.categories.placeholders.name_en')}
           validate={[required()]}
           fullWidth
         />
-        <TextInput
+        <SlugInput
           source="slug"
+          from="name.fr"
           helperText="resources.categories.helpers.slug_optional"
           validate={[regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'resources.categories.errors.invalid_slug')]}
           fullWidth
@@ -35,6 +39,7 @@ export const CategoryCreate = () => {
         <TextInput
           source="description.fr"
           label={translate('resources.categories.fields.description_fr')}
+          placeholder={translate('resources.categories.placeholders.description_fr')}
           multiline
           minRows={2}
           fullWidth
@@ -42,11 +47,12 @@ export const CategoryCreate = () => {
         <TextInput
           source="description.en"
           label={translate('resources.categories.fields.description_en')}
+          placeholder={translate('resources.categories.placeholders.description_en')}
           multiline
           minRows={2}
           fullWidth
         />
-        <NumberInput source="sortOrder" defaultValue={0} validate={[minValue(0)]} />
+        <SortOrderInput defaultValue={0} validate={[minValue(0)]} />
       </SimpleForm>
     </Create>
   );

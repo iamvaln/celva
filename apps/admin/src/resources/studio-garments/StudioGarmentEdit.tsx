@@ -2,12 +2,12 @@ import {
   AutocompleteInput,
   BooleanInput,
   Edit,
-  NumberInput,
   ReferenceInput,
   SimpleForm,
   TextInput,
   required,
 } from 'react-admin';
+import { SortOrderInput } from '../../components/SortOrderInput';
 
 export const StudioGarmentEdit = () => (
   <Edit redirect="list" mutationMode="pessimistic">
@@ -22,7 +22,7 @@ export const StudioGarmentEdit = () => (
       <TextInput source="name.en" validate={[required()]} fullWidth />
       <TextInput source="description.fr" multiline minRows={2} fullWidth />
       <TextInput source="description.en" multiline minRows={2} fullWidth />
-      <NumberInput source="sortOrder" min={0} />
+      <SortOrderInput />
       <BooleanInput source="isActive" />
     </SimpleForm>
   </Edit>

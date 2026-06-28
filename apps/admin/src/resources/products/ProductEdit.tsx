@@ -20,6 +20,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { COMMISSION_TYPE, PRODUCTION_TYPE } from '@celva/shared';
 import { fetchJson } from '../../http';
 import { API_BASE } from '../../config';
+import { SlugInput } from '../../components/SlugInput';
 import { ProductImagesPanel } from './ProductImagesPanel';
 import { RelatedProductsPanel } from './RelatedProductsPanel';
 
@@ -78,8 +79,9 @@ export const ProductEdit = () => {
           validate={[required()]}
           fullWidth
         />
-        <TextInput
+        <SlugInput
           source="slug"
+          from="name.fr"
           validate={[required(), regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'resources.products.errors.invalid_slug')]}
           fullWidth
         />

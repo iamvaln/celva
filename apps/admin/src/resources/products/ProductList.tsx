@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Title, useGetList, useRedirect, useStore, useTranslate } from 'react-admin';
 import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
@@ -169,6 +170,14 @@ export const ProductList = () => {
               <ViewListIcon sx={{ fontSize: 16 }} />
             </button>
           </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => redirect('create', 'products')}
+            style={{ marginLeft: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+          >
+            <AddIcon sx={{ fontSize: 16 }} />
+            {t('ui.products.create')}
+          </button>
         </div>
 
         {/* tabs */}

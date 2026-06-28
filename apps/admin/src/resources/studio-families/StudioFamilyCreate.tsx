@@ -1,25 +1,40 @@
 import {
   BooleanInput,
   Create,
-  NumberInput,
   SimpleForm,
   TextInput,
   regex,
   required,
+  useTranslate,
 } from 'react-admin';
 import { ImageDropInput } from '../../components/ImageDropInput';
+import { SlugInput } from '../../components/SlugInput';
+import { SortOrderInput } from '../../components/SortOrderInput';
 
-export const StudioFamilyCreate = () => (
+export const StudioFamilyCreate = () => {
+  const translate = useTranslate();
+  return (
   <Create redirect="list">
     <SimpleForm>
       <TextInput
+        source="name.fr"
+        placeholder={translate('resources.studio-families.placeholders.name_fr')}
+        validate={[required()]}
+        fullWidth
+      />
+      <TextInput
+        source="name.en"
+        placeholder={translate('resources.studio-families.placeholders.name_en')}
+        validate={[required()]}
+        fullWidth
+      />
+      <SlugInput
         source="slug"
+        from="name.fr"
         helperText="resources.studio-families.helpers.slug_optional"
         validate={[regex(/^[a-z0-9-]*$/, 'resources.studio-families.errors.invalid_slug')]}
         fullWidth
       />
-      <TextInput source="name.fr" validate={[required()]} fullWidth />
-      <TextInput source="name.en" validate={[required()]} fullWidth />
       <TextInput source="description.fr" multiline minRows={2} fullWidth />
       <TextInput source="description.en" multiline minRows={2} fullWidth />
       <ImageDropInput
@@ -27,8 +42,9 @@ export const StudioFamilyCreate = () => (
         aspectRatio={4 / 5}
         helperText="resources.studio-families.helpers.cover_image"
       />
-      <NumberInput source="sortOrder" min={0} defaultValue={0} />
+      <SortOrderInput defaultValue={0} />
       <BooleanInput source="isActive" defaultValue={true} />
     </SimpleForm>
   </Create>
-);
+  );
+};

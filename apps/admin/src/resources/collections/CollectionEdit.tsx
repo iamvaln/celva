@@ -1,7 +1,6 @@
 import {
   BooleanInput,
   Edit,
-  NumberInput,
   SimpleForm,
   TextInput,
   minValue,
@@ -12,6 +11,8 @@ import {
 } from 'react-admin';
 import { CollectionProductsPanel } from './CollectionProductsPanel';
 import { ImageDropInput } from '../../components/ImageDropInput';
+import { SlugInput } from '../../components/SlugInput';
+import { SortOrderInput } from '../../components/SortOrderInput';
 
 export const CollectionEdit = () => {
   const translate = useTranslate();
@@ -30,8 +31,9 @@ export const CollectionEdit = () => {
           validate={[required()]}
           fullWidth
         />
-        <TextInput
+        <SlugInput
           source="slug"
+          from="name.fr"
           validate={[
             required(),
             regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'resources.collections.errors.invalid_slug'),
@@ -53,7 +55,7 @@ export const CollectionEdit = () => {
           fullWidth
         />
         <ImageDropInput source="imageUrl" aspectRatio={21 / 9} />
-        <NumberInput source="sortOrder" validate={[minValue(0)]} />
+        <SortOrderInput validate={[minValue(0)]} />
         <BooleanInput source="isActive" />
         <ProductsPanelWithRecord />
       </SimpleForm>

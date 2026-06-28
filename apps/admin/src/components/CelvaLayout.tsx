@@ -15,6 +15,7 @@ import { CelvaMenu } from './CelvaMenu';
 import { CelvaMonogram } from './CelvaMonogram';
 import { CelvaCommandPalette } from './CelvaCommandPalette';
 import { ForcePasswordChangeGuard } from './ForcePasswordChangeGuard';
+import { Breadcrumb } from './Breadcrumb';
 import { STOREFRONT_URL } from '../config';
 
 // Quick link to the public storefront (opens in a new tab).
@@ -108,6 +109,7 @@ export const CelvaLayout = (props: LayoutProps) => (
   <Layout {...props} appBar={CelvaAppBar} menu={CelvaMenu}>
     <ForcePasswordChangeGuard />
     <CelvaCommandPalette />
+    <Breadcrumb />
     {props.children}
   </Layout>
 );
