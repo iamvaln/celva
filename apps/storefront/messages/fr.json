@@ -604,6 +604,14 @@
       "title": "Réserver un rendez-vous",
       "lede": "Indiquez vos coordonnées et un créneau. La styliste vous confirme par WhatsApp dans les 24 h et prépare votre rendez-vous autour des tissus que vous avez retenus.",
       "selection_label": "Vos tissus retenus",
+      "aside": {
+        "eyebrow": "L'atelier",
+        "address": "Atelier Celva, rue Foch, Douala",
+        "hours": "Du lundi au samedi, 9 h – 18 h",
+        "point1": "Accueil sur rendez-vous, autour d'un café.",
+        "point2": "Confection sur mesure en 4 à 7 semaines.",
+        "point3": "Essayages et ajustements inclus."
+      },
       "fields": {
         "name": "Nom complet",
         "phone": "WhatsApp / Téléphone",

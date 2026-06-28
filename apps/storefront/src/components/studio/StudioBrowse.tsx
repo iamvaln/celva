@@ -329,6 +329,8 @@ function RdvFormSection({
           </div>
         </header>
 
+        <div className={styles.rdvGrid}>
+          <div className={styles.rdvFormCol}>
         {selectedLabels.length > 0 && (
           <div className={styles.rdvSummary}>
             <p className={styles.subEyebrow}>{t('rdv.selection_label')}</p>
@@ -428,6 +430,19 @@ function RdvFormSection({
             )}
           </div>
         </form>
+          </div>
+
+          <aside className={styles.rdvAside}>
+            <p className={styles.subEyebrow}>{t('rdv.aside.eyebrow')}</p>
+            <p className={styles.rdvAsideAddress}>{t('rdv.aside.address')}</p>
+            <p className={styles.rdvAsideHours}>{t('rdv.aside.hours')}</p>
+            <ul className={styles.rdvAsideList}>
+              <li>{t('rdv.aside.point1')}</li>
+              <li>{t('rdv.aside.point2')}</li>
+              <li>{t('rdv.aside.point3')}</li>
+            </ul>
+          </aside>
+        </div>
       </div>
     </section>
   );

@@ -604,6 +604,14 @@
       "title": "Book an appointment",
       "lede": "Drop your details and a time slot. The stylist confirms by WhatsApp within 24 hours and prepares your visit around the fabrics you picked.",
       "selection_label": "Your selected fabrics",
+      "aside": {
+        "eyebrow": "The atelier",
+        "address": "Celva Atelier, rue Foch, Douala",
+        "hours": "Monday to Saturday, 9 am – 6 pm",
+        "point1": "By appointment, over a coffee.",
+        "point2": "Made to measure in 4 to 7 weeks.",
+        "point3": "Fittings and adjustments included."
+      },
       "fields": {
         "name": "Full name",
         "phone": "WhatsApp / Phone",
