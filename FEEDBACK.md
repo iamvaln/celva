@@ -53,8 +53,12 @@ Status legend: 🔲 open · 🔄 in progress · ✅ done
       lookbook image; `NEWSLETTER_IMAGE` constant in the homepage — swap for any other).
 - ✅ Size guides seeded (robes/hauts/jupes, bilingual markdown w/ GFM measurement tables) so
       `/size-guides` isn't empty.
-- ✅ Appointment discoverability: added a "Prenez rendez-vous à l'atelier" CTA on the contact page
-      linking to /studio (where the rdv form lives).
+- ✅ Appointment form: the rdv form existed on /studio but `StudioBrowse` short-circuited to an
+      empty message when no studio families were seeded (0 on preprod), so it was UNREACHABLE.
+      Fixed: render the booking form even with an empty catalogue (selection is optional). Plus a
+      "Prenez rendez-vous à l'atelier" CTA on the contact page → /studio#book. Verified live
+      (form now renders on /fr/studio). Optional follow-up: seed the studio catalogue (families/
+      garments/fabrics/models — needs R2 images) so the browse step has content.
 
 ## AI Assistance
 
