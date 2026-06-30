@@ -35,6 +35,14 @@ export default defineConfig(({ mode }) => {
       globals: true,
       setupFiles: ['./test/setup.ts'],
       include: ['src/**/*.test.{ts,tsx}', 'test/**/*.test.{ts,tsx}'],
+      // React-Admin pulls in MUI via directory-style ESM imports
+      // (e.g. '@mui/material/styles') that Node's native resolver rejects.
+      // Inlining these deps routes them through Vite's resolver instead.
+      server: {
+        deps: {
+          inline: [/@mui\//, /react-admin/, /ra-ui-materialui/, /ra-core/],
+        },
+      },
       coverage: {
         provider: 'v8',
         reporter: ['text', 'html'],
