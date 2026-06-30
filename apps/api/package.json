@@ -18,6 +18,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
+    "test:e2e:setup": "prisma migrate deploy && tsx prisma/seed.ts",
+    "test:e2e:full": "npm run test:e2e:setup && npm run test:e2e",
     "clean": "rm -rf dist .turbo coverage",
     "prisma": "prisma",
     "prisma:generate": "prisma generate",
