@@ -12,6 +12,11 @@ import {
   pickLocalized,
 } from '@/lib/catalogue';
 import { listArticles, type Article } from '@/lib/articles';
+import {
+  selectFeaturedGrid,
+  selectHeroProduct,
+  selectSurMesureProduct,
+} from '@/lib/featured';
 import { ProductGrid } from '@/components/ProductGrid';
 import { NewsletterForm } from '@/components/NewsletterForm';
 
@@ -39,13 +44,9 @@ export default async function HomePage({
     locale,
   ).catch(() => ({ data: [] as ApiProduct[], total: 0, page: 1, pageSize: 6 }));
 
-  const heroProduct = featuredPage.data[0] ?? null;
-  const gridSource =
-    featuredPage.data.length > 4
-      ? featuredPage.data.slice(1, 5)
-      : featuredPage.data.slice(0, 4);
-  const gridProducts = gridSource.reverse();
-  const surMesureProduct = featuredPage.data[5] ?? featuredPage.data[1] ?? null;
+  const heroProduct = selectHeroProduct(featuredPage.data);
+  const gridProducts = selectFeaturedGrid(featuredPage.data);
+  const surMesureProduct = selectSurMesureProduct(featuredPage.data);
 
   let heroImage: ApiProductImage | null = null;
   let heroAlt = '';
