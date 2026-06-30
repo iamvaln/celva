@@ -404,4 +404,29 @@ describe('Order transactional emails (e2e)', () => {
       expect(email?.text).toContain('Wrong size');
     });
   });
+
+  describe('NewOrderAdmin', () => {
+    it('fires an ops alert on every new order — even a PENDING MoMo one', async () => {
+      const order = await placePendingMomoOrder();
+      const alert = await waitForMail(
+        (m) =>
+          m.tag === 'admin_new_order' &&
+          Boolean(m.subject?.includes(order.orderNumber)),
+      );
+      expect(alert).toBeDefined();
+      // Recipient resolved from settings (CONTACT_EMAIL seeded) or the default.
+      expect(typeof alert?.to).toBe('string');
+      expect(alert?.text).toContain(order.orderNumber);
+    });
+
+    it('the new-order alert is internal — it does not go to the customer', async () => {
+      const order = await placePendingMomoOrder();
+      const alert = await waitForMail(
+        (m) =>
+          m.tag === 'admin_new_order' &&
+          Boolean(m.subject?.includes(order.orderNumber)),
+      );
+      expect(alert?.to).not.toBe(CLIENT_EMAIL);
+    });
+  });
 });

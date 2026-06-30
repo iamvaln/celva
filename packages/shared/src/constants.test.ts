@@ -32,6 +32,7 @@ describe('SETTING_KEYS', () => {
     'MAX_CASH_ON_DELIVERY',
     'INVOICE_COMPANY_NAME',
     'CONTACT_EMAIL',
+    'ORDER_NOTIFICATION_EMAIL',
     'FREE_DELIVERY_ENABLED',
     'R2_BUCKET_URL',
   ])('includes %s', (key) => {

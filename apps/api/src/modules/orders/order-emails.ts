@@ -1,4 +1,5 @@
 import type { Logger } from '@nestjs/common';
+import { SETTING_KEYS } from '@celva/shared';
 import type {
   DeliveryMode,
   OrderStatus,
@@ -18,7 +19,7 @@ export type OrderEmailContext = {
   status: OrderStatus;
   total: string | number;
   currency: 'XAF';
-  user: { email: string; name: string };
+  user: { email: string; name: string; phone?: string | null };
   items: ReadonlyArray<{
     quantity: number;
     productNameFr: string;
@@ -318,13 +319,59 @@ export const buildOrderCancelledEmail = (
 };
 
 // ──────────────────────────────────────────────────────────────────────────
+// NewOrderAdmin — internal alert to the ops inbox on every new order
+// ──────────────────────────────────────────────────────────────────────────
+
+const paymentLine = (
+  payment: OrderEmailContext['payment'],
+): string => (payment ? `${payment.method} (${payment.status})` : '—');
+
+export const buildNewOrderAdminEmail = (
+  ctx: OrderEmailContext,
+  recipient: string,
+): MailMessage => {
+  const totalLabel = formatXAF(ctx.total);
+  const contact = [ctx.user.name, ctx.user.email, ctx.user.phone]
+    .filter(Boolean)
+    .join(' · ');
+
+  const text = [
+    `Nouvelle commande ${ctx.orderNumber} — ${totalLabel}`,
+    `Statut : ${ctx.status}`,
+    '',
+    `Cliente : ${contact}`,
+    '',
+    'Articles :',
+    itemsLines(ctx.items, 'fr'),
+    '',
+    `Total : ${totalLabel}`,
+    `Paiement : ${paymentLine(ctx.payment)}`,
+    '',
+    deliveryLines(ctx.delivery, 'fr') || 'Livraison : —',
+    '',
+    `Ouvrir dans le back-office et traiter la commande ${ctx.orderNumber}.`,
+  ].join('\n');
+
+  return {
+    to: recipient,
+    subject: `Celva · Nouvelle commande ${ctx.orderNumber} — ${totalLabel}`,
+    text,
+    tag: 'admin_new_order',
+  };
+};
+
+// ──────────────────────────────────────────────────────────────────────────
 // Dispatch — shared between OrdersService and PaymentsService so that any
 // place an order status flips can fire the right email without duplicating
 // the Prisma hydration logic. Kept out of a service to dodge a circular
 // PaymentsModule ↔ OrdersModule dependency.
 // ──────────────────────────────────────────────────────────────────────────
 
-export type OrderEmailKind = 'confirmation' | 'status' | 'cancelled';
+export type OrderEmailKind =
+  | 'confirmation'
+  | 'status'
+  | 'cancelled'
+  | 'admin_new_order';
 
 export type OrderEmailDispatchDeps = {
   prisma: PrismaService;
@@ -365,7 +412,7 @@ export const dispatchOrderEmail = async (
   const order = await deps.prisma.order.findUnique({
     where: { id: orderId },
     include: {
-      user: { select: { email: true, name: true } },
+      user: { select: { email: true, name: true, phone: true } },
       items: { include: { variant: { include: { product: true } } } },
       payment: { select: { method: true, status: true } },
       delivery: { include: { pickupPoint: true } },
@@ -383,7 +430,7 @@ export const dispatchOrderEmail = async (
     status: order.status as OrderStatus,
     total: order.total.toString(),
     currency: 'XAF',
-    user: { email: order.user.email, name: order.user.name },
+    user: { email: order.user.email, name: order.user.name, phone: order.user.phone },
     items: order.items.map((it) => {
       const name = bilingual(it.variant.product.name);
       return { quantity: it.quantity, productNameFr: name.fr, productNameEn: name.en };
@@ -411,6 +458,22 @@ export const dispatchOrderEmail = async (
       : null,
     storefrontUrl: deps.storefrontUrl,
   };
+
+  // Internal ops alert — resolve the recipient from settings
+  // (ORDER_NOTIFICATION_EMAIL → CONTACT_EMAIL → hard default) and send.
+  if (kind === 'admin_new_order') {
+    const [notif, contact] = await Promise.all([
+      deps.prisma.setting.findUnique({
+        where: { key: SETTING_KEYS.ORDER_NOTIFICATION_EMAIL },
+      }),
+      deps.prisma.setting.findUnique({
+        where: { key: SETTING_KEYS.CONTACT_EMAIL },
+      }),
+    ]);
+    const recipient = notif?.value || contact?.value || 'contact@celva.store';
+    await deps.mail.send(buildNewOrderAdminEmail(ctx, recipient));
+    return;
+  }
 
   let invoiceAttachment: { buffer: Buffer; invoiceNumber: string } | undefined;
   if (kind === 'confirmation' && deps.invoices) {

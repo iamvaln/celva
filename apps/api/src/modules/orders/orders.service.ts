@@ -35,7 +35,11 @@ import { CommissionsService } from '../commissions/commissions.service';
 import type { Env } from '../../config/env';
 import type { CreateOrderDto } from './dto/create-order.dto';
 import type { ListOrdersQuery } from './dto/list-orders.query';
-import { CUSTOMER_VISIBLE_TRANSITIONS, fireOrderEmail } from './order-emails';
+import {
+  CUSTOMER_VISIBLE_TRANSITIONS,
+  fireOrderEmail,
+  type OrderEmailKind,
+} from './order-emails';
 
 const TERMINAL_STATUSES: OrderStatus[] = [ORDER_STATUS.COMPLETED, ORDER_STATUS.CANCELLED];
 
@@ -431,6 +435,10 @@ export class OrdersService {
 
     this.logger.log(`Order ${orderNumber} created (status=${created.status}, total=${total.toFixed(2)})`);
 
+    // Alert the ops inbox on every new order, including PENDING ones (so the
+    // team is notified before an OM/MoMo payment is captured). Fire-and-forget.
+    this.dispatchOrderEmail(created.id, 'admin_new_order');
+
     // Cash flow lands at CONFIRMED at checkout — send confirmation now. The
     // OM/MoMo path stays PENDING here; PaymentsService.markCompleted triggers
     // confirmation when the callback (or dev stub) promotes it to CONFIRMED.
@@ -659,7 +667,7 @@ export class OrdersService {
 
   private dispatchOrderEmail(
     orderId: string,
-    kind: 'confirmation' | 'status' | 'cancelled',
+    kind: OrderEmailKind,
     reason?: string,
   ): void {
     fireOrderEmail(
