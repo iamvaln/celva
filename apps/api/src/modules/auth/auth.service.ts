@@ -156,6 +156,29 @@ export class AuthService {
     return { id: user.id, email: user.email, name: user.name, isNew: true };
   }
 
+  /**
+   * Sign a short-lived access token for an existing user id — used by guest
+   * checkout to log the shopper into their passwordless account so they can
+   * see the order confirmation and track their orders. No refresh token is
+   * issued: a guest re-authenticates by claiming the account via password
+   * reset. Mirrors the access-token half of {@link issueTokens}.
+   */
+  async issueGuestAccessToken(userId: string): Promise<string> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, role: true, isActive: true },
+    });
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('errors.account_disabled');
+    }
+    const payload: JwtPayload = { sub: user.id, email: user.email, role: user.role };
+    return this.jwt.signAsync(payload, {
+      secret: this.config.get('JWT_ACCESS_SECRET', { infer: true }),
+      expiresIn: this.config.get('JWT_ACCESS_EXPIRATION', { infer: true }),
+      jwtid: uuid(),
+    });
+  }
+
   async login(dto: LoginDto, meta: SessionMeta = {}): Promise<AuthResult> {
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (!user) {

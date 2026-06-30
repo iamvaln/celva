@@ -126,7 +126,7 @@ export function GuestCheckoutForm({
         body: JSON.stringify(body),
       });
       const payload = (await res.json()) as {
-        data?: { orderNumber: string };
+        data?: { orderNumber: string; accessToken?: string };
         message?: string;
       };
       if (!res.ok) {
@@ -135,6 +135,18 @@ export function GuestCheckoutForm({
         return;
       }
       const orderNumber = payload.data?.orderNumber;
+      // Guest checkout logs the shopper into their passwordless account: stash
+      // the returned access token in the storefront session so the confirmation
+      // page (which reads /me/orders) can load.
+      const accessToken = payload.data?.accessToken;
+      if (accessToken) {
+        await fetch('/auth/session', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accessToken }),
+        });
+      }
       clearGuestCart();
       if (orderNumber) {
         router.push({

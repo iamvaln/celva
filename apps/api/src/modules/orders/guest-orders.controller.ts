@@ -45,6 +45,12 @@ export class GuestOrdersController {
       phone: dto.phone,
       locale: acceptLanguage,
     });
-    return this.orders.createFromItems(user.id, dto.items, dto);
+    const order = await this.orders.createFromItems(user.id, dto.items, dto);
+    // Log the guest into their passwordless account so the storefront can show
+    // the confirmation page (which reads /me/orders) and so the order appears
+    // under their account. The token is returned in the body; the storefront
+    // stashes it in its own httpOnly session cookie.
+    const accessToken = await this.auth.issueGuestAccessToken(user.id);
+    return { ...order, accessToken };
   }
 }
