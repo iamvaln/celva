@@ -60,10 +60,14 @@ export class MailService {
         `[DEV MAIL] to=${recipients.join(',')} subject=${JSON.stringify(message.subject)} tag=${message.tag ?? '-'}${attachmentTag}`,
       );
       if (message.text) this.logger.debug(`[DEV MAIL text]\n${message.text}`);
+      // Never reach the real provider outside production — even when Mailgun
+      // creds are present in the env. A stale dev/staging key would otherwise
+      // make a live API call that 401s and surfaces as a 500 to the caller
+      // (e.g. the public contact form). Dev logs the message and stops here.
+      return;
     }
 
     if (!this.client || !this.domain) {
-      if (this.isDev) return;
       throw new Error('MailService is not configured: MAILGUN_API_KEY and MAILGUN_DOMAIN required');
     }
 
