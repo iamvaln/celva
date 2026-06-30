@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.0",
-    "@aws-sdk/client-s3": "^3.1051.0",
+    "@aws-sdk/client-s3": "^3.1075.0",
     "@celva/shared": "*",
     "@nestjs/common": "^10.4.15",
     "@nestjs/config": "^3.3.0",
