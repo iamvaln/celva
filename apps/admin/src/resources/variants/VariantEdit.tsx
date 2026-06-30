@@ -146,6 +146,11 @@ export const VariantEdit = () => {
           helperText="resources.variants.helpers.price_override"
           validate={[minValue(0)]}
         />
+        <TextInput
+          source="storageLocation"
+          helperText="resources.variants.helpers.storage_location"
+          fullWidth
+        />
         <BooleanInput source="isActive" />
         <p style={{ opacity: 0.7, marginTop: 16, fontSize: 13 }}>
           {translate('resources.variants.helpers.stock_via_adjust')}

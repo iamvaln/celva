@@ -42,6 +42,8 @@ export type ApiProductImage = {
   position: number;
   isPrimary: boolean;
   altText?: Bilingual | null;
+  /** Attribute value (colour) this image depicts, if tagged — drives colour→image. */
+  attributeValueId?: string | null;
   urls: {
     original: string;
     large: string;
@@ -62,6 +64,8 @@ export type ApiAttributeValue = {
   attributeId: string;
   value: { fr: string; en: string };
   sortOrder: number;
+  /** Hex swatch (#RRGGBB) for colour values; null for non-colour values. */
+  colorHex?: string | null;
 };
 
 export type ApiRelatedProduct = {

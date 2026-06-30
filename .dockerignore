@@ -1,0 +1,34 @@
+# Deps & build artifacts (reinstalled/rebuilt inside the image)
+node_modules
+**/node_modules
+.next
+**/.next
+dist
+**/dist
+out
+**/out
+.turbo
+**/.turbo
+*.tsbuildinfo
+
+# Generated Prisma client (regenerated in the build stage)
+**/.prisma
+**/generated/prisma
+
+# VCS / editor / OS
+.git
+.gitignore
+.idea
+.vscode
+**/.DS_Store
+
+# Secrets — never bake into an image
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.production.example
+
+# Logs, coverage
+*.log
+coverage
+**/coverage

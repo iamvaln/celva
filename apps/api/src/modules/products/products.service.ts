@@ -62,10 +62,128 @@ export class ProductsService {
     return { data, total, page, pageSize };
   }
 
+  /**
+   * Admin catalogue list (redesign): same filters as the public list but
+   * enriched with the primary image, variant count, and aggregated stock —
+   * the data the grid/list cards need. Kept off the public endpoint so
+   * inventory totals aren't exposed to the storefront.
+   */
+  async listForAdmin(query: ListProductsQuery) {
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? 24;
+
+    const where: Prisma.ProductWhereInput = {
+      ...(query.categoryId ? { categoryId: query.categoryId } : {}),
+      ...(query.productionType ? { productionType: query.productionType as ProductionType } : {}),
+      ...(query.isActive !== undefined ? { isActive: query.isActive === 'true' } : {}),
+      ...(query.search
+        ? {
+            OR: [
+              { slug: { contains: query.search, mode: 'insensitive' } },
+              { name: { path: ['fr'], string_contains: query.search } as Prisma.JsonFilter },
+              { name: { path: ['en'], string_contains: query.search } as Prisma.JsonFilter },
+            ],
+          }
+        : {}),
+    };
+
+    const sortBy = query.sortBy ?? 'createdAt';
+    const sortDir = query.sortDir ?? 'desc';
+
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        where,
+        orderBy: [{ [sortBy]: sortDir }, { id: 'asc' }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          category: { select: { name: true } },
+          images: {
+            orderBy: [{ isPrimary: 'desc' }, { position: 'asc' }],
+            take: 1,
+            select: { key: true },
+          },
+          variants: { select: { stock: true, consignedStock: true } },
+        },
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    const data = rows.map(({ images, variants, ...p }) => ({
+      ...p,
+      primaryImageKey: images[0]?.key ?? null,
+      variantCount: variants.length,
+      stockTotal: variants.reduce((s, v) => s + v.stock, 0),
+      consignedTotal: variants.reduce((s, v) => s + v.consignedStock, 0),
+    }));
+
+    return { data, total, page, pageSize };
+  }
+
   async findById(id: string): Promise<Product> {
     const product = await this.prisma.product.findUnique({ where: { id } });
     if (!product) throw new NotFoundException('errors.not_found');
     return product;
+  }
+
+  /**
+   * Admin product detail (redesign): product + category + ordered images +
+   * attribute axes + variants with their attribute values resolved to a
+   * { attributeName: value } map (for the variants table columns).
+   */
+  async findByIdForAdmin(id: string) {
+    const p = await this.prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: { select: { id: true, name: true } },
+        images: {
+          orderBy: [{ isPrimary: 'desc' }, { position: 'asc' }],
+          select: { id: true, key: true, isPrimary: true, position: true },
+        },
+        attributes: {
+          orderBy: { sortOrder: 'asc' },
+          include: { values: { orderBy: { sortOrder: 'asc' }, select: { id: true, value: true } } },
+        },
+        variants: {
+          orderBy: { sku: 'asc' },
+          include: {
+            attributeValues: {
+              include: {
+                attribute: { select: { name: true } },
+                attributeValue: { select: { value: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!p) throw new NotFoundException('errors.not_found');
+
+    const variants = p.variants.map((v) => ({
+      id: v.id,
+      sku: v.sku,
+      stock: v.stock,
+      consignedStock: v.consignedStock,
+      priceOverride: v.priceOverride,
+      isActive: v.isActive,
+      storageLocation: v.storageLocation,
+      attributes: Object.fromEntries(
+        v.attributeValues.map((av) => [
+          (av.attribute.name as { fr?: string })?.fr ?? '',
+          (av.attributeValue.value as { fr?: string })?.fr ?? '',
+        ]),
+      ),
+    }));
+    const attributes = p.attributes.map((a) => ({
+      id: a.id,
+      name: a.name,
+      values: a.values.map((x) => x.value),
+    }));
+
+    const { variants: _v, attributes: _a, ...rest } = p;
+    void _v;
+    void _a;
+    return { ...rest, attributes, variants };
   }
 
   async findBySlug(slug: string): Promise<Product> {

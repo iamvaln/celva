@@ -19,7 +19,7 @@
     "shop": "Boutique",
     "collections": "Collections",
     "journal": "Journal",
-    "studio": "Studio",
+    "studio": "Studio sur-mesure",
     "search": "Rechercher",
     "account": "Mon compte",
     "wishlist": "Favoris",
@@ -30,30 +30,36 @@
     "menu_open": "Ouvrir le menu",
     "menu_close": "Fermer le menu",
     "language": "Langue",
-    "theme_toggle": "Basculer thème"
+    "theme_toggle": "Basculer thème",
+    "whatsapp_open": "Nous écrire sur WhatsApp",
+    "whatsapp_prelude": "Bonjour Celva, j'aimerais avoir des informations."
   },
   "footer": {
     "tagline": "Une marque camerounaise, pour celles et ceux qui prennent le temps.",
+    "tagline_full": "Maison camerounaise de prêt-à-porter et sur-mesure. Atelier rue Foch, Douala.",
     "boutique": "Boutique",
-    "about": "À propos",
+    "maison": "Maison",
     "help": "Aide",
     "contact": "Contact",
     "links": {
       "shop_all": "Toutes les pièces",
       "collections": "Collections",
       "new": "Nouveautés",
+      "archive": "Archive",
       "our_story": "Notre histoire",
+      "atelier": "Atelier",
+      "studio": "Le sur-mesure",
       "process": "Notre processus",
       "journal": "Journal",
       "faq": "Questions fréquentes",
       "shipping": "Livraison & retours",
       "size_guide": "Guide des tailles",
+      "care": "Entretien",
       "terms": "CGV",
       "privacy": "Politique de confidentialité",
       "contact_us": "Nous écrire",
       "whatsapp": "WhatsApp"
     },
-    "payment": "Paiements acceptés : Orange Money · MTN Mobile Money · Espèces à la livraison",
     "copyright": "© {year} Celva. Tous droits réservés."
   },
   "cookies": {
@@ -65,35 +71,59 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "Collection courante",
-      "title": "L'artisanat,\nporté avec calme.",
-      "subtitle": "Pièces couture pensées à Douala, taillées une à une, livrées au Cameroun et au-delà.",
+      "eyebrow": "Collection Printemps · Vol. 04",
+      "title_a": "Tissé pour",
+      "title_em": "être vu.",
+      "lede": "Toghu tissé à la main, boubous de satin, franges nouées une à une. Des pièces qui portent haut les couleurs — taillées et finies à l'atelier rue Foch, Douala.",
       "cta_primary": "Découvrir la collection",
-      "cta_secondary": "Notre processus"
+      "cta_secondary": "Le sur-mesure",
+      "meta_season_label": "Saison",
+      "meta_season_value": "PE 26",
+      "meta_atelier_label": "Atelier",
+      "meta_atelier_value": "Douala",
+      "meta_materials_label": "Matières",
+      "meta_materials_value": "Toghu · Satin · Wax"
     },
     "featured": {
       "eyebrow": "Sélection",
-      "title": "Pièces phares",
-      "subtitle": "Quelques pièces de la saison à découvrir.",
+      "title": "Nos pièces phares",
       "cta": "Voir toute la boutique",
       "placeholder": "Sélection à venir"
     },
     "studio": {
-      "eyebrow": "Sur-mesure",
-      "title": "Créez votre pièce",
-      "body": "Le studio Celva ouvre bientôt : choisissez le tissu, la coupe, les détails. Une pièce unique, pour vous.",
-      "cta": "Je m'inscris à la liste d'attente"
+      "eyebrow": "Studio · Sur-mesure",
+      "title_a": "Faire venir",
+      "title_em": "la pièce qui manque.",
+      "body": "Nos couturières prennent vos mesures à distance — par WhatsApp ou à l'atelier rue Foch — et exécutent en quatre à six semaines. Coton, lin et soie au mètre, choix des finitions, ourlets sur cintre.",
+      "step_1": "Brief par appel ou en boutique",
+      "step_2": "Mesures & choix matière",
+      "step_3": "Patron, prototype, ajustements",
+      "step_4": "Livraison sous 4–6 semaines",
+      "cta": "Prendre rendez-vous"
     },
-    "collections": {
-      "eyebrow": "Univers",
-      "title": "Collections",
-      "soiree": "Soirées chic",
-      "fete": "Fêtes",
-      "bureau": "Bureau"
+    "collections_section": {
+      "eyebrow": "Collections",
+      "title_a": "Trois récits",
+      "title_em": "de la saison.",
+      "cta": "Voir la collection"
+    },
+    "testimonials": {
+      "eyebrow": "Lettres reçues",
+      "quote": "Le boubou arrive plié dans un calicot, étiquette manuscrite. On comprend tout de suite que ce n'est pas une marque, c'est un atelier.",
+      "name": "Awa N.",
+      "city": "Yaoundé · Cliente depuis 2024"
+    },
+    "journal": {
+      "eyebrow": "Journal",
+      "title": "Notes d'atelier",
+      "cta": "Tous les articles"
     },
     "newsletter": {
+      "eyebrow": "Lettre du studio",
+      "title_a": "Rejoignez",
+      "title_em": "l'univers Celva.",
+      "body": "Une lettre par mois, jamais plus. Coulisses d'atelier, nouvelles collections en avant-première et −10 % sur votre première commande.",
       "title": "Restez avec nous",
-      "body": "Rejoignez la liste pour les drops, l'atelier, et un code -10% sur votre première commande.",
       "email_label": "Adresse email",
       "email_placeholder": "vous@exemple.com",
       "submit": "Je m'inscris",
@@ -121,6 +151,9 @@
     "clear": "Vider le panier",
     "go_to_cart": "Voir le panier ({count})",
     "discount": "Remise",
+    "guest": {
+      "no_account_needed": "Achetez sans créer de compte"
+    },
     "flash": {
       "added": "Ajouté à votre panier.",
       "add_failed": "Impossible d'ajouter cette pièce. Réessayez.",
@@ -148,6 +181,17 @@
     "login_required": "Connectez-vous pour passer votre commande.",
     "back_to_cart": "Retour au panier",
     "place_order": "Valider la commande",
+    "guest": {
+      "subtitle": "Commandez en tant qu'invité — pas de compte requis.",
+      "login_link": "Se connecter",
+      "contact_heading": "Vos coordonnées",
+      "name": "Nom complet",
+      "email": "Email",
+      "email_hint": "Pour le suivi de commande. Un compte est créé automatiquement.",
+      "phone": "Téléphone (optionnel)",
+      "placing": "Validation…",
+      "invalid_email": "Adresse email invalide."
+    },
     "delivery": {
       "heading": "Mode de livraison",
       "home": "Livraison à domicile",
@@ -264,10 +308,37 @@
     "related_heading": "Complétez le look",
     "no_image": "Image bientôt disponible",
     "not_found": "Produit introuvable.",
-    "back_to_shop": "Retour à la boutique"
+    "back_to_shop": "Retour à la boutique",
+    "size_guide": "Guide des tailles",
+    "out_of_stock": "Rupture de stock",
+    "sold_out": "Rupture",
+    "unavailable": "Indisponible",
+    "add_to_cart": "Ajouter au panier",
+    "increase": "Augmenter la quantité",
+    "decrease": "Diminuer la quantité",
+    "wishlist_add": "Ajouter aux favoris",
+    "wishlist_remove": "Retirer des favoris",
+    "custom_prefix": "Cette pièce existe aussi en",
+    "custom_link": "sur-mesure",
+    "perks": {
+      "delivery": "Livraison sous 2–4 jours à Douala et Yaoundé",
+      "returns": "Retours gratuits sous 14 jours",
+      "payment": "Paiement Orange Money, MoMo, carte ou à la livraison"
+    },
+    "accordion": {
+      "description": "Description complète",
+      "description_body": "Pièce confectionnée dans notre atelier rue Foch, à Douala. Chaque tissage varie légèrement — c'est un travail à la main, pas une impression.",
+      "care": "Composition & entretien",
+      "care_body": "Lavage à la main à froid ou pressing délicat. Séchage à plat, à l'ombre. Repasser à l'envers, fer tiède. Les couleurs tissées ne se délaient pas.",
+      "shipping": "Livraison & retours",
+      "shipping_body": "Livraison sous 2–4 jours ouvrés à Douala et Yaoundé. 5–8 jours en province. International sous 10–14 jours via DHL Express. Retours gratuits sous 14 jours, pièce non portée avec étiquettes."
+    }
   },
   "collection": {
     "back": "Toutes les collections",
+    "index_title": "Collections",
+    "index_subtitle": "Nos récits, pièce par pièce.",
+    "index_empty": "Aucune collection pour le moment.",
     "products_heading": "Pièces de cette collection",
     "empty": "Aucun produit pour le moment.",
     "not_found": "Collection introuvable."
@@ -280,10 +351,50 @@
       "password": "Mot de passe",
       "submit": "Se connecter",
       "forgot": "Mot de passe oublié ?",
+      "forgot_password_link": "Mot de passe oublié ?",
       "no_account": "Pas encore de compte ?",
       "signup_link": "Créer un compte",
       "error_credentials": "Identifiants invalides.",
       "error_generic": "La connexion a échoué. Réessayez."
+    },
+    "forgot": {
+      "title": "Mot de passe oublié",
+      "subtitle": "Saisissez votre adresse email — nous vous enverrons un lien pour en choisir un nouveau.",
+      "email": "Adresse email",
+      "submit": "Envoyer le lien",
+      "back_to_login": "Retour à la connexion",
+      "sent_title": "Email envoyé",
+      "sent_body": "Si un compte existe pour cette adresse, vous recevrez un lien de réinitialisation valable une heure. Vérifiez aussi vos spams.",
+      "hint": "Le lien expire dans une heure.",
+      "error_email": "Email invalide.",
+      "error_generic": "Une erreur est survenue. Réessayez."
+    },
+    "confirm_email_change": {
+      "success_title": "Email mis à jour",
+      "success_body": "Votre nouvel email est désormais {email}. Connectez-vous avec cette adresse — vos autres sessions ont été déconnectées.",
+      "login_cta": "Se connecter",
+      "error_title": "Lien invalide",
+      "error_missing": "Ce lien de confirmation est incomplet.",
+      "error_invalid": "Ce lien est invalide ou a expiré. Demandez-en un nouveau depuis votre compte.",
+      "error_email_taken": "Cette adresse a été prise par un autre compte entretemps. Choisissez-en une autre.",
+      "back_to_profile": "Retour au profil"
+    },
+    "reset": {
+      "title": "Nouveau mot de passe",
+      "subtitle": "Choisissez un nouveau mot de passe pour votre compte.",
+      "new_password": "Nouveau mot de passe",
+      "confirm_password": "Confirmez le mot de passe",
+      "submit": "Mettre à jour",
+      "back_to_login": "Retour à la connexion",
+      "missing_title": "Lien invalide",
+      "missing_body": "Ce lien de réinitialisation est incomplet. Demandez-en un nouveau.",
+      "request_new_link": "Demander un nouveau lien",
+      "done_title": "Mot de passe mis à jour",
+      "done_body": "Vous allez être redirigée vers la page de connexion.",
+      "error_token": "Lien invalide ou expiré.",
+      "error_too_short": "8 caractères minimum.",
+      "error_mismatch": "Les deux mots de passe ne correspondent pas.",
+      "error_generic": "Une erreur est survenue. Réessayez."
     },
     "signup": {
       "title": "Bienvenue chez Celva",
@@ -307,6 +418,275 @@
       "logout": "Se déconnecter",
       "go_to_shop": "Aller à la boutique"
     }
+  },
+  "account": {
+    "eyebrow": "Mon compte",
+    "subtitle": "Suivez vos commandes, gérez vos adresses de livraison et vos méthodes de paiement enregistrées.",
+    "phone_label": "Téléphone",
+    "orders": "Mes commandes",
+    "orders_body": "Consultez vos commandes passées et en cours, avec statut et reçus.",
+    "addresses": "Adresses de livraison",
+    "addresses_body": "Ajoutez ou modifiez les adresses utilisées au paiement.",
+    "payment_methods": "Méthodes de paiement",
+    "payment_methods_body": "Gérez vos numéros Orange Money et MTN MoMo enregistrés.",
+    "profile": "Profil & mot de passe",
+    "profile_body": "Modifiez votre nom, votre téléphone et changez votre mot de passe.",
+    "go": "Ouvrir",
+    "delivery_timeline": {
+      "heading": "Suivi de livraison",
+      "stage": {
+        "ASSIGNED": "Coursier assigné",
+        "PICKED_UP": "Pris en charge",
+        "IN_TRANSIT": "En route",
+        "DELIVERED": "Livrée"
+      },
+      "failed": "La livraison a échoué. Notre équipe vous recontacte.",
+      "note_label": "Note"
+    },
+    "orders_page": {
+      "title": "Mes commandes",
+      "subtitle": "Les plus récentes en premier.",
+      "back": "Retour au compte",
+      "back_to_orders": "Retour aux commandes",
+      "empty": "Aucune commande pour l'instant.",
+      "go_to_shop": "Voir la boutique",
+      "view": "Voir",
+      "status_pending": "Paiement en attente",
+      "status_confirmed": "Confirmée — en préparation",
+      "status_processing": "En préparation",
+      "status_ready": "Prête",
+      "status_shipped": "Expédiée",
+      "status_delivered": "Livrée",
+      "status_completed": "Terminée",
+      "status_cancelled": "Annulée"
+    },
+    "order_detail": {
+      "title": "Commande",
+      "eyebrow": "Commande",
+      "items_heading": "Pièces",
+      "subtotal": "Sous-total",
+      "discount": "Remise",
+      "delivery_fee": "Livraison",
+      "total": "Total",
+      "vat_included": "TVA incluse",
+      "delivery_heading": "Livraison",
+      "payment_heading": "Paiement",
+      "notes_heading": "Note",
+      "cancel_heading": "Annuler la commande",
+      "cancel_explainer": "Tant que la commande n'a pas été confirmée par notre équipe, vous pouvez l'annuler. Le stock est restauré.",
+      "cancel_reason_label": "Motif (optionnel)",
+      "cancel_reason_placeholder": "Ex. Je me suis trompée de taille.",
+      "cancel_submit": "Annuler la commande",
+      "cancel_success": "Votre commande a bien été annulée.",
+      "cancel_too_late": "Cette commande est déjà en préparation. Contactez le support pour l'annuler.",
+      "cancel_error": "Impossible d'annuler la commande. Réessayez ou contactez le support.",
+      "download_invoice": "Télécharger la facture"
+    },
+    "addresses_page": {
+      "title": "Adresses de livraison",
+      "subtitle": "Enregistrez les adresses que vous utilisez souvent. Une peut être par défaut.",
+      "back": "Retour au compte",
+      "list_heading": "Adresses enregistrées",
+      "new_heading": "Ajouter une adresse",
+      "empty": "Aucune adresse enregistrée.",
+      "default": "Par défaut",
+      "label": "Libellé",
+      "full_name": "Nom complet",
+      "phone": "Téléphone",
+      "line1": "Adresse",
+      "line2": "Appt, étage, bâtiment (optionnel)",
+      "city": "Ville",
+      "zone": "Zone de livraison (ex : douala-central)",
+      "set_default": "Définir par défaut",
+      "create": "Ajouter l'adresse",
+      "edit": "Modifier",
+      "save": "Enregistrer",
+      "delete": "Supprimer",
+      "created": "Adresse ajoutée.",
+      "updated": "Adresse mise à jour.",
+      "deleted": "Adresse supprimée.",
+      "error_generic": "Impossible d'enregistrer cette adresse. Vérifiez les champs."
+    },
+    "payment_methods_page": {
+      "title": "Méthodes de paiement",
+      "subtitle": "Enregistrez vos numéros Orange Money et MTN MoMo pour des paiements plus rapides. Le paiement à la livraison ne se sauvegarde pas.",
+      "back": "Retour au compte",
+      "list_heading": "Méthodes enregistrées",
+      "new_heading": "Ajouter une méthode",
+      "empty": "Aucune méthode enregistrée.",
+      "default": "Par défaut",
+      "method": "Opérateur",
+      "orange_money": "Orange Money",
+      "mtn_momo": "MTN MoMo",
+      "label": "Libellé",
+      "label_placeholder": "OM perso, MTN bureau...",
+      "phone": "Numéro Mobile Money",
+      "set_default": "Définir par défaut",
+      "make_default": "Mettre par défaut",
+      "create": "Enregistrer la méthode",
+      "delete": "Supprimer",
+      "created": "Méthode enregistrée.",
+      "updated": "Méthode par défaut mise à jour.",
+      "deleted": "Méthode supprimée.",
+      "saved_only_om_mtn": "Seuls Orange Money et MTN MoMo peuvent être enregistrés.",
+      "error_generic": "Impossible d'enregistrer cette méthode. Vérifiez le format du numéro."
+    },
+    "profile_page": {
+      "title": "Profil & sécurité",
+      "subtitle": "Mettez à jour vos informations personnelles et votre mot de passe.",
+      "back": "Retour au compte",
+      "profile_heading": "Mes informations",
+      "email_locked": "Email",
+      "name": "Nom complet",
+      "phone": "Téléphone",
+      "phone_hint": "Format : +2376XXXXXXXX. Laissez vide pour le retirer.",
+      "save_profile": "Enregistrer",
+      "email_change_heading": "Changer mon email",
+      "email_change_explainer": "Pour des raisons de sécurité, un lien de confirmation sera envoyé à la nouvelle adresse. Le changement ne prend effet qu'après confirmation.",
+      "email_change_current": "Email actuel",
+      "email_change_new": "Nouvel email",
+      "email_change_submit": "Envoyer le lien de confirmation",
+      "email_change_hint": "Lien valable 1 heure. Vos autres sessions seront déconnectées à la confirmation.",
+      "email_change_requested": "Lien de confirmation envoyé. Vérifiez la boîte de réception de la nouvelle adresse.",
+      "password_heading": "Changer mon mot de passe",
+      "password_explainer": "Après changement, toutes vos autres sessions seront déconnectées.",
+      "current_password": "Mot de passe actuel",
+      "new_password": "Nouveau mot de passe",
+      "confirm_password": "Confirmez le nouveau mot de passe",
+      "save_password": "Mettre à jour le mot de passe",
+      "profile_saved": "Profil mis à jour.",
+      "password_changed": "Mot de passe mis à jour. Vos autres sessions ont été déconnectées.",
+      "error_current_password": "Le mot de passe actuel est incorrect.",
+      "error_password_too_short": "Le nouveau mot de passe doit faire au moins 8 caractères.",
+      "error_invalid_phone": "Numéro de téléphone invalide.",
+      "error_invalid_email": "Adresse email invalide.",
+      "error_email_taken": "Cette adresse est déjà utilisée par un autre compte.",
+      "error_email_unchanged": "Le nouvel email est identique à l'actuel.",
+      "danger_zone_heading": "Zone à risques",
+      "danger_zone_explainer": "Actions sensibles. Lisez bien avant de cliquer — elles s'effectuent immédiatement.",
+      "signout_all_heading": "Déconnecter tous les appareils",
+      "signout_all_explainer": "Utile si vous avez oublié de vous déconnecter sur un téléphone partagé. Toutes les sessions, y compris celle-ci, sont fermées.",
+      "signout_all_submit": "Déconnecter partout",
+      "delete_heading": "Supprimer mon compte",
+      "delete_explainer": "Votre historique de commandes est conservé pour des raisons comptables, mais votre nom, votre email et votre téléphone sont effacés. Vous ne pourrez plus vous reconnecter avec cette adresse. Action irréversible.",
+      "delete_open": "Je veux supprimer mon compte",
+      "delete_final_warning": "Cette action est définitive. Pour confirmer, tapez SUPPRIMER dans le champ ci-dessous et saisissez votre mot de passe.",
+      "delete_confirm_label": "Confirmation",
+      "delete_confirm_hint": "Tapez SUPPRIMER en majuscules.",
+      "delete_cancel": "Annuler",
+      "delete_submit": "Supprimer définitivement",
+      "error_account_has_open_orders": "Vous avez une commande en cours. Attendez sa livraison ou annulez-la avant de supprimer votre compte.",
+      "error_delete_confirm_required": "Tapez SUPPRIMER pour confirmer la suppression.",
+      "error_generic": "Une erreur est survenue. Réessayez."
+    }
+  },
+  "studio": {
+    "intro": {
+      "eyebrow": "Le Studio · Atelier rue Foch, Douala",
+      "title_a": "Choisissez le tissu,",
+      "title_em": "le reste suit.",
+      "lede": "Parcourez nos familles de tissus, regardez les pièces déjà cousues, et notez ce qui vous parle. La styliste vous reçoit en rendez-vous pour transformer vos coups de cœur en pièce sur-mesure."
+    },
+    "browse": {
+      "empty_families": "Aucune famille de tissu disponible pour l'instant. La styliste prépare la première collection — revenez bientôt.",
+      "family_eyebrow": "Famille de tissu",
+      "garments_label": "Pièces déjà cousues",
+      "fabrics_label": "Tissus disponibles"
+    },
+    "cta": {
+      "empty": "Aucun tissu sélectionné",
+      "count": "{count, plural, one {1 tissu sélectionné} other {# tissus sélectionnés}}",
+      "book_empty": "Prendre rendez-vous",
+      "book_with_selection": "Réserver mon rendez-vous"
+    },
+    "rdv": {
+      "eyebrow": "Rendez-vous",
+      "title": "Réserver un rendez-vous",
+      "lede": "Indiquez vos coordonnées et un créneau. La styliste vous confirme par WhatsApp dans les 24 h et prépare votre rendez-vous autour des tissus que vous avez retenus.",
+      "selection_label": "Vos tissus retenus",
+      "aside": {
+        "eyebrow": "L'atelier",
+        "address": "Atelier Celva, rue Foch, Douala",
+        "hours": "Du lundi au samedi, 9 h – 18 h",
+        "point1": "Accueil sur rendez-vous, autour d'un café.",
+        "point2": "Confection sur mesure en 4 à 7 semaines.",
+        "point3": "Essayages et ajustements inclus."
+      },
+      "fields": {
+        "name": "Nom complet",
+        "phone": "WhatsApp / Téléphone",
+        "email": "Email",
+        "mode": "Format",
+        "date": "Date souhaitée",
+        "slot": "Créneau",
+        "notes": "Précisions"
+      },
+      "mode": {
+        "atelier": "À l'atelier, rue Foch",
+        "visio": "Visio WhatsApp"
+      },
+      "notes_placeholder": "Occasion, échéance, idées de coupes, autre tissu en tête…",
+      "submit": "Réserver mon rendez-vous",
+      "submitting": "Envoi…",
+      "errors": {
+        "required": "Champ requis",
+        "phone": "Numéro Cameroun attendu (+237 …)",
+        "email": "Email invalide",
+        "submit": "L'envoi a échoué. Réessayez ou contactez-nous par WhatsApp."
+      },
+      "success_eyebrow": "Merci",
+      "success_title": "Votre rendez-vous est enregistré.",
+      "success_body": "La styliste vous confirme par WhatsApp dans les 24 h."
+    },
+    "process": {
+      "eyebrow": "Comment ça marche",
+      "title_a": "De vos coups de cœur",
+      "title_em": "à la pièce finie.",
+      "note": "Quatre étapes simples, du choix du tissu à la livraison.",
+      "step_1_t": "Vous repérez les tissus",
+      "step_1_b": "Parcourez les familles, ajoutez les tissus qui vous parlent à votre sélection.",
+      "step_2_t": "Vous prenez rendez-vous",
+      "step_2_b": "En atelier rue Foch ou en visio WhatsApp. La styliste prépare votre rendez-vous autour de vos tissus.",
+      "step_3_t": "On dessine la pièce ensemble",
+      "step_3_b": "Coupe, mesures, finitions. La styliste vous conseille selon votre morphologie et l’usage prévu.",
+      "step_4_t": "Confection sous 4 à 7 semaines",
+      "step_4_b": "Tissée, coupée et finie main à l’atelier. Livrée pliée dans son calicot, avec étiquette manuscrite."
+    },
+    "stylist": {
+      "eyebrow": "Parler à la styliste",
+      "title": "Une question avant de venir ?",
+      "lead": "WhatsApp est le moyen le plus rapide. Envoyez une photo, une référence ou une question — la styliste répond dans la journée.",
+      "whatsapp": "Écrire sur WhatsApp",
+      "book_cta": "Aller au rendez-vous",
+      "fact_weeks_n": "4–7 sem.",
+      "fact_weeks_l": "Délai de confection",
+      "fact_alter_n": "Inclus",
+      "fact_alter_l": "Ajustements après livraison"
+    }
+  },
+  "journal": {
+    "eyebrow": "Journal",
+    "title": "Le Journal Celva",
+    "subtitle": "Coulisses du studio, inspirations, conseils de style — entre deux collections.",
+    "all": "Tous",
+    "category": {
+      "STYLE": "Style",
+      "BEHIND_THE_SCENES": "Coulisses",
+      "EVENTS": "Événements",
+      "GUIDES": "Guides"
+    },
+    "empty": "Aucun article pour cette catégorie pour l'instant.",
+    "back_to_journal": "Retour au journal",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "filters_aria": "Filtres par catégorie",
+    "pagination_aria": "Pagination du journal"
+  },
+  "size_guides": {
+    "eyebrow": "Guide des tailles",
+    "title": "Guides des tailles",
+    "intro": "Trouvez votre taille par catégorie. En cas de doute entre deux tailles, prenez la plus grande — ou écrivez-nous.",
+    "empty": "Les guides des tailles arrivent bientôt."
   },
   "static": {
     "about": {
@@ -376,7 +756,31 @@
       "address_label": "Adresse",
       "address_value": "Bonapriso, Douala, Cameroun",
       "hours_label": "Horaires",
-      "hours_value": "Lun-Sam, 9h-18h (heure du Cameroun)"
+      "hours_value": "Lun-Sam, 9h-18h (heure du Cameroun)",
+      "appointment_text": "Vous souhaitez une pièce sur-mesure ?",
+      "appointment_cta": "Prenez rendez-vous à l’atelier",
+      "form": {
+        "heading": "Envoyez-nous un message",
+        "name": "Votre nom",
+        "email": "Votre email",
+        "message": "Votre message",
+        "submit": "Envoyer",
+        "sending": "Envoi…",
+        "success": "Message envoyé — nous vous répondons sous 48h.",
+        "error": "Échec de l’envoi. Réessayez ou écrivez-nous directement."
+      }
+    },
+    "help": {
+      "title": "Aide",
+      "subtitle": "Livraison, retours et entretien de vos pièces Celva.",
+      "shipping_title": "Livraison",
+      "shipping_p1": "Nous livrons à Douala (1-2 jours), Yaoundé (2-3 jours) et partout au Cameroun (3-7 jours). Les frais et délais sont calculés selon votre zone au moment de la commande.",
+      "shipping_p2": "La livraison est offerte au-delà d’un certain montant selon la zone. Vous pouvez aussi retirer votre commande gratuitement au Magasin Celva à Bonapriso, Douala.",
+      "returns_title": "Retours & échanges",
+      "returns_p1": "Les retours et échanges sont possibles sous 7 jours, sur les articles non portés, non lavés et avec leurs étiquettes. Contactez-nous via la page Contact pour organiser le retour. Les pièces sur-mesure (Studio) ne sont ni reprises ni échangées.",
+      "care_title": "Entretien",
+      "care_p1": "La plupart de nos pièces se lavent à la main ou en machine à 30°C, à l’envers, avec des couleurs similaires. Évitez le sèche-linge ; séchez à plat ou sur cintre, à l’abri du soleil direct.",
+      "care_p2": "Repassez à température moyenne, à l’envers. Pour les tissus délicats ou brodés, privilégiez le nettoyage à sec. Un entretien soigneux préserve les couleurs et la tenue de vos pièces."
     },
     "terms": {
       "title": "Conditions générales de vente",
@@ -429,5 +833,11 @@
     "title": "404",
     "message": "Cette page n'existe pas — ou plus.",
     "cta": "Retour à l'accueil"
+  },
+  "error": {
+    "title": "Oups",
+    "message": "Une erreur est survenue de notre côté. Réessayez, ou revenez à l'accueil.",
+    "retry": "Réessayer",
+    "home": "Retour à l'accueil"
   }
 }

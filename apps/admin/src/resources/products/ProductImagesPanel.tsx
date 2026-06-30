@@ -5,9 +5,12 @@ import {
   Button,
   Card,
   CardActions,
+  CardContent,
   CardMedia,
   IconButton,
+  MenuItem,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,7 +30,22 @@ type ImageRow = {
   position: number;
   isPrimary: boolean;
   altText?: { fr?: string; en?: string } | null;
+  attributeValueId?: string | null;
   urls: Variants;
+};
+
+type Bilingual = { fr?: string; en?: string };
+type Attribute = { id: string; name: Bilingual };
+type AttributeValue = { id: string; value: Bilingual };
+type ColorOption = { id: string; label: string };
+
+const COLOR_KEYWORDS = ['coloris', 'couleur', 'colour', 'color'];
+const isColorAttribute = (name: Bilingual): boolean => {
+  const hay = `${name.fr ?? ''} ${name.en ?? ''}`
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+  return COLOR_KEYWORDS.some((k) => hay.includes(k));
 };
 
 export const ProductImagesPanel = ({ productId }: { productId: string }) => {
@@ -36,6 +54,37 @@ export const ProductImagesPanel = ({ productId }: { productId: string }) => {
   const [images, setImages] = useState<ImageRow[]>([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [colorOptions, setColorOptions] = useState<ColorOption[]>([]);
+
+  // Load the product's colour attribute values so each image can be tagged.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { body: attrs } = await fetchJson<{ data: Attribute[] }>(
+          `${API_BASE}/attributes?productId=${productId}&pageSize=100`,
+        );
+        const colorAttr = attrs.data.find((a) => isColorAttribute(a.name));
+        if (!colorAttr) {
+          if (!cancelled) setColorOptions([]);
+          return;
+        }
+        const { body: values } = await fetchJson<{ data: AttributeValue[] }>(
+          `${API_BASE}/attribute-values?attributeId=${colorAttr.id}&pageSize=100`,
+        );
+        if (!cancelled) {
+          setColorOptions(
+            values.data.map((v) => ({ id: v.id, label: v.value.fr ?? v.value.en ?? '' })),
+          );
+        }
+      } catch {
+        if (!cancelled) setColorOptions([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [productId]);
 
   const load = useCallback(async () => {
     try {
@@ -100,6 +149,18 @@ export const ProductImagesPanel = ({ productId }: { productId: string }) => {
     }
   };
 
+  const handleSetColor = async (imageId: string, attributeValueId: string | null) => {
+    try {
+      const { body } = await fetchJson<ImageRow>(
+        `${API_BASE}/products/${productId}/images/${imageId}/color`,
+        { method: 'PATCH', body: JSON.stringify({ attributeValueId }) },
+      );
+      setImages((prev) => prev.map((i) => (i.id === imageId ? body : i)));
+    } catch (err) {
+      notify(err instanceof Error ? err.message : 'set color failed', { type: 'error' });
+    }
+  };
+
   const handleDelete = async (imageId: string) => {
     if (!confirm(translate('resources.products.images.confirm_delete'))) return;
     try {
@@ -156,6 +217,27 @@ export const ProductImagesPanel = ({ productId }: { productId: string }) => {
               alt={img.altText?.fr ?? img.altText?.en ?? ''}
               sx={{ height: 160, objectFit: 'cover' }}
             />
+            {colorOptions.length > 0 && (
+              <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
+                <TextField
+                  select
+                  size="small"
+                  fullWidth
+                  label={translate('resources.products.images.color')}
+                  value={img.attributeValueId ?? ''}
+                  onChange={(e) => handleSetColor(img.id, e.target.value || null)}
+                >
+                  <MenuItem value="">
+                    <em>{translate('resources.products.images.color_none')}</em>
+                  </MenuItem>
+                  {colorOptions.map((opt) => (
+                    <MenuItem key={opt.id} value={opt.id}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </CardContent>
+            )}
             <CardActions sx={{ justifyContent: 'space-between' }}>
               <Box>
                 <IconButton

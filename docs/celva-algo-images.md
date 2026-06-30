@@ -66,7 +66,7 @@
 - Dashboard → Images → Transformations
 - Activer les transformations sur la zone `celva.store`
 - Sources : ajouter `media.celva.store` dans les origines autorisées
-- Cela permet à `celva.store/cdn-cgi/image/...` de transformer les images servies depuis `media.celva.store`
+- Cela permet à `media.celva.store/cdn-cgi/image/...` de transformer les images servies depuis `media.celva.store`
 
 ### 1.4 Configurer CORS sur le bucket R2
 
@@ -107,7 +107,7 @@ R2_SECRET_ACCESS_KEY=xxxxx
 R2_BUCKET_NAME=celva-media
 R2_ENDPOINT=https://{ACCOUNT_ID}.r2.cloudflarestorage.com
 R2_PUBLIC_URL=https://media.celva.store
-CF_IMAGES_BASE_URL=https://celva.store/cdn-cgi/image
+CF_IMAGES_BASE_URL=https://media.celva.store/cdn-cgi/image
 ```
 
 ### 2.3 R2Service (service injectable NestJS)
@@ -169,7 +169,7 @@ class R2Service {
     // format=auto → Cloudflare choisit WebP/AVIF selon le navigateur
     //
     // return `${CF_IMAGES_BASE_URL}/${optionsString}/${R2_PUBLIC_URL}/${key}`
-    // ex: "https://celva.store/cdn-cgi/image/width=600,quality=80,format=auto/https://media.celva.store/products/abc123/550e8400.jpg"
+    // ex: "https://media.celva.store/cdn-cgi/image/width=600,quality=80,format=auto/https://media.celva.store/products/abc123/550e8400.jpg"
   }
 }
 

@@ -227,13 +227,13 @@ npm install @aws-sdk/client-s3 @aws-sdk/s3-request-presigner multer
 npm install -D @types/multer
 ```
 
-**Pas de Sharp.** L'API NestJS stocke seulement l'original sur R2 (`{entity}/{id}/{uuid}.{ext}`) ; les variantes (thumb 300 / medium 600 / large 1200) sont générées par Cloudflare à la volée via `https://celva.store/cdn-cgi/image/width=…,quality=…,format=auto/<R2_PUBLIC_URL>/<key>`. L'API sérialise les URLs précalculées dans la réponse (`urls.original`, `urls.large`, `urls.medium`, `urls.thumb`) — le storefront/admin ne reconstruit jamais d'URL côté client.
+**Pas de Sharp.** L'API NestJS stocke seulement l'original sur R2 (`{entity}/{id}/{uuid}.{ext}`) ; les variantes (thumb 300 / medium 600 / large 1200) sont générées par Cloudflare à la volée via `https://media.celva.store/cdn-cgi/image/width=…,quality=…,format=auto/<R2_PUBLIC_URL>/<key>`. L'API sérialise les URLs précalculées dans la réponse (`urls.original`, `urls.large`, `urls.medium`, `urls.thumb`) — le storefront/admin ne reconstruit jamais d'URL côté client.
 
 Variables d'env requises (voir `apps/api/.env.example`) :
 - `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`
 - `R2_ENDPOINT=https://{ACCOUNT_ID}.r2.cloudflarestorage.com`
 - `R2_PUBLIC_URL=https://media.celva.store`
-- `CF_IMAGES_BASE_URL=https://celva.store/cdn-cgi/image`
+- `CF_IMAGES_BASE_URL=https://media.celva.store/cdn-cgi/image`
 
 Même pipeline pour `ProductImage` et `RawMaterial.imageKey`.
 

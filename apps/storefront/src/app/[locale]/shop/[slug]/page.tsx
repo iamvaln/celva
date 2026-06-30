@@ -1,27 +1,31 @@
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
+import { Link, getPathname } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
+import { JsonLd } from '@/components/JsonLd';
+import { breadcrumbLd, productLd } from '@/lib/structured-data';
 import {
   type ApiProduct,
   type ApiProductImage,
   type ApiVariant,
-  formatPriceXAF,
   getProductBySlug,
   getProductById,
   listAttributeValues,
   listProductAttributes,
+  listCategories,
   listProductImages,
   listProductVariants,
   listRelatedProducts,
   pickLocalized,
 } from '@/lib/catalogue';
 import { fetchWishlistVariantIds } from '@/lib/cart';
+import { getAccessToken } from '@/lib/auth-cookies';
+import { listSizeGuidesByCategory } from '@/lib/size-guides';
 import { ProductCard } from '@/components/ProductCard';
-import { addToCartAction, readAndClearCartFlash } from '../../cart/actions';
-import { addToWishlistAction, removeFromWishlistAction } from '../../wishlist/actions';
+import { ProductDetailColumns } from '@/components/ProductMedia';
+import { type BuyPanelAttribute } from '@/components/ProductBuyPanel';
+import { readAndClearCartFlash } from '../../cart/actions';
 
 type Params = { locale: Locale; slug: string };
 
@@ -74,19 +78,34 @@ export default async function ProductPage({
 
   const t = await getTranslations('product');
   const tCart = await getTranslations('cart');
-  const tWishlist = await getTranslations('wishlist');
+  const tFooter = await getTranslations('footer');
 
-  const [images, attributesPage, variantsPage, relatedCards, wishlistIds, flash] =
-    await Promise.all([
-      listProductImages(product.id, locale).catch(() => [] as ApiProductImage[]),
-      listProductAttributes(product.id, locale).catch(() => ({
-        data: [] as Array<{ id: string; name: { fr: string; en: string }; sortOrder: number }>,
-      })),
-      listProductVariants(product.id, locale).catch(() => ({ data: [] as ApiVariant[] })),
-      loadRelatedCards(product.id, locale),
-      fetchWishlistVariantIds(locale),
-      readAndClearCartFlash(),
-    ]);
+  const [
+    images,
+    attributesPage,
+    variantsPage,
+    relatedCards,
+    wishlistIds,
+    flash,
+    sizeGuides,
+    categoriesPage,
+  ] = await Promise.all([
+    listProductImages(product.id, locale).catch(() => [] as ApiProductImage[]),
+    listProductAttributes(product.id, locale).catch(() => ({
+      data: [] as Array<{ id: string; name: { fr: string; en: string }; sortOrder: number }>,
+    })),
+    listProductVariants(product.id, locale).catch(() => ({ data: [] as ApiVariant[] })),
+    loadRelatedCards(product.id, locale),
+    fetchWishlistVariantIds(locale),
+    readAndClearCartFlash(),
+    listSizeGuidesByCategory(product.categoryId, locale).catch(() => []),
+    listCategories(locale).catch(() => ({ data: [] as Array<{ id: string; name: { fr: string; en: string } }> })),
+  ]);
+  const hasSizeGuide = sizeGuides.length > 0;
+  const categoryName = pickLocalized(
+    categoriesPage.data.find((c) => c.id === product.categoryId)?.name,
+    locale,
+  );
 
   // Flash from the previous add-to-cart attempt that bounced back here on
   // error. Success redirects to /cart so we only ever see "error:..." here.
@@ -94,44 +113,69 @@ export default async function ProductPage({
     flash && flash.startsWith('error:') ? flash.replace('error:', '') : null;
 
   const fromPath = `/${locale}/shop/${slug}`;
+  // Drives server-cart (logged-in) vs guest-cart (localStorage) add-to-cart.
+  const isAuthenticated = !!(await getAccessToken());
 
+  const orderedAttributes = [...(attributesPage.data ?? [])].sort(
+    (a, b) => a.sortOrder - b.sortOrder,
+  );
   const attributesWithValues = await Promise.all(
-    (attributesPage.data ?? []).map(async (attr) => {
+    orderedAttributes.map(async (attr) => {
       const values = await listAttributeValues(attr.id, locale).catch(() => ({ data: [] }));
-      return { attribute: attr, values: values.data };
+      return {
+        attribute: attr,
+        values: [...values.data].sort((a, b) => a.sortOrder - b.sortOrder),
+      };
     }),
   );
 
-  // Map attributeValueId → { attribute name, value name } for rendering each variant's combo.
-  const valueLabelById = new Map<string, { attribute: string; value: string }>();
-  for (const { attribute, values } of attributesWithValues) {
-    for (const v of values) {
-      valueLabelById.set(v.id, {
-        attribute: pickLocalized(attribute.name, locale),
-        value: pickLocalized(v.value, locale),
-      });
-    }
-  }
+  // Heuristic: which attribute is the "size" one (gets the size-guide link).
+  const SIZE_RE = /taille|size|pointure/i;
+  const panelAttributes: BuyPanelAttribute[] = attributesWithValues.map(
+    ({ attribute, values }) => ({
+      id: attribute.id,
+      name: pickLocalized(attribute.name, locale),
+      isSize: SIZE_RE.test(`${attribute.name.fr} ${attribute.name.en}`),
+      values: values.map((v) => ({
+        id: v.id,
+        label: pickLocalized(v.value, locale),
+        colorHex: v.colorHex ?? null,
+      })),
+    }),
+  );
 
   const orderedImages = [...images].sort((a, b) => a.position - b.position);
   const heroImage = orderedImages.find((i) => i.isPrimary) ?? orderedImages[0] ?? null;
-  const galleryImages = orderedImages.filter((i) => i.id !== heroImage?.id);
 
   const name = pickLocalized(product.name, locale);
   const description = pickLocalized(product.description, locale);
-  const wishlistSet = new Set(wishlistIds);
 
-  const formatVariantCombo = (variant: ApiVariant): string =>
-    variant.attributeValues
-      .map((av) => valueLabelById.get(av.attributeValueId)?.value)
-      .filter((v): v is string => !!v)
-      .join(' · ') || variant.sku;
+  // First line of the description doubles as the short teaser under the title;
+  // the full text feeds the "Description complète" accordion.
+  const shortDescription = description.split(/\n{2,}/)[0]?.trim() || description;
 
-  const variantPrice = (variant: ApiVariant): string =>
-    variant.priceOverride ?? product.displayPrice;
+  const productPath = getPathname({
+    href: { pathname: '/shop/[slug]', params: { slug } },
+    locale,
+  });
+  const productJsonLd = productLd({
+    name,
+    description: description.slice(0, 300) || undefined,
+    url: productPath,
+    image: heroImage?.urls.original ?? heroImage?.urls.large,
+    price: product.displayPrice,
+    inStock: variantsPage.data.some((v) => v.stock > 0),
+  });
+  const breadcrumbJsonLd = breadcrumbLd([
+    { name: 'Celva', path: `/${locale}` },
+    { name: tFooter('boutique'), path: getPathname({ href: '/shop', locale }) },
+    { name, path: productPath },
+  ]);
 
   return (
     <article className="bg-background py-section-tight">
+      <JsonLd data={productJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <div className="container-celva">
         <Link href="/shop" className="btn btn-ghost mb-6 inline-flex">
           ← {t('back')}
@@ -146,133 +190,31 @@ export default async function ProductPage({
           </div>
         )}
 
-        <div className="grid gap-10 lg:grid-cols-2">
-          <div className="space-y-4">
-            <div className="relative aspect-product-portrait overflow-hidden bg-beige">
-              {heroImage ? (
-                <Image
-                  src={heroImage.urls.large}
-                  alt={pickLocalized(heroImage.altText, locale) || name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-foreground-muted">
-                  <span className="eyebrow">{t('no_image')}</span>
-                </div>
-              )}
-            </div>
-            {galleryImages.length > 0 && (
-              <div className="grid grid-cols-3 gap-3">
-                {galleryImages.map((img) => (
-                  <div key={img.id} className="relative aspect-square overflow-hidden bg-beige">
-                    <Image
-                      src={img.urls.medium}
-                      alt={pickLocalized(img.altText, locale) || name}
-                      fill
-                      sizes="(max-width: 1024px) 33vw, 16vw"
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <h1 className="mb-4 font-display text-h2">{name}</h1>
-            <p className="mb-8 font-display text-h3 text-accent">
-              {formatPriceXAF(product.displayPrice, locale)}
-            </p>
-
-            {description && (
-              <section className="mb-10">
-                <h2 className="eyebrow mb-3">{t('description_heading')}</h2>
-                <p className="whitespace-pre-line font-body text-base text-foreground">
-                  {description}
-                </p>
-              </section>
-            )}
-
-            {/* Variants — each row is its own add-to-cart + wishlist form. */}
-            {variantsPage.data.length > 0 && (
-              <section className="mb-10">
-                <h2 className="eyebrow mb-3">{t('attributes_heading')}</h2>
-                <ul className="divide-y divide-border border-y border-border">
-                  {variantsPage.data.map((variant) => {
-                    const inStock = variant.stock > 0;
-                    const wished = wishlistSet.has(variant.id);
-                    return (
-                      <li
-                        key={variant.id}
-                        className="grid gap-3 py-4 sm:grid-cols-[1fr_auto] sm:items-center"
-                      >
-                        <div>
-                          <p className="font-display text-base text-foreground">
-                            {formatVariantCombo(variant)}
-                          </p>
-                          <p className="font-body text-small text-foreground-muted">
-                            {variant.sku} · {formatPriceXAF(variantPrice(variant), locale)}
-                          </p>
-                          {!inStock && (
-                            <p className="font-body text-caption uppercase tracking-eyebrow text-accent">
-                              {tCart('unavailable')}
-                            </p>
-                          )}
-                          {inStock && variant.stock <= 3 && (
-                            <p className="font-body text-caption uppercase tracking-eyebrow text-foreground-muted">
-                              {tCart('low_stock', { n: variant.stock })}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <form action={addToCartAction}>
-                            <input type="hidden" name="variantId" value={variant.id} />
-                            <input type="hidden" name="quantity" value="1" />
-                            <input type="hidden" name="locale" value={locale} />
-                            <input type="hidden" name="fromPath" value={fromPath} />
-                            <button
-                              type="submit"
-                              className="btn btn-primary"
-                              disabled={!inStock}
-                              aria-disabled={!inStock}
-                            >
-                              {tWishlist('add_to_cart')}
-                            </button>
-                          </form>
-                          <form
-                            action={
-                              wished ? removeFromWishlistAction : addToWishlistAction
-                            }
-                          >
-                            <input type="hidden" name="variantId" value={variant.id} />
-                            <input type="hidden" name="locale" value={locale} />
-                            <input type="hidden" name="fromPath" value={fromPath} />
-                            <button
-                              type="submit"
-                              aria-label={wished ? tWishlist('remove') : tWishlist('add_to_cart')}
-                              className={`inline-flex h-11 w-11 items-center justify-center border ${
-                                wished
-                                  ? 'border-accent bg-accent text-cream'
-                                  : 'border-border text-foreground hover:border-accent hover:text-accent'
-                              }`}
-                            >
-                              <svg viewBox="0 0 24 24" className="h-5 w-5" fill={wished ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={1.5}>
-                                <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" strokeLinejoin="round" />
-                              </svg>
-                            </button>
-                          </form>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            )}
-          </div>
-        </div>
+        <ProductDetailColumns
+          gallery={{
+            images: orderedImages,
+            productName: name,
+            locale,
+            noImageLabel: t('no_image'),
+          }}
+          buyPanel={{
+            name,
+            displayPrice: product.displayPrice,
+            shortDescription,
+            eyebrow: categoryName ? [categoryName] : [],
+            attributes: panelAttributes,
+            variants: variantsPage.data,
+            locale,
+            fromPath,
+            wishlistVariantIds: wishlistIds,
+            sizeGuideHash: hasSizeGuide ? `guide-${product.categoryId}` : undefined,
+            longDescription: description,
+            hasStudio: true,
+            isAuthenticated,
+            productSlug: slug,
+            imageUrl: heroImage?.urls.medium ?? heroImage?.urls.large,
+          }}
+        />
 
         {relatedCards.length > 0 && (
           <section className="mt-section-gap border-t border-border pt-10">

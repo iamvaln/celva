@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   Res,
@@ -17,12 +18,18 @@ import { JWT, RATE_LIMITS } from '@celva/shared';
 import type { Env } from '../../config/env';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser, type AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { AuditLog } from '../../common/interceptors/audit-log.interceptor';
 import { AuthService, type SessionMeta } from './auth.service';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { RequestEmailChangeDto } from './dto/request-email-change.dto';
+import { ConfirmEmailChangeDto } from './dto/confirm-email-change.dto';
+import { ConfirmPasswordDto } from './dto/confirm-password.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 
 @ApiTags('auth')
@@ -119,10 +126,115 @@ export class AuthController {
     return this.auth.getProfile(user.id);
   }
 
+  @Patch('me')
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: 'Update my profile (name + phone). Email change is not supported here.',
+  })
+  @AuditLog({ action: 'PROFILE_UPDATE', entity: 'User', entityIdFrom: 'user.id' })
+  async updateMe(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateProfileDto,
+  ): Promise<unknown> {
+    return this.auth.updateProfile(user.id, dto);
+  }
+
+  @Post('me/password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary:
+      'Change my password. Requires current password. All other sessions are revoked on success.',
+  })
+  @AuditLog({ action: 'PASSWORD_CHANGE', entity: 'User', entityIdFrom: 'user.id' })
+  async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<void> {
+    await this.auth.changePassword(user.id, dto.currentPassword, dto.newPassword);
+  }
+
+  @Post('me/email-change-request')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Throttle({ default: { limit: 5, ttl: 60 * 60_000 } })
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary:
+      'Step 1 of email change: send a verification email to the new address. The change only takes effect once the link is followed (step 2). User keeps logging in with the old email until then.',
+  })
+  @AuditLog({
+    action: 'EMAIL_CHANGE_REQUEST',
+    entity: 'User',
+    entityIdFrom: 'user.id',
+  })
+  async requestEmailChange(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: RequestEmailChangeDto,
+  ): Promise<void> {
+    await this.auth.requestEmailChange(user.id, dto.currentPassword, dto.newEmail);
+  }
+
+  @Public()
+  @Post('email-change-confirm')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary:
+      'Step 2 of email change: consume the token from the verification email. Swaps user.email and revokes all refresh tokens.',
+  })
+  async confirmEmailChange(@Body() dto: ConfirmEmailChangeDto): Promise<{ email: string }> {
+    return this.auth.confirmEmailChange(dto.token);
+  }
+
+  @Post('me/sign-out-all')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary:
+      'Revoke every refresh token on my account, including the current one. The user has to log in fresh everywhere — used as a "kick someone out" defense after a stolen device etc. Requires current password.',
+  })
+  @AuditLog({
+    action: 'SIGN_OUT_ALL_DEVICES',
+    entity: 'User',
+    entityIdFrom: 'user.id',
+  })
+  async signOutAll(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ConfirmPasswordDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    await this.auth.signOutAllDevices(user.id, dto.currentPassword);
+    res.clearCookie(JWT.REFRESH_COOKIE_NAME, this.cookieOpts(0));
+  }
+
+  @Post('me/delete')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary:
+      'Delete (anonymize) my account. Scrubs PII (email, name, phone, password hash), sets isActive=false, revokes all sessions. Order history is preserved per accounting requirements. Blocked if any order is still in flight (PENDING → SHIPPED). Requires current password.',
+  })
+  @AuditLog({
+    action: 'ACCOUNT_DELETE_REQUEST',
+    entity: 'User',
+    entityIdFrom: 'user.id',
+  })
+  async deleteAccount(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ConfirmPasswordDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    await this.auth.deleteMyAccount(user.id, dto.currentPassword);
+    res.clearCookie(JWT.REFRESH_COOKIE_NAME, this.cookieOpts(0));
+  }
+
   // ─── helpers ───
 
   private meta(req: Request): SessionMeta {
-    return { userAgent: req.header('user-agent') ?? undefined, ip: req.ip };
+    return {
+      userAgent: req.header('user-agent') ?? undefined,
+      ip: req.ip,
+      locale: req.header('accept-language') ?? undefined,
+    };
   }
 
   private cookieOpts(maxAgeMs: number): CookieOptions {

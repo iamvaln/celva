@@ -1,6 +1,5 @@
 import {
   Edit,
-  NumberInput,
   SimpleForm,
   TextInput,
   minValue,
@@ -8,6 +7,9 @@ import {
   required,
   useTranslate,
 } from 'react-admin';
+import { SlugInput } from '../../components/SlugInput';
+import { SortOrderInput } from '../../components/SortOrderInput';
+import { AiAssistButton } from '../../components/AiAssistButton';
 
 export const CategoryEdit = () => {
   const translate = useTranslate();
@@ -26,8 +28,17 @@ export const CategoryEdit = () => {
           validate={[required()]}
           fullWidth
         />
-        <TextInput
+        <AiAssistButton
+          mode="translate"
+          sourceField="name.fr"
+          targetField="name.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="name"
+        />
+        <SlugInput
           source="slug"
+          from="name.fr"
           validate={[required(), regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'resources.categories.errors.invalid_slug')]}
           fullWidth
         />
@@ -45,7 +56,15 @@ export const CategoryEdit = () => {
           minRows={2}
           fullWidth
         />
-        <NumberInput source="sortOrder" validate={[minValue(0)]} />
+        <AiAssistButton
+          mode="translate"
+          sourceField="description.fr"
+          targetField="description.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="description"
+        />
+        <SortOrderInput validate={[minValue(0)]} />
       </SimpleForm>
     </Edit>
   );

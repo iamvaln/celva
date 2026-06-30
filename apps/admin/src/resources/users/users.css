@@ -1,0 +1,58 @@
+/* Users module — row-specific layout. Scoped under .celva-skin so it only
+   applies inside the brand-skinned screens. Shared classes (.list-wrap,
+   .lname, .lsub, .pill, .dom-summary, …) live in celva-skin.css; only the
+   user-specific bits are added here. Mirrors the suppliers `.savatar`
+   pattern with a coloured, role-tinted avatar per the settings.css design. */
+
+.celva-skin .lrow.user {
+  grid-template-columns: 40px 1fr auto auto 22px;
+}
+
+.celva-skin .lrow.user .user-av {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+  background: color-mix(in oklab, var(--av, var(--st-neutral)) 82%, #000);
+}
+
+.celva-skin .lrow.user .lsub {
+  gap: 6px;
+}
+
+.celva-skin .lrow.user .u-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.celva-skin .lrow.user .self-tag {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1px 7px;
+  margin-left: 8px;
+  background: var(--bg-sunk);
+  color: var(--fg-muted);
+  border: 1px solid var(--border-soft);
+  font-family: var(--font-body);
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+@media (max-width: 720px) {
+  .celva-skin .lrow.user {
+    grid-template-columns: 40px 1fr auto 22px;
+  }
+  .celva-skin .lrow.user .u-status-cell {
+    display: none;
+  }
+}

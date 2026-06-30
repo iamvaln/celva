@@ -5,7 +5,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
+import { getGuestCart, clearGuestCart } from '@/lib/guest-cart';
+import { mergeGuestCartAction } from '@/app/[locale]/cart/actions';
 
 const schema = z.object({
   email: z.string().email(),
@@ -43,6 +45,19 @@ export const LoginForm = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken: payload.data.accessToken }),
       });
+      // Merge any guest (localStorage) cart into the now-authenticated server
+      // cart, then clear it locally. Best-effort — never blocks the login.
+      const guestItems = getGuestCart();
+      if (guestItems.length > 0) {
+        try {
+          await mergeGuestCartAction(
+            guestItems.map((it) => ({ variantId: it.variantId, quantity: it.quantity })),
+          );
+          clearGuestCart();
+        } catch {
+          /* non-fatal — keep the local cart so nothing is lost */
+        }
+      }
       router.push('/account');
       router.refresh();
     } catch {
@@ -68,9 +83,17 @@ export const LoginForm = () => {
         ) : null}
       </div>
       <div>
-        <label className="mb-2 block font-body text-small text-foreground-muted" htmlFor="password">
-          {t('password')}
-        </label>
+        <div className="mb-2 flex items-baseline justify-between">
+          <label className="font-body text-small text-foreground-muted" htmlFor="password">
+            {t('password')}
+          </label>
+          <Link
+            href="/forgot-password"
+            className="font-body text-small text-foreground-muted hover:text-accent"
+          >
+            {t('forgot_password_link')}
+          </Link>
+        </div>
         <input
           id="password"
           type="password"

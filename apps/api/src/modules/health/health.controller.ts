@@ -3,7 +3,6 @@ import {
   HealthCheck,
   HealthCheckService,
   type HealthIndicatorResult,
-  MemoryHealthIndicator,
 } from '@nestjs/terminus';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from '../../common/decorators/public.decorator';
@@ -14,7 +13,6 @@ import { PrismaService } from '../prisma/prisma.service';
 export class HealthController {
   constructor(
     private readonly health: HealthCheckService,
-    private readonly memory: MemoryHealthIndicator,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -22,6 +20,14 @@ export class HealthController {
   @Public()
   @HealthCheck()
   check() {
+    // The endpoint answers one question: "can I serve requests and reach
+    // the DB?" — that's what a load balancer / uptime probe needs.
+    //
+    // Memory indicators were intentionally removed: they made the result
+    // depend on host heap/RSS pressure, which flapped the endpoint to 503
+    // under sustained load (e.g. the full e2e suite in one process) without
+    // signalling anything actionable. Real memory monitoring belongs in
+    // APM, not a liveness probe.
     return this.health.check([
       async (): Promise<HealthIndicatorResult> => {
         try {
@@ -36,8 +42,6 @@ export class HealthController {
           };
         }
       },
-      () => this.memory.checkHeap('memory_heap', 512 * 1024 * 1024),
-      () => this.memory.checkRSS('memory_rss', 1024 * 1024 * 1024),
     ]);
   }
 }

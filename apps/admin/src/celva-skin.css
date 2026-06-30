@@ -1,0 +1,640 @@
+/* ============================================================
+   CELVA — Back-office design skin
+   Ported from the Claude Design handoff (admin.css), scoped under
+   `.celva-skin` so it composes with React-Admin without leaking.
+   Brand-faithful: sharp corners, Bodoni Moda display + Cormorant
+   Garamond body. 4 themes: light/dark × neutral(default)/warm — driven
+   by data-theme + data-palette set on the wrapper from the MUI theme.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap");
+
+.celva-skin {
+  /* Brand palette */
+  --terracotta: #b26248;
+  --terracotta-light: #c4836b;
+  --terracotta-dark: #8e4e3a;
+  --beige: #e8d9c6;
+  --beige-light: #f0e8da;
+  --beige-dark: #d4c4ae;
+  --olive: #595d40;
+  --olive-light: #6e7354;
+  --olive-dark: #3f422d;
+  --cream: #faf7f2;
+  --ink: #1a1a18;
+  --ink-surface: #262622;
+  --ink-elevated: #2f2f2a;
+  --ink-border: #3a3a35;
+
+  /* Status accent hues */
+  --st-urgent: #bc5249;
+  --st-todo: #bc893b;
+  --st-info: #5b7c95;
+  --st-prod: #7e6597;
+  --st-done: #5f7347;
+  --st-neutral: #8c8680;
+
+  --font-display: "Bodoni Moda", "Didot", "Times New Roman", serif;
+  --font-body: "Cormorant Garamond", "Garamond", Georgia, serif;
+
+  /* Semantic tokens (light · neutral default) */
+  --bg: #f4f4f2;
+  --bg-sunk: #eaeae7;
+  --surface: #ffffff;
+  --surface-2: #f6f5f3;
+  --fg: #232320;
+  --fg-strong: #111110;
+  --fg-muted: #65635e;
+  --fg-inverse: #ffffff;
+  --border: #e0dfdb;
+  --border-soft: #ecebe7;
+  --accent: var(--terracotta);
+  --accent-hover: var(--terracotta-dark);
+  --shadow-card: 0 1px 2px rgba(20, 20, 18, 0.05), 0 8px 24px rgba(20, 20, 18, 0.06);
+  --shadow-pop: 0 12px 40px rgba(20, 20, 18, 0.16);
+  --mix-soft: 16%;
+  --mix-text: 62%;
+  --bar-w: 4px;
+  --row-py: 14px;
+  --card-pad: 22px;
+  --stack: 18px;
+
+  font-family: var(--font-body);
+  color: var(--fg);
+}
+
+.celva-skin[data-theme="dark"] {
+  --bg: #151514;
+  --bg-sunk: #0f0f0e;
+  --surface: #201f1e;
+  --surface-2: #2a2927;
+  --fg: #ecebe7;
+  --fg-strong: #ffffff;
+  --fg-muted: #9c9a93;
+  --fg-inverse: #ffffff;
+  --border: #34332f;
+  --border-soft: #292825;
+  --accent: var(--terracotta-light);
+  --accent-hover: var(--terracotta);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.32);
+  --shadow-pop: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --st-urgent: #cb675d;
+  --st-todo: #cf9b4a;
+  --st-info: #7295ad;
+  --st-prod: #9b82b2;
+  --st-done: #7e9461;
+}
+
+/* ── Warm palette (opt-in) — the original brand surface ── */
+.celva-skin[data-palette="warm"] {
+  --bg: var(--cream);
+  --bg-sunk: #f2ece2;
+  --surface: #fffdfa;
+  --surface-2: var(--beige-light);
+  --fg: #2e3120;
+  --fg-strong: var(--olive-dark);
+  --fg-muted: #6b6557;
+  --border: var(--beige-dark);
+  --border-soft: #e7dccd;
+  --shadow-card: 0 1px 2px rgba(45, 32, 24, 0.04), 0 8px 24px rgba(45, 32, 24, 0.05);
+  --shadow-pop: 0 12px 40px rgba(45, 32, 24, 0.14);
+}
+.celva-skin[data-palette="warm"][data-theme="dark"] {
+  --bg: var(--ink);
+  --bg-sunk: #141413;
+  --surface: var(--ink-surface);
+  --surface-2: var(--ink-elevated);
+  --fg: var(--cream);
+  --fg-strong: #ffffff;
+  --fg-muted: #aba59a;
+  --border: var(--ink-border);
+  --border-soft: #322f2b;
+}
+
+/* Neutral palette softens the brand olive on small chrome (chips read
+   black-and-white); warm restores olive. */
+.celva-skin .chip.on { background: var(--fg-strong); color: var(--surface); border-color: var(--fg-strong); }
+.celva-skin[data-palette="warm"] .chip.on { background: var(--olive); color: var(--cream); border-color: var(--olive); }
+
+/* ---------- Type helpers ---------- */
+.celva-skin .display { font-family: var(--font-display); }
+.celva-skin .eyebrow {
+  font-family: var(--font-body); font-weight: 600; font-size: 11px;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-muted);
+}
+.celva-skin .num { font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+.celva-skin .muted { color: var(--fg-muted); }
+.celva-skin .accent { color: var(--accent); }
+
+/* ---------- Buttons ---------- */
+.celva-skin .btn {
+  display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+  font-family: var(--font-body); font-weight: 600; font-size: 13px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 10px 18px; border: 1px solid transparent; white-space: nowrap; cursor: pointer;
+  background: none; color: inherit;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 120ms ease;
+}
+.celva-skin .btn:active { transform: translateY(1px); }
+.celva-skin .btn-primary { background: var(--accent); color: var(--cream); }
+.celva-skin .btn-primary:hover { background: var(--accent-hover); }
+.celva-skin .btn-ghost { border-color: var(--border); color: var(--fg); }
+.celva-skin .btn-ghost:hover { background: var(--bg-sunk); }
+.celva-skin .btn-quiet { color: var(--fg-muted); padding: 8px 12px; }
+.celva-skin .btn-quiet:hover { color: var(--fg); background: var(--bg-sunk); }
+.celva-skin .btn-danger { color: var(--st-urgent); border-color: color-mix(in oklab, var(--st-urgent) 40%, transparent); }
+.celva-skin .btn-danger:hover { background: color-mix(in oklab, var(--st-urgent) 12%, transparent); }
+.celva-skin .btn-lg { padding: 15px 26px; font-size: 14px; }
+
+/* ---------- Generic surfaces ---------- */
+.celva-skin .card { background: var(--surface); border: 1px solid var(--border-soft); box-shadow: var(--shadow-card); }
+.celva-skin .card-pad { padding: var(--card-pad); }
+.celva-skin .section-label {
+  font-family: var(--font-body); font-weight: 600; font-size: 11px;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-muted); margin: 0 0 14px;
+}
+.celva-skin .grid { display: grid; gap: var(--stack); }
+.celva-skin .row { display: flex; align-items: center; gap: 12px; }
+.celva-skin .divider { height: 1px; background: var(--border-soft); border: 0; margin: 0; }
+.celva-skin .between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.celva-skin .note { font-size: 13px; color: var(--fg-muted); line-height: 1.4; }
+.celva-skin svg { display: block; }
+
+/* ---------- Status pill ---------- */
+.celva-skin .pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-body); font-weight: 600; font-size: 12px;
+  letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 11px 4px 9px;
+  background: color-mix(in oklab, var(--sc) var(--mix-soft), var(--surface));
+  color: color-mix(in oklab, var(--sc) var(--mix-text), var(--fg));
+  border: 1px solid color-mix(in oklab, var(--sc) 30%, transparent);
+}
+.celva-skin .pill .pdot { width: 7px; height: 7px; border-radius: 50%; background: var(--sc); }
+.celva-skin .pill.solid { background: var(--sc); color: #fff; border-color: transparent; }
+.celva-skin .s-urgent { --sc: var(--st-urgent); }
+.celva-skin .s-todo { --sc: var(--st-todo); }
+.celva-skin .s-info { --sc: var(--st-info); }
+.celva-skin .s-prod { --sc: var(--st-prod); }
+.celva-skin .s-done { --sc: var(--st-done); }
+.celva-skin .s-neutral { --sc: var(--st-neutral); }
+
+/* ---------- Greeting / page intro ---------- */
+.celva-skin .greeting { font-family: var(--font-display); font-size: 30px; font-weight: 500; color: var(--fg-strong); line-height: 1.1; }
+.celva-skin .greeting-sub { color: var(--fg-muted); margin-top: 6px; font-size: 16px; }
+
+/* ---------- State toggle (Opérationnel / Démarrage) ---------- */
+.celva-skin .seg { display: inline-flex; border: 1px solid var(--border); background: var(--surface); }
+.celva-skin .seg button { padding: 9px 16px; font-size: 14px; color: var(--fg-muted); background: none; border: 0; cursor: pointer; }
+.celva-skin .seg button.on { background: var(--accent); color: var(--cream); }
+
+/* ============================================================
+   Dashboard
+   ============================================================ */
+.celva-skin .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--stack); }
+@media (max-width: 1100px) { .celva-skin .action-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.celva-skin .action-card {
+  position: relative; text-align: left; display: block; width: 100%;
+  background: var(--surface); border: 1px solid var(--border-soft);
+  padding: var(--card-pad); overflow: hidden; cursor: pointer;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+.celva-skin .action-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); border-color: var(--border); }
+.celva-skin .action-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--bar-w); background: var(--sc); }
+.celva-skin .action-card.live { background: color-mix(in oklab, var(--sc) calc(var(--mix-soft) * 0.5), var(--surface)); }
+.celva-skin .action-card.clear { opacity: 0.78; }
+.celva-skin .action-card.clear::before { background: var(--st-done); opacity: 0.5; }
+.celva-skin .action-card .ac-top { display: flex; align-items: center; gap: 8px; color: color-mix(in oklab, var(--sc) 70%, var(--fg)); }
+.celva-skin .action-card .ac-top svg { width: 18px; height: 18px; }
+.celva-skin .action-card .ac-label { font-size: 14.5px; color: var(--fg-muted); line-height: 1.25; }
+.celva-skin .action-card .ac-value { font-family: var(--font-display); font-size: 40px; font-weight: 500; color: var(--fg-strong); line-height: 1; margin-top: 12px; }
+.celva-skin .action-card .ac-foot { font-size: 13px; color: var(--fg-muted); margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+.celva-skin .action-card.clear .ac-value { color: var(--st-done); font-size: 22px; display: flex; align-items: center; gap: 8px; }
+
+.celva-skin .alert-banner {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: color-mix(in oklab, var(--st-todo) var(--mix-soft), var(--surface));
+  border: 1px solid color-mix(in oklab, var(--st-todo) 32%, transparent);
+  border-left-width: var(--bar-w); padding: 16px 20px;
+}
+.celva-skin .alert-banner > svg { color: var(--st-todo); width: 22px; height: 22px; margin-top: 1px; flex-shrink: 0; }
+.celva-skin .alert-banner .at { font-weight: 600; color: color-mix(in oklab, var(--st-todo) 60%, var(--fg)); }
+.celva-skin .alert-banner .ab { color: var(--fg-muted); font-size: 14.5px; }
+.celva-skin .alert-line { display: block; line-height: 1.45; padding: 4px 0; }
+.celva-skin .alert-line .ab { margin-left: 4px; }
+.celva-skin .alert-line a { color: var(--accent); border-bottom: 1px solid transparent; cursor: pointer; }
+.celva-skin .alert-line a:hover { border-color: var(--accent); }
+
+.celva-skin .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--stack); }
+@media (max-width: 1100px) { .celva-skin .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+.celva-skin .kpi { background: var(--surface); border: 1px solid var(--border-soft); padding: var(--card-pad); }
+.celva-skin .kpi .kl { font-size: 13.5px; color: var(--fg-muted); }
+.celva-skin .kpi .kv { font-family: var(--font-display); font-size: 30px; font-weight: 500; color: var(--fg-strong); margin-top: 8px; line-height: 1; }
+.celva-skin .kpi .kd { font-size: 13px; margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; }
+.celva-skin .trend-up { color: var(--st-done); }
+.celva-skin .trend-down { color: var(--st-urgent); }
+
+.celva-skin .checklist { display: grid; gap: 2px; }
+.celva-skin .check-row {
+  display: flex; align-items: center; gap: 16px; padding: 16px 20px; width: 100%; text-align: left;
+  border: 1px solid var(--border-soft); background: var(--surface); cursor: pointer;
+  transition: background 140ms ease;
+}
+.celva-skin .check-row + .check-row { border-top: 0; }
+.celva-skin .check-row.done { background: color-mix(in oklab, var(--st-done) 7%, var(--surface)); }
+.celva-skin .check-box { width: 26px; height: 26px; border: 1.5px solid var(--border); flex-shrink: 0; display: grid; place-items: center; color: transparent; }
+.celva-skin .check-row.done .check-box { background: var(--st-done); border-color: var(--st-done); color: #fff; }
+.celva-skin .check-row .ct { flex: 1; font-size: 16.5px; color: var(--fg-strong); }
+.celva-skin .check-row:not(.done) .ct { color: var(--fg-strong); font-weight: 500; }
+.celva-skin .check-row.done .ct { color: var(--fg-muted); font-weight: 400; text-decoration: line-through; text-decoration-color: color-mix(in oklab, var(--fg-muted) 50%, transparent); }
+.celva-skin .check-row .cgo { color: var(--accent); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0; transition: opacity 140ms; }
+.celva-skin .check-row:not(.done):hover .cgo { opacity: 1; }
+.celva-skin .setup-progress { height: 4px; background: var(--bg-sunk); overflow: hidden; }
+.celva-skin .setup-progress > i { display: block; height: 100%; background: var(--accent); transition: width 400ms ease; }
+.celva-skin .prep-counter { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.celva-skin .prep-counter .done-n { color: var(--st-done); }
+
+.celva-skin .spark { display: flex; align-items: flex-end; gap: 5px; height: 120px; }
+.celva-skin .spark .bar { flex: 1; background: color-mix(in oklab, var(--accent) 26%, var(--surface-2)); transition: background 160ms; min-height: 3px; }
+.celva-skin .spark .bar:hover { background: var(--accent); }
+.celva-skin .spark .bar.peak { background: var(--accent); }
+
+.celva-skin .toplist { display: grid; gap: 0; }
+.celva-skin .toprow { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--border-soft); }
+.celva-skin .toprow:last-child { border-bottom: 0; }
+.celva-skin .toprow .thumb { width: 44px; height: 56px; flex-shrink: 0; background: var(--bg-sunk); border: 1px solid var(--border-soft); object-fit: cover; }
+.celva-skin .toprow .tn { flex: 1; }
+.celva-skin .toprow .tcount { font-size: 13px; color: var(--fg-muted); }
+
+/* ============================================================
+   Orders list
+   ============================================================ */
+.celva-skin .toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.celva-skin .search {
+  display: flex; align-items: center; gap: 9px; padding: 9px 14px;
+  border: 1px solid var(--border); background: var(--surface); min-width: 240px; flex: 1; max-width: 360px;
+}
+.celva-skin .search input { border: 0; background: transparent; outline: none; width: 100%; font-size: 15px; font-family: var(--font-body); color: var(--fg); }
+.celva-skin .search input::placeholder { color: var(--fg-muted); }
+.celva-skin .search svg { color: var(--fg-muted); width: 18px; height: 18px; }
+
+.celva-skin .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 14px; overflow-x: auto; }
+.celva-skin .tab {
+  display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; background: none; border: 0;
+  color: var(--fg-muted); font-size: 15px; white-space: nowrap; cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 140ms; font-family: var(--font-body);
+}
+.celva-skin .tab:hover { color: var(--fg); }
+.celva-skin .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.celva-skin .tab .tcount {
+  font-family: var(--font-display); font-size: 12px; font-weight: 600;
+  min-width: 19px; height: 19px; padding: 0 5px; display: grid; place-items: center;
+  background: var(--bg-sunk); color: var(--fg-muted); border-radius: 999px;
+}
+.celva-skin .tab.active .tcount { background: color-mix(in oklab, var(--accent) 16%, var(--surface)); color: var(--accent); }
+
+.celva-skin .subfilters { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-left: 2px; }
+.celva-skin .chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--fg-muted);
+  font-size: 13.5px; transition: all 140ms; font-family: var(--font-body);
+}
+.celva-skin .chip:hover { color: var(--fg); border-color: var(--fg-muted); }
+/* .chip.on binding lives in the token section (neutral = fg-strong, warm = olive). */
+.celva-skin[data-palette="warm"][data-theme="dark"] .chip.on { background: var(--surface-2); color: var(--fg); border-color: var(--accent); }
+
+.celva-skin .order-list { border: 1px solid var(--border-soft); background: var(--surface); }
+.celva-skin .order-row {
+  display: grid; align-items: center; gap: 16px;
+  grid-template-columns: var(--bar-w) auto 1fr auto auto;
+  padding: var(--row-py) 18px var(--row-py) 0; cursor: pointer;
+  border-bottom: 1px solid var(--border-soft); position: relative; transition: background 130ms ease;
+}
+.celva-skin .order-row:last-child { border-bottom: 0; }
+.celva-skin .order-row:hover { background: var(--bg-sunk); }
+.celva-skin .order-row .obar { width: var(--bar-w); align-self: stretch; background: var(--sc); }
+.celva-skin .order-row .ochan { width: 34px; height: 34px; display: grid; place-items: center; color: var(--fg-muted); border: 1px solid var(--border-soft); background: var(--bg); margin-left: 4px; }
+.celva-skin .order-row .ometa { min-width: 0; }
+.celva-skin .order-row .onum { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--fg-strong); }
+.celva-skin .order-row .oclient { font-size: 15px; }
+.celva-skin .order-row .osub { font-size: 13px; color: var(--fg-muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 3px; }
+.celva-skin .order-row .oamt { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--fg-strong); text-align: right; white-space: nowrap; }
+.celva-skin .order-row .otime { font-size: 12.5px; color: var(--fg-muted); text-align: right; margin-top: 2px; }
+.celva-skin .tag-cash { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--st-todo); display: inline-flex; align-items: center; gap: 4px; }
+.celva-skin .load-more { display: flex; justify-content: center; padding: 22px; }
+.celva-skin .empty { text-align: center; padding: 60px 20px; color: var(--fg-muted); }
+.celva-skin .empty .mono { width: 56px; height: 56px; margin: 0 auto 16px; color: var(--border); }
+
+/* ============================================================
+   Order detail
+   ============================================================ */
+.celva-skin .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-muted); font-size: 14px; background: none; border: 0; cursor: pointer; font-family: var(--font-body); }
+.celva-skin .back-link:hover { color: var(--accent); }
+.celva-skin .detail-head { display: flex; align-items: flex-start; gap: 18px; flex-wrap: wrap; margin-bottom: 22px; }
+.celva-skin .detail-head .dh-num { font-family: var(--font-display); font-size: 32px; font-weight: 600; color: var(--fg-strong); line-height: 1; }
+.celva-skin .detail-head .dh-meta { font-size: 14px; color: var(--fg-muted); margin-top: 8px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.celva-skin .detail-head .dh-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.celva-skin .secondary-actions { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
+
+.celva-skin .detail-grid { display: grid; grid-template-columns: 1fr 340px; gap: var(--stack); align-items: start; }
+@media (max-width: 980px) { .celva-skin .detail-grid { grid-template-columns: 1fr; } }
+
+.celva-skin .info-card { background: var(--surface); border: 1px solid var(--border-soft); padding: var(--card-pad); }
+.celva-skin .info-card h4 { font-family: var(--font-body); font-weight: 600; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-muted); margin: 0 0 14px; }
+.celva-skin .kv-line { display: flex; justify-content: space-between; gap: 16px; padding: 6px 0; font-size: 15px; }
+.celva-skin .kv-line .k { color: var(--fg-muted); }
+.celva-skin .kv-line .v { text-align: right; font-weight: 500; }
+.celva-skin .kv-line .v.big { font-family: var(--font-display); font-size: 17px; }
+.celva-skin .client-context { font-size: 13.5px; color: var(--accent); margin-top: 4px; font-style: italic; }
+
+.celva-skin .item-line { display: flex; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--border-soft); }
+.celva-skin .item-line:last-child { border-bottom: 0; }
+.celva-skin .item-line .ithumb { width: 50px; height: 64px; flex-shrink: 0; background: var(--bg-sunk); border: 1px solid var(--border-soft); object-fit: cover; display: grid; place-items: center; color: var(--fg-muted); }
+.celva-skin .item-line .iname { font-size: 15.5px; font-weight: 500; }
+.celva-skin .item-line .ivar { font-size: 13px; color: var(--fg-muted); margin-top: 2px; }
+.celva-skin .item-line .iqty { font-size: 13px; color: var(--fg-muted); margin-top: 4px; }
+.celva-skin .item-line .iloc { color: var(--accent); font-weight: 600; }
+.celva-skin .item-line .iprice { margin-left: auto; text-align: right; font-family: var(--font-display); font-size: 15px; white-space: nowrap; }
+
+.celva-skin .fin-line { display: flex; justify-content: space-between; padding: 7px 0; font-size: 15px; }
+.celva-skin .fin-line.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 13px; font-size: 18px; }
+.celva-skin .fin-line.total .v { font-family: var(--font-display); font-weight: 600; color: var(--fg-strong); }
+.celva-skin .fin-line .vat { font-size: 12.5px; color: var(--fg-muted); }
+
+.celva-skin .margin-card {
+  background: color-mix(in oklab, var(--st-done) 12%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--st-done) 34%, transparent); padding: var(--card-pad);
+}
+.celva-skin .margin-card .ml { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: color-mix(in oklab, var(--st-done) 55%, var(--fg)); font-weight: 600; }
+.celva-skin .margin-card .mv { font-family: var(--font-display); font-size: 28px; font-weight: 600; color: color-mix(in oklab, var(--st-done) 62%, var(--fg-strong)); margin-top: 6px; }
+.celva-skin .margin-card .mp { font-size: 13px; color: var(--fg-muted); margin-top: 2px; }
+
+.celva-skin .timeline { position: relative; padding-left: 24px; }
+.celva-skin .timeline::before { content: ""; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 1.5px; background: var(--border); }
+.celva-skin .tl-item { position: relative; padding: 8px 0; }
+.celva-skin .tl-item::before { content: ""; position: absolute; left: -23px; top: 13px; width: 11px; height: 11px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); }
+.celva-skin .tl-item.cur::before { background: var(--accent); border-color: var(--accent); }
+.celva-skin .tl-item .tlt { font-size: 15px; font-weight: 500; }
+.celva-skin .tl-item .tls { font-size: 13px; color: var(--fg-muted); }
+
+.celva-skin .fade-in { animation: celvaFadeUp 360ms ease; }
+@keyframes celvaFadeUp { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ============================================================
+   Workflow screens (préparation / acheminement)
+   ============================================================ */
+.celva-skin .flow-head { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+.celva-skin .flow-title { font-family: var(--font-display); font-size: 28px; font-weight: 500; color: var(--fg-strong); }
+
+/* preparation checklist */
+.celva-skin .prep-item {
+  display: flex; align-items: center; gap: 16px; padding: 16px 18px; width: 100%; text-align: left;
+  border: 1px solid var(--border-soft); background: var(--surface); cursor: pointer;
+  transition: background 140ms; user-select: none;
+}
+.celva-skin .prep-item + .prep-item { border-top: 0; }
+.celva-skin .prep-item.checked { background: color-mix(in oklab, var(--st-done) 8%, var(--surface)); }
+.celva-skin .prep-item .pcheck { width: 28px; height: 28px; border: 1.5px solid var(--border); flex-shrink: 0; display: grid; place-items: center; color: transparent; transition: all 140ms; }
+.celva-skin .prep-item.checked .pcheck { background: var(--st-done); border-color: var(--st-done); color: #fff; }
+.celva-skin .prep-item .pthumb { width: 48px; height: 60px; background: var(--bg-sunk); border: 1px solid var(--border-soft); object-fit: cover; flex-shrink: 0; display: grid; place-items: center; color: var(--fg-muted); }
+.celva-skin .prep-item .pname { font-size: 16px; font-weight: 500; }
+.celva-skin .prep-item.checked .pname { text-decoration: line-through; text-decoration-color: color-mix(in oklab, var(--fg-muted) 50%, transparent); color: var(--fg-muted); }
+.celva-skin .prep-item .pvar { font-size: 13px; color: var(--fg-muted); margin-top: 2px; }
+.celva-skin .prep-item .ploc { margin-left: auto; text-align: right; }
+.celva-skin .prep-item .ploc .lbl { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); }
+.celva-skin .prep-item .ploc .val { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--accent); }
+.celva-skin .prep-item .psku { font-size: 12px; color: var(--fg-muted); font-family: var(--font-display); letter-spacing: 0.04em; }
+
+/* packaging picker */
+.celva-skin .pack-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border: 1px solid var(--border-soft); }
+.celva-skin .pack-row + .pack-row { border-top: 0; }
+.celva-skin .pack-row .pkname { flex: 1; }
+.celva-skin .pack-row .pkstock { font-size: 12.5px; color: var(--fg-muted); }
+.celva-skin .qty-step { display: inline-flex; align-items: center; border: 1px solid var(--border); }
+.celva-skin .qty-step button { width: 34px; height: 34px; display: grid; place-items: center; color: var(--fg); background: none; border: 0; cursor: pointer; }
+.celva-skin .qty-step button:hover { background: var(--bg-sunk); }
+.celva-skin .qty-step .qv { min-width: 38px; text-align: center; font-family: var(--font-display); font-weight: 600; }
+
+/* routing modes */
+.celva-skin .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 760px) { .celva-skin .mode-grid { grid-template-columns: 1fr; } }
+.celva-skin .mode-card {
+  text-align: left; display: flex; gap: 14px; align-items: flex-start; width: 100%; cursor: pointer;
+  padding: 18px; border: 1.5px solid var(--border-soft); background: var(--surface);
+  transition: border-color 160ms, background 160ms;
+}
+.celva-skin .mode-card:hover { border-color: var(--fg-muted); }
+.celva-skin .mode-card.sel { border-color: var(--accent); background: color-mix(in oklab, var(--accent) 7%, var(--surface)); }
+.celva-skin .mode-card .micon { width: 40px; height: 40px; display: grid; place-items: center; flex-shrink: 0; background: var(--bg-sunk); color: var(--fg); }
+.celva-skin .mode-card.sel .micon { background: var(--accent); color: var(--cream); }
+.celva-skin .mode-card .mtitle { font-size: 16.5px; font-weight: 600; }
+.celva-skin .mode-card .mtag { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-left: 6px; }
+.celva-skin .mode-card .mdesc { font-size: 13.5px; color: var(--fg-muted); margin-top: 4px; line-height: 1.35; }
+
+/* fields */
+.celva-skin .field { display: block; margin-bottom: 16px; }
+.celva-skin .field > label { display: block; font-size: 13px; color: var(--fg-muted); margin-bottom: 7px; letter-spacing: 0.02em; }
+.celva-skin .field input[type=text], .celva-skin .field input[type=number], .celva-skin .field select {
+  width: 100%; padding: 10px 0; background: transparent; border: 0; color: var(--fg);
+  border-bottom: 1px solid var(--border); outline: none; font-size: 16px; font-family: var(--font-body); transition: border-color 160ms;
+}
+.celva-skin .field input:focus, .celva-skin .field select:focus { border-bottom-color: var(--accent); }
+
+.celva-skin .net-box { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px; background: var(--bg-sunk); border: 1px solid var(--border-soft); }
+.celva-skin .net-box .nl { font-size: 14px; color: var(--fg-muted); }
+.celva-skin .net-box .nv { font-family: var(--font-display); font-size: 22px; font-weight: 600; }
+.celva-skin .net-pos { color: var(--st-done); }
+.celva-skin .net-neg { color: var(--st-urgent); }
+
+.celva-skin .receipt-slot {
+  border: 1.5px dashed var(--border); padding: 18px; text-align: center; color: var(--fg-muted); width: 100%;
+  font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; background: none;
+  transition: border-color 160ms, color 160ms; font-family: var(--font-body);
+}
+.celva-skin .receipt-slot:hover { border-color: var(--accent); color: var(--accent); }
+
+.celva-skin .callout { padding: 14px 16px; background: var(--bg-sunk); border-left: 3px solid var(--accent); font-size: 14px; }
+
+/* ============================================================
+   Catalogue — produits (summary strip, grid + list)
+   ============================================================ */
+.celva-skin .cat-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-soft); border: 1px solid var(--border-soft); margin-bottom: 22px; }
+@media (max-width: 760px) { .celva-skin .cat-summary { grid-template-columns: repeat(2, 1fr); } }
+.celva-skin .cs-item { background: var(--surface); padding: 16px 20px; }
+.celva-skin .cs-item .cs-v { font-family: var(--font-display); font-size: 26px; font-weight: 500; color: var(--fg-strong); line-height: 1; }
+.celva-skin .cs-item .cs-l { font-size: 12.5px; color: var(--fg-muted); margin-top: 6px; letter-spacing: 0.02em; }
+.celva-skin .cs-item.warn .cs-v { color: var(--st-todo); }
+
+.celva-skin .viewseg button { padding: 8px 12px; display: grid; place-items: center; }
+.celva-skin .seg.viewseg { display: inline-flex; border: 1px solid var(--border); background: var(--surface); }
+
+.celva-skin .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(218px, 1fr)); gap: var(--stack); }
+.celva-skin .prod-card { display: block; text-align: left; background: var(--surface); border: 1px solid var(--border-soft); overflow: hidden; padding: 0; width: 100%; cursor: pointer; transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease; }
+.celva-skin .prod-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); border-color: var(--border); }
+.celva-skin .prod-card.dim { opacity: 0.66; }
+.celva-skin .prod-card.dim:hover { opacity: 1; }
+.celva-skin .pc-media { position: relative; aspect-ratio: 3 / 4; background: var(--bg-sunk); overflow: hidden; display: grid; place-items: center; color: var(--border); }
+.celva-skin .pc-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms ease; }
+.celva-skin .prod-card:hover .pc-media img { transform: scale(1.04); }
+.celva-skin .pc-badge { position: absolute; top: 10px; left: 10px; }
+.celva-skin .pc-body { padding: 14px 16px 16px; }
+.celva-skin .pc-cat { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-muted); }
+.celva-skin .pc-name { font-family: var(--font-display); font-size: 17px; font-weight: 500; color: var(--fg-strong); margin-top: 5px; line-height: 1.2; }
+.celva-skin .pc-foot { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+.celva-skin .pc-price { font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--fg-strong); white-space: nowrap; }
+.celva-skin .pc-stock { font-size: 12.5px; color: var(--st-done); white-space: nowrap; }
+.celva-skin .pc-stock.low { color: var(--st-todo); }
+.celva-skin .pc-stock.zero { color: var(--st-urgent); }
+
+.celva-skin .prod-listwrap { border: 1px solid var(--border-soft); background: var(--surface); }
+.celva-skin .prod-row { display: grid; align-items: center; gap: 16px; grid-template-columns: 52px 1fr auto 120px 124px 22px; padding: 10px 18px 10px 12px; cursor: pointer; border-bottom: 1px solid var(--border-soft); transition: background 130ms ease; width: 100%; text-align: left; background: var(--surface); }
+.celva-skin .prod-row:last-child { border-bottom: 0; }
+.celva-skin .prod-row:hover { background: var(--bg-sunk); }
+.celva-skin .prod-row.dim { opacity: 0.62; }
+.celva-skin .prod-row.dim:hover { opacity: 1; }
+.celva-skin .pr-thumb { width: 52px; height: 66px; object-fit: cover; background: var(--bg-sunk); border: 1px solid var(--border-soft); display: grid; place-items: center; color: var(--border); }
+.celva-skin .pr-main { min-width: 0; }
+.celva-skin .pr-name { font-family: var(--font-display); font-size: 16.5px; font-weight: 500; color: var(--fg-strong); }
+.celva-skin .pr-sub { font-size: 13px; color: var(--fg-muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 3px; }
+.celva-skin .pr-sku { font-family: var(--font-display); letter-spacing: 0.04em; }
+.celva-skin .pr-stockcell { text-align: right; }
+.celva-skin .pr-stocknum { font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--fg-strong); line-height: 1; }
+.celva-skin .pr-stocknum.low { color: var(--st-todo); }
+.celva-skin .pr-stocknum.zero { color: var(--st-urgent); }
+.celva-skin .pr-stocklbl { font-size: 11.5px; color: var(--fg-muted); margin-top: 3px; }
+.celva-skin .pr-price { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--fg-strong); text-align: right; white-space: nowrap; }
+.celva-skin .pr-chev { color: var(--fg-muted); display: grid; place-items: center; }
+
+/* shared empty state */
+.celva-skin .empty-state { text-align: center; padding: 52px 20px; }
+.celva-skin .empty-state .es-ic { width: 52px; height: 52px; margin: 0 auto 14px; color: var(--border); display: grid; place-items: center; }
+.celva-skin .empty-state .es-t { font-size: 17px; color: var(--fg); }
+.celva-skin .empty-state .es-s { font-size: 14px; color: var(--fg-muted); margin-top: 6px; }
+.celva-skin .empty-state .btn { margin-top: 16px; }
+
+/* ============================================================
+   Catalogue — product detail
+   ============================================================ */
+.celva-skin .prod-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; color: var(--fg-strong); line-height: 1.12; margin: 0; }
+.celva-skin .prod-detail .kv-line { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 16px; }
+.celva-skin .prod-detail .kv-line .k { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.celva-skin .prod-detail .kv-line .v { white-space: nowrap; }
+.celva-skin .detail-grid > .grid { min-width: 0; }
+
+.celva-skin .prod-overview { display: grid; grid-template-columns: 280px 1fr; gap: 24px; background: var(--surface); border: 1px solid var(--border-soft); padding: var(--card-pad); }
+@media (max-width: 720px) { .celva-skin .prod-overview { grid-template-columns: 1fr; } }
+.celva-skin .gallery { display: grid; gap: 10px; }
+.celva-skin .gal-main { aspect-ratio: 3 / 4; background: var(--bg-sunk); border: 1px solid var(--border-soft); overflow: hidden; display: grid; place-items: center; color: var(--border); }
+.celva-skin .gal-main img { width: 100%; height: 100%; object-fit: cover; }
+.celva-skin .gal-thumbs { display: flex; gap: 8px; }
+.celva-skin .gal-th { width: 54px; height: 68px; border: 1px solid var(--border-soft); overflow: hidden; padding: 0; opacity: 0.6; transition: opacity 140ms, border-color 140ms; background: var(--bg-sunk); }
+.celva-skin .gal-th img { width: 100%; height: 100%; object-fit: cover; }
+.celva-skin .gal-th.on { opacity: 1; border-color: var(--accent); }
+.celva-skin .po-text { min-width: 0; }
+.celva-skin .po-desc { font-size: 16px; line-height: 1.55; color: var(--fg); margin: 0; }
+.celva-skin .po-tags { margin-top: 20px; display: grid; gap: 14px; }
+.celva-skin .po-axis { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.celva-skin .po-axislbl { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-muted); min-width: 70px; }
+.celva-skin .po-vals { display: flex; gap: 6px; flex-wrap: wrap; }
+.celva-skin .po-val { font-size: 13.5px; padding: 4px 11px; border: 1px solid var(--border); color: var(--fg); }
+
+.celva-skin .vtable-wrap { overflow-x: auto; margin: 0 calc(-1 * var(--card-pad)) calc(-1 * var(--card-pad)); }
+.celva-skin .vtable { width: 100%; border-collapse: collapse; }
+.celva-skin .vtable th { text-align: left; font-family: var(--font-body); font-weight: 600; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-muted); padding: 9px var(--card-pad); border-bottom: 1px solid var(--border); }
+.celva-skin .vtable th.rt { text-align: right; }
+.celva-skin .vtable td { padding: 11px var(--card-pad); border-bottom: 1px solid var(--border-soft); font-size: 14.5px; }
+.celva-skin .vtable tr:last-child td { border-bottom: 0; }
+.celva-skin .vtable td.rt { text-align: right; }
+.celva-skin .vtable .v-attr { font-weight: 500; color: var(--fg-strong); white-space: nowrap; }
+.celva-skin .vtable .v-sku { font-family: var(--font-display); letter-spacing: 0.04em; color: var(--fg-muted); font-size: 13.5px; white-space: nowrap; }
+.celva-skin .vtable tr.v-out { background: color-mix(in oklab, var(--st-urgent) 6%, transparent); }
+.celva-skin .vtable tr.v-low { background: color-mix(in oklab, var(--st-todo) 5%, transparent); }
+.celva-skin .stock-chip { display: inline-grid; place-items: center; min-width: 30px; padding: 2px 8px; font-family: var(--font-display); font-weight: 600; background: color-mix(in oklab, var(--st-done) 15%, var(--surface)); color: color-mix(in oklab, var(--st-done) 60%, var(--fg)); border: 1px solid color-mix(in oklab, var(--st-done) 30%, transparent); }
+.celva-skin .stock-chip.low { background: color-mix(in oklab, var(--st-todo) 16%, var(--surface)); color: color-mix(in oklab, var(--st-todo) 62%, var(--fg)); border-color: color-mix(in oklab, var(--st-todo) 32%, transparent); }
+.celva-skin .stock-chip.zero { background: color-mix(in oklab, var(--st-urgent) 14%, var(--surface)); color: color-mix(in oklab, var(--st-urgent) 62%, var(--fg)); border-color: color-mix(in oklab, var(--st-urgent) 30%, transparent); }
+.celva-skin .v-ov { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-left: 7px; }
+.celva-skin .price-breakdown { font-size: 12.5px; color: var(--fg-muted); margin: -2px 0 6px; font-family: var(--font-display); letter-spacing: 0.02em; }
+.celva-skin .coll-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.celva-skin .coll-chip { font-size: 13px; padding: 5px 12px; background: var(--bg-sunk); border: 1px solid var(--border-soft); color: var(--fg); }
+
+/* ============================================================
+   Shared flat list rows (categories, collections, suppliers,
+   materials, PO, production…) — base from stock.css + collections.css
+   ============================================================ */
+.celva-skin .list-wrap { border: 1px solid var(--border-soft); background: var(--surface); }
+.celva-skin .lrow { display: grid; align-items: center; gap: 16px; padding: var(--row-py) 18px; cursor: pointer; border-bottom: 1px solid var(--border-soft); transition: background 130ms ease; position: relative; width: 100%; text-align: left; background: var(--surface); }
+.celva-skin .lrow:last-child { border-bottom: 0; }
+.celva-skin .lrow:hover { background: var(--bg-sunk); }
+.celva-skin .lrow.archived { opacity: 0.6; }
+.celva-skin .lrow.archived:hover { opacity: 1; }
+.celva-skin .lrow .lname { font-family: var(--font-display); font-size: 16.5px; font-weight: 500; color: var(--fg-strong); }
+.celva-skin .lrow .lsub { font-size: 13px; color: var(--fg-muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 3px; }
+.celva-skin .lrow .lref { font-family: var(--font-display); letter-spacing: 0.04em; }
+.celva-skin .lrow .lnum { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--fg-strong); }
+.celva-skin .lcell { text-align: right; }
+.celva-skin .lcell .lc-v, .celva-skin .lcell .lc-count { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--fg-strong); line-height: 1; }
+.celva-skin .lcell .lc-l { font-size: 11.5px; color: var(--fg-muted); margin-top: 3px; }
+.celva-skin .lchev { color: var(--fg-muted); display: grid; place-items: center; }
+.celva-skin .cat-en { font-size: 13px; color: var(--fg-muted); margin-left: 8px; font-family: var(--font-body); }
+
+/* category row layout: grip | name/slug | count | actions */
+.celva-skin .lrow.cat { grid-template-columns: 26px 1fr 110px auto; }
+.celva-skin .lrow.coll { grid-template-columns: 26px 84px 1fr 120px 130px 22px; }
+
+/* drag-reorder */
+.celva-skin .drag-handle { opacity: 0.35; color: var(--fg-muted); display: grid; place-items: center; transition: opacity 140ms; }
+.celva-skin .lrow:hover .drag-handle { opacity: 1; }
+.celva-skin .drag-handle:active { cursor: grabbing; }
+.celva-skin .lrow.dragging { opacity: 0.4; background: var(--bg-sunk); }
+.celva-skin .lrow.drop-target { box-shadow: inset 0 2px 0 var(--accent); }
+
+/* cover placeholder (collection hero, 21:9 landscape) */
+.celva-skin .cover-thumb { position: relative; flex-shrink: 0; overflow: hidden; border: 1px solid var(--border-soft); background-color: var(--bg-sunk); display: grid; place-items: center; color: var(--fg-muted); }
+.celva-skin .cover-thumb.vignette { width: 84px; height: 36px; }
+
+.celva-skin .icon-btn { width: 34px; height: 34px; display: grid; place-items: center; color: var(--fg); border: 1px solid transparent; background: none; cursor: pointer; transition: background 160ms ease, border-color 160ms ease; }
+.celva-skin .icon-btn:hover { background: var(--bg-sunk); border-color: var(--border-soft); }
+
+/* domain summary strip (collections, stock domains) + visibility flag */
+.celva-skin .dom-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-soft); border: 1px solid var(--border-soft); margin-bottom: 22px; }
+@media (max-width: 760px) { .celva-skin .dom-summary { grid-template-columns: repeat(2, 1fr); } }
+.celva-skin .ds-item { background: var(--surface); padding: 16px 20px; }
+.celva-skin .ds-item .ds-v { font-family: var(--font-display); font-size: 26px; font-weight: 500; color: var(--fg-strong); line-height: 1; }
+.celva-skin .ds-item .ds-l { font-size: 12.5px; color: var(--fg-muted); margin-top: 6px; }
+.celva-skin .ds-item.warn .ds-v { color: var(--st-todo); }
+.celva-skin .vis-flag { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
+.celva-skin .vis-flag.live { color: var(--st-done); }
+.celva-skin .vis-flag.hidden { color: var(--st-todo); }
+.celva-skin .vis-flag .vdot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+/* onboarding banner (operational dashboard) — design enhancements.css */
+.celva-skin .onboard-banner { display: flex; align-items: center; gap: 18px; padding: 18px 22px; margin-bottom: 24px; background: color-mix(in oklab, var(--accent) 6%, var(--surface)); border: 1px solid color-mix(in oklab, var(--accent) 24%, var(--border)); border-left-width: 3px; }
+.celva-skin .onboard-ring { --p: 0; position: relative; width: 52px; height: 52px; flex-shrink: 0; display: grid; place-items: center; background: conic-gradient(var(--accent) calc(var(--p) * 1%), var(--bg-sunk) 0); border-radius: 50%; }
+.celva-skin .onboard-ring::after { content: ""; position: absolute; inset: 5px; background: var(--surface); border-radius: 50%; }
+.celva-skin .onboard-ring .or-num { position: relative; z-index: 1; font-family: var(--font-display); font-weight: 600; font-size: 14px; color: var(--fg-strong); }
+.celva-skin .onboard-main { flex: 1; min-width: 0; }
+.celva-skin .onboard-main .ob-t { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--fg-strong); }
+.celva-skin .onboard-main .ob-s { font-size: 13.5px; color: var(--fg-muted); margin-top: 2px; }
+.celva-skin .onboard-steps { display: flex; gap: 7px; margin-top: 9px; flex-wrap: wrap; }
+.celva-skin .ob-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 3px 10px; border: 1px solid var(--border); color: var(--fg-muted); cursor: pointer; background: none; }
+.celva-skin .ob-chip.done { color: var(--st-done); border-color: color-mix(in oklab, var(--st-done) 30%, var(--border)); background: color-mix(in oklab, var(--st-done) 8%, var(--surface)); }
+.celva-skin .ob-chip .obc-ic { width: 14px; height: 14px; display: grid; place-items: center; }
+.celva-skin .onboard-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+@media (max-width: 760px) { .celva-skin .onboard-banner { flex-wrap: wrap; } .celva-skin .onboard-actions { width: 100%; } }
+
+/* ============================================================
+   Reduced motion — respect the OS setting (design enhancements.css):
+   kill entrance/spark/hover animations, cap transitions, no smooth scroll.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .celva-skin .fade-in { animation: none !important; transform: none !important; }
+  .celva-skin .spark .bar,
+  .celva-skin .action-card,
+  .celva-skin .prod-card,
+  .celva-skin .onboard-ring,
+  .celva-skin .setup-progress > i { transition: none !important; }
+  .celva-skin *, .celva-skin *::before, .celva-skin *::after {
+    animation-iteration-count: 1 !important;
+    transition-duration: 120ms !important;
+  }
+}

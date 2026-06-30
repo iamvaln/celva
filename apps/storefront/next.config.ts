@@ -3,7 +3,13 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
-const API_TARGET = process.env.API_INTERNAL_URL ?? 'http://localhost:3001';
+// No fallback — every var must come from .env (see apps/storefront/.env.example).
+const API_TARGET = process.env.API_INTERNAL_URL;
+if (!API_TARGET) {
+  throw new Error(
+    'API_INTERNAL_URL is required. Copy apps/storefront/.env.example to apps/storefront/.env and fill it in.',
+  );
+}
 
 const config: NextConfig = {
   reactStrictMode: true,
@@ -13,10 +19,11 @@ const config: NextConfig = {
   },
   images: {
     remotePatterns: [
+      // R2 public bucket — serves both originals (/seed/…, /products/…) and
+      // Cloudflare Images Transformations (/cdn-cgi/image/…), which are hosted
+      // on this Cloudflare-proxied zone (NOT celva.store, which is on Vercel).
       { protocol: 'https', hostname: 'media.celva.store' },
       { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
-      // Cloudflare Images Transformations origin (celva.store/cdn-cgi/image/...)
-      { protocol: 'https', hostname: 'celva.store', pathname: '/cdn-cgi/image/**' },
       // Local API fallback: the dev API serves /uploads/* directly
       { protocol: 'http', hostname: 'localhost', port: '3001', pathname: '/uploads/**' },
     ],

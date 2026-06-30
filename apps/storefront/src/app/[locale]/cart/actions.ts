@@ -72,6 +72,27 @@ export async function addToCartAction(formData: FormData): Promise<void> {
   redirect(fromPath);
 }
 
+/**
+ * Merge a guest's localStorage cart into the now-authenticated server cart.
+ * Called right after login (the access cookie is already set, so callApi picks
+ * it up server-side). Best-effort per line — a failed add (e.g. out of stock)
+ * is skipped so the rest still merge. The client clears localStorage afterward.
+ */
+export async function mergeGuestCartAction(
+  items: { variantId: string; quantity: number }[],
+): Promise<void> {
+  const accessToken = await getAccessToken();
+  if (!accessToken || items.length === 0) return;
+  for (const it of items) {
+    if (!it.variantId || it.quantity < 1) continue;
+    await callApi('/me/cart/items', {
+      method: 'POST',
+      body: { variantId: it.variantId, quantity: it.quantity },
+    });
+  }
+  revalidateCart();
+}
+
 export async function updateCartItemAction(formData: FormData): Promise<void> {
   const itemId = String(formData.get('itemId') ?? '');
   const quantity = Number(formData.get('quantity') ?? 1);

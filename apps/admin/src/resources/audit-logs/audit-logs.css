@@ -1,0 +1,66 @@
+/* Journal d'activité (audit log) — bespoke read-only journal styles.
+   Scoped to .celva-skin. `.flow-table` is ported from the design handoff
+   (admin.css lines ~646-651) since it is not (yet) in the shared skin;
+   mirrors stock-movements.css. */
+
+.celva-skin .flow-table { width: 100%; border-collapse: collapse; }
+.celva-skin .flow-table th {
+  text-align: left;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.celva-skin .flow-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 14.5px;
+  vertical-align: middle;
+}
+.celva-skin .flow-table tr:last-child td { border-bottom: 0; }
+.celva-skin .flow-table .amt-in {
+  color: var(--st-done);
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.celva-skin .flow-table .amt-out {
+  color: var(--st-urgent);
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Journal-specific helpers */
+.celva-skin .au-when { white-space: nowrap; }
+.celva-skin .au-when .au-ago { display: block; font-size: 12px; color: var(--fg-muted); margin-top: 1px; }
+.celva-skin .au-entity { font-weight: 500; color: var(--fg-strong); }
+.celva-skin .au-id { display: block; font-size: 12px; color: var(--fg-muted); margin-top: 1px; font-family: var(--font-display); }
+.celva-skin .au-actor { white-space: nowrap; }
+
+/* Source tag — ported from settings.css `.src-tag` */
+.celva-skin .src-tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+.celva-skin .src-tag.src-webadmin { border-color: color-mix(in oklab, var(--accent) 32%, var(--border)); color: var(--accent); }
+.celva-skin .src-tag.src-webdelivery { border-color: color-mix(in oklab, #5B7C95 36%, var(--border)); color: #5B7C95; }
+.celva-skin .src-tag.src-webstore { border-color: color-mix(in oklab, var(--st-done) 30%, var(--border)); color: color-mix(in oklab, var(--st-done) 70%, var(--fg)); }
+.celva-skin .src-tag.src-api { background: var(--bg-sunk); }
+
+/* Action-type legend — ported from settings.css `.audit-legend` */
+.celva-skin .audit-legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 4px 0 10px; }
+.celva-skin .leg-item { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--fg-muted); }
+.celva-skin .leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* Horizontal scroll guard on narrow screens */
+.celva-skin .flow-scroll { overflow-x: auto; }

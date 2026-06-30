@@ -19,7 +19,7 @@
     "shop": "Shop",
     "collections": "Collections",
     "journal": "Journal",
-    "studio": "Studio",
+    "studio": "Made to measure",
     "search": "Search",
     "account": "My account",
     "wishlist": "Wishlist",
@@ -30,30 +30,36 @@
     "menu_open": "Open menu",
     "menu_close": "Close menu",
     "language": "Language",
-    "theme_toggle": "Toggle theme"
+    "theme_toggle": "Toggle theme",
+    "whatsapp_open": "Message us on WhatsApp",
+    "whatsapp_prelude": "Hi Celva, I'd like more information."
   },
   "footer": {
     "tagline": "A Cameroonian brand, for people who take their time.",
+    "tagline_full": "Cameroonian ready-to-wear and made-to-measure house. Atelier rue Foch, Douala.",
     "boutique": "Shop",
-    "about": "About",
+    "maison": "House",
     "help": "Help",
     "contact": "Contact",
     "links": {
       "shop_all": "All pieces",
       "collections": "Collections",
       "new": "New arrivals",
+      "archive": "Archive",
       "our_story": "Our story",
+      "atelier": "Atelier",
+      "studio": "Made to measure",
       "process": "Our process",
       "journal": "Journal",
       "faq": "FAQ",
       "shipping": "Shipping & returns",
       "size_guide": "Size guide",
+      "care": "Care",
       "terms": "Terms",
       "privacy": "Privacy policy",
       "contact_us": "Contact us",
       "whatsapp": "WhatsApp"
     },
-    "payment": "We accept Orange Money · MTN Mobile Money · Cash on delivery",
     "copyright": "© {year} Celva. All rights reserved."
   },
   "cookies": {
@@ -65,35 +71,59 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "Current collection",
-      "title": "Craft,\nworn calmly.",
-      "subtitle": "Couture pieces designed in Douala, cut one at a time, shipped to Cameroon and beyond.",
+      "eyebrow": "Spring Collection · Vol. 04",
+      "title_a": "Woven to",
+      "title_em": "be seen.",
+      "lede": "Hand-woven toghu, satin boubous, fringes knotted one by one. Pieces that wear their colours proudly — cut and finished at the atelier rue Foch, Douala.",
       "cta_primary": "Discover the collection",
-      "cta_secondary": "Our process"
+      "cta_secondary": "Made-to-measure",
+      "meta_season_label": "Season",
+      "meta_season_value": "SS 26",
+      "meta_atelier_label": "Atelier",
+      "meta_atelier_value": "Douala",
+      "meta_materials_label": "Materials",
+      "meta_materials_value": "Toghu · Satin · Wax"
     },
     "featured": {
       "eyebrow": "Selection",
-      "title": "Signature pieces",
-      "subtitle": "A few highlights from the current season.",
+      "title": "Our signature pieces",
       "cta": "Browse the shop",
       "placeholder": "Selection coming soon"
     },
     "studio": {
-      "eyebrow": "Made-to-measure",
-      "title": "Make your own",
-      "body": "The Celva studio opens soon: choose the fabric, the cut, the details. One piece, made for you.",
-      "cta": "Join the waitlist"
+      "eyebrow": "Studio · Made-to-measure",
+      "title_a": "Bring in",
+      "title_em": "the piece that's missing.",
+      "body": "Our seamstresses take your measurements remotely — via WhatsApp or at the atelier rue Foch — and execute in four to six weeks. Cotton, linen and silk by the metre, choice of finishes, hand-hemmed.",
+      "step_1": "Brief by call or in store",
+      "step_2": "Measurements & fabric choice",
+      "step_3": "Pattern, prototype, fittings",
+      "step_4": "Delivery in 4–6 weeks",
+      "cta": "Book an appointment"
     },
-    "collections": {
-      "eyebrow": "Worlds",
-      "title": "Collections",
-      "soiree": "Evening wear",
-      "fete": "Festive",
-      "bureau": "Workwear"
+    "collections_section": {
+      "eyebrow": "Collections",
+      "title_a": "Three stories",
+      "title_em": "of the season.",
+      "cta": "View the collection"
+    },
+    "testimonials": {
+      "eyebrow": "Letters received",
+      "quote": "The boubou arrives folded in cotton calico, with a handwritten label. You understand right away — this isn't a brand, it's an atelier.",
+      "name": "Awa N.",
+      "city": "Yaoundé · Customer since 2024"
+    },
+    "journal": {
+      "eyebrow": "Journal",
+      "title": "Atelier notes",
+      "cta": "All articles"
     },
     "newsletter": {
+      "eyebrow": "Letter from the studio",
+      "title_a": "Join",
+      "title_em": "the Celva world.",
+      "body": "One letter a month, no more. Atelier insights, new collections in preview and −10% off your first order.",
       "title": "Stay with us",
-      "body": "Join the list for drops, studio updates, and a 10% off code on your first order.",
       "email_label": "Email address",
       "email_placeholder": "you@example.com",
       "submit": "Subscribe",
@@ -121,6 +151,9 @@
     "clear": "Empty cart",
     "go_to_cart": "View cart ({count})",
     "discount": "Discount",
+    "guest": {
+      "no_account_needed": "Buy without creating an account"
+    },
     "flash": {
       "added": "Added to your cart.",
       "add_failed": "Couldn't add this piece. Please try again.",
@@ -148,6 +181,17 @@
     "login_required": "Log in to place your order.",
     "back_to_cart": "Back to cart",
     "place_order": "Place order",
+    "guest": {
+      "subtitle": "Check out as a guest — no account required.",
+      "login_link": "Log in",
+      "contact_heading": "Your details",
+      "name": "Full name",
+      "email": "Email",
+      "email_hint": "For order updates. An account is created automatically.",
+      "phone": "Phone (optional)",
+      "placing": "Placing…",
+      "invalid_email": "Invalid email address."
+    },
     "delivery": {
       "heading": "Delivery mode",
       "home": "Home delivery",
@@ -264,10 +308,37 @@
     "related_heading": "Complete the look",
     "no_image": "Image coming soon",
     "not_found": "Product not found.",
-    "back_to_shop": "Back to the shop"
+    "back_to_shop": "Back to the shop",
+    "size_guide": "Size guide",
+    "out_of_stock": "Out of stock",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "add_to_cart": "Add to cart",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "wishlist_add": "Add to wishlist",
+    "wishlist_remove": "Remove from wishlist",
+    "custom_prefix": "This piece is also available",
+    "custom_link": "made to measure",
+    "perks": {
+      "delivery": "Delivery in 2–4 days to Douala and Yaoundé",
+      "returns": "Free returns within 14 days",
+      "payment": "Pay with Orange Money, MoMo, card or on delivery"
+    },
+    "accordion": {
+      "description": "Full description",
+      "description_body": "Made in our atelier on rue Foch, Douala. Each weave varies slightly — it is handwork, not a print.",
+      "care": "Composition & care",
+      "care_body": "Hand wash cold or gentle dry-clean. Dry flat in the shade. Iron inside-out on low heat. Woven colours do not run.",
+      "shipping": "Shipping & returns",
+      "shipping_body": "Delivery in 2–4 working days to Douala and Yaoundé. 5–8 days within the country. International in 10–14 days via DHL Express. Free returns within 14 days, unworn with tags."
+    }
   },
   "collection": {
     "back": "All collections",
+    "index_title": "Collections",
+    "index_subtitle": "Our stories, piece by piece.",
+    "index_empty": "No collections yet.",
     "products_heading": "Pieces in this collection",
     "empty": "No products yet.",
     "not_found": "Collection not found."
@@ -280,10 +351,50 @@
       "password": "Password",
       "submit": "Log in",
       "forgot": "Forgot password?",
+      "forgot_password_link": "Forgot password?",
       "no_account": "No account yet?",
       "signup_link": "Create one",
       "error_credentials": "Invalid credentials.",
       "error_generic": "Login failed. Try again."
+    },
+    "forgot": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email — we'll send a link to pick a new one.",
+      "email": "Email address",
+      "submit": "Send link",
+      "back_to_login": "Back to login",
+      "sent_title": "Email sent",
+      "sent_body": "If an account exists for that address, you'll get a reset link valid for one hour. Check your spam folder too.",
+      "hint": "The link expires in an hour.",
+      "error_email": "Invalid email.",
+      "error_generic": "Something went wrong. Try again."
+    },
+    "confirm_email_change": {
+      "success_title": "Email updated",
+      "success_body": "Your new email is now {email}. Log in with this address — your other sessions have been signed out.",
+      "login_cta": "Log in",
+      "error_title": "Invalid link",
+      "error_missing": "This confirmation link is incomplete.",
+      "error_invalid": "This link is invalid or has expired. Request a new one from your account.",
+      "error_email_taken": "Someone else has taken this address in the meantime. Choose another one.",
+      "back_to_profile": "Back to profile"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "subtitle": "Pick a new password for your account.",
+      "new_password": "New password",
+      "confirm_password": "Confirm password",
+      "submit": "Update",
+      "back_to_login": "Back to login",
+      "missing_title": "Invalid link",
+      "missing_body": "This reset link is incomplete. Request a new one.",
+      "request_new_link": "Request a new link",
+      "done_title": "Password updated",
+      "done_body": "You'll be redirected to the login page.",
+      "error_token": "Link invalid or expired.",
+      "error_too_short": "At least 8 characters.",
+      "error_mismatch": "The two passwords don't match.",
+      "error_generic": "Something went wrong. Try again."
     },
     "signup": {
       "title": "Welcome to Celva",
@@ -307,6 +418,275 @@
       "logout": "Log out",
       "go_to_shop": "Go to the shop"
     }
+  },
+  "account": {
+    "eyebrow": "My account",
+    "subtitle": "Track your orders, manage delivery addresses and saved payment methods.",
+    "phone_label": "Phone",
+    "orders": "My orders",
+    "orders_body": "View past and current orders, with status and receipts.",
+    "addresses": "Delivery addresses",
+    "addresses_body": "Add or update addresses used at checkout.",
+    "payment_methods": "Saved payment methods",
+    "payment_methods_body": "Manage your Orange Money and MTN MoMo numbers.",
+    "profile": "Profile & password",
+    "profile_body": "Update your name, phone and change your password.",
+    "go": "Open",
+    "delivery_timeline": {
+      "heading": "Delivery tracking",
+      "stage": {
+        "ASSIGNED": "Courier assigned",
+        "PICKED_UP": "Picked up",
+        "IN_TRANSIT": "On the way",
+        "DELIVERED": "Delivered"
+      },
+      "failed": "Delivery failed. Our team will reach out.",
+      "note_label": "Note"
+    },
+    "orders_page": {
+      "title": "My orders",
+      "subtitle": "Most recent first.",
+      "back": "Back to account",
+      "back_to_orders": "Back to orders",
+      "empty": "No orders yet.",
+      "go_to_shop": "Browse the shop",
+      "view": "View",
+      "status_pending": "Pending payment",
+      "status_confirmed": "Confirmed — being prepared",
+      "status_processing": "In preparation",
+      "status_ready": "Ready",
+      "status_shipped": "Shipped",
+      "status_delivered": "Delivered",
+      "status_completed": "Completed",
+      "status_cancelled": "Cancelled"
+    },
+    "order_detail": {
+      "title": "Order",
+      "eyebrow": "Order",
+      "items_heading": "Pieces",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "delivery_fee": "Delivery",
+      "total": "Total",
+      "vat_included": "VAT included",
+      "delivery_heading": "Delivery",
+      "payment_heading": "Payment",
+      "notes_heading": "Note",
+      "cancel_heading": "Cancel order",
+      "cancel_explainer": "As long as our team hasn't confirmed the order yet, you can cancel it. Stock is restored automatically.",
+      "cancel_reason_label": "Reason (optional)",
+      "cancel_reason_placeholder": "e.g. Wrong size.",
+      "cancel_submit": "Cancel my order",
+      "cancel_success": "Your order has been cancelled.",
+      "cancel_too_late": "This order is already being prepared. Contact support to cancel it.",
+      "cancel_error": "Couldn't cancel the order. Please try again or contact support.",
+      "download_invoice": "Download invoice"
+    },
+    "addresses_page": {
+      "title": "Delivery addresses",
+      "subtitle": "Save the addresses you ship to often. One can be marked as default.",
+      "back": "Back to account",
+      "list_heading": "Saved addresses",
+      "new_heading": "Add an address",
+      "empty": "No saved addresses yet.",
+      "default": "Default",
+      "label": "Label",
+      "full_name": "Full name",
+      "phone": "Phone",
+      "line1": "Address",
+      "line2": "Apt., floor, building (optional)",
+      "city": "City",
+      "zone": "Delivery zone (e.g. douala-central)",
+      "set_default": "Set as default",
+      "create": "Add address",
+      "edit": "Edit",
+      "save": "Save changes",
+      "delete": "Delete",
+      "created": "Address added.",
+      "updated": "Address updated.",
+      "deleted": "Address deleted.",
+      "error_generic": "Couldn't save this address. Please check the fields."
+    },
+    "payment_methods_page": {
+      "title": "Saved payment methods",
+      "subtitle": "Save your Orange Money and MTN MoMo numbers for faster checkout. Cash-on-delivery has no saved state.",
+      "back": "Back to account",
+      "list_heading": "Saved methods",
+      "new_heading": "Add a method",
+      "empty": "No saved methods yet.",
+      "default": "Default",
+      "method": "Provider",
+      "orange_money": "Orange Money",
+      "mtn_momo": "MTN MoMo",
+      "label": "Label",
+      "label_placeholder": "OM personal, MTN office...",
+      "phone": "Mobile Money number",
+      "set_default": "Set as default",
+      "make_default": "Make default",
+      "create": "Save method",
+      "delete": "Delete",
+      "created": "Method saved.",
+      "updated": "Default updated.",
+      "deleted": "Method removed.",
+      "saved_only_om_mtn": "Only Orange Money and MTN MoMo can be saved.",
+      "error_generic": "Couldn't save this method. Check the number format."
+    },
+    "profile_page": {
+      "title": "Profile & security",
+      "subtitle": "Update your personal info and your password.",
+      "back": "Back to account",
+      "profile_heading": "My information",
+      "email_locked": "Email",
+      "name": "Full name",
+      "phone": "Phone",
+      "phone_hint": "Format: +2376XXXXXXXX. Leave empty to remove.",
+      "save_profile": "Save",
+      "email_change_heading": "Change my email",
+      "email_change_explainer": "For security, a confirmation link is sent to the new address. The change only takes effect after confirmation.",
+      "email_change_current": "Current email",
+      "email_change_new": "New email",
+      "email_change_submit": "Send confirmation link",
+      "email_change_hint": "Link valid for 1 hour. Your other sessions will be signed out on confirmation.",
+      "email_change_requested": "Confirmation link sent. Check the inbox of the new address.",
+      "password_heading": "Change my password",
+      "password_explainer": "After changing, all your other sessions will be signed out.",
+      "current_password": "Current password",
+      "new_password": "New password",
+      "confirm_password": "Confirm new password",
+      "save_password": "Update password",
+      "profile_saved": "Profile updated.",
+      "password_changed": "Password updated. Your other sessions have been signed out.",
+      "error_current_password": "Current password is incorrect.",
+      "error_password_too_short": "New password must be at least 8 characters.",
+      "error_invalid_phone": "Invalid phone number.",
+      "error_invalid_email": "Invalid email address.",
+      "error_email_taken": "This address is already used by another account.",
+      "error_email_unchanged": "The new email matches your current one.",
+      "danger_zone_heading": "Danger zone",
+      "danger_zone_explainer": "Sensitive actions. Read carefully — they take effect immediately.",
+      "signout_all_heading": "Sign out of all devices",
+      "signout_all_explainer": "Useful if you forgot to log out on a shared phone. Every session, including this one, is closed.",
+      "signout_all_submit": "Sign out everywhere",
+      "delete_heading": "Delete my account",
+      "delete_explainer": "Your order history is kept for accounting reasons, but your name, email and phone are scrubbed. You won't be able to log in with this address again. This is irreversible.",
+      "delete_open": "I want to delete my account",
+      "delete_final_warning": "This is permanent. To confirm, type SUPPRIMER in the field below and enter your password.",
+      "delete_confirm_label": "Confirmation",
+      "delete_confirm_hint": "Type SUPPRIMER in uppercase.",
+      "delete_cancel": "Cancel",
+      "delete_submit": "Delete permanently",
+      "error_account_has_open_orders": "You have an order in progress. Wait for it to be delivered or cancel it before deleting your account.",
+      "error_delete_confirm_required": "Type SUPPRIMER to confirm the deletion.",
+      "error_generic": "Something went wrong. Try again."
+    }
+  },
+  "studio": {
+    "intro": {
+      "eyebrow": "The Studio · Atelier rue Foch, Douala",
+      "title_a": "Pick the fabric,",
+      "title_em": "the rest follows.",
+      "lede": "Browse our fabric families, look at pieces already cut, and note what speaks to you. The stylist sees you by appointment to turn your picks into a made-to-measure piece."
+    },
+    "browse": {
+      "empty_families": "No fabric families available yet. The stylist is preparing the first collection — check back soon.",
+      "family_eyebrow": "Fabric family",
+      "garments_label": "Pieces already cut",
+      "fabrics_label": "Available fabrics"
+    },
+    "cta": {
+      "empty": "No fabric selected",
+      "count": "{count, plural, one {1 fabric selected} other {# fabrics selected}}",
+      "book_empty": "Book an appointment",
+      "book_with_selection": "Book my appointment"
+    },
+    "rdv": {
+      "eyebrow": "Appointment",
+      "title": "Book an appointment",
+      "lede": "Drop your details and a time slot. The stylist confirms by WhatsApp within 24 hours and prepares your visit around the fabrics you picked.",
+      "selection_label": "Your selected fabrics",
+      "aside": {
+        "eyebrow": "The atelier",
+        "address": "Celva Atelier, rue Foch, Douala",
+        "hours": "Monday to Saturday, 9 am – 6 pm",
+        "point1": "By appointment, over a coffee.",
+        "point2": "Made to measure in 4 to 7 weeks.",
+        "point3": "Fittings and adjustments included."
+      },
+      "fields": {
+        "name": "Full name",
+        "phone": "WhatsApp / Phone",
+        "email": "Email",
+        "mode": "Format",
+        "date": "Preferred date",
+        "slot": "Time slot",
+        "notes": "Notes"
+      },
+      "mode": {
+        "atelier": "At the atelier, rue Foch",
+        "visio": "WhatsApp video"
+      },
+      "notes_placeholder": "Occasion, deadline, cut ideas, other fabric in mind…",
+      "submit": "Book my appointment",
+      "submitting": "Sending…",
+      "errors": {
+        "required": "Required field",
+        "phone": "Cameroon number expected (+237 …)",
+        "email": "Invalid email",
+        "submit": "Sending failed. Retry or reach us on WhatsApp."
+      },
+      "success_eyebrow": "Thank you",
+      "success_title": "Your appointment is booked.",
+      "success_body": "The stylist confirms by WhatsApp within 24 hours."
+    },
+    "process": {
+      "eyebrow": "How it works",
+      "title_a": "From your picks",
+      "title_em": "to the finished piece.",
+      "note": "Four simple steps, from fabric pick to delivery.",
+      "step_1_t": "You pick fabrics",
+      "step_1_b": "Browse families, add the fabrics that speak to you to your selection.",
+      "step_2_t": "You book an appointment",
+      "step_2_b": "At the atelier rue Foch or over WhatsApp video. The stylist prepares your visit around your fabrics.",
+      "step_3_t": "We draw the piece together",
+      "step_3_b": "Cut, measurements, finishes. The stylist advises based on your shape and the occasion.",
+      "step_4_t": "Made in 4 to 7 weeks",
+      "step_4_b": "Woven, cut and hand-finished at the atelier. Delivered folded in calico with a hand-written label."
+    },
+    "stylist": {
+      "eyebrow": "Talk to the stylist",
+      "title": "A question before you visit?",
+      "lead": "WhatsApp is fastest. Send a photo, a reference, or a question — the stylist replies the same day.",
+      "whatsapp": "Message on WhatsApp",
+      "book_cta": "Go to the appointment form",
+      "fact_weeks_n": "4–7 wk",
+      "fact_weeks_l": "Make time",
+      "fact_alter_n": "Included",
+      "fact_alter_l": "Post-delivery adjustments"
+    }
+  },
+  "journal": {
+    "eyebrow": "Journal",
+    "title": "The Celva Journal",
+    "subtitle": "Studio behind-the-scenes, inspirations, style notes — between collections.",
+    "all": "All",
+    "category": {
+      "STYLE": "Style",
+      "BEHIND_THE_SCENES": "Behind the scenes",
+      "EVENTS": "Events",
+      "GUIDES": "Guides"
+    },
+    "empty": "No articles in this category yet.",
+    "back_to_journal": "Back to the journal",
+    "previous": "Previous",
+    "next": "Next",
+    "filters_aria": "Filter by category",
+    "pagination_aria": "Journal pagination"
+  },
+  "size_guides": {
+    "eyebrow": "Size guide",
+    "title": "Size guides",
+    "intro": "Find your size by category. Between two sizes, size up — or write to us.",
+    "empty": "Size guides are coming soon."
   },
   "static": {
     "about": {
@@ -376,7 +756,31 @@
       "address_label": "Address",
       "address_value": "Bonapriso, Douala, Cameroon",
       "hours_label": "Hours",
-      "hours_value": "Mon-Sat, 9am-6pm (Cameroon time)"
+      "hours_value": "Mon-Sat, 9am-6pm (Cameroon time)",
+      "appointment_text": "Looking for a made-to-measure piece?",
+      "appointment_cta": "Book an atelier appointment",
+      "form": {
+        "heading": "Send us a message",
+        "name": "Your name",
+        "email": "Your email",
+        "message": "Your message",
+        "submit": "Send",
+        "sending": "Sending…",
+        "success": "Message sent — we'll reply within 48h.",
+        "error": "Sending failed. Try again or email us directly."
+      }
+    },
+    "help": {
+      "title": "Help",
+      "subtitle": "Shipping, returns and care for your Celva pieces.",
+      "shipping_title": "Shipping",
+      "shipping_p1": "We deliver to Douala (1-2 days), Yaoundé (2-3 days) and across Cameroon (3-7 days). Fees and times are calculated by your zone at checkout.",
+      "shipping_p2": "Delivery is free above a zone-dependent threshold. You can also pick up your order for free at the Celva Store in Bonapriso, Douala.",
+      "returns_title": "Returns & exchanges",
+      "returns_p1": "Returns and exchanges are accepted within 7 days, on unworn, unwashed items with their tags. Contact us via the Contact page to arrange a return. Made-to-measure (Studio) pieces cannot be returned or exchanged.",
+      "care_title": "Care",
+      "care_p1": "Most of our pieces can be hand-washed or machine-washed at 30°C, inside out, with similar colours. Avoid the tumble dryer; dry flat or on a hanger, away from direct sunlight.",
+      "care_p2": "Iron on medium heat, inside out. For delicate or embroidered fabrics, prefer dry cleaning. Careful care preserves the colours and shape of your pieces."
     },
     "terms": {
       "title": "Terms of sale",
@@ -429,5 +833,11 @@
     "title": "404",
     "message": "This page doesn't exist — or no longer does.",
     "cta": "Back home"
+  },
+  "error": {
+    "title": "Oops",
+    "message": "Something went wrong on our side. Try again, or head back home.",
+    "retry": "Try again",
+    "home": "Back home"
   }
 }

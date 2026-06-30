@@ -1,0 +1,179 @@
+/* Celva admin — Rôles & permissions (read-only matrix). Scoped to .celva-skin. */
+
+/* ── Role chips row ── */
+.celva-skin .roles-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.celva-skin .role-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg-muted);
+  font-size: 13.5px;
+  font-family: var(--font-body);
+  transition: all 140ms;
+}
+.celva-skin .role-chip:hover {
+  color: var(--fg);
+  border-color: var(--rc, var(--fg-muted));
+}
+.celva-skin .role-chip.on {
+  color: var(--fg-strong);
+  border-color: var(--rc);
+  background: color-mix(in oklab, var(--rc) 12%, var(--surface));
+}
+.celva-skin .role-chip .rc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rc);
+  flex: none;
+}
+.celva-skin .role-chip .rc-sys {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+}
+
+/* ── Selected role banner ── */
+.celva-skin .role-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  border-left: 3px solid var(--rc, var(--accent));
+}
+.celva-skin .role-banner .rb-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--fg-strong);
+}
+.celva-skin .role-banner .rb-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--rc, var(--accent));
+  flex: none;
+}
+.celva-skin .role-banner .rb-desc {
+  flex: 1;
+  min-width: 220px;
+}
+
+.celva-skin .role-callout {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--st-done);
+  background: color-mix(in oklab, var(--st-done) 7%, var(--surface));
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--fg);
+}
+
+/* ── Matrix table ── */
+.celva-skin .perm-scroll {
+  overflow-x: auto;
+}
+.celva-skin .perm-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.celva-skin .perm-matrix th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  font-weight: 600;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.celva-skin .perm-matrix td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+.celva-skin .perm-matrix tr:last-child td {
+  border-bottom: 0;
+}
+
+.celva-skin .perm-dom {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+.celva-skin .perm-dom .pd-name {
+  color: var(--fg-strong);
+  font-weight: 500;
+}
+.celva-skin .perm-scope {
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  font-style: italic;
+}
+
+/* action cells */
+.celva-skin .perm-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.celva-skin .perm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg-muted);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.celva-skin .perm-chip.on {
+  border-color: var(--accent);
+  color: var(--fg-strong);
+  background: color-mix(in oklab, var(--accent) 10%, var(--surface));
+}
+.celva-skin .perm-chip .pc-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--accent);
+  flex: none;
+}
+.celva-skin .perm-chip.on .pc-box {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--cream);
+}
+
+.celva-skin .perm-summary-cell {
+  white-space: nowrap;
+}

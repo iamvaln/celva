@@ -24,6 +24,8 @@ const PUBLIC_SELECT = {
   phone: true,
   role: true,
   isActive: true,
+  locale: true,
+  mustChangePassword: true,
   createdAt: true,
   updatedAt: true,
 } as const;

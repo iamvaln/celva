@@ -1,0 +1,87 @@
+.celva-skin .partner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--stack);
+}
+.celva-skin .partner-card {
+  display: block;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  padding: var(--card-pad);
+  box-shadow: var(--shadow-card);
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+.celva-skin .partner-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--border);
+}
+.celva-skin .partner-card.off {
+  opacity: 0.55;
+}
+.celva-skin .pa-avatar {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+}
+.celva-skin .pa-share {
+  font-size: 13px;
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+  padding: 2px 9px;
+}
+.celva-skin .pa-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--fg-strong);
+  margin-top: 14px;
+}
+.celva-skin .pa-email {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-top: 2px;
+}
+.celva-skin .pa-net {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--fg-strong);
+  margin-top: 16px;
+  line-height: 1;
+}
+.celva-skin .pa-net-l {
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-top: 4px;
+}
+.celva-skin .pa-rows {
+  margin-top: 14px;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 12px;
+  display: grid;
+  gap: 7px;
+}
+.celva-skin .pa-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+.celva-skin .pa-in {
+  color: var(--st-done);
+}
+.celva-skin .pa-out {
+  color: var(--st-urgent);
+}

@@ -1,7 +1,6 @@
 import {
   Edit,
   Labeled,
-  NumberInput,
   ReferenceField,
   SimpleForm,
   TextField,
@@ -10,6 +9,7 @@ import {
   required,
   useTranslate,
 } from 'react-admin';
+import { SortOrderInput } from '../../components/SortOrderInput';
 
 /**
  * productId is intentionally read-only here. Moving an attribute between
@@ -37,7 +37,7 @@ export const AttributeEdit = () => {
           validate={[required()]}
           fullWidth
         />
-        <NumberInput source="sortOrder" validate={[minValue(0)]} />
+        <SortOrderInput validate={[minValue(0)]} />
       </SimpleForm>
     </Edit>
   );

@@ -14,17 +14,45 @@ import {
   TAX_RATE_CAMEROON,
   TRANSACTION_CATEGORY,
   TRANSACTION_TYPE,
+  type PaymentMethod,
   type PaymentStatus,
 } from '@celva/shared';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
+import { InvoicesService } from '../invoices/invoices.service';
+import { CommissionsService } from '../commissions/commissions.service';
+import { fireOrderEmail } from '../orders/order-emails';
+import type { Env } from '../../config/env';
 
 const INVOICE_NUMBER_PREFIX = 'CLV-INV';
+
+/**
+ * Encashment context captured when a manager confirms a payment (spec §5.5).
+ * All optional — the OM/MoMo callback path passes none and the existing
+ * behaviour is preserved.
+ */
+export type EncashmentOptions = {
+  transactionRef?: string;
+  /** Real method at encashment; may differ from the method planned at checkout. */
+  method?: PaymentMethod;
+  /** Which PaymentAccount the money landed in. */
+  paymentAccountId?: string;
+  /** Amount actually collected; defaults to the amount due. */
+  actualAmount?: number;
+};
 
 @Injectable()
 export class PaymentsService {
   private readonly logger = new Logger(PaymentsService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mail: MailService,
+    private readonly config: ConfigService<Env, true>,
+    private readonly invoices: InvoicesService,
+    private readonly commissions: CommissionsService,
+  ) {}
 
   async findById(id: string): Promise<Payment & { order: { id: string; status: string; userId: string } }> {
     const payment = await this.prisma.payment.findUnique({
@@ -39,8 +67,14 @@ export class PaymentsService {
     return this.prisma.payment.findUnique({ where: { orderId } });
   }
 
-  async list(): Promise<Payment[]> {
-    return this.prisma.payment.findMany({ orderBy: { createdAt: 'desc' } });
+  async list() {
+    return this.prisma.payment.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        order: { select: { orderNumber: true, user: { select: { name: true } } } },
+        paymentAccount: { select: { name: true } },
+      },
+    });
   }
 
   /**
@@ -58,13 +92,30 @@ export class PaymentsService {
   async markCompleted(
     paymentId: string,
     actorUserId: string,
-    transactionRef?: string,
+    opts: EncashmentOptions = {},
   ): Promise<{ payment: Payment; invoice: Invoice }> {
     const existing = await this.findById(paymentId);
 
     if (existing.status === PAYMENT_STATUS.COMPLETED) {
       throw new BadRequestException('errors.payment_already_completed');
     }
+
+    // The money may land in an explicit encashment account (cash/OM/MoMo).
+    // Validate it up front so we fail before touching the order.
+    if (opts.paymentAccountId) {
+      const account = await this.prisma.paymentAccount.findUnique({
+        where: { id: opts.paymentAccountId },
+        select: { id: true },
+      });
+      if (!account) throw new BadRequestException('errors.payment_account_not_found');
+    }
+
+    // Amount actually collected — defaults to the amount due. A discrepancy
+    // is recorded in the booked transaction's description (spec §5.5).
+    const collected =
+      opts.actualAmount != null ? new Prisma.Decimal(opts.actualAmount) : existing.amount;
+    const discrepancy = collected.minus(existing.amount);
+    const realMethod = opts.method ?? existing.method;
 
     const invoiceNumber = await this.nextInvoiceNumber();
 
@@ -74,26 +125,32 @@ export class PaymentsService {
         data: {
           status: PAYMENT_STATUS.COMPLETED,
           paidAt: new Date(),
-          transactionRef: transactionRef ?? undefined,
+          transactionRef: opts.transactionRef ?? undefined,
+          method: opts.method ?? undefined,
+          paymentAccountId: opts.paymentAccountId ?? undefined,
         },
       });
 
       // Order CONFIRMED for OM/MoMo (Cash was already CONFIRMED at checkout
       // per spec §10). updateMany prevents accidentally rewinding a manually
       // CANCELLED order back to CONFIRMED.
-      await tx.order.updateMany({
+      const promotion = await tx.order.updateMany({
         where: { id: payment.orderId, status: ORDER_STATUS.PENDING },
         data: { status: ORDER_STATUS.CONFIRMED },
       });
 
+      const discrepancyNote = discrepancy.isZero()
+        ? ''
+        : ` (collected ${collected.toFixed(2)} vs due ${existing.amount.toFixed(2)}, écart ${discrepancy.toFixed(2)})`;
       await tx.transaction.create({
         data: {
           type: TRANSACTION_TYPE.INCOME,
           category: TRANSACTION_CATEGORY.SALE,
-          amount: payment.amount,
-          description: `Payment ${payment.method} on order ${payment.orderId}`,
+          amount: collected,
+          description: `Payment ${realMethod} on order ${payment.orderId}${discrepancyNote}`,
           orderId: payment.orderId,
           createdById: actorUserId,
+          paymentAccountId: opts.paymentAccountId ?? undefined,
         },
       });
 
@@ -117,13 +174,34 @@ export class PaymentsService {
         },
       });
 
-      return { payment, invoice };
+      return { payment, invoice, promotedToConfirmed: promotion.count > 0 };
     });
 
     this.logger.log(
       `Payment ${paymentId} → COMPLETED, Invoice ${invoiceNumber} (TTC ${result.invoice.totalTTC.toFixed(2)})`,
     );
-    return result;
+
+    // OM/MoMo path: PENDING → CONFIRMED happened just now, send the
+    // confirmation email. Cash path: order was already CONFIRMED at checkout
+    // and emailed there, so no duplicate.
+    if (result.promotedToConfirmed) {
+      fireOrderEmail(
+        {
+          prisma: this.prisma,
+          mail: this.mail,
+          storefrontUrl: this.config.get('STOREFRONT_URL', { infer: true }),
+          logger: this.logger,
+          invoices: this.invoices,
+        },
+        result.payment.orderId,
+        'confirmation',
+      );
+      // Same idempotency guard applies — generateForOrder skips items
+      // already commissioned (unique on orderItemId).
+      await this.commissions.generateForOrder(result.payment.orderId);
+    }
+
+    return { payment: result.payment, invoice: result.invoice };
   }
 
   /**
@@ -177,7 +255,7 @@ export class PaymentsService {
       });
     }
 
-    return this.markCompleted(payment.id, userId, `STUB-${Date.now()}`);
+    return this.markCompleted(payment.id, userId, { transactionRef: `STUB-${Date.now()}` });
   }
 
   // ────────────────────────────────────────────────────────────────

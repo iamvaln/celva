@@ -1,7 +1,6 @@
 import {
   BooleanInput,
   Edit,
-  NumberInput,
   SimpleForm,
   TextInput,
   minValue,
@@ -11,6 +10,10 @@ import {
   useTranslate,
 } from 'react-admin';
 import { CollectionProductsPanel } from './CollectionProductsPanel';
+import { ImageDropInput } from '../../components/ImageDropInput';
+import { SlugInput } from '../../components/SlugInput';
+import { SortOrderInput } from '../../components/SortOrderInput';
+import { AiAssistButton } from '../../components/AiAssistButton';
 
 export const CollectionEdit = () => {
   const translate = useTranslate();
@@ -29,8 +32,17 @@ export const CollectionEdit = () => {
           validate={[required()]}
           fullWidth
         />
-        <TextInput
+        <AiAssistButton
+          mode="translate"
+          sourceField="name.fr"
+          targetField="name.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="name"
+        />
+        <SlugInput
           source="slug"
+          from="name.fr"
           validate={[
             required(),
             regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'resources.collections.errors.invalid_slug'),
@@ -51,8 +63,16 @@ export const CollectionEdit = () => {
           minRows={2}
           fullWidth
         />
-        <TextInput source="imageUrl" fullWidth />
-        <NumberInput source="sortOrder" validate={[minValue(0)]} />
+        <AiAssistButton
+          mode="translate"
+          sourceField="description.fr"
+          targetField="description.en"
+          sourceLocale="fr"
+          targetLocale="en"
+          kind="description"
+        />
+        <ImageDropInput source="imageUrl" aspectRatio={21 / 9} />
+        <SortOrderInput validate={[minValue(0)]} />
         <BooleanInput source="isActive" />
         <ProductsPanelWithRecord />
       </SimpleForm>

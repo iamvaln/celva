@@ -36,6 +36,25 @@ const PAGINATED_RESOURCES = new Set<string>([
   'variants',
   'collections',
   'promo-codes',
+  'orders',
+  'articles',
+  'deliveries',
+  'transactions',
+  'sales-commissions',
+  'stock-movements',
+  'consignments',
+  'suppliers',
+  'raw-materials',
+  'purchase-orders',
+  'production-orders',
+  'newsletter',
+  'size-guides',
+  'audit-logs',
+  'studio-families',
+  'studio-garments',
+  'studio-models',
+  'studio-fabrics',
+  'studio-requests',
 ]);
 
 /**
@@ -51,17 +70,48 @@ const ALT_PRIMARY_KEY: Record<string, string> = {
  * `/{resource}*` — used to expose internal fields (e.g. DeliveryZone.actualCost)
  * or include inactive rows that the public endpoint hides.
  */
-const ADMIN_PATH_RESOURCES = new Set<string>(['delivery-zones', 'pickup-points']);
+const ADMIN_PATH_RESOURCES = new Set<string>([
+  'delivery-zones',
+  'pickup-points',
+  'articles',
+  'newsletter',
+  'size-guides',
+  'audit-logs',
+  // Studio resources have BOTH public (/studio/...) and admin
+  // (/studio/.../admin) routes — admin path returns inactive rows too.
+  'studio-families',
+  'studio-garments',
+  'studio-models',
+  'studio-fabrics',
+  'studio-requests',
+]);
+
+/**
+ * Resources whose API path differs from their React-Admin name. The admin
+ * uses `studio-models` as the resource name (dashes are RA-friendly URLs);
+ * the API mounts the controller at `/studio/models` (slashes match the
+ * namespace convention). Map here once.
+ */
+const RESOURCE_PATH_OVERRIDES: Record<string, string> = {
+  'studio-families': 'studio/families',
+  'studio-garments': 'studio/garments',
+  'studio-models': 'studio/models',
+  'studio-fabrics': 'studio/fabrics',
+  'studio-requests': 'studio/requests',
+};
+
+const apiPath = (resource: string): string =>
+  RESOURCE_PATH_OVERRIDES[resource] ?? resource;
 
 const resourceListPath = (resource: string): string =>
   ADMIN_PATH_RESOURCES.has(resource)
-    ? `${API_BASE}/${resource}/admin`
-    : `${API_BASE}/${resource}`;
+    ? `${API_BASE}/${apiPath(resource)}/admin`
+    : `${API_BASE}/${apiPath(resource)}`;
 
 const resolvePath = (resource: string, id: string | number): string => {
   const base = ADMIN_PATH_RESOURCES.has(resource)
-    ? `${API_BASE}/${resource}/admin`
-    : `${API_BASE}/${resource}`;
+    ? `${API_BASE}/${apiPath(resource)}/admin`
+    : `${API_BASE}/${apiPath(resource)}`;
   return `${base}/${encodeURIComponent(String(id))}`;
 };
 
@@ -79,21 +129,44 @@ export const dataProvider: DataProvider = {
     { pagination, sort, filter }: GetListParams,
   ): Promise<GetListResult<RecordType>> {
     if (PAGINATED_RESOURCES.has(resource)) {
-      const params = new URLSearchParams();
-      if (pagination) {
-        params.set('page', String(pagination.page));
-        params.set('pageSize', String(pagination.perPage));
+      const buildQuery = (includeSort: boolean): string => {
+        const params = new URLSearchParams();
+        if (pagination) {
+          params.set('page', String(pagination.page));
+          params.set('pageSize', String(pagination.perPage));
+        }
+        // React-Admin defaults to sorting by `id` (reference dropdowns / lists
+        // with no explicit sort). The API's per-resource sort allowlists don't
+        // include `id`, so omit it and let the API apply its own default sort.
+        if (includeSort && sort && sort.field && sort.field !== 'id') {
+          params.set('sortBy', sort.field);
+          params.set('sortDir', sort.order.toLowerCase());
+        }
+        Object.entries(filter ?? {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === '') return;
+          params.set(key, String(value));
+        });
+        return params.toString();
+      };
+
+      const sentSort = Boolean(sort && sort.field && sort.field !== 'id');
+      let body: PaginatedResponse<Record<string, unknown>>;
+      try {
+        ({ body } = await fetchJson<PaginatedResponse<Record<string, unknown>>>(
+          `${resourceListPath(resource)}?${buildQuery(true)}`,
+        ));
+      } catch (err) {
+        // The API validates sortBy against a per-resource allowlist; an
+        // unsupported field returns 400. Retry once without the sort so the
+        // list still loads (in the API's default order) instead of erroring.
+        if (sentSort && (err as { status?: number })?.status === 400) {
+          ({ body } = await fetchJson<PaginatedResponse<Record<string, unknown>>>(
+            `${resourceListPath(resource)}?${buildQuery(false)}`,
+          ));
+        } else {
+          throw err;
+        }
       }
-      if (sort) {
-        params.set('sortBy', sort.field);
-        params.set('sortDir', sort.order.toLowerCase());
-      }
-      Object.entries(filter ?? {}).forEach(([key, value]) => {
-        if (value === undefined || value === null || value === '') return;
-        params.set(key, String(value));
-      });
-      const url = `${API_BASE}/${resource}?${params.toString()}`;
-      const { body } = await fetchJson<PaginatedResponse<Record<string, unknown>>>(url);
       return {
         data: body.data.map((r) => tagRecord<RecordType>(resource, r)),
         total: body.total,
@@ -140,7 +213,7 @@ export const dataProvider: DataProvider = {
     resource: string,
     { data }: CreateParams,
   ): Promise<CreateResult<ResultRecordType>> {
-    const { body } = await fetchJson<Record<string, unknown>>(`${API_BASE}/${resource}`, {
+    const { body } = await fetchJson<Record<string, unknown>>(`${API_BASE}/${apiPath(resource)}`, {
       method: 'POST',
       body: JSON.stringify(data),
     });

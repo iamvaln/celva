@@ -1,0 +1,58 @@
+/* ============================================================
+   Promo codes list — bespoke layout on top of celva-skin.css.
+   New classes only; all scoped under .celva-skin. Reuses shared
+   .list-wrap .lrow .lname .lref .lsub .lcell .lchev .pill .s-* etc.
+   ============================================================ */
+
+/* promo row layout: code | reduction | usage | validity | status | chevron */
+.celva-skin .lrow.promo {
+  grid-template-columns: minmax(160px, 1.4fr) 110px 130px 1fr 130px 22px;
+}
+@media (max-width: 860px) {
+  .celva-skin .lrow.promo {
+    grid-template-columns: 1fr auto;
+    row-gap: 8px;
+  }
+  .celva-skin .lrow.promo .promo-validity,
+  .celva-skin .lrow.promo .lcell.promo-usage {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+}
+
+/* the code itself — display font, tracked-out, like design .promo-code */
+.celva-skin .lrow.promo .promo-code {
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--fg-strong);
+}
+
+/* reduction amount — display weight, never wraps */
+.celva-skin .promo-amt {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg-strong);
+  white-space: nowrap;
+}
+
+/* usage count cell reuses .lcell sizing; keep figures from wrapping */
+.celva-skin .lrow.promo .lcell.promo-usage .lc-count {
+  white-space: nowrap;
+}
+
+/* validity window — muted, no wrap on the date range */
+.celva-skin .promo-validity {
+  font-size: 13px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+/* secondary line under a primary value (min order, per-client cap) */
+.celva-skin .promo-sub {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin-top: 3px;
+}

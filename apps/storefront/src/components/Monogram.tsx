@@ -4,27 +4,24 @@ type MonogramProps = {
 };
 
 /**
- * Celva C+V monogram. Currently a placeholder vector that matches the
- * brief's vertical-stroke style. Swap with the real SVG from
- * design/assets/monogram.svg when the production asset lands in
- * apps/storefront/public/.
+ * Celva C+V monogram mark — the real brand mark extracted from
+ * docs/logos/ (inline olive). fill: currentColor so it inherits the
+ * surrounding text colour (e.g. text-accent in the header).
  *
  * Intentionally narrow props (no ref/spread) — keeps it React-18/19
  * dual-types-friendly while the admin app still ships React 18.
  */
 export const Monogram = ({ className, title }: MonogramProps) => (
   <svg
-    viewBox="0 0 64 64"
+    viewBox="159 194 140 182"
     aria-hidden={title ? undefined : true}
     role={title ? 'img' : undefined}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2}
-    strokeLinecap="square"
+    fill="currentColor"
     className={className}
   >
     {title ? <title>{title}</title> : null}
-    <path d="M50 18a16 16 0 0 0-16-8c-9 0-16 7-16 16v8c0 9 7 16 16 16a16 16 0 0 0 16-8" />
-    <path d="M14 14l10 36 8 0 10-36" />
+    <path d="M271.93,323.23l10.67,9.54c-11.26,16.85-30.43,27.95-52.2,27.95-34.51,0-62.5-27.83-62.77-62.28.18-23.82,13.57-44.52,33.2-55.1l-.03-.1-4.42-12.53-.24-.69s0,0,.02,0l-1.55-4.33-7.07-20.05,12.88-7.05.55-.05,9.26,25.84.23.67,4.48,12.53.04.09,2.1,5.88,2.34,6.52,7.25,20.23h0s2.11,6.18,2.11,6.18l7.64-21.46,14.12,4.1-11.84,32.71-.04.1-2.38,6.45h0s-7.95,21.52-7.95,21.52l-7.52-21.04-.16-.44-15.69-43.81c-14.69,8.48-24.58,24.32-24.58,42.46,0,9.71,2.83,18.74,7.71,26.35.02.04.04.08.08.12,8.72,13.89,24.18,23.12,41.78,23.12s33.32-9.37,42.01-23.43" />
+    <path d="M224.37,245.65l-3.05-8.04c3.57-.59,7.25-.9,10.99-.9,5.91,0,11.64.76,17.1,2.21,4.78,1.26,9.36,3.04,13.66,5.27,7.07,3.66,13.4,8.54,18.71,14.38,0,0,0,0,0,0t0,0l.04.03s.02.03.03.04c1.75,1.98,3.38,4.08,4.88,6.27l-10.14,10.67c-2.51-4.29-5.6-8.18-9.19-11.58-2.77-2.63-5.83-4.94-9.11-6.92-.09-.05-.18-.11-.28-.17-1.81-1.08-3.7-2.05-5.65-2.9-.63-.28-1.26-.54-1.9-.79-1.77-.7-3.59-1.3-5.46-1.78-.02,0-.04-.02-.05-.02-1.1-.3-2.22-.56-3.35-.78-1.14-.22-2.29-.41-3.44-.56-2.21-.29-4.45-.43-6.73-.43h-.38c-1.71,0-3.39.08-5.05.24l-1.62-4.26Z" />
+    <polygon points="263.84 222.45 250.26 216.64 256.27 200.03 269.37 207.2 263.84 222.45" />
   </svg>
 );

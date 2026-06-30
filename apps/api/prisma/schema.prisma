@@ -1,5 +1,7 @@
-// Celva Store — Prisma schema v4
-// Source of truth: docs/celva-schema.md
+// Celva Store — Prisma schema v5
+// Source of truth: docs/celva-schema.md (+ v5 back-office session additions:
+//   PaymentAccount/PaymentAccountType, Payment.paymentAccountId,
+//   Transaction.paymentAccountId, ProductVariant.storageLocation, Delivery.receiptUrl)
 // Keep this file in sync. Field comments preserved from spec.
 
 generator client {
@@ -28,8 +30,12 @@ enum AppSource {
 }
 
 enum UserRole {
+  SUPER_ADMIN
   ADMIN
   MANAGER
+  CATALOG_MANAGER
+  FINANCE
+  SUPPORT
   DELIVERER
   CLIENT
   SALES_REP
@@ -113,6 +119,13 @@ enum PaymentMethod {
   CASH_ON_DELIVERY
 }
 
+enum PaymentAccountType {
+  CASH
+  ORANGE_MONEY
+  MTN_MOMO
+  BANK
+}
+
 enum PaymentStatus {
   PENDING
   COMPLETED
@@ -165,6 +178,8 @@ enum TransactionCategory {
   PACKAGING
   DELIVERY
   COMMISSION
+  CAPITAL_CONTRIBUTION
+  CAPITAL_WITHDRAWAL
   OTHER
 }
 
@@ -208,6 +223,15 @@ model User {
   phone        String?
   role         UserRole @default(CLIENT)
   isActive     Boolean  @default(true)
+  // When true, the user MUST change their password before doing anything
+  // else. Set on the seeded admin so a fresh deploy can't run on the
+  // bootstrap password (see prisma/seed.ts). Cleared on first successful
+  // POST /auth/me/password.
+  mustChangePassword Boolean @default(false)
+  // Preferred UI language. Captured from Accept-Language at signup,
+  // updated whenever the customer toggles the storefront locale. Drives
+  // transactional email links (which path to embed: FR vs EN slug).
+  locale       String   @default("fr")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -235,6 +259,7 @@ model User {
 
   refreshTokens       RefreshToken[]
   passwordResetTokens PasswordResetToken[]
+  emailChangeTokens   EmailChangeToken[]
 
   @@map("users")
 }
@@ -273,6 +298,25 @@ model PasswordResetToken {
   @@index([userId])
   @@index([expiresAt])
   @@map("password_reset_tokens")
+}
+
+// Pending email change. The user's email is NOT updated until the
+// customer clicks the link sent to the NEW address, which proves they
+// own it. newEmail is stored here, not on User.
+model EmailChangeToken {
+  id        String    @id @default(uuid())
+  tokenHash String    @unique
+  newEmail  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("email_change_tokens")
 }
 
 model Address {
@@ -386,25 +430,30 @@ model ProductAttributeValue {
   id        String @id @default(uuid())
   value     Json
   sortOrder Int    @default(0)
+  // Hex swatch (#RRGGBB) for colour attribute values — rendered as a colour
+  // dot on the storefront product page. Null for non-colour values.
+  colorHex  String?
 
   attributeId String
   attribute   ProductAttribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
 
   variantValues VariantAttributeValue[]
+  images        ProductImage[]
 
   @@unique([attributeId, sortOrder])
   @@map("product_attribute_values")
 }
 
 model ProductVariant {
-  id             String   @id @default(uuid())
-  sku            String   @unique
-  stock          Int      @default(0)
-  consignedStock Int      @default(0)
-  priceOverride  Decimal? @db.Decimal(10, 2)
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String   @id @default(uuid())
+  sku             String   @unique
+  stock           Int      @default(0)
+  consignedStock  Int      @default(0)
+  priceOverride   Decimal? @db.Decimal(10, 2)
+  storageLocation String? // emplacement indicatif: "Magasin", "Pop-up Akwa", "Portant A2"
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   productId String
   product   Product @relation(fields: [productId], references: [id])
@@ -443,6 +492,13 @@ model ProductImage {
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  // Optional colour this image depicts. Lets the storefront switch the main
+  // image when a colour attribute value is selected. SetNull on delete so
+  // removing the value just unlinks the image.
+  attributeValueId String?
+  attributeValue   ProductAttributeValue? @relation(fields: [attributeValueId], references: [id], onDelete: SetNull)
+
+  @@index([attributeValueId])
   @@map("product_images")
 }
 
@@ -798,7 +854,28 @@ model Payment {
   orderId String @unique
   order   Order  @relation(fields: [orderId], references: [id])
 
+  paymentAccountId String? // sur quel compte l'argent a atterri
+  paymentAccount   PaymentAccount? @relation(fields: [paymentAccountId], references: [id])
+
   @@map("payments")
+}
+
+// ─────────────────────────────────────────────
+// TRÉSORERIE
+// ─────────────────────────────────────────────
+
+model PaymentAccount {
+  id         String             @id @default(uuid())
+  name       String // "Caisse", "OM Celva Business", "MoMo Celva"
+  type       PaymentAccountType
+  identifier String? // numéro de téléphone / compte, masqué à l'affichage
+  isActive   Boolean            @default(true)
+  createdAt  DateTime           @default(now())
+
+  payments     Payment[]
+  transactions Transaction[]
+
+  @@map("payment_accounts")
 }
 
 // ─────────────────────────────────────────────
@@ -835,7 +912,8 @@ model Delivery {
   id           String         @id @default(uuid())
   mode         DeliveryMode   @default(HOME_DELIVERY)
   status       DeliveryStatus @default(PENDING)
-  actualCost   Decimal        @default(0) @db.Decimal(10, 2)
+  actualCost   Decimal        @default(0) @db.Decimal(10, 2) // coût livreur (externe) OU frais de course (équipe)
+  receiptUrl   String? // reçu de course (clé R2)
   trackingNote String?
   assignedAt   DateTime?
   pickedUpAt   DateTime?
@@ -991,6 +1069,24 @@ model NewsletterSubscriber {
 // FINANCE
 // ─────────────────────────────────────────────
 
+// Associé / cofondateur — pour le suivi du capital (apports & retraits).
+model Partner {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  // Part du capital en % (ex: 50.00). Indicatif — la cap-table reste pilotée
+  // par les apports réels enregistrés en transactions.
+  equityShare Decimal? @db.Decimal(5, 2)
+  isActive    Boolean  @default(true)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  transactions Transaction[]
+
+  @@map("partners")
+}
+
 model Transaction {
   id          String              @id @default(uuid())
   type        TransactionType
@@ -1010,6 +1106,11 @@ model Transaction {
   purchaseOrder     PurchaseOrder?   @relation(fields: [purchaseOrderId], references: [id])
   productionOrderId String?
   productionOrder   ProductionOrder? @relation(fields: [productionOrderId], references: [id])
+  paymentAccountId  String?
+  paymentAccount    PaymentAccount?  @relation(fields: [paymentAccountId], references: [id])
+  // Associé rattaché — requis pour les catégories CAPITAL_* (apport/retrait).
+  partnerId         String?
+  partner           Partner?         @relation(fields: [partnerId], references: [id])
 
   @@map("transactions")
 }
@@ -1052,11 +1153,178 @@ model AuditLog {
   createdAt DateTime  @default(now())
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([entity, entityId])
   @@index([userId])
   @@index([createdAt])
   @@index([appSource])
   @@map("audit_logs")
+}
+
+// ─────────────────────────────────────────────
+// STUDIO SUR-MESURE
+// ─────────────────────────────────────────────
+
+enum StudioRequestType {
+  ORDER
+  APPOINTMENT
+}
+
+enum StudioRequestStatus {
+  PENDING
+  CONTACTED
+  CONFIRMED
+  COMPLETED
+  REJECTED
+}
+
+enum StudioAppointmentMode {
+  ATELIER
+  VISIO
+}
+
+enum StudioModelAngle {
+  FRONT
+  SIDE
+  BACK
+  DETAIL
+}
+
+// Top-level grouping shown on /studio. One section per family on the
+// storefront (cover + description + garments carousel + fabrics grid).
+model StudioFabricFamily {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        Json
+  description Json?
+  coverImage  String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  fabrics  StudioFabric[]
+  garments StudioGarment[]
+
+  @@map("studio_fabric_families")
+}
+
+// One pattern inside a family (Kente Magenta Or, Toghu Royal, …). This is
+// what the client multi-picks before booking a rendez-vous.
+model StudioFabric {
+  id          String             @id @default(uuid())
+  familyId    String
+  family      StudioFabricFamily @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  name        Json
+  swatchImage String?
+  photoImage  String?
+  sortOrder   Int                @default(0)
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  requestSelections StudioRequestFabric[]
+
+  @@index([familyId, sortOrder])
+  @@map("studio_fabrics")
+}
+
+// A garment already cut/sewn in this family — the customer sees its
+// photos as inspiration but does NOT pick it. Each garment has 1+ photo
+// rows (StudioModel) for different angles or clients.
+model StudioGarment {
+  id          String             @id @default(uuid())
+  familyId    String
+  family      StudioFabricFamily @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  name        Json
+  description Json?
+  sortOrder   Int                @default(0)
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  photos StudioModel[]
+
+  @@index([familyId, sortOrder])
+  @@map("studio_garments")
+}
+
+// One photo of a garment — different angles or different clients wearing
+// the same garment all live here.
+model StudioModel {
+  id        String            @id @default(uuid())
+  garmentId String
+  garment   StudioGarment     @relation(fields: [garmentId], references: [id], onDelete: Cascade)
+  imageKey  String
+  caption   Json?
+  angle     StudioModelAngle?
+  sortOrder Int               @default(0)
+  isActive  Boolean           @default(true)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([garmentId, sortOrder])
+  @@map("studio_models")
+}
+
+model StudioRequest {
+  id     String              @id @default(uuid())
+  type   StudioRequestType
+  status StudioRequestStatus @default(PENDING)
+
+  customerName  String
+  customerEmail String?
+  customerPhone String
+  customerCity  String?
+
+  appointmentMode StudioAppointmentMode?
+  appointmentDate DateTime?
+  appointmentSlot String?
+
+  notes         String?
+  internalNotes String?
+  appSource     AppSource
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  selectedFabrics StudioRequestFabric[]
+
+  @@index([status, createdAt])
+  @@index([type, status])
+  @@map("studio_requests")
+}
+
+model StudioRequestFabric {
+  requestId String
+  fabricId  String
+  sortOrder Int    @default(0)
+
+  request StudioRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  fabric  StudioFabric  @relation(fields: [fabricId], references: [id], onDelete: Restrict)
+
+  @@id([requestId, fabricId])
+  @@index([fabricId])
+  @@map("studio_request_fabrics")
+}
+
+/// Per-call AI usage log — powers the back-office AI metrics and cost tracking.
+/// `createdById` is a plain scalar (no FK) so this table stays self-contained.
+model AiUsage {
+  id           String   @id @default(uuid())
+  feature      String // e.g. "translate", "generate_description"
+  provider     String // e.g. "anthropic"
+  model        String // e.g. "claude-opus-4-8"
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  latencyMs    Int      @default(0)
+  success      Boolean  @default(true)
+  errorType    String?
+  createdById  String?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([feature])
+  @@index([model])
+  @@map("ai_usage")
 }

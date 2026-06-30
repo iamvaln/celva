@@ -8,6 +8,7 @@ import { fetchCart } from '@/lib/cart';
 import { formatPriceXAF, pickLocalized } from '@/lib/catalogue';
 import { placeOrderAction, readAndClearCheckoutError } from './actions';
 import { getActivePromoCode } from '../cart/actions';
+import { GuestCheckoutForm } from '@/components/cart/GuestCheckoutForm';
 
 type Address = {
   id: string;
@@ -35,7 +36,8 @@ type DeliveryZone = {
   name: { fr: string; en: string };
   fee: string;
   freeDeliveryThreshold?: string | null;
-  estimatedDays?: { min: number; max: number } | null;
+  /** Localized free-text estimate, e.g. "1-2 jours" / "1-2 days". */
+  estimatedDays?: { fr: string; en: string } | null;
 };
 
 type PickupPoint = {
@@ -66,19 +68,29 @@ export default async function CheckoutPage({
   const tCart = await getTranslations('cart');
 
   const accessToken = await getAccessToken();
+  // Logged-out → guest checkout. The cart lives in the browser (localStorage),
+  // so the form is client-side; we just feed it the public delivery options.
   if (!accessToken) {
+    const [guestZones, guestPickups] = await Promise.all([
+      apiFetch<DeliveryZone[]>('/delivery-zones', { locale }).catch(() => [] as DeliveryZone[]),
+      apiFetch<PickupPoint[]>('/pickup-points', { locale }).catch(() => [] as PickupPoint[]),
+    ]);
     return (
-      <section className="bg-background py-section-tight">
-        <div className="container-celva max-w-prose text-center">
-          <h1 className="mb-4 font-display text-h1">{t('title')}</h1>
-          <p className="mb-8 font-body text-lead text-foreground-muted">
-            {t('login_required')}
-          </p>
-          <Link href="/login" className="btn btn-primary">
-            {t('login_required')}
-          </Link>
-        </div>
-      </section>
+      <GuestCheckoutForm
+        locale={locale}
+        zones={guestZones.map((z) => ({
+          id: z.id,
+          name: z.name,
+          fee: z.fee,
+          estimatedDays: z.estimatedDays,
+        }))}
+        pickups={guestPickups.map((p) => ({
+          id: p.id,
+          name: p.name,
+          address: p.address,
+          city: p.city,
+        }))}
+      />
     );
   }
 
@@ -199,9 +211,7 @@ export default async function CheckoutPage({
                     {zones.map((z) => (
                       <option key={z.id} value={z.id}>
                         {pickLocalized(z.name, locale)} · {formatPriceXAF(z.fee, locale)}
-                        {z.estimatedDays
-                          ? ` · ${z.estimatedDays.min}-${z.estimatedDays.max} ${t('delivery_details.days')}`
-                          : ''}
+                        {z.estimatedDays ? ` · ${pickLocalized(z.estimatedDays, locale)}` : ''}
                       </option>
                     ))}
                   </select>

@@ -1,4 +1,5 @@
 import { APP_SOURCE, type Locale } from '@celva/shared';
+import { requireEnv } from './env';
 
 /**
  * Server-side fetch helper. Talks to the API via the Next.js rewrite
@@ -9,8 +10,6 @@ import { APP_SOURCE, type Locale } from '@celva/shared';
  *          API_INTERNAL_URL; the browser hits celva.store/api/* and
  *          Next's rewrite forwards.
  */
-
-const SERVER_BASE = process.env.API_INTERNAL_URL ?? 'http://localhost:3001';
 
 type Envelope<T> = { data: T; requestId?: string };
 
@@ -35,7 +34,11 @@ export type FetchOptions = {
 };
 
 const buildUrl = (path: string, browser: boolean): string => {
-  const base = browser ? '/api' : `${SERVER_BASE}/api`;
+  // Read the server-only base lazily and ONLY on the server path. Reading it at
+  // module top-level would throw the moment this module is pulled into a client
+  // bundle (e.g. a Client Component importing pickLocalized from lib/catalogue),
+  // even though the browser path never needs it.
+  const base = browser ? '/api' : `${requireEnv('API_INTERNAL_URL')}/api`;
   const trimmed = path.startsWith('/') ? path : `/${path}`;
   return `${base}/v1${trimmed}`;
 };

@@ -14,6 +14,8 @@ import {
   updateCartItemAction,
 } from './actions';
 import { PromoCodeInput } from './PromoCodeInput';
+import { StockBadge } from '@/components/StockBadge';
+import { GuestCartView } from '@/components/cart/GuestCartView';
 
 export async function generateMetadata({
   params,
@@ -56,21 +58,10 @@ export default async function CartPage({
     }
   }
 
-  // Logged-out
+  // Logged-out → client-side guest cart (localStorage). Guests can shop and
+  // check out without an account.
   if (!cart) {
-    return (
-      <section className="bg-background py-section-tight">
-        <div className="container-celva max-w-prose text-center">
-          <h1 className="mb-4 font-display text-h1">{t('title')}</h1>
-          <p className="mb-8 font-body text-lead text-foreground-muted">
-            {t('login_required')}
-          </p>
-          <Link href="/login" className="btn btn-primary">
-            {t('login_required')}
-          </Link>
-        </div>
-      </section>
-    );
+    return <GuestCartView locale={locale} />;
   }
 
   // Empty
@@ -119,16 +110,12 @@ export default async function CartPage({
                     <p className="font-body text-small text-foreground-muted">
                       {item.sku} · {unit}
                     </p>
-                    {!item.isAvailable && (
-                      <p className="font-body text-caption uppercase tracking-eyebrow text-accent">
-                        {t('unavailable')}
-                      </p>
-                    )}
-                    {item.isAvailable && item.stockAvailable > 0 && item.stockAvailable <= 3 && (
-                      <p className="font-body text-caption uppercase tracking-eyebrow text-foreground-muted">
-                        {t('low_stock', { n: item.stockAvailable })}
-                      </p>
-                    )}
+                    <div className="mt-1">
+                      <StockBadge
+                        stock={item.stockAvailable}
+                        isAvailable={item.isAvailable && item.stockAvailable > 0}
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-wrap items-center justify-end gap-3">
                     <form action={updateCartItemAction} className="flex items-center gap-2">
@@ -211,12 +198,9 @@ export default async function CartPage({
               <PromoCodeInput appliedCode={promo?.code ?? null} />
             </div>
 
-            <button type="button" disabled className="btn btn-primary btn-block mt-6 opacity-60">
+            <Link href="/checkout" className="btn btn-primary btn-block mt-6">
               {t('checkout')}
-            </button>
-            <p className="mt-3 text-center font-body text-caption uppercase tracking-eyebrow text-foreground-muted">
-              {t('checkout_coming_soon')}
-            </p>
+            </Link>
             <Link href="/shop" className="btn btn-ghost btn-block mt-2">
               {t('continue_shopping')}
             </Link>

@@ -3,12 +3,14 @@
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
+  "setupFiles": ["<rootDir>/jest-setup.ts"],
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
     "^@celva/shared$": "<rootDir>/../../../packages/shared/src",
-    "^@celva/shared/(.*)$": "<rootDir>/../../../packages/shared/src/$1"
+    "^@celva/shared/(.*)$": "<rootDir>/../../../packages/shared/src/$1",
+    "invoice-renderer$": "<rootDir>/__mocks__/invoice-renderer.ts"
   },
   "globals": {
     "ts-jest": {

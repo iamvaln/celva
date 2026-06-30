@@ -24,13 +24,56 @@ import {
   type OrderStatus,
   type PaymentMethod,
 } from '@celva/shared';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { StockMovementsService } from '../stock-movements/stock-movements.service';
 import { DeliveryZonesService } from '../delivery-zones/delivery-zones.service';
 import { PromoCodesService } from '../promo-codes/promo-codes.service';
+import { MailService } from '../mail/mail.service';
+import { InvoicesService } from '../invoices/invoices.service';
+import { CommissionsService } from '../commissions/commissions.service';
+import type { Env } from '../../config/env';
 import type { CreateOrderDto } from './dto/create-order.dto';
+import type { ListOrdersQuery } from './dto/list-orders.query';
+import {
+  CUSTOMER_VISIBLE_TRANSITIONS,
+  fireOrderEmail,
+  type OrderEmailKind,
+} from './order-emails';
+
+const TERMINAL_STATUSES: OrderStatus[] = [ORDER_STATUS.COMPLETED, ORDER_STATUS.CANCELLED];
+
+/**
+ * Lifecycle per spec §7.5. PENDING is the seed state. Cancellation is a
+ * separate flow (own endpoint) so the lifecycle here only covers forward
+ * progress. SHIPPED can go either to DELIVERED (HOME courier) or skip
+ * straight to DELIVERED from READY for pickups (spec §7.5
+ * "READY → DELIVERED direct pour STORE_PICKUP/RELAY_PICKUP").
+ */
+const ALLOWED_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
+  [ORDER_STATUS.PENDING]: [ORDER_STATUS.CONFIRMED],
+  [ORDER_STATUS.CONFIRMED]: [ORDER_STATUS.PROCESSING],
+  [ORDER_STATUS.PROCESSING]: [ORDER_STATUS.READY],
+  [ORDER_STATUS.READY]: [ORDER_STATUS.SHIPPED, ORDER_STATUS.DELIVERED],
+  [ORDER_STATUS.SHIPPED]: [ORDER_STATUS.DELIVERED],
+  [ORDER_STATUS.DELIVERED]: [ORDER_STATUS.COMPLETED],
+  [ORDER_STATUS.COMPLETED]: [],
+  [ORDER_STATUS.CANCELLED]: [],
+};
 
 const ORDER_NUMBER_PREFIX = 'CLV';
+
+/**
+ * A normalized order line — same shape whether it came from a server-side
+ * cart (authenticated checkout) or explicit items (guest checkout). The
+ * variant carries its product so pricing/stock/active checks need no extra
+ * query.
+ */
+type OrderLine = {
+  variantId: string;
+  quantity: number;
+  variant: Prisma.ProductVariantGetPayload<{ include: { product: true } }>;
+};
 
 @Injectable()
 export class OrdersService {
@@ -41,6 +84,10 @@ export class OrdersService {
     private readonly stockMovements: StockMovementsService,
     private readonly deliveryZones: DeliveryZonesService,
     private readonly promoCodes: PromoCodesService,
+    private readonly mail: MailService,
+    private readonly config: ConfigService<Env, true>,
+    private readonly invoices: InvoicesService,
+    private readonly commissions: CommissionsService,
   ) {}
 
   async listForUser(userId: string): Promise<Order[]> {
@@ -117,8 +164,63 @@ export class OrdersService {
       throw new BadRequestException('errors.cart_empty');
     }
 
+    const lines: OrderLine[] = cart.items.map((it) => ({
+      variantId: it.variantId,
+      quantity: it.quantity,
+      variant: it.variant,
+    }));
+    return this.placeOrder(userId, lines, dto, cart.id);
+  }
+
+  /**
+   * Guest checkout path (spec follow-up). The cart lives client-side
+   * (localStorage) so the order is built from explicit line items instead of
+   * a server cart. The caller (public guest endpoint) has already
+   * find-or-created the passwordless user this order is attached to.
+   * Duplicate variantIds are merged; every variant is loaded with its product
+   * so the shared placeOrder() validation/pricing runs unchanged. No server
+   * cart is cleared (there is none).
+   */
+  async createFromItems(
+    userId: string,
+    items: { variantId: string; quantity: number }[],
+    dto: CreateOrderDto,
+  ) {
+    const merged = new Map<string, number>();
+    for (const it of items) {
+      merged.set(it.variantId, (merged.get(it.variantId) ?? 0) + it.quantity);
+    }
+    if (merged.size === 0) {
+      throw new BadRequestException('errors.cart_empty');
+    }
+
+    const variants = await this.prisma.productVariant.findMany({
+      where: { id: { in: [...merged.keys()] } },
+      include: { product: true },
+    });
+    const byId = new Map(variants.map((v) => [v.id, v]));
+
+    const lines: OrderLine[] = [...merged.entries()].map(([variantId, quantity]) => {
+      const variant = byId.get(variantId);
+      if (!variant) throw new BadRequestException('errors.cart_variant_unavailable');
+      return { variantId, quantity, variant };
+    });
+    return this.placeOrder(userId, lines, dto, null);
+  }
+
+  /**
+   * Shared order-placement core for both checkout paths. `cartId` is the
+   * server cart to clear on success (authenticated checkout) or null (guest
+   * checkout, nothing to clear).
+   */
+  private async placeOrder(
+    userId: string,
+    lines: OrderLine[],
+    dto: CreateOrderDto,
+    cartId: string | null,
+  ) {
     // 1) Revalidate variants
-    for (const it of cart.items) {
+    for (const it of lines) {
       if (!it.variant.isActive || !it.variant.product.isActive) {
         throw new BadRequestException('errors.cart_variant_unavailable');
       }
@@ -205,7 +307,7 @@ export class OrdersService {
       true,
     );
 
-    const subtotal = cart.items.reduce(
+    const subtotal = lines.reduce(
       (sum, it) =>
         sum.add(
           (it.variant.priceOverride ?? it.variant.product.displayPrice).mul(it.quantity),
@@ -271,7 +373,7 @@ export class OrdersService {
           userId,
           promoCodeId: appliedPromoId,
           items: {
-            create: cart.items.map((it) => ({
+            create: lines.map((it) => ({
               variantId: it.variantId,
               quantity: it.quantity,
               unitPrice: it.variant.priceOverride ?? it.variant.product.displayPrice,
@@ -282,7 +384,7 @@ export class OrdersService {
       });
 
       // Stock OUT — one StockMovement per line, signed negative
-      for (const it of cart.items) {
+      for (const it of lines) {
         await this.stockMovements.apply({
           variantId: it.variantId,
           quantity: -it.quantity,
@@ -322,19 +424,265 @@ export class OrdersService {
         });
       }
 
-      // Clear cart
-      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+      // Clear the server cart when the order was sourced from one. Guest
+      // checkout passes null — its cart is client-side, nothing to clear.
+      if (cartId) {
+        await tx.cartItem.deleteMany({ where: { cartId } });
+      }
 
       return order;
     });
 
     this.logger.log(`Order ${orderNumber} created (status=${created.status}, total=${total.toFixed(2)})`);
+
+    // Alert the ops inbox on every new order, including PENDING ones (so the
+    // team is notified before an OM/MoMo payment is captured). Fire-and-forget.
+    this.dispatchOrderEmail(created.id, 'admin_new_order');
+
+    // Cash flow lands at CONFIRMED at checkout — send confirmation now. The
+    // OM/MoMo path stays PENDING here; PaymentsService.markCompleted triggers
+    // confirmation when the callback (or dev stub) promotes it to CONFIRMED.
+    if (created.status === ORDER_STATUS.CONFIRMED) {
+      this.dispatchOrderEmail(created.id, 'confirmation');
+      // Storefront orders never have a salesRepId so this no-ops.
+      // It's a manual-order (spec §7.4) thing — keeping the hook here
+      // so when manual-order creation lands the wiring is already in
+      // place.
+      await this.commissions.generateForOrder(created.id);
+    }
+
     return this.findByIdForUser(created.id, userId);
+  }
+
+  // ──────────────────────────────────────────────────────────────────────
+  // Admin
+  // ──────────────────────────────────────────────────────────────────────
+
+  async listForAdmin(query: ListOrdersQuery): Promise<{
+    data: Order[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? 25;
+
+    const where: Prisma.OrderWhereInput = {
+      ...(query.status ? { status: query.status as OrderStatus } : {}),
+      ...(query.channel ? { channel: query.channel } : {}),
+      ...(query.from || query.to
+        ? {
+            createdAt: {
+              ...(query.from ? { gte: new Date(query.from) } : {}),
+              ...(query.to ? { lt: new Date(query.to) } : {}),
+            },
+          }
+        : {}),
+      ...(query.search
+        ? {
+            OR: [
+              { orderNumber: { contains: query.search, mode: 'insensitive' } },
+              { user: { email: { contains: query.search, mode: 'insensitive' } } },
+              { user: { name: { contains: query.search, mode: 'insensitive' } } },
+            ],
+          }
+        : {}),
+    };
+
+    const sortBy = query.sortBy ?? 'createdAt';
+    const sortDir = query.sortDir ?? 'desc';
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.order.findMany({
+        where,
+        include: {
+          user: { select: { id: true, email: true, name: true } },
+          items: { select: { id: true } },
+          payment: { select: { method: true, status: true } },
+        },
+        orderBy: [{ [sortBy]: sortDir }, { id: 'asc' }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    return { data, total, page, pageSize };
+  }
+
+  async findByIdForAdmin(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        user: { select: { id: true, email: true, name: true, phone: true } },
+        items: { include: { variant: { include: { product: true } } } },
+        payment: true,
+        delivery: { include: { pickupPoint: true } },
+        promoCode: true,
+      },
+    });
+    if (!order) throw new NotFoundException('errors.not_found');
+    return order;
+  }
+
+  /**
+   * Admin/manager forward-only lifecycle transition. Validates against
+   * ALLOWED_TRANSITIONS and refuses to touch terminal orders. Cancellation
+   * lives at cancel() — separate flow because it triggers stock + promo
+   * side-effects.
+   */
+  async transitionStatus(
+    orderId: string,
+    nextStatus: OrderStatus,
+    _actorUserId: string,
+  ): Promise<Order> {
+    const order = await this.prisma.order.findUnique({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('errors.not_found');
+
+    if (TERMINAL_STATUSES.includes(order.status as OrderStatus)) {
+      throw new BadRequestException('errors.order_terminal');
+    }
+    const allowed = ALLOWED_TRANSITIONS[order.status as OrderStatus] ?? [];
+    if (!allowed.includes(nextStatus)) {
+      throw new BadRequestException('errors.invalid_order_transition');
+    }
+
+    const updated = await this.prisma.order.update({
+      where: { id: orderId },
+      data: { status: nextStatus },
+    });
+    this.logger.log(`Order ${order.orderNumber} ${order.status} → ${nextStatus}`);
+
+    if (CUSTOMER_VISIBLE_TRANSITIONS.includes(nextStatus)) {
+      this.dispatchOrderEmail(orderId, 'status');
+    }
+    // Catch the rare "admin manually promotes PENDING → CONFIRMED" path
+    // — the auto-generation is idempotent so duplicates from createFromCart
+    // or markCompleted are safe.
+    if (nextStatus === ORDER_STATUS.CONFIRMED) {
+      await this.commissions.generateForOrder(orderId);
+    }
+    return updated;
+  }
+
+  /**
+   * Cancel an order per spec §7.5. Allowed only before SHIPPED. Atomic:
+   *   - Order → CANCELLED
+   *   - Stock restored via StockMovement CANCELLATION_RETURN for every item
+   *     (signed positive — opposite of the SALE_OUT booked at checkout)
+   *   - PromoCode.usedCount decremented if a code was applied
+   *   - SalesCommission rows deleted per spec §7.5 (refuses if any are
+   *     already PAID — admin must reverse the Transaction manually).
+   *   - Payment stays as-is (refund flow is out of scope for this batch —
+   *     a separate "refund" lifecycle would mark the Payment REFUNDED and
+   *     book a Transaction EXPENSE; deferred to the finance batches).
+   */
+  async cancel(
+    orderId: string,
+    actorUserId: string,
+    reason: string | undefined,
+  ): Promise<Order> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true },
+    });
+    if (!order) throw new NotFoundException('errors.not_found');
+
+    if (order.status === ORDER_STATUS.CANCELLED) {
+      throw new BadRequestException('errors.order_already_cancelled');
+    }
+    if (
+      order.status === ORDER_STATUS.SHIPPED ||
+      order.status === ORDER_STATUS.DELIVERED ||
+      order.status === ORDER_STATUS.COMPLETED
+    ) {
+      throw new BadRequestException('errors.order_too_late_to_cancel');
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.order.update({
+        where: { id: orderId },
+        data: { status: ORDER_STATUS.CANCELLED },
+      });
+
+      // Restore stock — every SALE_OUT movement booked at checkout has a
+      // matching CANCELLATION_RETURN here.
+      for (const it of order.items) {
+        await this.stockMovements.apply({
+          variantId: it.variantId,
+          quantity: it.quantity, // positive
+          type: STOCK_MOVEMENT_TYPE.CANCELLATION_RETURN,
+          userId: actorUserId,
+          orderId: order.id,
+          reason: reason ?? undefined,
+          tx,
+        });
+      }
+
+      // Decrement promo usedCount if applicable.
+      if (order.promoCodeId) {
+        await tx.promoCode.update({
+          where: { id: order.promoCodeId },
+          data: { usedCount: { decrement: 1 } },
+        });
+      }
+
+      // Delete any PENDING sales commissions linked to this order. Throws
+      // if any are already PAID — those represent real money out the door
+      // that must be reversed manually before cancellation.
+      await this.commissions.removeForOrder(order.id, tx);
+
+      this.logger.log(
+        `Order ${order.orderNumber} CANCELLED${reason ? ` (${reason})` : ''} — stock restored on ${order.items.length} line(s)`,
+      );
+      return updated;
+    }).then((result) => {
+      this.dispatchOrderEmail(orderId, 'cancelled', reason);
+      return result;
+    });
+  }
+
+  /**
+   * Customer-initiated cancellation. Stricter than admin's cancel — only
+   * PENDING orders. Once an order is CONFIRMED the team is working on it;
+   * the customer needs to call/WhatsApp instead.
+   */
+  async cancelMyOrder(
+    orderId: string,
+    userId: string,
+    reason: string | undefined,
+  ): Promise<Order> {
+    const order = await this.prisma.order.findUnique({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('errors.not_found');
+    if (order.userId !== userId) throw new ForbiddenException('errors.forbidden');
+    if (order.status !== ORDER_STATUS.PENDING) {
+      throw new BadRequestException('errors.order_customer_cancel_too_late');
+    }
+    return this.cancel(orderId, userId, reason);
   }
 
   // ──────────────────────────────────────────────────────────────────────
   // Helpers
   // ──────────────────────────────────────────────────────────────────────
+
+  private dispatchOrderEmail(
+    orderId: string,
+    kind: OrderEmailKind,
+    reason?: string,
+  ): void {
+    fireOrderEmail(
+      {
+        prisma: this.prisma,
+        mail: this.mail,
+        storefrontUrl: this.config.get('STOREFRONT_URL', { infer: true }),
+        logger: this.logger,
+        invoices: this.invoices,
+      },
+      orderId,
+      kind,
+      reason,
+    );
+  }
 
   private async readSettingDecimal(key: string, fallback: number): Promise<Prisma.Decimal> {
     const setting = await this.prisma.setting.findUnique({ where: { key } });
