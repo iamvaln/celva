@@ -27,7 +27,7 @@ jobs:
       name: ${{ github.ref_name == 'main' && 'production' || 'preprod' }}
       url: ${{ github.ref_name == 'main' && 'https://admin.celva.store' || 'https://preprod.admin.celva.store' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v4
         with:
